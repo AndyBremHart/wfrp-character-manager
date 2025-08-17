@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WFRP Character Sheet v10</title>
+    <title>WFRP Character Sheet</title>
     <style>
         * {
             margin: 0;
@@ -158,7 +158,7 @@
             margin-bottom: 25px;
         }
 
-        .skills-controls, .talents-controls {
+        .skills-controls {
             display: flex;
             gap: 10px;
             margin-bottom: 10px;
@@ -296,7 +296,6 @@
             right: 20px;
             display: flex;
             gap: 10px;
-            z-index: 100;
         }
 
         .control-btn {
@@ -351,20 +350,6 @@
             margin-top: 5px;
         }
 
-        /* Loading indicator */
-        .loading-indicator {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #3e2f1f;
-            color: #faf8f3;
-            padding: 20px 40px;
-            border-radius: 5px;
-            z-index: 9999;
-            display: none;
-        }
-
         /* Responsive Design */
         @media (max-width: 768px) {
             .header-grid {
@@ -391,26 +376,14 @@
                 font-size: 10px;
             }
 
-            .skills-controls, .talents-controls {
+            .skills-controls {
                 flex-direction: column;
                 align-items: stretch;
-            }
-
-            .control-panel {
-                bottom: 10px;
-                right: 10px;
-                flex-direction: column;
-            }
-
-            .control-btn {
-                padding: 10px 20px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="loading-indicator" id="loading-indicator">Loading SRD Data...</div>
-    
     <div class="character-sheet">
         <!-- Header Section -->
         <div class="sheet-header">
@@ -565,11 +538,10 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Talents Section -->
+<!-- Talents Section -->
             <div class="characteristics-section">
                 <div class="section-title">Talents</div>
-                <div class="talents-controls">
+                <div class="talents-controls" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
                     <button class="control-btn" onclick="window.addTalent()" style="padding: 5px 10px; font-size: 12px;">+ Add Talent</button>
                     <input type="text" id="talents-search" placeholder="Search talents..." style="padding: 5px 10px; border: 1px solid #8b7355; font-family: 'Georgia', serif; background: white;">
                 </div>
@@ -629,7 +601,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- Secondary Characteristics -->
             <div class="characteristics-section">
                 <div class="section-title">Secondary Characteristics</div>
@@ -744,8 +715,184 @@
                 </div>
             </div>
 
-            <!-- Combat Section continues in original file... -->
-            <!-- Equipment & Inventory Section continues in original file... -->
+            <!-- Combat Section -->
+            <div class="characteristics-section">
+                <div class="section-title">Combat</div>
+                
+                <!-- Weapons Table -->
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Weapons</h4>
+                        <button class="control-btn" onclick="window.addWeapon()" style="padding: 5px 10px; font-size: 12px;">+ Add Weapon</button>
+                    </div>
+                    <table class="skills-table" id="weapons-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">Weapon</th>
+                                <th style="width: 10%;">Group</th>
+                                <th style="width: 8%;">Enc</th>
+                                <th style="width: 10%;">Range</th>
+                                <th style="width: 12%;">Damage</th>
+                                <th style="width: 25%;">Qualities</th>
+                                <th style="width: 8%;">Equipped</th>
+                                <th style="width: 2%;">Del</th>
+                            </tr>
+                        </thead>
+                        <tbody id="weapons-tbody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Armour Table -->
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Armour</h4>
+                        <button class="control-btn" onclick="window.addArmour()" style="padding: 5px 10px; font-size: 12px;">+ Add Armour</button>
+                    </div>
+                    <table class="skills-table" id="armour-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">Armour</th>
+                                <th style="width: 10%;">Type</th>
+                                <th style="width: 8%;">Enc</th>
+                                <th style="width: 8%;">Head</th>
+                                <th style="width: 8%;">Arms</th>
+                                <th style="width: 8%;">Body</th>
+                                <th style="width: 8%;">Legs</th>
+                                <th style="width: 15%;">Qualities</th>
+                                <th style="width: 8%;">Worn</th>
+                                <th style="width: 2%;">Del</th>
+                            </tr>
+                        </thead>
+                        <tbody id="armour-tbody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Armour Points Summary -->
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Total Armour Points</h4>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Head</div>
+                            <input type="number" id="total-ap-head" value="0" readonly style="text-align: center; font-weight: bold;">
+                        </div>
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Arms</div>
+                            <input type="number" id="total-ap-arms" value="0" readonly style="text-align: center; font-weight: bold;">
+                        </div>
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Body</div>
+                            <input type="number" id="total-ap-body" value="0" readonly style="text-align: center; font-weight: bold;">
+                        </div>
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Legs</div>
+                            <input type="number" id="total-ap-legs" value="0" readonly style="text-align: center; font-weight: bold;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Equipment & Inventory Section -->
+            <div class="characteristics-section">
+                <div class="section-title">Equipment & Inventory</div>
+                
+                <!-- Money Tracker -->
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Wealth</h4>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Gold Crowns</div>
+                            <input type="number" id="money-gold" value="0" min="0" onchange="window.updateEncumbrance()" style="text-align: center;">
+                        </div>
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Silver Shillings</div>
+                            <input type="number" id="money-silver" value="0" min="0" onchange="window.updateEncumbrance()" style="text-align: center;">
+                        </div>
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Brass Pennies</div>
+                            <input type="number" id="money-brass" value="0" min="0" onchange="window.updateEncumbrance()" style="text-align: center;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Encumbrance Tracker -->
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Encumbrance</h4>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px;">
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Current Enc</div>
+                            <input type="number" id="current-enc" value="0" readonly style="text-align: center; font-weight: bold;">
+                        </div>
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Max Enc (SB+TB)</div>
+                            <input type="number" id="max-enc" value="0" readonly style="text-align: center;">
+                        </div>
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Status</div>
+                            <input type="text" id="enc-status" value="Unencumbered" readonly style="text-align: center; font-size: 12px;">
+                        </div>
+                    </div>
+                    <div style="font-size: 11px; color: #8b7355; line-height: 1.4;">
+                        <div id="enc-details" style="padding: 5px; background: #f5f0e8; border: 1px solid #d4c5a0;">
+                            <strong>Encumbrance Breakdown:</strong>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 5px;">
+                                <div>• Weapons (equipped): <span id="enc-weapons">0</span></div>
+                                <div>• Armour (worn -1 Enc): <span id="enc-armour">0</span></div>
+                                <div>• Trappings: <span id="enc-trappings">0</span></div>
+                                <div>• Money (200 coins = 1 Enc): <span id="enc-money">0</span></div>
+                            </div>
+                            <div style="margin-top: 5px; padding-top: 5px; border-top: 1px solid #d4c5a0;">
+                                <strong>Current Penalties:</strong> <span id="enc-penalties" style="color: green;">None</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trappings/Inventory -->
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Trappings & Equipment</h4>
+                        <button class="control-btn" onclick="window.addTrapping()" style="padding: 5px 10px; font-size: 12px;">+ Add Item</button>
+                    </div>
+                    <table class="skills-table" id="trappings-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 30%;">Item</th>
+                                <th style="width: 10%;">Quantity</th>
+                                <th style="width: 10%;">Enc (each)</th>
+                                <th style="width: 10%;">Total Enc</th>
+                                <th style="width: 15%;">Location</th>
+                                <th style="width: 23%;">Notes</th>
+                                <th style="width: 2%;">Del</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trappings-tbody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Ammunition & Consumables -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Ammunition & Consumables</h4>
+                        <button class="control-btn" onclick="window.addConsumable()" style="padding: 5px 10px; font-size: 12px;">+ Add Consumable</button>
+                    </div>
+                    <table class="skills-table" id="consumables-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 30%;">Item</th>
+                                <th style="width: 15%;">Current</th>
+                                <th style="width: 15%;">Maximum</th>
+                                <th style="width: 38%;">Notes</th>
+                                <th style="width: 2%;">Del</th>
+                            </tr>
+                        </thead>
+                        <tbody id="consumables-tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -756,30 +903,67 @@
     </div>
 
     <script>
-        // Core initialization
+        // Initialize character data
+        let character = {
+            name: '',
+            species: '',
+            class: '',
+            career: '',
+            careerLevel: '',
+            careerPath: '',
+            status: '',
+            age: '',
+            height: '',
+            hair: '',
+            eyes: '',
+            attributes: {
+                WS: { initial: 0, advances: 0, current: 0 },
+                BS: { initial: 0, advances: 0, current: 0 },
+                S: { initial: 0, advances: 0, current: 0 },
+                T: { initial: 0, advances: 0, current: 0 },
+                I: { initial: 0, advances: 0, current: 0 },
+                Ag: { initial: 0, advances: 0, current: 0 },
+                Dex: { initial: 0, advances: 0, current: 0 },
+                Int: { initial: 0, advances: 0, current: 0 },
+                WP: { initial: 0, advances: 0, current: 0 },
+                Fel: { initial: 0, advances: 0, current: 0 }
+            },
+            fate: { fortune: 0, fate: 0 },
+            resilience: { resolve: 0, resilience: 0 },
+            experience: { current: 0, spent: 0, total: 0 },
+            movement: 4,
+            wounds: { current: 0, max: 0 },
+            skills: [],
+            talents: [],
+            trappings: [],
+            wealth: { brass: 0, silver: 0, gold: 0 },
+            psychology: '',
+            motivation: '',
+            shortTermAmbitions: '',
+            longTermAmbitions: '',
+            corruption: { current: 0, max: 0 },
+            mutations: []
+        };
+
+        // Expose character to window for debugging
+        window.character = character;
+
+        // Global variables
         let characterSkills = {};
-        let addedSkills = [];
+        let addedSkills = []; // Track all manually added skills
         let weapons = [];
         let armour = [];
         let trappings = [];
         let consumables = [];
         let talents = [];
-        
-        // SRD Data
+        let srdTalents = [];
+
+        // SRD Data (will be loaded from JSON files)
         let srdWeapons = [];
         let srdArmour = [];
         let srdAmmunition = [];
-        let srdTalents = [];
-        
-        // Track loading status
-        let srdLoadStatus = {
-            weapons: false,
-            armour: false,
-            ammunition: false,
-            talents: false
-        };
 
-        // Define all available skills (keeping this embedded as it's core to the system)
+        // Define all available skills
         const allSkills = [
             // Basic Skills
             { name: "Art", characteristic: "Dex", type: "Basic", grouped: true },
@@ -831,159 +1015,1656 @@
             { name: "Trade", characteristic: "Dex", type: "Advanced", grouped: true }
         ];
 
-        // Check if all SRD data is loaded
-        function checkSRDLoadComplete() {
-            if (srdLoadStatus.weapons && srdLoadStatus.armour && 
-                srdLoadStatus.ammunition && srdLoadStatus.talents) {
-                document.getElementById('loading-indicator').style.display = 'none';
-                console.log('All SRD data loaded successfully');
+        // Get default basic skills (ungrouped only)
+        function getDefaultSkills() {
+            return allSkills.filter(skill => skill.type === "Basic" && !skill.grouped);
+        }
+
+        // Auto-calculate current characteristics
+        const characteristics = ['ws', 'bs', 's', 't', 'i', 'ag', 'dex', 'int', 'wp', 'fel'];
+        
+        characteristics.forEach(char => {
+            const initial = document.getElementById(`${char}-initial`);
+            const advances = document.getElementById(`${char}-advances`);
+            const current = document.getElementById(`${char}-current`);
+            
+            function updateCurrent() {
+                const init = parseInt(initial.value) || 0;
+                const adv = parseInt(advances.value) || 0;
+                let currentValue = init + adv;
+                
+                // Apply encumbrance penalty to Agility
+                if (char === 'ag') {
+                    const encStatus = document.getElementById('enc-status');
+                    const agilityPenalty = parseInt(encStatus?.getAttribute('data-agility-penalty') || 0);
+                    
+                    if (agilityPenalty > 0) {
+                        // Apply penalty with minimum of 10 for triple encumbrance
+                        if (agilityPenalty === 20) {
+                            currentValue = Math.max(10, currentValue - agilityPenalty);
+                        } else {
+                            currentValue = currentValue - agilityPenalty;
+                        }
+                        current.style.color = 'red';
+                        current.title = `Base: ${init + adv}, Encumbrance Penalty: -${agilityPenalty}`;
+                    } else {
+                        current.style.color = '';
+                        current.title = '';
+                    }
+                }
+                
+                current.value = currentValue;
+                
+                // Update all skill totals when characteristics change
+                updateAllSkillTotals();
+                
+                // Update encumbrance when Strength or Toughness changes
+                if (char === 's' || char === 't') {
+                    updateEncumbrance();
+                }
+            }
+            
+            initial.addEventListener('input', updateCurrent);
+            advances.addEventListener('input', updateCurrent);
+            
+            // Store the update function for later use
+            current.updateFunction = updateCurrent;
+        });
+
+        // Auto-set initial Fortune when Fate is set (during character creation)
+        document.getElementById('fate').addEventListener('input', () => {
+            const fate = document.getElementById('fate').value;
+            const fortune = document.getElementById('fortune');
+            if (!fortune.value) {
+                fortune.value = fate;
+            }
+        });
+
+        // Auto-set initial Resolve when Resilience is set (during character creation)
+        document.getElementById('resilience').addEventListener('input', () => {
+            const resilience = document.getElementById('resilience').value;
+            const resolve = document.getElementById('resolve');
+            if (!resolve.value) {
+                resolve.value = resilience;
+            }
+        });
+
+        // Auto-calculate movement values
+        const movement = document.getElementById('movement');
+        const walk = document.getElementById('walk');
+        const run = document.getElementById('run');
+        
+        movement.addEventListener('input', () => {
+            const moveVal = parseInt(movement.value) || 0;
+            
+            // Store this as the base movement value
+            movement.setAttribute('data-base-movement', moveVal);
+            
+            // Recalculate walk and run
+            walk.value = moveVal * 2;
+            run.value = moveVal * 4;
+            
+            // Recalculate encumbrance to apply any penalties
+            updateEncumbrance();
+        });
+
+        // Calculate total XP
+        const xpCurrent = document.getElementById('xp-current');
+        const xpSpent = document.getElementById('xp-spent');
+        const xpTotal = document.getElementById('xp-total');
+        
+        function updateTotalXP() {
+            const current = parseInt(xpCurrent.value) || 0;
+            const spent = parseInt(xpSpent.value) || 0;
+            xpTotal.value = current + spent;
+        }
+        
+        xpCurrent.addEventListener('input', updateTotalXP);
+        xpSpent.addEventListener('input', updateTotalXP);
+
+        // Skills functionality
+        window.displaySkills = function() {
+            const tbody = document.getElementById('skills-tbody');
+            const filter = document.getElementById('skills-filter').value;
+            tbody.innerHTML = '';
+            
+            // Combine default skills and added skills
+            let allDisplaySkills = [];
+            
+            // Add default basic skills (ungrouped)
+            getDefaultSkills().forEach(skill => {
+                allDisplaySkills.push({
+                    key: skill.name,
+                    name: skill.name,
+                    displayName: skill.name,
+                    characteristic: skill.characteristic,
+                    type: skill.type,
+                    canDelete: false
+                });
+            });
+            
+            // Add manually added skills
+            addedSkills.forEach(skill => {
+                allDisplaySkills.push({
+                    key: skill.key,
+                    name: skill.name,
+                    displayName: skill.displayName,
+                    characteristic: skill.characteristic,
+                    type: skill.type,
+                    canDelete: true
+                });
+            });
+            
+            // Filter skills
+            if (filter !== 'all') {
+                allDisplaySkills = allDisplaySkills.filter(skill => {
+                    if (filter === 'career') return characterSkills[skill.key]?.career || false;
+                    if (filter === 'basic') return skill.type === 'Basic';
+                    if (filter === 'advanced') return skill.type === 'Advanced';
+                    return true;
+                });
+            }
+            
+            // Sort alphabetically
+            allDisplaySkills.sort((a, b) => a.displayName.localeCompare(b.displayName));
+            
+            // Display skills
+            allDisplaySkills.forEach(skill => {
+                const skillData = characterSkills[skill.key] || { career: false, advances: 0, notes: '' };
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="skill-name-cell">${skill.displayName}</td>
+                    <td>${skill.characteristic}</td>
+                    <td>${skill.type}</td>
+                    <td><input type="checkbox" ${skillData.career ? 'checked' : ''} onchange="updateSkillData('${skill.key}', 'career', this.checked)"></td>
+                    <td><input type="number" value="${skillData.advances}" min="0" max="5" onchange="updateSkillData('${skill.key}', 'advances', parseInt(this.value) || 0)" style="width: 50px;"></td>
+                    <td class="skill-total" id="skill-total-${skill.key.replace(/\s+/g, '-').replace(/[()]/g, '')}">${calculateSkillTotal(skill, skill.key)}</td>
+                    <td><input type="text" value="${skillData.notes}" placeholder="Notes..." onchange="updateSkillData('${skill.key}', 'notes', this.value)" style="width: 100%; border: none; font-size: 11px;"></td>
+                    <td>${skill.canDelete ? `<button class="advance-btn" onclick="removeSkill('${skill.key}')" style="background: #d44; color: white; width: 20px;">×</button>` : ''}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        window.calculateSkillTotal = function(skill, skillKey) {
+            const skillData = characterSkills[skillKey] || { advances: 0 };
+            const charValue = parseInt(document.getElementById(`${skill.characteristic.toLowerCase()}-current`).value) || 0;
+            const advances = skillData.advances || 0;
+            
+            return charValue + advances;
+        }
+
+        window.updateSkillData = function(skillKey, property, value) {
+            if (!characterSkills[skillKey]) {
+                characterSkills[skillKey] = { career: false, advances: 0, notes: '' };
+            }
+            characterSkills[skillKey][property] = value;
+            
+            updateSkillTotal(skillKey);
+        }
+
+        window.updateSkillTotal = function(skillKey) {
+            // Find the skill
+            let skill = getDefaultSkills().find(s => s.name === skillKey);
+            if (!skill) {
+                skill = addedSkills.find(s => s.key === skillKey);
+            }
+            
+            if (skill) {
+                const totalElement = document.getElementById(`skill-total-${skillKey.replace(/\s+/g, '-').replace(/[()]/g, '')}`);
+                if (totalElement) {
+                    totalElement.textContent = calculateSkillTotal(skill, skillKey);
+                }
             }
         }
 
-        // Load SRD Data with better error handling
-        function loadSRDData() {
-            document.getElementById('loading-indicator').style.display = 'block';
+        window.updateAllSkillTotals = function() {
+            // Update default skills
+            getDefaultSkills().forEach(skill => {
+                updateSkillTotal(skill.name);
+            });
             
-            // Load weapons
+            // Update added skills
+            addedSkills.forEach(skill => {
+                updateSkillTotal(skill.key);
+            });
+        }
+
+        // Add skill modal functions
+        window.addSkill = function() {
+            populateSkillSelect();
+            document.getElementById('add-skill-modal').style.display = 'block';
+        }
+
+        window.populateSkillSelect = function() {
+            const select = document.getElementById('skill-select');
+            select.innerHTML = '<option value="">Select a skill...</option>';
+            
+            // Only show skills that are either:
+            // 1. Grouped skills (requiring specialisation)
+            // 2. Advanced skills (not automatically available)
+            // Exclude basic ungrouped skills as they're already shown by default
+            allSkills.forEach(skill => {
+                // Skip basic ungrouped skills - they're already in the default list
+                if (skill.type === 'Basic' && !skill.grouped) {
+                    return;
+                }
+                
+                const option = document.createElement('option');
+                option.value = skill.name;
+                option.textContent = skill.name + (skill.grouped ? ' (requires specialisation)' : '');
+                option.dataset.grouped = skill.grouped;
+                select.appendChild(option);
+            });
+        }
+
+        window.toggleSpecialisationField = function() {
+            const select = document.getElementById('skill-select');
+            const selectedOption = select.options[select.selectedIndex];
+            const specialisationField = document.getElementById('specialisation-field');
+            
+            if (selectedOption && selectedOption.dataset.grouped === 'true') {
+                specialisationField.style.display = 'block';
+            } else {
+                specialisationField.style.display = 'none';
+                document.getElementById('specialisation-input').value = '';
+            }
+        }
+
+        window.confirmAddSkill = function() {
+            const skillName = document.getElementById('skill-select').value;
+            const specialisation = document.getElementById('specialisation-input').value.trim();
+            
+            if (!skillName) {
+                alert('Please select a skill');
+                return;
+            }
+            
+            const baseSkill = allSkills.find(s => s.name === skillName);
+            if (!baseSkill) {
+                alert('Invalid skill selected');
+                return;
+            }
+            
+            // Check if specialisation is required
+            if (baseSkill.grouped && !specialisation) {
+                alert(`This skill requires a specialisation (e.g., ${skillName} (Battle), ${skillName} (Bow))`);
+                return;
+            }
+            
+            // Create the skill key and display name
+            let skillKey, displayName;
+            if (specialisation) {
+                skillKey = `${skillName} (${specialisation})`;
+                displayName = `${skillName} (${specialisation})`;
+            } else {
+                skillKey = skillName;
+                displayName = skillName;
+            }
+            
+            // Check if this exact skill already exists
+            if (addedSkills.find(s => s.key === skillKey)) {
+                alert('This skill is already added');
+                return;
+            }
+            
+            // Add the skill
+            addedSkills.push({
+                key: skillKey,
+                name: skillName,
+                displayName: displayName,
+                characteristic: baseSkill.characteristic,
+                type: baseSkill.type,
+                specialisation: specialisation
+            });
+            
+            // Initialize skill data
+            characterSkills[skillKey] = { career: false, advances: 0, notes: '' };
+            
+            displaySkills();
+            closeAddSkillModal();
+        }
+
+        // Talent Management Functions
+window.addTalent = function() {
+    populateTalentSelect();
+    document.getElementById('add-talent-modal').style.display = 'block';
+    document.getElementById('talent-search-modal').value = '';
+    document.getElementById('talent-search-modal').focus();
+}
+
+window.populateTalentSelect = function() {
+    const select = document.getElementById('talent-select');
+    select.innerHTML = '';
+    
+    const sortedTalents = [...srdTalents].sort((a, b) => a.name.localeCompare(b.name));
+    
+    sortedTalents.forEach(talent => {
+        const option = document.createElement('option');
+        option.value = talent.name;
+        option.textContent = `${talent.name} (Max: ${talent.max})`;
+        option.dataset.talent = JSON.stringify(talent);
+        select.appendChild(option);
+    });
+}
+
+window.filterTalentOptions = function() {
+    const searchText = document.getElementById('talent-search-modal').value.toLowerCase();
+    const select = document.getElementById('talent-select');
+    const options = select.options;
+    
+    for (let i = 0; i < options.length; i++) {
+        const talent = JSON.parse(options[i].dataset.talent);
+        const matches = talent.name.toLowerCase().includes(searchText) ||
+                       talent.description.toLowerCase().includes(searchText) ||
+                       (talent.tests && talent.tests.toLowerCase().includes(searchText));
+        
+        options[i].style.display = matches ? '' : 'none';
+        if (matches && !select.value) {
+            options[i].selected = true;
+            showTalentDetails();
+        }
+    }
+}
+
+window.showTalentDetails = function() {
+    const select = document.getElementById('talent-select');
+    const selectedOption = select.options[select.selectedIndex];
+    
+    if (!selectedOption) return;
+    
+    const talent = JSON.parse(selectedOption.dataset.talent);
+    const detailsDiv = document.getElementById('talent-details');
+    const customisationDiv = document.getElementById('talent-customisation');
+    const timesDiv = document.getElementById('talent-times-taken');
+    
+    document.getElementById('detail-talent-name').textContent = talent.name;
+    document.getElementById('detail-talent-max').textContent = talent.max;
+    document.getElementById('detail-talent-tests').textContent = talent.tests || 'N/A';
+    document.getElementById('detail-talent-description').textContent = talent.description;
+    
+    detailsDiv.style.display = 'block';
+    
+    if (talent.customisable) {
+        customisationDiv.style.display = 'block';
+    } else {
+        customisationDiv.style.display = 'none';
+        document.getElementById('talent-customisation-input').value = '';
+    }
+    
+    const maxTimes = talent.max === "1" ? 1 : 10;
+    document.getElementById('talent-times-input').max = maxTimes;
+    
+    timesDiv.style.display = talent.max === "1" ? 'none' : 'block';
+}
+
+window.confirmAddTalent = function() {
+    const select = document.getElementById('talent-select');
+    const selectedOption = select.options[select.selectedIndex];
+    
+    if (!selectedOption) {
+        alert('Please select a talent');
+        return;
+    }
+    
+    const talentData = JSON.parse(selectedOption.dataset.talent);
+    const customisation = document.getElementById('talent-customisation-input').value.trim();
+    const timesTaken = parseInt(document.getElementById('talent-times-input').value) || 1;
+    
+    if (talentData.customisable && !customisation) {
+        alert(`Please specify the type for ${talentData.name}`);
+        return;
+    }
+    
+    const talent = {
+        name: talentData.name,
+        displayName: customisation ? `${talentData.name} (${customisation})` : talentData.name,
+        max: talentData.max,
+        tests: talentData.tests,
+        description: talentData.description,
+        timesTaken: talentData.max === "1" ? 1 : timesTaken,
+        customisation: customisation
+    };
+    
+    const existingIndex = talents.findIndex(t => 
+        t.name === talent.name && t.customisation === talent.customisation
+    );
+    
+    if (existingIndex !== -1) {
+        if (talentData.max !== "1") {
+            talents[existingIndex].timesTaken = Math.min(
+                talents[existingIndex].timesTaken + timesTaken,
+                10
+            );
+        } else {
+            alert('You already have this talent');
+            return;
+        }
+    } else {
+        talents.push(talent);
+    }
+    
+    displayTalents();
+    closeAddTalentModal();
+}
+
+window.closeAddTalentModal = function() {
+    document.getElementById('add-talent-modal').style.display = 'none';
+    document.getElementById('talent-select').value = '';
+    document.getElementById('talent-customisation-input').value = '';
+    document.getElementById('talent-times-input').value = '1';
+    document.getElementById('talent-details').style.display = 'none';
+    document.getElementById('talent-customisation').style.display = 'none';
+}
+
+window.displayTalents = function() {
+    const tbody = document.getElementById('talents-tbody');
+    if (!tbody) return;
+    
+    const searchText = (document.getElementById('talents-search')?.value || '').toLowerCase();
+    
+    tbody.innerHTML = '';
+    
+    let displayedTalents = talents;
+    if (searchText) {
+        displayedTalents = talents.filter(t => 
+            t.displayName.toLowerCase().includes(searchText) ||
+            t.description.toLowerCase().includes(searchText)
+        );
+    }
+    
+    displayedTalents.sort((a, b) => a.displayName.localeCompare(b.displayName));
+    
+    displayedTalents.forEach((talent) => {
+        const row = document.createElement('tr');
+        const maxText = talent.timesTaken > 1 ? `${talent.timesTaken}/${talent.max}` : talent.max;
+        
+        row.innerHTML = `
+            <td class="skill-name-cell">${talent.displayName}</td>
+            <td style="text-align: center;">${maxText}</td>
+            <td style="font-size: 11px; padding: 5px;">${talent.description}</td>
+            <td><button class="advance-btn" onclick="window.removeTalent(${talents.indexOf(talent)})" style="background: #d44; color: white;">×</button></td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+window.removeTalent = function(index) {
+    if (confirm('Remove this talent?')) {
+        talents.splice(index, 1);
+        displayTalents();
+    }
+}
+
+// Add search listener for talents
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('talents-search')?.addEventListener('input', function() {
+        displayTalents();
+    });
+});
+
+        window.removeSkill = function(skillKey) {
+            if (confirm('Are you sure you want to remove this skill?')) {
+                // Remove from added skills
+                addedSkills = addedSkills.filter(s => s.key !== skillKey);
+                
+                // Remove skill data
+                delete characterSkills[skillKey];
+                
+                displaySkills();
+            }
+        }
+
+        window.closeAddSkillModal = function() {
+            document.getElementById('add-skill-modal').style.display = 'none';
+            document.getElementById('skill-select').value = '';
+            document.getElementById('specialisation-input').value = '';
+            document.getElementById('specialisation-field').style.display = 'none';
+        }
+
+        // Filter functionality
+        document.getElementById('skills-filter').addEventListener('change', function() {
+            displaySkills();
+        });
+
+        // Generic function to modify values with + and - buttons (global scope)
+        window.modifyValue = function(elementId, amount) {
+            const element = document.getElementById(elementId);
+            let newVal = (parseInt(element.value) || 0) + amount;
+            newVal = Math.max(0, newVal);
+            element.value = newVal;
+        }
+
+        // Save/Load functionality
+        window.saveCharacter = function() {
+            const characterData = {
+                name: document.getElementById('character-name').value,
+                species: document.getElementById('species').value,
+                class: document.getElementById('class').value,
+                career: document.getElementById('career').value,
+                characteristics: {},
+                wounds: {
+                    current: document.getElementById('wounds-current').value,
+                    max: document.getElementById('wounds-max').value
+                },
+                hardy: document.getElementById('hardy').value,
+                corruption: {
+                    current: document.getElementById('corruption-current').value,
+                    max: document.getElementById('corruption-max').value
+                },
+                movement: document.getElementById('movement').value,
+                fate: document.getElementById('fate').value,
+                fortune: document.getElementById('fortune').value,
+                resilience: document.getElementById('resilience').value,
+                resolve: document.getElementById('resolve').value,
+                motivation: document.getElementById('motivation').value,
+                experience: {
+                    current: document.getElementById('xp-current').value,
+                    spent: document.getElementById('xp-spent').value
+                },
+                status: {
+                    tier: document.getElementById('status-tier').value,
+                    standing: document.getElementById('status-standing').value
+                },
+                sinPoints: document.getElementById('sin-points').value,
+                notes: document.getElementById('quick-notes').value,
+                skills: characterSkills,
+                addedSkills: addedSkills,
+                // New combat & equipment data
+                weapons: weapons,
+                armour: armour,
+                trappings: trappings,
+                consumables: consumables,
+                talents: talents,
+                money: {
+                    gold: document.getElementById('money-gold').value,
+                    silver: document.getElementById('money-silver').value,
+                    brass: document.getElementById('money-brass').value
+                }
+            };
+            
+            // Save characteristics
+            characteristics.forEach(char => {
+                characterData.characteristics[char] = {
+                    initial: document.getElementById(`${char}-initial`).value,
+                    advances: document.getElementById(`${char}-advances`).value
+                };
+            });
+            
+            localStorage.setItem('wfrpCharacter', JSON.stringify(characterData));
+            alert('Character saved!');
+        }
+
+        window.loadCharacter = function() {
+            const savedData = localStorage.getItem('wfrpCharacter');
+            if (!savedData) {
+                alert('No saved character found!');
+                return;
+            }
+            
+            const characterData = JSON.parse(savedData);
+            
+            // Load basic info
+            document.getElementById('character-name').value = characterData.name || '';
+            document.getElementById('species').value = characterData.species || '';
+            document.getElementById('class').value = characterData.class || '';
+            document.getElementById('career').value = characterData.career || '';
+            
+            // Load characteristics
+            if (characterData.characteristics) {
+                characteristics.forEach(char => {
+                    if (characterData.characteristics[char]) {
+                        document.getElementById(`${char}-initial`).value = characterData.characteristics[char].initial || '';
+                        document.getElementById(`${char}-advances`).value = characterData.characteristics[char].advances || '';
+                        // Trigger update
+                        document.getElementById(`${char}-initial`).dispatchEvent(new Event('input'));
+                    }
+                });
+            }
+            
+            // Load other stats
+            if (characterData.wounds) {
+                document.getElementById('wounds-current').value = characterData.wounds.current || '';
+                document.getElementById('wounds-max').value = characterData.wounds.max || '';
+            }
+            
+            document.getElementById('hardy').value = characterData.hardy || '';
+            
+            if (characterData.corruption) {
+                document.getElementById('corruption-current').value = characterData.corruption.current || '';
+                document.getElementById('corruption-max').value = characterData.corruption.max || '';
+            }
+            
+            document.getElementById('movement').value = characterData.movement || '';
+            movement.dispatchEvent(new Event('input'));
+            
+            if (characterData.experience) {
+                document.getElementById('xp-current').value = characterData.experience.current || '';
+                document.getElementById('xp-spent').value = characterData.experience.spent || '';
+                updateTotalXP();
+            }
+            
+            document.getElementById('fate').value = characterData.fate || '';
+            document.getElementById('fortune').value = characterData.fortune || '';
+            document.getElementById('resilience').value = characterData.resilience || '';
+            document.getElementById('resolve').value = characterData.resolve || '';
+            document.getElementById('motivation').value = characterData.motivation || '';
+            
+            if (characterData.status) {
+                document.getElementById('status-tier').value = characterData.status.tier || 'Brass';
+                document.getElementById('status-standing').value = characterData.status.standing || '';
+            }
+            
+            document.getElementById('sin-points').value = characterData.sinPoints || '';
+            document.getElementById('quick-notes').value = characterData.notes || '';
+            
+            // Load skills
+            if (characterData.skills) {
+                characterSkills = characterData.skills;
+            }
+            
+            // Load added skills
+            if (characterData.addedSkills) {
+                addedSkills = characterData.addedSkills;
+            }
+            if (characterData.talents) {
+    talents = characterData.talents;
+}
+            // Load combat & equipment data
+            if (characterData.weapons) weapons = characterData.weapons;
+            if (characterData.armour) armour = characterData.armour;
+            if (characterData.trappings) trappings = characterData.trappings;
+            if (characterData.consumables) consumables = characterData.consumables;
+            
+            if (characterData.money) {
+                document.getElementById('money-gold').value = characterData.money.gold || '0';
+                document.getElementById('money-silver').value = characterData.money.silver || '0';
+                document.getElementById('money-brass').value = characterData.money.brass || '0';
+            }
+            
+            // Refresh all displays
+            displaySkills();
+            displayWeapons();
+            displayArmour();
+            displayTrappings();
+            displayConsumables();
+            updateTotalAP();
+            
+            // Update encumbrance after everything is loaded
+            setTimeout(() => {
+                updateEncumbrance();
+            }, 100);
+            
+            alert('Character loaded!');
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing...');
+            
+            // Load SRD data
+            loadSRDData();
+            
+            try {
+                displaySkills(); // Show basic skills immediately
+                displayTalents();
+                displayWeapons();
+                displayArmour();
+                displayTrappings();
+                displayConsumables();
+                
+                // Set up initial encumbrance calculation after a short delay to ensure values are loaded
+                setTimeout(() => {
+                    updateEncumbrance();
+                    // Trigger initial characteristic updates
+                    characteristics.forEach(char => {
+                        const current = document.getElementById(`${char}-current`);
+                        if (current && current.updateFunction) {
+                            current.updateFunction();
+                        }
+                    });
+                }, 100);
+                
+                console.log('Initialization complete');
+            } catch (error) {
+                console.error('Error during initialization:', error);
+            }
+        });
+
+        // SRD Data Loading
+        function loadSRDData() {
+            // Load weapons data
             fetch('Weapons.json')
-                .then(response => {
-                    if (!response.ok) throw new Error('Weapons.json not found');
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
                     srdWeapons = data;
                     console.log('Loaded', srdWeapons.length, 'weapons from SRD');
-                    srdLoadStatus.weapons = true;
-                    checkSRDLoadComplete();
                 })
                 .catch(error => {
-                    console.warn('Could not load Weapons.json, using embedded data');
-                    loadEmbeddedWeapons();
-                    srdLoadStatus.weapons = true;
-                    checkSRDLoadComplete();
+                    console.error('Error loading weapons:', error);
+                    // Fallback to embedded data if file not found
+                    loadEmbeddedSRDData();
                 });
             
-            // Load armour
+            // Load armour data
             fetch('Armour.json')
-                .then(response => {
-                    if (!response.ok) throw new Error('Armour.json not found');
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
                     srdArmour = data;
                     console.log('Loaded', srdArmour.length, 'armour pieces from SRD');
-                    srdLoadStatus.armour = true;
-                    checkSRDLoadComplete();
                 })
                 .catch(error => {
-                    console.warn('Could not load Armour.json, using embedded data');
-                    loadEmbeddedArmour();
-                    srdLoadStatus.armour = true;
-                    checkSRDLoadComplete();
+                    console.error('Error loading armour:', error);
+                    // Fallback to embedded data if file not found
+                    loadEmbeddedSRDData();
                 });
             
-            // Load ammunition
+            // Load ammunition data
             fetch('Ammunition.json')
-                .then(response => {
-                    if (!response.ok) throw new Error('Ammunition.json not found');
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
                     srdAmmunition = data;
                     console.log('Loaded', srdAmmunition.length, 'ammunition types from SRD');
-                    srdLoadStatus.ammunition = true;
-                    checkSRDLoadComplete();
                 })
                 .catch(error => {
-                    console.warn('Could not load Ammunition.json, using embedded data');
-                    loadEmbeddedAmmunition();
-                    srdLoadStatus.ammunition = true;
-                    checkSRDLoadComplete();
+                    console.error('Error loading ammunition:', error);
+                    // Use embedded data as fallback
                 });
+
+                // Load Talents Data
+function loadTalentsData() {
+    fetch('Talents.json')
+        .then(response => response.json())
+        .then(data => {
+            srdTalents = data;
+            console.log('Loaded', srdTalents.length, 'talents from SRD');
+        })
+        .catch(error => {
+            console.error('Error loading talents:', error);
+            // Minimal fallback data
+            srdTalents = [
+                { name: "Hardy", max: "Toughness Bonus", tests: "", description: "You gain +1 Wound permanently per level in this Talent.", customisable: false },
+                { name: "Lightning Reflexes", max: "1", tests: "", description: "+5 to Initiative permanently.", customisable: false },
+                { name: "Marksman", max: "1", tests: "Ranged", description: "You gain a permanent +5 BS.", customisable: false }
+            ];
+        });
+}
         }
 
-        // Load Talents Data
-        function loadTalentsData() {
-            fetch('Talents.json')
-                .then(response => {
-                    if (!response.ok) throw new Error('Talents.json not found');
-                    return response.json();
-                })
-                .then(data => {
-                    srdTalents = data;
-                    console.log('Loaded', srdTalents.length, 'talents from SRD');
-                    srdLoadStatus.talents = true;
-                    checkSRDLoadComplete();
-                })
-                .catch(error => {
-                    console.error('Error loading Talents.json:', error);
-                    console.warn('Please ensure Talents.json is in the same directory as this HTML file');
-                    // Use minimal fallback
-                    srdTalents = [
-                        { name: "Hardy", max: "Toughness Bonus", tests: "", description: "You gain +1 Wound permanently per level in this Talent." },
-                        { name: "Lightning Reflexes", max: "1", tests: "", description: "+5 to Initiative permanently." },
-                        { name: "Marksman", max: "1", tests: "Ranged", description: "You gain a permanent +5 BS." },
-                        { name: "Very Strong", max: "1", tests: "", description: "You gain +5 Strength permanently." }
-                    ];
-                    srdLoadStatus.talents = true;
-                    checkSRDLoadComplete();
-                });
-        }
-
-        // Embedded fallback data functions
-        function loadEmbeddedWeapons() {
+        // Embedded SRD data as fallback (using your provided JSON)
+        function loadEmbeddedSRDData() {
+            // Embedded weapons data
             srdWeapons = [
                 {"name":"Hand Weapon","category":"basic","damage":"SB+4","reach":"Average","encumbrance":1,"qualities":[],"flaws":[],"cost":"1GC"},
-                {"name":"Dagger","category":"basic","damage":"SB+2","reach":"Very Short","encumbrance":0,"qualities":[],"flaws":[],"cost":"16p"},
-                {"name":"Sword","category":"basic","damage":"SB+4","reach":"Average","encumbrance":1,"qualities":[],"flaws":[],"cost":"1GC"}
+                {"name":"Dagger","category":"basic","damage":"SB+2","reach":"Very Short","encumbrance":0,"qualities":[],"flaws":[],"cost":"P16D"},
+                {"name":"Sword","category":"basic","damage":"SB+4","reach":"Average","encumbrance":1,"qualities":[],"flaws":[],"cost":"1GC"},
+                {"name":"Bow","category":"bow","damage":"SB+3","reach":50,"encumbrance":2,"qualities":[],"flaws":[],"cost":"4GC"},
+                {"name":"Crossbow","category":"crossbow","damage":9,"reach":60,"encumbrance":2,"qualities":[],"flaws":["Reload 1"],"cost":"5GC"},
+                {"name":"Pistol","category":"blackpowder","damage":8,"reach":20,"encumbrance":0,"qualities":["Blackpowder","Damaging","Pistol"],"flaws":["Reload 1"],"cost":"8GC"},
+                {"name":"Shield","category":"basic","damage":"SB+2","reach":"Very Short","encumbrance":1,"qualities":["Shield 2","Defensive"],"flaws":["Undamaging"],"cost":"2GC"},
+                {"name":"Spear","category":"polearm","damage":"SB+4","reach":"Very Long","encumbrance":2,"qualities":["Impale"],"flaws":[],"cost":"P15D"},
+                {"name":"Halberd","category":"polearm","damage":"SB+4","reach":"Long","encumbrance":3,"qualities":["Defensive","Hack","Impale"],"flaws":[],"cost":"2GC"},
+                {"name":"Rapier","category":"fencing","damage":"SB+4","reach":"Long","encumbrance":1,"qualities":["Fast","Impale"],"flaws":[],"cost":"5GC"}
             ];
-        }
-
-        function loadEmbeddedArmour() {
+            
+            // Embedded armour data
             srdArmour = [
-                {"name":"Leather Jerkin","category":"Soft Leather","ap":1,"locations":["Body"],"encumbrance":1,"cost":"10s"},
-                {"name":"Mail Shirt","category":"Mail","ap":2,"locations":["Body"],"encumbrance":2,"cost":"2GC"}
+                {"name":"Leather Jerkin","category":"Soft Leather","ap":1,"locations":["Body"],"encumbrance":1,"cost":"P10D"},
+                {"name":"Leather Jack","category":"Soft Leather","ap":1,"locations":["Arms","Body"],"encumbrance":1,"cost":"P12D"},
+                {"name":"Leather Skullcap","category":"Soft Leather","ap":1,"locations":["Head"],"encumbrance":1,"cost":"P8D"},
+                {"name":"Mail Shirt","category":"Mail","ap":2,"locations":["Body"],"encumbrance":2,"cost":"2GC"},
+                {"name":"Mail Coat","category":"Mail","ap":2,"locations":["Arms","Body"],"encumbrance":3,"cost":"3GC"},
+                {"name":"Breastplate (Plate)","category":"Plate","ap":2,"locations":["Body"],"encumbrance":3,"cost":"10GC"},
+                {"name":"Helm","category":"Plate","ap":2,"locations":["Head"],"encumbrance":2,"cost":"3GC"},
+                {"name":"Open Helm","category":"Plate","ap":2,"locations":["Head"],"encumbrance":1,"cost":"2GC"}
             ];
-        }
-
-        function loadEmbeddedAmmunition() {
+            
+            // Standard ammunition types based on weapon categories
             srdAmmunition = [
-                {"name":"Arrows","subtype":"bow","quantity":12,"cost":"1s","notes":"Standard arrows for bows"},
-                {"name":"Bolts","subtype":"crossbow","quantity":12,"cost":"2s","notes":"Standard crossbow bolts"}
+                {"name":"Arrows","type":"bow","cost":"P1D","encumbrance":0.1,"notes":"Standard arrows for bows"},
+                {"name":"Bolts","type":"crossbow","cost":"P2D","encumbrance":0.1,"notes":"Standard crossbow bolts"},
+                {"name":"Lead Bullets","type":"sling","cost":"P1D","encumbrance":0.1,"notes":"Ammunition for slings"},
+                {"name":"Powder & Shot","type":"blackpowder","cost":"P3D","encumbrance":0.1,"notes":"Single shot for blackpowder weapons"},
+                {"name":"Throwing Knives","type":"throwing","cost":"P18D","encumbrance":0,"notes":"Can be recovered after battle"},
+                {"name":"Darts","type":"throwing","cost":"P2D","encumbrance":0,"notes":"Light throwing weapons"},
+                {"name":"Bandages","type":"medical","cost":"P3D","encumbrance":0,"notes":"Heals 1 Wound with successful Heal test"},
+                {"name":"Healing Draught","type":"medical","cost":"3GC","encumbrance":0,"notes":"Heals 1d10 Wounds"},
+                {"name":"Torches","type":"utility","cost":"P1D","encumbrance":0.5,"notes":"Provides light for 1 hour"},
+                {"name":"Oil (lamp)","type":"utility","cost":"P2D","encumbrance":0.5,"notes":"Fuel for lanterns, 4 hours"},
+                {"name":"Rations (1 day)","type":"provisions","cost":"P2D","encumbrance":0.5,"notes":"Food for one day"}
             ];
+            
+            console.log('Using embedded SRD data');
         }
 
-        // Initialize on DOM load
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Initializing WFRP Character Sheet v10...');
+        // Combat & Equipment Functions
+        
+        // Modal helper function
+        window.closeModal = function() {
+            const modal = document.querySelector('div[style*="position: fixed"]');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        
+        // Weapons Management
+        window.addWeapon = function() {
+            // Create modal for weapon selection
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;';
             
-            // Load all SRD data
-            loadSRDData();
-            loadTalentsData();
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; max-width: 500px; max-height: 70vh; overflow-y: auto;';
             
-            // Initialize displays
-            setTimeout(() => {
-                try {
-                    initializeCharacteristics();
-                    displaySkills();
-                    displayTalents();
-                    displayWeapons();
-                    displayArmour();
-                    displayTrappings();
-                    displayConsumables();
-                    updateEncumbrance();
-                    console.log('Character sheet initialization complete');
-                } catch (error) {
-                    console.error('Error during initialization:', error);
+            modalContent.innerHTML = `
+                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Add Weapon</h3>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Select Weapon:</label>
+                    <select id="weapon-select" style="width: 100%; padding: 5px;">
+                        <option value="">Choose a weapon...</option>
+                        <option value="custom">-- Custom Weapon --</option>
+                        ${srdWeapons.map(w => `<option value="${w.name}">${w.name} (${w.category})</option>`).join('')}
+                    </select>
+                </div>
+                <div id="weapon-details" style="display: none; margin-bottom: 15px; padding: 10px; background: #e8dfd0; border: 1px solid #8b7355;">
+                    <p><strong>Category:</strong> <span id="detail-category"></span></p>
+                    <p><strong>Damage:</strong> <span id="detail-damage"></span></p>
+                    <p><strong>Reach/Range:</strong> <span id="detail-reach"></span></p>
+                    <p><strong>Encumbrance:</strong> <span id="detail-enc"></span></p>
+                    <p><strong>Qualities:</strong> <span id="detail-qualities"></span></p>
+                    <p><strong>Flaws:</strong> <span id="detail-flaws"></span></p>
+                    <p><strong>Cost:</strong> <span id="detail-cost"></span></p>
+                </div>
+                <div id="custom-weapon-fields" style="display: none;">
+                    <input type="text" id="custom-name" placeholder="Weapon name" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    <input type="text" id="custom-group" placeholder="Weapon group" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    <input type="number" id="custom-enc" placeholder="Encumbrance" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    <input type="text" id="custom-range" placeholder="Range/Reach" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    <input type="text" id="custom-damage" placeholder="Damage" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    <input type="text" id="custom-qualities" placeholder="Qualities" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                </div>
+                <div style="text-align: center;">
+                    <button onclick="window.confirmAddWeapon()" style="margin-right: 10px; padding: 8px 16px; background: #3e2f1f; color: #faf8f3; border: none; cursor: pointer;">Add Weapon</button>
+                    <button onclick="window.closeModal()" style="padding: 8px 16px; background: #8b7355; color: #faf8f3; border: none; cursor: pointer;">Cancel</button>
+                </div>
+            `;
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+            
+            // Add event listener for weapon selection
+            document.getElementById('weapon-select').addEventListener('change', function() {
+                const selectedName = this.value;
+                const detailsDiv = document.getElementById('weapon-details');
+                const customFields = document.getElementById('custom-weapon-fields');
+                
+                if (selectedName === 'custom') {
+                    detailsDiv.style.display = 'none';
+                    customFields.style.display = 'block';
+                } else if (selectedName) {
+                    const weapon = srdWeapons.find(w => w.name === selectedName);
+                    if (weapon) {
+                        document.getElementById('detail-category').textContent = weapon.category;
+                        document.getElementById('detail-damage').textContent = weapon.damage;
+                        document.getElementById('detail-reach').textContent = weapon.reach;
+                        document.getElementById('detail-enc').textContent = weapon.encumbrance;
+                        document.getElementById('detail-qualities').textContent = weapon.qualities.join(', ') || 'None';
+                        document.getElementById('detail-flaws').textContent = weapon.flaws.join(', ') || 'None';
+                        document.getElementById('detail-cost').textContent = weapon.cost;
+                        detailsDiv.style.display = 'block';
+                        customFields.style.display = 'none';
+                    }
+                } else {
+                    detailsDiv.style.display = 'none';
+                    customFields.style.display = 'none';
                 }
-            }, 500); // Give time for JSON files to load
-        });
+            });
+        }
 
-        // NOTE: The rest of the JavaScript code continues with all the original functions
-        // Including: characteristic calculations, skills management, talents management,
-        // weapons/armour/equipment management, save/load functionality, etc.
-        // This is indicated here due to space constraints but would include all ~2000 lines
-        // of the original JavaScript functionality
+        window.confirmAddWeapon = function() {
+            const selectedName = document.getElementById('weapon-select').value;
+            
+            if (!selectedName) {
+                alert('Please select a weapon');
+                return;
+            }
+            
+            let weapon;
+            if (selectedName === 'custom') {
+                weapon = {
+                    name: document.getElementById('custom-name').value,
+                    group: document.getElementById('custom-group').value,
+                    encumbrance: parseInt(document.getElementById('custom-enc').value) || 0,
+                    range: document.getElementById('custom-range').value,
+                    damage: document.getElementById('custom-damage').value,
+                    qualities: document.getElementById('custom-qualities').value,
+                    equipped: false
+                };
+                
+                if (!weapon.name) {
+                    alert('Please enter a weapon name');
+                    return;
+                }
+            } else {
+                const srdWeapon = srdWeapons.find(w => w.name === selectedName);
+                weapon = {
+                    name: srdWeapon.name,
+                    group: srdWeapon.category,
+                    encumbrance: srdWeapon.encumbrance,
+                    range: srdWeapon.reach,
+                    damage: srdWeapon.damage,
+                    qualities: [...(srdWeapon.qualities || []), ...(srdWeapon.flaws || [])].join(', '),
+                    equipped: false
+                };
+            }
+            
+            weapons.push(weapon);
+            displayWeapons();
+            updateEncumbrance();
+            
+            // Close modal
+            window.closeModal();
+        }
+
+        window.displayWeapons = function() {
+            const tbody = document.getElementById('weapons-tbody');
+            tbody.innerHTML = '';
+            
+            weapons.forEach((weapon, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="skill-name-cell">${weapon.name}</td>
+                    <td>${weapon.group}</td>
+                    <td>${weapon.encumbrance}</td>
+                    <td>${weapon.range}</td>
+                    <td>${weapon.damage}</td>
+                    <td style="font-size: 11px;">${weapon.qualities}</td>
+                    <td><input type="checkbox" ${weapon.equipped ? 'checked' : ''} onchange="window.toggleWeaponEquipped(${index})"></td>
+                    <td><button class="advance-btn" onclick="window.removeWeapon(${index})" style="background: #d44; color: white;">×</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        window.toggleWeaponEquipped = function(index) {
+            weapons[index].equipped = !weapons[index].equipped;
+        }
+
+        window.removeWeapon = function(index) {
+            if (confirm('Remove this weapon?')) {
+                weapons.splice(index, 1);
+                displayWeapons();
+                updateEncumbrance();
+            }
+        }
+
+        // Armour Management
+        window.addArmour = function() {
+            // Create modal for armour selection
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;';
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; max-width: 500px; max-height: 70vh; overflow-y: auto;';
+            
+            modalContent.innerHTML = `
+                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Add Armour</h3>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Select Armour:</label>
+                    <select id="armour-select" style="width: 100%; padding: 5px;">
+                        <option value="">Choose armour...</option>
+                        <option value="custom">-- Custom Armour --</option>
+                        ${srdArmour.map(a => `<option value="${a.name}">${a.name} (${a.category})</option>`).join('')}
+                    </select>
+                </div>
+                <div id="armour-details" style="display: none; margin-bottom: 15px; padding: 10px; background: #e8dfd0; border: 1px solid #8b7355;">
+                    <p><strong>Category:</strong> <span id="detail-category"></span></p>
+                    <p><strong>Armour Points:</strong> <span id="detail-ap"></span></p>
+                    <p><strong>Locations:</strong> <span id="detail-locations"></span></p>
+                    <p><strong>Encumbrance:</strong> <span id="detail-enc"></span></p>
+                    <p><strong>Cost:</strong> <span id="detail-cost"></span></p>
+                </div>
+                <div id="custom-armour-fields" style="display: none;">
+                    <input type="text" id="custom-name" placeholder="Armour name" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    <input type="text" id="custom-type" placeholder="Type (e.g., Leather, Mail, Plate)" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    <input type="number" id="custom-enc" placeholder="Encumbrance" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    <input type="number" id="custom-head" placeholder="Head AP (0 if none)" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    <input type="number" id="custom-arms" placeholder="Arms AP (0 if none)" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    <input type="number" id="custom-body" placeholder="Body AP (0 if none)" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    <input type="number" id="custom-legs" placeholder="Legs AP (0 if none)" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    <input type="text" id="custom-qualities" placeholder="Qualities/Notes" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                </div>
+                <div style="text-align: center;">
+                    <button onclick="window.confirmAddArmour()" style="margin-right: 10px; padding: 8px 16px; background: #3e2f1f; color: #faf8f3; border: none; cursor: pointer;">Add Armour</button>
+                    <button onclick="window.closeModal()" style="padding: 8px 16px; background: #8b7355; color: #faf8f3; border: none; cursor: pointer;">Cancel</button>
+                </div>
+            `;
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+            
+            // Add event listener for armour selection
+            document.getElementById('armour-select').addEventListener('change', function() {
+                const selectedName = this.value;
+                const detailsDiv = document.getElementById('armour-details');
+                const customFields = document.getElementById('custom-armour-fields');
+                
+                if (selectedName === 'custom') {
+                    detailsDiv.style.display = 'none';
+                    customFields.style.display = 'block';
+                } else if (selectedName) {
+                    const armourPiece = srdArmour.find(a => a.name === selectedName);
+                    if (armourPiece) {
+                        document.getElementById('detail-category').textContent = armourPiece.category;
+                        document.getElementById('detail-ap').textContent = armourPiece.ap;
+                        document.getElementById('detail-locations').textContent = armourPiece.locations.join(', ');
+                        document.getElementById('detail-enc').textContent = armourPiece.encumbrance;
+                        document.getElementById('detail-cost').textContent = armourPiece.cost;
+                        detailsDiv.style.display = 'block';
+                        customFields.style.display = 'none';
+                    }
+                } else {
+                    detailsDiv.style.display = 'none';
+                    customFields.style.display = 'none';
+                }
+            });
+        }
+
+        window.confirmAddArmour = function() {
+            const selectedName = document.getElementById('armour-select').value;
+            
+            if (!selectedName) {
+                alert('Please select armour');
+                return;
+            }
+            
+            let armourPiece;
+            if (selectedName === 'custom') {
+                armourPiece = {
+                    name: document.getElementById('custom-name').value,
+                    type: document.getElementById('custom-type').value,
+                    encumbrance: parseInt(document.getElementById('custom-enc').value) || 0,
+                    head: parseInt(document.getElementById('custom-head').value) || 0,
+                    arms: parseInt(document.getElementById('custom-arms').value) || 0,
+                    body: parseInt(document.getElementById('custom-body').value) || 0,
+                    legs: parseInt(document.getElementById('custom-legs').value) || 0,
+                    qualities: document.getElementById('custom-qualities').value || '',
+                    worn: false
+                };
+                
+                if (!armourPiece.name) {
+                    alert('Please enter an armour name');
+                    return;
+                }
+            } else {
+                const srdArmourPiece = srdArmour.find(a => a.name === selectedName);
+                armourPiece = {
+                    name: srdArmourPiece.name,
+                    type: srdArmourPiece.category,
+                    encumbrance: srdArmourPiece.encumbrance,
+                    head: srdArmourPiece.locations.includes('Head') ? srdArmourPiece.ap : 0,
+                    arms: srdArmourPiece.locations.includes('Arms') ? srdArmourPiece.ap : 0,
+                    body: srdArmourPiece.locations.includes('Body') ? srdArmourPiece.ap : 0,
+                    legs: srdArmourPiece.locations.includes('Legs') ? srdArmourPiece.ap : 0,
+                    qualities: '',
+                    worn: false
+                };
+            }
+            
+            armour.push(armourPiece);
+            displayArmour();
+            updateEncumbrance();
+            updateTotalAP();
+            
+            // Close modal
+            window.closeModal();
+        }
+
+        window.displayArmour = function() {
+            const tbody = document.getElementById('armour-tbody');
+            tbody.innerHTML = '';
+            
+            armour.forEach((piece, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="skill-name-cell">${piece.name}</td>
+                    <td>${piece.type}</td>
+                    <td>${piece.encumbrance}</td>
+                    <td>${piece.head || '-'}</td>
+                    <td>${piece.arms || '-'}</td>
+                    <td>${piece.body || '-'}</td>
+                    <td>${piece.legs || '-'}</td>
+                    <td style="font-size: 11px;">${piece.qualities}</td>
+                    <td><input type="checkbox" ${piece.worn ? 'checked' : ''} onchange="window.toggleArmourWorn(${index})"></td>
+                    <td><button class="advance-btn" onclick="window.removeArmour(${index})" style="background: #d44; color: white;">×</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        window.toggleArmourWorn = function(index) {
+            armour[index].worn = !armour[index].worn;
+            updateTotalAP();
+            updateEncumbrance();
+        }
+
+        window.removeArmour = function(index) {
+            if (confirm('Remove this armour?')) {
+                armour.splice(index, 1);
+                displayArmour();
+                updateEncumbrance();
+                updateTotalAP();
+            }
+        }
+
+        window.updateTotalAP = function() {
+            let totalHead = 0, totalArms = 0, totalBody = 0, totalLegs = 0;
+            
+            armour.forEach(piece => {
+                if (piece.worn) {
+                    totalHead += piece.head || 0;
+                    totalArms += piece.arms || 0;
+                    totalBody += piece.body || 0;
+                    totalLegs += piece.legs || 0;
+                }
+            });
+            
+            document.getElementById('total-ap-head').value = totalHead;
+            document.getElementById('total-ap-arms').value = totalArms;
+            document.getElementById('total-ap-body').value = totalBody;
+            document.getElementById('total-ap-legs').value = totalLegs;
+        }
+
+        // Trappings/Inventory Management
+        window.addTrapping = function() {
+            const item = {
+                name: prompt('Item name:'),
+                quantity: parseInt(prompt('Quantity:') || '1'),
+                encumbrance: parseFloat(prompt('Encumbrance per item:') || '0'),
+                location: prompt('Carried where? (e.g., Backpack, Belt, Worn):') || 'Backpack',
+                notes: prompt('Notes:') || ''
+            };
+            
+            if (item.name) {
+                trappings.push(item);
+                displayTrappings();
+                updateEncumbrance();
+            }
+        }
+
+        window.displayTrappings = function() {
+            const tbody = document.getElementById('trappings-tbody');
+            tbody.innerHTML = '';
+            
+            trappings.forEach((item, index) => {
+                const totalEnc = (item.quantity * item.encumbrance).toFixed(1);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="skill-name-cell">${item.name}</td>
+                    <td><input type="number" value="${item.quantity}" min="0" onchange="window.updateTrappingQuantity(${index}, this.value)" style="width: 60px;"></td>
+                    <td>${item.encumbrance}</td>
+                    <td style="font-weight: bold;">${totalEnc}</td>
+                    <td>${item.location}</td>
+                    <td><input type="text" value="${item.notes}" onchange="window.updateTrappingNotes(${index}, this.value)" style="width: 100%; border: none; font-size: 11px;"></td>
+                    <td><button class="advance-btn" onclick="window.removeTrapping(${index})" style="background: #d44; color: white;">×</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        window.updateTrappingQuantity = function(index, value) {
+            trappings[index].quantity = parseInt(value) || 0;
+            displayTrappings();
+            updateEncumbrance();
+        }
+
+        window.updateTrappingNotes = function(index, value) {
+            trappings[index].notes = value;
+        }
+
+        window.removeTrapping = function(index) {
+            if (confirm('Remove this item?')) {
+                trappings.splice(index, 1);
+                displayTrappings();
+                updateEncumbrance();
+            }
+        }
+
+        // Consumables Management
+        window.addConsumable = function() {
+            // Create modal for consumable selection
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;';
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; max-width: 500px; max-height: 70vh; overflow-y: auto;';
+            
+            // Check what ranged weapons the character has to suggest appropriate ammo
+            const weaponCategories = [...new Set(weapons.map(w => w.group))];
+            
+            let suggestedAmmo = '';
+            const suggestions = [];
+            
+            // Map weapon categories to ammunition subtypes
+            if (weaponCategories.includes('bow')) {
+                const bowAmmo = srdAmmunition.filter(a => a.subtype === 'bow');
+                suggestions.push(...bowAmmo);
+            }
+            if (weaponCategories.includes('crossbow')) {
+                const crossbowAmmo = srdAmmunition.filter(a => a.subtype === 'crossbow');
+                suggestions.push(...crossbowAmmo);
+            }
+            if (weaponCategories.includes('blackpowder') || weaponCategories.includes('engineering')) {
+                const blackpowderAmmo = srdAmmunition.filter(a => a.subtype === 'blackpowder');
+                suggestions.push(...blackpowderAmmo);
+            }
+            if (weaponCategories.includes('sling')) {
+                const slingAmmo = srdAmmunition.filter(a => a.subtype === 'sling');
+                suggestions.push(...slingAmmo);
+            }
+            
+            if (suggestions.length > 0) {
+                suggestedAmmo = '<optgroup label="Suggested Ammunition (based on your weapons)">';
+                suggestions.forEach(ammo => {
+                    suggestedAmmo += `<option value="${ammo.name}">${ammo.name} (${ammo.quantity} for ${ammo.cost})</option>`;
+                });
+                suggestedAmmo += '</optgroup>';
+            }
+            
+            // Group ammunition by subtype
+            const ammoByType = {
+                bow: srdAmmunition.filter(a => a.subtype === 'bow'),
+                crossbow: srdAmmunition.filter(a => a.subtype === 'crossbow'),
+                blackpowder: srdAmmunition.filter(a => a.subtype === 'blackpowder'),
+                sling: srdAmmunition.filter(a => a.subtype === 'sling')
+            };
+            
+            modalContent.innerHTML = `
+                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Add Ammunition/Consumable</h3>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Select Item:</label>
+                    <select id="consumable-select" style="width: 100%; padding: 5px;">
+                        <option value="">Choose an item...</option>
+                        ${suggestedAmmo}
+                        ${ammoByType.bow.length > 0 ? `
+                            <optgroup label="Bow Ammunition">
+                                ${ammoByType.bow.map(a => `<option value="${a.name}">${a.name} (${a.quantity} for ${a.cost})</option>`).join('')}
+                            </optgroup>
+                        ` : ''}
+                        ${ammoByType.crossbow.length > 0 ? `
+                            <optgroup label="Crossbow Ammunition">
+                                ${ammoByType.crossbow.map(a => `<option value="${a.name}">${a.name} (${a.quantity} for ${a.cost})</option>`).join('')}
+                            </optgroup>
+                        ` : ''}
+                        ${ammoByType.blackpowder.length > 0 ? `
+                            <optgroup label="Blackpowder Ammunition">
+                                ${ammoByType.blackpowder.map(a => `<option value="${a.name}">${a.name} (${a.quantity} for ${a.cost})</option>`).join('')}
+                            </optgroup>
+                        ` : ''}
+                        ${ammoByType.sling.length > 0 ? `
+                            <optgroup label="Sling Ammunition">
+                                ${ammoByType.sling.map(a => `<option value="${a.name}">${a.name} (${a.quantity} for ${a.cost})</option>`).join('')}
+                            </optgroup>
+                        ` : ''}
+                        <optgroup label="Other">
+                            <option value="Bandages">Bandages (Medical)</option>
+                            <option value="Healing Draught">Healing Draught (Medical)</option>
+                            <option value="Torches">Torches (Utility)</option>
+                            <option value="Oil (lamp)">Oil for Lanterns (Utility)</option>
+                            <option value="Rations">Rations (1 day)</option>
+                        </optgroup>
+                        <option value="custom">-- Custom Item --</option>
+                    </select>
+                </div>
+                <div id="consumable-details" style="display: none; margin-bottom: 15px; padding: 10px; background: #e8dfd0; border: 1px solid #8b7355;">
+                    <p><strong>Type:</strong> <span id="detail-type"></span></p>
+                    <p><strong>Standard Quantity:</strong> <span id="detail-quantity"></span></p>
+                    <p><strong>Cost:</strong> <span id="detail-cost"></span></p>
+                    <p><strong>Availability:</strong> <span id="detail-availability"></span></p>
+                    <p><strong>Qualities:</strong> <span id="detail-qualities"></span></p>
+                    <p><strong>Range Modifier:</strong> <span id="detail-range"></span></p>
+                    <p><strong>Damage Modifier:</strong> <span id="detail-damage"></span></p>
+                    <p><strong>Notes:</strong> <span id="detail-notes"></span></p>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Quantity to Add:</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div>
+                            <label style="font-size: 12px;">Current:</label>
+                            <input type="number" id="consumable-current" value="12" min="0" style="width: 100%; padding: 5px;">
+                        </div>
+                        <div>
+                            <label style="font-size: 12px;">Maximum:</label>
+                            <input type="number" id="consumable-max" value="24" min="0" style="width: 100%; padding: 5px;">
+                        </div>
+                    </div>
+                </div>
+                <div id="custom-consumable-fields" style="display: none;">
+                    <input type="text" id="custom-name" placeholder="Item name" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    <textarea id="custom-notes" placeholder="Notes" style="width: 100%; margin-bottom: 10px; padding: 5px; height: 60px;"></textarea>
+                </div>
+                <div style="text-align: center;">
+                    <button onclick="window.confirmAddConsumable()" style="margin-right: 10px; padding: 8px 16px; background: #3e2f1f; color: #faf8f3; border: none; cursor: pointer;">Add Item</button>
+                    <button onclick="window.closeModal()" style="padding: 8px 16px; background: #8b7355; color: #faf8f3; border: none; cursor: pointer;">Cancel</button>
+                </div>
+            `;
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+            
+            // Set default quantities based on item type
+            document.getElementById('consumable-select').addEventListener('change', function() {
+                const selectedName = this.value;
+                const detailsDiv = document.getElementById('consumable-details');
+                const customFields = document.getElementById('custom-consumable-fields');
+                const currentInput = document.getElementById('consumable-current');
+                const maxInput = document.getElementById('consumable-max');
+                
+                if (selectedName === 'custom') {
+                    detailsDiv.style.display = 'none';
+                    customFields.style.display = 'block';
+                } else if (selectedName) {
+                    const item = srdAmmunition.find(a => a.name === selectedName);
+                    if (item) {
+                        document.getElementById('detail-type').textContent = item.subtype || item.type;
+                        document.getElementById('detail-quantity').textContent = item.quantity + ' per package';
+                        document.getElementById('detail-cost').textContent = item.cost;
+                        document.getElementById('detail-availability').textContent = item.availability || 'Common';
+                        document.getElementById('detail-qualities').textContent = item.qualities?.join(', ') || 'None';
+                        document.getElementById('detail-range').textContent = item.rangeModifier || 'N/A';
+                        document.getElementById('detail-damage').textContent = item.damageModifier || 'N/A';
+                        document.getElementById('detail-notes').textContent = item.notes || '';
+                        detailsDiv.style.display = 'block';
+                        customFields.style.display = 'none';
+                        
+                        // Set default quantities based on standard package
+                        currentInput.value = item.quantity;
+                        maxInput.value = item.quantity * 2;
+                    } else {
+                        // Handle non-ammunition items
+                        detailsDiv.style.display = 'none';
+                        customFields.style.display = 'none';
+                        currentInput.value = 1;
+                        maxInput.value = 5;
+                    }
+                } else {
+                    detailsDiv.style.display = 'none';
+                    customFields.style.display = 'none';
+                }
+            });
+        }
+
+        window.confirmAddConsumable = function() {
+            const selectedName = document.getElementById('consumable-select').value;
+            const current = parseInt(document.getElementById('consumable-current').value) || 0;
+            const maximum = parseInt(document.getElementById('consumable-max').value) || 0;
+            
+            if (!selectedName) {
+                alert('Please select an item');
+                return;
+            }
+            
+            let consumable;
+            if (selectedName === 'custom') {
+                consumable = {
+                    name: document.getElementById('custom-name').value,
+                    current: current,
+                    maximum: maximum,
+                    notes: document.getElementById('custom-notes').value || ''
+                };
+                
+                if (!consumable.name) {
+                    alert('Please enter an item name');
+                    return;
+                }
+            } else {
+                const item = srdAmmunition.find(a => a.name === selectedName);
+                if (item) {
+                    consumable = {
+                        name: item.name,
+                        current: current,
+                        maximum: maximum,
+                        notes: item.notes || ''
+                    };
+                } else {
+                    // Handle non-ammunition items
+                    consumable = {
+                        name: selectedName,
+                        current: current,
+                        maximum: maximum,
+                        notes: ''
+                    };
+                }
+            }
+            
+            // Check if this consumable already exists and combine quantities
+            const existing = consumables.find(c => c.name === consumable.name);
+            if (existing) {
+                existing.current += consumable.current;
+                existing.maximum += consumable.maximum;
+            } else {
+                consumables.push(consumable);
+            }
+            
+            displayConsumables();
+            
+            // Close modal
+            window.closeModal();
+        }
+
+        window.displayConsumables = function() {
+            const tbody = document.getElementById('consumables-tbody');
+            tbody.innerHTML = '';
+            
+            consumables.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="skill-name-cell">${item.name}</td>
+                    <td>
+                        <div style="display: flex; gap: 5px; align-items: center;">
+                            <button onclick="window.adjustConsumable(${index}, -1)" style="width: 25px; height: 22px; cursor: pointer;">-</button>
+                            <input type="number" value="${item.current}" min="0" max="${item.maximum}" onchange="window.setConsumableCurrent(${index}, this.value)" style="width: 50px; text-align: center;">
+                            <button onclick="window.adjustConsumable(${index}, 1)" style="width: 25px; height: 22px; cursor: pointer;">+</button>
+                        </div>
+                    </td>
+                    <td><input type="number" value="${item.maximum}" min="0" onchange="window.setConsumableMax(${index}, this.value)" style="width: 60px;"></td>
+                    <td><input type="text" value="${item.notes}" onchange="window.updateConsumableNotes(${index}, this.value)" style="width: 100%; border: none; font-size: 11px;"></td>
+                    <td><button class="advance-btn" onclick="window.removeConsumable(${index})" style="background: #d44; color: white;">×</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        window.adjustConsumable = function(index, amount) {
+            const newValue = consumables[index].current + amount;
+            consumables[index].current = Math.max(0, Math.min(newValue, consumables[index].maximum));
+            displayConsumables();
+        }
+
+        window.setConsumableCurrent = function(index, value) {
+            consumables[index].current = Math.max(0, Math.min(parseInt(value) || 0, consumables[index].maximum));
+            displayConsumables();
+        }
+
+        window.setConsumableMax = function(index, value) {
+            consumables[index].maximum = parseInt(value) || 0;
+            if (consumables[index].current > consumables[index].maximum) {
+                consumables[index].current = consumables[index].maximum;
+            }
+            displayConsumables();
+        }
+
+        window.updateConsumableNotes = function(index, value) {
+            consumables[index].notes = value;
+        }
+
+        window.removeConsumable = function(index) {
+            if (confirm('Remove this consumable?')) {
+                consumables.splice(index, 1);
+                displayConsumables();
+            }
+        }
+
+        // Encumbrance Calculation
+        window.updateEncumbrance = function() {
+            let weaponsEnc = 0;
+            let armourEnc = 0;
+            let trappingsEnc = 0;
+            
+            // Add weapon encumbrance (only equipped weapons count)
+            weapons.forEach(weapon => {
+                if (weapon.equipped) {
+                    weaponsEnc += weapon.encumbrance || 0;
+                }
+            });
+            
+            // Add armour encumbrance (worn items get -1 encumbrance reduction)
+            armour.forEach(piece => {
+                if (piece.worn) {
+                    // Worn items get their encumbrance reduced by 1 (minimum 0)
+                    const wornEnc = Math.max(0, (piece.encumbrance || 0) - 1);
+                    armourEnc += wornEnc;
+                } else {
+                    // Not worn, full encumbrance
+                    armourEnc += piece.encumbrance || 0;
+                }
+            });
+            
+            // Add trapping encumbrance
+            trappings.forEach(item => {
+                trappingsEnc += (item.quantity * item.encumbrance) || 0;
+            });
+            
+            // Add money weight (1 Enc per 200 coins)
+            const gold = parseInt(document.getElementById('money-gold').value) || 0;
+            const silver = parseInt(document.getElementById('money-silver').value) || 0;
+            const brass = parseInt(document.getElementById('money-brass').value) || 0;
+            const totalCoins = gold + silver + brass;
+            const moneyEnc = Math.floor(totalCoins / 200);
+            
+            // Calculate total encumbrance
+            const totalEnc = weaponsEnc + armourEnc + trappingsEnc + moneyEnc;
+            
+            // Calculate max encumbrance (Strength Bonus + Toughness Bonus)
+            const strength = parseInt(document.getElementById('s-current').value) || 0;
+            const toughness = parseInt(document.getElementById('t-current').value) || 0;
+            const sb = Math.floor(strength / 10);
+            const tb = Math.floor(toughness / 10);
+            const maxEnc = sb + tb;
+            
+            // Update display
+            document.getElementById('current-enc').value = totalEnc.toFixed(1);
+            document.getElementById('max-enc').value = maxEnc;
+            
+            // Update breakdown display
+            document.getElementById('enc-weapons').textContent = weaponsEnc.toFixed(1);
+            document.getElementById('enc-armour').textContent = armourEnc.toFixed(1);
+            document.getElementById('enc-trappings').textContent = trappingsEnc.toFixed(1);
+            document.getElementById('enc-money').textContent = moneyEnc + (totalCoins > 0 ? ` (${totalCoins} coins)` : '');
+            
+            // Calculate penalties based on encumbrance level
+            const statusField = document.getElementById('enc-status');
+            const penaltiesField = document.getElementById('enc-penalties');
+            const movementField = document.getElementById('movement');
+            const baseMovement = parseInt(movementField.getAttribute('data-base-movement') || movementField.value || 4);
+            
+            // Store base movement if not already stored
+            if (!movementField.getAttribute('data-base-movement')) {
+                movementField.setAttribute('data-base-movement', movementField.value || 4);
+            }
+            
+            let movementPenalty = 0;
+            let agilityPenalty = 0;
+            let travelFatigue = 0;
+            let statusText = '';
+            let statusColor = '';
+            let penaltiesText = '';
+            let penaltiesColor = '';
+            
+            if (totalEnc <= maxEnc) {
+                // No penalties
+                statusText = 'Unencumbered';
+                statusColor = 'green';
+                penaltiesText = 'None';
+                penaltiesColor = 'green';
+                movementPenalty = 0;
+                agilityPenalty = 0;
+                travelFatigue = 0;
+            } else if (totalEnc <= maxEnc * 2) {
+                // Up to double limit
+                statusText = 'Encumbered';
+                statusColor = 'orange';
+                penaltiesText = '-1 Movement (min 3), -10 Agility, +1 Travel Fatigue';
+                penaltiesColor = 'orange';
+                movementPenalty = 1;
+                agilityPenalty = 10;
+                travelFatigue = 1;
+            } else if (totalEnc <= maxEnc * 3) {
+                // Up to triple limit
+                statusText = 'Very Encumbered';
+                statusColor = 'red';
+                penaltiesText = '-2 Movement (min 2), -20 Agility (min 10), +2 Travel Fatigue';
+                penaltiesColor = 'red';
+                movementPenalty = 2;
+                agilityPenalty = 20;
+                travelFatigue = 2;
+            } else {
+                // More than 3x limit
+                statusText = 'Immobilized!';
+                statusColor = 'darkred';
+                penaltiesText = 'Cannot move! Drop items immediately!';
+                penaltiesColor = 'darkred';
+                movementPenalty = 999; // Effectively immobilized
+            }
+            
+            statusField.value = statusText;
+            statusField.style.color = statusColor;
+            penaltiesField.textContent = penaltiesText;
+            penaltiesField.style.color = penaltiesColor;
+            
+            // Apply movement penalty (minimum based on encumbrance level)
+            let newMovement = baseMovement - movementPenalty;
+            if (totalEnc <= maxEnc * 2) {
+                newMovement = Math.max(3, newMovement); // Minimum 3 for encumbered
+            } else if (totalEnc <= maxEnc * 3) {
+                newMovement = Math.max(2, newMovement); // Minimum 2 for very encumbered
+            } else {
+                newMovement = 0; // Cannot move when over 3x limit
+            }
+            
+            // Update movement field with penalty applied
+            if (movementPenalty > 0 && movementPenalty < 999) {
+                movementField.value = newMovement;
+                movementField.style.color = 'red';
+                movementField.title = `Base Movement: ${baseMovement}, Encumbrance Penalty: -${movementPenalty}`;
+            } else if (movementPenalty === 999) {
+                movementField.value = 0;
+                movementField.style.color = 'darkred';
+                movementField.title = 'Too encumbered to move!';
+            } else {
+                movementField.value = baseMovement;
+                movementField.style.color = '';
+                movementField.title = '';
+            }
+            
+            // Update walk and run based on new movement
+            const walkField = document.getElementById('walk');
+            const runField = document.getElementById('run');
+            walkField.value = newMovement * 2;
+            runField.value = newMovement * 4;
+            
+            // Store penalties for reference (could be displayed elsewhere)
+            document.getElementById('enc-status').setAttribute('data-agility-penalty', agilityPenalty);
+            document.getElementById('enc-status').setAttribute('data-travel-fatigue', travelFatigue);
+            
+            // Update Agility to show penalty
+            const agCurrent = document.getElementById('ag-current');
+            if (agCurrent && agCurrent.updateFunction) {
+                agCurrent.updateFunction();
+            }
+        }
     </script>
 </body>
 </html>
