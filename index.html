@@ -1328,46 +1328,46 @@
         }
 
         // Talent Management Functions
-window.addTalent = function() {
-    populateTalentSelect();
-    document.getElementById('add-talent-modal').style.display = 'block';
-    document.getElementById('talent-search-modal').value = '';
-    document.getElementById('talent-search-modal').focus();
-}
-
-window.populateTalentSelect = function() {
-    const select = document.getElementById('talent-select');
-    select.innerHTML = '';
-    
-    const sortedTalents = [...srdTalents].sort((a, b) => a.name.localeCompare(b.name));
-    
-    sortedTalents.forEach(talent => {
-        const option = document.createElement('option');
-        option.value = talent.name;
-        option.textContent = `${talent.name} (Max: ${talent.max})`;
-        option.dataset.talent = JSON.stringify(talent);
-        select.appendChild(option);
-    });
-}
-
-window.filterTalentOptions = function() {
-    const searchText = document.getElementById('talent-search-modal').value.toLowerCase();
-    const select = document.getElementById('talent-select');
-    const options = select.options;
-    
-    for (let i = 0; i < options.length; i++) {
-        const talent = JSON.parse(options[i].dataset.talent);
-        const matches = talent.name.toLowerCase().includes(searchText) ||
-                       talent.description.toLowerCase().includes(searchText) ||
-                       (talent.tests && talent.tests.toLowerCase().includes(searchText));
-        
-        options[i].style.display = matches ? '' : 'none';
-        if (matches && !select.value) {
-            options[i].selected = true;
-            showTalentDetails();
+        window.addTalent = function() {
+            populateTalentSelect();
+            document.getElementById('add-talent-modal').style.display = 'block';
+            document.getElementById('talent-search-modal').value = '';
+            document.getElementById('talent-search-modal').focus();
         }
-    }
-}
+
+        window.populateTalentSelect = function() {
+            const select = document.getElementById('talent-select');
+            select.innerHTML = '';
+            
+            const sortedTalents = [...srdTalents].sort((a, b) => a.name.localeCompare(b.name));
+            
+            sortedTalents.forEach(talent => {
+                const option = document.createElement('option');
+                option.value = talent.name;
+                option.textContent = `${talent.name} (Max: ${talent.max})`;
+                option.dataset.talent = JSON.stringify(talent);
+                select.appendChild(option);
+            });
+        }
+
+        window.filterTalentOptions = function() {
+            const searchText = document.getElementById('talent-search-modal').value.toLowerCase();
+            const select = document.getElementById('talent-select');
+            const options = select.options;
+            
+            for (let i = 0; i < options.length; i++) {
+                const talent = JSON.parse(options[i].dataset.talent);
+                const matches = talent.name.toLowerCase().includes(searchText) ||
+                               talent.description.toLowerCase().includes(searchText) ||
+                               (talent.tests && talent.tests.toLowerCase().includes(searchText));
+                
+                options[i].style.display = matches ? '' : 'none';
+                if (matches && !select.value) {
+                    options[i].selected = true;
+                    showTalentDetails();
+                }
+            }
+        }
 
 window.showTalentDetails = function() {
     const select = document.getElementById('talent-select');
@@ -1401,6 +1401,67 @@ window.showTalentDetails = function() {
 }
 
 window.confirmAddTalent = function() {
+    const select = document.getElementById('talent-select');
+    const selectedOption = select.options[select.selectedIndex];
+    
+    if (!selectedOption) {
+        alert('Please select a talent');
+        return;
+    }
+    
+    const talentData = JSON.parse(selectedOption.dataset.talent);
+    const customisation = document.getElementById('talent-customisation-input').value.trim();
+    const timesTaken = parseInt(document.getElementById('talent-times-input').value) || 1;
+    
+    if (talentData.customisable && !customisation) {
+        alert(`Please specify the type for ${talentData.name}`);
+        return;
+    }
+    
+    // Create talent object
+    const talent = {
+        name: talentData.name,
+        displayName: customisation ? `${talentData.name} (${customisation})` : talentData.name,
+        max: talentData.max,
+        tests: talentData.tests || '',
+        description: talentData.description || '',
+        timesTaken: 1,  // Always start at 1, not the input value
+        customisation: customisation
+    };
+    
+    // Check if this exact talent already exists
+    const existingIndex = talents.findIndex(t => 
+        t.name === talent.name && t.customisation === talent.customisation
+    );
+    
+    if (existingIndex !== -1) {
+        // If it can be taken multiple times and we're adding more
+        if (talentData.max !== "1") {
+            const maxAllowed = parseInt(talentData.max) || 10;
+            const currentTimes = talents[existingIndex].timesTaken;
+            const newTotal = Math.min(currentTimes + timesTaken, maxAllowed);
+            
+            if (currentTimes >= maxAllowed) {
+                alert(`You already have the maximum number of ${talentData.name}`);
+                return;
+            }
+            
+            talents[existingIndex].timesTaken = newTotal;
+        } else {
+            alert('You already have this talent');
+            return;
+        }
+    } else {
+        // For new talents that can be taken multiple times
+        if (talentData.max !== "1" && timesTaken > 1) {
+            talent.timesTaken = timesTaken;
+        }
+        talents.push(talent);
+    }
+    
+    displayTalents();
+    closeAddTalentModal();
+}
     const select = document.getElementById('talent-select');
     const selectedOption = select.options[select.selectedIndex];
     
@@ -1459,7 +1520,7 @@ window.closeAddTalentModal = function() {
     document.getElementById('talent-customisation').style.display = 'none';
 }
 
-window.displayTalents = function() {
+window.displayTalents = function()
     const tbody = document.getElementById('talents-tbody');
     if (!tbody) return;
     
@@ -1479,7 +1540,9 @@ window.displayTalents = function() {
     
     displayedTalents.forEach((talent) => {
         const row = document.createElement('tr');
-        const maxText = talent.timesTaken > 1 ? `${talent.timesTaken}/${talent.max}` : talent.max;
+        const maxText = (talent.max === "1") ? "—" : 
+                (talent.timesTaken > 1) ? `${talent.timesTaken}/${talent.max}` : 
+                `1/${talent.max}`;
         
         row.innerHTML = `
             <td class="skill-name-cell">${talent.displayName}</td>
