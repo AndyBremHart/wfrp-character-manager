@@ -601,6 +601,65 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Conditions & Status Effects -->
+            <div class="section">
+                <div class="section-title">Conditions & Status Effects</div>
+                <div class="conditions-controls" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
+                    <button class="control-btn" onclick="window.addCondition()" style="padding: 5px 10px; font-size: 12px;">+ Add Condition</button>
+                    <input type="text" id="conditions-search" placeholder="Search conditions..." style="padding: 5px 10px; border: 1px solid #8b7355; font-family: 'Georgia', serif; background: white;">
+                </div>
+                
+                <table class="skills-table" id="conditions-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Condition</th>
+                            <th style="width: 50%;">Effects</th>
+                            <th style="width: 23%;">Duration/Notes</th>
+                            <th style="width: 2%;">Del</th>
+                        </tr>
+                    </thead>
+                    <tbody id="conditions-tbody">
+                    </tbody>
+                </table>
+
+                <!-- Add Condition Modal -->
+                <div id="add-condition-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 500px; max-width: 600px; max-height: 70vh; overflow-y: auto;">
+                        <h3 style="color: #3e2f1f; margin-bottom: 15px;">Add Condition</h3>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Search Conditions:</label>
+                            <input type="text" id="condition-search-modal" placeholder="Type to search..." style="width: 100%; padding: 5px;" oninput="window.filterConditionOptions()">
+                        </div>
+                        
+                        <div style="margin-bottom: 10px;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Select Condition:</label>
+                            <select id="condition-select" size="8" style="width: 100%; padding: 5px;" onchange="window.showConditionDetails()">
+                            </select>
+                        </div>
+                        
+                        <div id="condition-details" style="display: none; margin-bottom: 15px; padding: 10px; background: #e8dfd0; border: 1px solid #8b7355;">
+                            <h4 style="color: #3e2f1f; margin-bottom: 10px;">Condition Details</h4>
+                            <p><strong>Name:</strong> <span id="detail-condition-name"></span></p>
+                            <p><strong>Stackable:</strong> <span id="detail-condition-stackable"></span></p>
+                            <p style="margin-top: 10px;"><strong>Effects:</strong></p>
+                            <p id="detail-condition-effects" style="font-style: italic; line-height: 1.4; max-height: 200px; overflow-y: auto;"></p>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Duration/Notes:</label>
+                            <input type="text" id="condition-notes-input" placeholder="e.g., 3 rounds, until healed, custom notes..." style="width: 100%; padding: 5px;">
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <button class="control-btn" onclick="window.confirmAddCondition()" style="margin-right: 10px; padding: 8px 16px;">Add Condition</button>
+                            <button class="control-btn" onclick="window.closeAddConditionModal()" style="padding: 8px 16px;">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Secondary Characteristics -->
             <div class="characteristics-section">
                 <div class="section-title">Secondary Characteristics</div>
@@ -957,6 +1016,8 @@
         let consumables = [];
         let talents = [];
         let srdTalents = [];
+        let activeConditions = [];
+        let srdConditions = [];
 
         // SRD Data (will be loaded from JSON files)
         let srdWeapons = [];
@@ -1557,6 +1618,201 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Conditions Management Functions
+window.displayConditions = function() {
+    const tbody = document.getElementById('conditions-tbody');
+    if (!tbody) return;
+    
+    const searchText = (document.getElementById('conditions-search')?.value || '').toLowerCase();
+    
+    tbody.innerHTML = '';
+    
+    let displayedConditions = activeConditions;
+    if (searchText) {
+        displayedConditions = activeConditions.filter(c => 
+            c.name.toLowerCase().includes(searchText) ||
+            c.effects.toLowerCase().includes(searchText) ||
+            (c.notes && c.notes.toLowerCase().includes(searchText))
+        );
+    }
+    
+    displayedConditions.sort((a, b) => a.name.localeCompare(b.name));
+    
+    displayedConditions.forEach((condition, index) => {
+        const row = document.createElement('tr');
+        const effectsPreview = condition.effects.length > 100 ? 
+            condition.effects.substring(0, 100) + '...' : 
+            condition.effects;
+        
+        row.innerHTML = `
+            <td class="skill-name-cell">${condition.name}</td>
+            <td style="font-size: 11px; padding: 5px;">${effectsPreview}</td>
+            <td style="font-size: 11px; padding: 5px;">${condition.notes || '—'}</td>
+            <td><button class="advance-btn" onclick="window.removeCondition(${index})" style="background: #d44; color: white;">×</button></td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+window.removeCondition = function(index) {
+    if (confirm('Remove this condition?')) {
+        activeConditions.splice(index, 1);
+        displayConditions();
+    }
+}
+
+window.addCondition = function() {
+    populateConditionSelect();
+    document.getElementById('add-condition-modal').style.display = 'block';
+    document.getElementById('condition-search-modal').value = '';
+    document.getElementById('condition-search-modal').focus();
+}
+
+window.populateConditionSelect = function() {
+    const select = document.getElementById('condition-select');
+    select.innerHTML = '';
+    
+    const sortedConditions = [...srdConditions].sort((a, b) => a.name.localeCompare(b.name));
+    
+    sortedConditions.forEach(condition => {
+        const option = document.createElement('option');
+        option.value = condition.name;
+        option.textContent = `${condition.name} (${condition.stackable})`;
+        option.dataset.condition = JSON.stringify(condition);
+        select.appendChild(option);
+    });
+}
+
+window.filterConditionOptions = function() {
+    console.log('filterConditionOptions called!');
+    
+    const searchInput = document.getElementById('condition-search-modal');
+    const select = document.getElementById('condition-select');
+    
+    if (!searchInput || !select) {
+        console.error('Elements not found:', { searchInput, select });
+        return;
+    }
+    
+    const searchText = searchInput.value.toLowerCase();
+    const options = select.options;
+    
+    console.log('Searching for:', searchText);
+    console.log('Total options:', options.length);
+    
+    if (options.length === 0) {
+        console.log('No options available - condition data may not be loaded');
+        return;
+    }
+    
+    let matchCount = 0;
+    let firstMatch = null;
+    
+    for (let i = 0; i < options.length; i++) {
+        try {
+            const condition = JSON.parse(options[i].dataset.condition);
+            const matches = searchText === '' || 
+                           (condition.name && condition.name.toLowerCase().includes(searchText)) ||
+                           (condition.effects && condition.effects.toLowerCase().includes(searchText));
+            
+            options[i].style.display = matches ? '' : 'none';
+            
+            if (matches) {
+                matchCount++;
+                if (!firstMatch) {
+                    firstMatch = options[i];
+                }
+            }
+        } catch (e) {
+            console.error('Error parsing condition data for option', i, ':', e);
+            options[i].style.display = 'none';
+        }
+    }
+    
+    // Select first match if any
+    if (firstMatch && matchCount > 0) {
+        firstMatch.selected = true;
+        window.showConditionDetails();
+    }
+    
+    console.log('Matches found:', matchCount);
+}
+
+window.showConditionDetails = function() {
+    const select = document.getElementById('condition-select');
+    const selectedOption = select.options[select.selectedIndex];
+    
+    if (!selectedOption) return;
+    
+    const condition = JSON.parse(selectedOption.dataset.condition);
+    const detailsDiv = document.getElementById('condition-details');
+    
+    document.getElementById('detail-condition-name').textContent = condition.name;
+    document.getElementById('detail-condition-stackable').textContent = condition.stackable;
+    document.getElementById('detail-condition-effects').textContent = condition.effects;
+    
+    detailsDiv.style.display = 'block';
+}
+
+window.confirmAddCondition = function() {
+    const select = document.getElementById('condition-select');
+    const selectedOption = select.options[select.selectedIndex];
+    
+    if (!selectedOption) {
+        alert('Please select a condition');
+        return;
+    }
+    
+    const conditionData = JSON.parse(selectedOption.dataset.condition);
+    const notes = document.getElementById('condition-notes-input').value.trim();
+    
+    // Create condition object
+    const condition = {
+        name: conditionData.name,
+        stackable: conditionData.stackable,
+        effects: conditionData.effects,
+        notes: notes || ''
+    };
+    
+    // For stackable conditions, check if it already exists and just add a note about multiple instances
+    if (conditionData.stackable === "Yes") {
+        const existingIndex = activeConditions.findIndex(c => c.name === condition.name);
+        if (existingIndex !== -1) {
+            // Add to existing notes or create new notes about stacking
+            const existingNotes = activeConditions[existingIndex].notes || '';
+            const stackNote = existingNotes ? `${existingNotes}; +1 stack` : '+1 stack';
+            activeConditions[existingIndex].notes = stackNote;
+        } else {
+            activeConditions.push(condition);
+        }
+    } else {
+        // For non-stackable conditions, check if already exists
+        const exists = activeConditions.some(c => c.name === condition.name);
+        if (exists) {
+            alert('This condition is already active and cannot be stacked');
+            return;
+        }
+        activeConditions.push(condition);
+    }
+    
+    displayConditions();
+    closeAddConditionModal();
+}
+
+window.closeAddConditionModal = function() {
+    document.getElementById('add-condition-modal').style.display = 'none';
+    document.getElementById('condition-select').value = '';
+    document.getElementById('condition-notes-input').value = '';
+    document.getElementById('condition-details').style.display = 'none';
+}
+
+// Add search listener for conditions
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('conditions-search')?.addEventListener('input', function() {
+        displayConditions();
+    });
+});
+
         window.removeSkill = function(skillKey) {
             if (confirm('Are you sure you want to remove this skill?')) {
                 // Remove from added skills
@@ -1630,6 +1886,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 trappings: trappings,
                 consumables: consumables,
                 talents: talents,
+                activeConditions: activeConditions,
                 money: {
                     gold: document.getElementById('money-gold').value,
                     silver: document.getElementById('money-silver').value,
@@ -1722,8 +1979,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 addedSkills = characterData.addedSkills;
             }
             if (characterData.talents) {
-    talents = characterData.talents;
-}
+                talents = characterData.talents;
+            }
+            
+            // Load active conditions
+            if (characterData.activeConditions) {
+                activeConditions = characterData.activeConditions;
+            }
+            
             // Load combat & equipment data
             if (characterData.weapons) weapons = characterData.weapons;
             if (characterData.armour) armour = characterData.armour;
@@ -1738,6 +2001,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Refresh all displays
             displaySkills();
+            displayTalents();
+            displayConditions();
             displayWeapons();
             displayArmour();
             displayTrappings();
@@ -1759,10 +2024,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Load SRD data
             loadSRDData();
             loadTalentsData();
+            loadConditionsData();
             
             try {
                 displaySkills(); // Show basic skills immediately
                 displayTalents();
+                displayConditions();
                 displayWeapons();
                 displayArmour();
                 displayTrappings();
@@ -1842,6 +2109,25 @@ function loadTalentsData() {
                 { name: "Hardy", max: "Toughness Bonus", tests: "", description: "You gain +1 Wound permanently per level in this Talent.", customisable: false },
                 { name: "Lightning Reflexes", max: "1", tests: "", description: "+5 to Initiative permanently.", customisable: false },
                 { name: "Marksman", max: "1", tests: "Ranged", description: "You gain a permanent +5 BS.", customisable: false }
+            ];
+        });
+}
+
+// Load Conditions Data
+function loadConditionsData() {
+    fetch('conditions.json')
+        .then(response => response.json())
+        .then(data => {
+            srdConditions = data;
+            console.log('Loaded', srdConditions.length, 'conditions from SRD');
+        })
+        .catch(error => {
+            console.error('Error loading conditions:', error);
+            // Minimal fallback data
+            srdConditions = [
+                { name: "Fatigued", stackable: "Yes", effects: "You are exhausted or stressed, and certainly in need of rest. You suffer a –10 penalty to all Tests." },
+                { name: "Stunned", stackable: "Yes", effects: "You have been struck about the head or otherwise disorientated. You are incapable of taking an Action on your turn but are capable of half your normal movement." },
+                { name: "Prone", stackable: "No", effects: "You have been knocked to the ground. You suffer a –20 penalty to Weapon Skill Tests when in combat." }
             ];
         });
 }
