@@ -660,6 +660,120 @@
                 </div>
             </div>
 
+            <!-- Spells & Prayers -->
+            <div class="section">
+                <div class="section-title">Spells & Prayers</div>
+                <div class="spells-controls" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center; flex-wrap: wrap;">
+                    <button class="control-btn" onclick="window.addSpell()" style="padding: 5px 10px; font-size: 12px;">+ Add Spell/Prayer</button>
+                    <input type="text" id="spells-search" placeholder="Search spells..." style="padding: 5px 10px; border: 1px solid #8b7355; font-family: 'Georgia', serif; background: white;">
+                    <select id="spells-filter" style="padding: 5px; border: 1px solid #8b7355; font-family: 'Georgia', serif;">
+                        <option value="all">All Types</option>
+                        <option value="arcane">Arcane Spells</option>
+                        <option value="divine">Divine Prayers</option>
+                        <option value="memorised">Memorised Only</option>
+                    </select>
+                </div>
+                
+                <table class="skills-table" id="spells-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 18%;">Name</th>
+                            <th style="width: 8%;">CN</th>
+                            <th style="width: 12%;">Range</th>
+                            <th style="width: 12%;">Target</th>
+                            <th style="width: 10%;">Duration</th>
+                            <th style="width: 28%;">Effect</th>
+                            <th style="width: 8%;">Mem</th>
+                            <th style="width: 4%;">Del</th>
+                        </tr>
+                    </thead>
+                    <tbody id="spells-tbody">
+                    </tbody>
+                </table>
+
+                <!-- Add Spell Modal -->
+                <div id="add-spell-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 600px; max-width: 700px; max-height: 80vh; overflow-y: auto;">
+                        <h3 style="color: #3e2f1f; margin-bottom: 15px;">Add Spell or Prayer</h3>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Name:</label>
+                                <input type="text" id="spell-name-input" placeholder="Spell/Prayer name" style="width: 100%; padding: 5px;">
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Type:</label>
+                                <select id="spell-type-input" style="width: 100%; padding: 5px;" onchange="window.updateLoreOptions()">
+                                    <option value="arcane">Arcane Spell</option>
+                                    <option value="divine">Divine Prayer</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Lore/Deity:</label>
+                                <select id="spell-lore-input" style="width: 100%; padding: 5px;">
+                                    <option value="">Select Lore...</option>
+                                    <option value="Petty Magic">Petty Magic</option>
+                                    <option value="Fire">Fire</option>
+                                    <option value="Metal">Metal</option>
+                                    <option value="Life">Life</option>
+                                    <option value="Light">Light</option>
+                                    <option value="Heavens">Heavens</option>
+                                    <option value="Shadow">Shadow</option>
+                                    <option value="Death">Death</option>
+                                    <option value="Beasts">Beasts</option>
+                                    <option value="Daemonology">Daemonology</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">CN (Casting Number):</label>
+                                <input type="number" id="spell-cn-input" placeholder="5" min="0" max="30" style="width: 100%; padding: 5px;">
+                            </div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Range:</label>
+                                <input type="text" id="spell-range-input" placeholder="e.g., Touch, 12 yards" style="width: 100%; padding: 5px;">
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Target:</label>
+                                <input type="text" id="spell-target-input" placeholder="e.g., 1 creature" style="width: 100%; padding: 5px;">
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Duration:</label>
+                                <input type="text" id="spell-duration-input" placeholder="e.g., Instant, 1 hour" style="width: 100%; padding: 5px;">
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Effect:</label>
+                            <textarea id="spell-effect-input" placeholder="Describe the spell's effect..." style="width: 100%; padding: 5px; height: 80px; resize: vertical;"></textarea>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Ingredients/Components:</label>
+                                <input type="text" id="spell-ingredients-input" placeholder="Optional ingredients or components" style="width: 100%; padding: 5px;">
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-top: 25px;">
+                                <label style="color: #3e2f1f;">
+                                    <input type="checkbox" id="spell-memorised-input" style="margin-right: 5px;">
+                                    Currently Memorised/Prepared
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <button class="control-btn" onclick="window.confirmAddSpell()" style="margin-right: 10px; padding: 8px 16px;">Add Spell</button>
+                            <button class="control-btn" onclick="window.closeAddSpellModal()" style="padding: 8px 16px;">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Secondary Characteristics -->
             <div class="characteristics-section">
                 <div class="section-title">Secondary Characteristics</div>
@@ -1018,6 +1132,8 @@
         let srdTalents = [];
         let activeConditions = [];
         let srdConditions = [];
+        let spells = [];
+        let srdSpells = [];
 
         // SRD Data (will be loaded from JSON files)
         let srdWeapons = [];
@@ -1813,6 +1929,237 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Spells & Prayers Management Functions
+window.displaySpells = function() {
+    const tbody = document.getElementById('spells-tbody');
+    if (!tbody) return;
+    
+    const searchText = (document.getElementById('spells-search')?.value || '').toLowerCase();
+    const filterType = document.getElementById('spells-filter')?.value || 'all';
+    
+    tbody.innerHTML = '';
+    
+    let displayedSpells = spells;
+    
+    // Apply search filter
+    if (searchText) {
+        displayedSpells = displayedSpells.filter(s => 
+            s.name.toLowerCase().includes(searchText) ||
+            s.lore.toLowerCase().includes(searchText) ||
+            s.effect.toLowerCase().includes(searchText) ||
+            (s.ingredients && s.ingredients.toLowerCase().includes(searchText))
+        );
+    }
+    
+    // Apply type filter
+    if (filterType !== 'all') {
+        if (filterType === 'memorised') {
+            displayedSpells = displayedSpells.filter(s => s.memorised);
+        } else {
+            displayedSpells = displayedSpells.filter(s => s.type === filterType);
+        }
+    }
+    
+    displayedSpells.sort((a, b) => a.name.localeCompare(b.name));
+    
+    displayedSpells.forEach((spell, index) => {
+        const row = document.createElement('tr');
+        const effectPreview = spell.effect.length > 80 ? 
+            spell.effect.substring(0, 80) + '...' : 
+            spell.effect;
+        
+        const loreColor = getLoreColor(spell.lore);
+        const memIcon = spell.memorised ? '✓' : '—';
+        const memStyle = spell.memorised ? 'color: #2a8a2a; font-weight: bold;' : 'color: #666;';
+        
+        row.innerHTML = `
+            <td class="skill-name-cell" style="border-left: 3px solid ${loreColor};">
+                ${spell.name}
+                <div style="font-size: 10px; color: #666; font-style: italic;">${spell.lore}</div>
+            </td>
+            <td style="text-align: center; font-weight: bold;">${spell.cn}</td>
+            <td style="font-size: 11px; padding: 5px;">${spell.range}</td>
+            <td style="font-size: 11px; padding: 5px;">${spell.target}</td>
+            <td style="font-size: 11px; padding: 5px;">${spell.duration}</td>
+            <td style="font-size: 11px; padding: 5px;">${effectPreview}</td>
+            <td style="text-align: center; ${memStyle}">${memIcon}</td>
+            <td><button class="advance-btn" onclick="window.removeSpell(${spells.indexOf(spell)})" style="background: #d44; color: white;">×</button></td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+window.getLoreColor = function(lore) {
+    const colors = {
+        'Fire': '#d44444',
+        'Metal': '#888888',
+        'Life': '#44d444', 
+        'Light': '#ffd700',
+        'Heavens': '#4444d4',
+        'Shadow': '#444444',
+        'Death': '#8B4B8B',
+        'Beasts': '#8B6914',
+        'Daemonology': '#8B0000',
+        'Petty Magic': '#666666',
+        'Sigmar': '#ffd700',
+        'Ulric': '#87ceeb',
+        'Morr': '#696969',
+        'Verena': '#4169e1',
+        'Shallya': '#f0f8ff',
+        'Myrmidia': '#ffa500',
+        'Ranald': '#32cd32',
+        'Taal': '#228b22',
+        'Rhya': '#9acd32',
+        'Manann': '#00ced1'
+    };
+    return colors[lore] || '#8b7355';
+}
+
+window.removeSpell = function(index) {
+    if (confirm('Remove this spell/prayer?')) {
+        spells.splice(index, 1);
+        displaySpells();
+    }
+}
+
+window.addSpell = function() {
+    document.getElementById('add-spell-modal').style.display = 'block';
+    document.getElementById('spell-name-input').focus();
+    updateLoreOptions(); // Set initial lore options
+}
+
+window.updateLoreOptions = function() {
+    const type = document.getElementById('spell-type-input').value;
+    const loreSelect = document.getElementById('spell-lore-input');
+    
+    loreSelect.innerHTML = '';
+    
+    if (type === 'arcane') {
+        const arcaneOptions = [
+            { value: '', text: 'Select Lore...' },
+            { value: 'Petty Magic', text: 'Petty Magic' },
+            { value: 'Fire', text: 'Fire' },
+            { value: 'Metal', text: 'Metal' },
+            { value: 'Life', text: 'Life' },
+            { value: 'Light', text: 'Light' },
+            { value: 'Heavens', text: 'Heavens' },
+            { value: 'Shadow', text: 'Shadow' },
+            { value: 'Death', text: 'Death' },
+            { value: 'Beasts', text: 'Beasts' },
+            { value: 'Daemonology', text: 'Daemonology' }
+        ];
+        arcaneOptions.forEach(opt => {
+            const option = document.createElement('option');
+            option.value = opt.value;
+            option.textContent = opt.text;
+            loreSelect.appendChild(option);
+        });
+    } else {
+        const divineOptions = [
+            { value: '', text: 'Select Deity...' },
+            { value: 'Sigmar', text: 'Sigmar' },
+            { value: 'Ulric', text: 'Ulric' },
+            { value: 'Morr', text: 'Morr' },
+            { value: 'Verena', text: 'Verena' },
+            { value: 'Shallya', text: 'Shallya' },
+            { value: 'Myrmidia', text: 'Myrmidia' },
+            { value: 'Ranald', text: 'Ranald' },
+            { value: 'Taal', text: 'Taal' },
+            { value: 'Rhya', text: 'Rhya' },
+            { value: 'Manann', text: 'Manann' }
+        ];
+        divineOptions.forEach(opt => {
+            const option = document.createElement('option');
+            option.value = opt.value;
+            option.textContent = opt.text;
+            loreSelect.appendChild(option);
+        });
+    }
+}
+
+window.confirmAddSpell = function() {
+    const name = document.getElementById('spell-name-input').value.trim();
+    const type = document.getElementById('spell-type-input').value;
+    const lore = document.getElementById('spell-lore-input').value;
+    const cn = document.getElementById('spell-cn-input').value;
+    const range = document.getElementById('spell-range-input').value.trim();
+    const target = document.getElementById('spell-target-input').value.trim();
+    const duration = document.getElementById('spell-duration-input').value.trim();
+    const effect = document.getElementById('spell-effect-input').value.trim();
+    const ingredients = document.getElementById('spell-ingredients-input').value.trim();
+    const memorised = document.getElementById('spell-memorised-input').checked;
+    
+    if (!name) {
+        alert('Please enter a spell/prayer name');
+        return;
+    }
+    
+    if (!lore) {
+        alert('Please select a lore or deity');
+        return;
+    }
+    
+    if (!cn || cn < 0) {
+        alert('Please enter a valid Casting Number');
+        return;
+    }
+    
+    if (!effect) {
+        alert('Please describe the spell effect');
+        return;
+    }
+    
+    // Check if spell already exists
+    const exists = spells.some(s => s.name.toLowerCase() === name.toLowerCase());
+    if (exists) {
+        alert('A spell with this name already exists');
+        return;
+    }
+    
+    // Create spell object
+    const spell = {
+        name: name,
+        type: type,
+        lore: lore,
+        cn: parseInt(cn),
+        range: range || 'Touch',
+        target: target || '1 target',
+        duration: duration || 'Instant',
+        effect: effect,
+        ingredients: ingredients || '',
+        memorised: memorised
+    };
+    
+    spells.push(spell);
+    displaySpells();
+    closeAddSpellModal();
+}
+
+window.closeAddSpellModal = function() {
+    document.getElementById('add-spell-modal').style.display = 'none';
+    document.getElementById('spell-name-input').value = '';
+    document.getElementById('spell-type-input').value = 'arcane';
+    document.getElementById('spell-lore-input').value = '';
+    document.getElementById('spell-cn-input').value = '';
+    document.getElementById('spell-range-input').value = '';
+    document.getElementById('spell-target-input').value = '';
+    document.getElementById('spell-duration-input').value = '';
+    document.getElementById('spell-effect-input').value = '';
+    document.getElementById('spell-ingredients-input').value = '';
+    document.getElementById('spell-memorised-input').checked = false;
+}
+
+// Add search and filter listeners for spells
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('spells-search')?.addEventListener('input', function() {
+        displaySpells();
+    });
+    
+    document.getElementById('spells-filter')?.addEventListener('change', function() {
+        displaySpells();
+    });
+});
+
         window.removeSkill = function(skillKey) {
             if (confirm('Are you sure you want to remove this skill?')) {
                 // Remove from added skills
@@ -1887,6 +2234,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 consumables: consumables,
                 talents: talents,
                 activeConditions: activeConditions,
+                spells: spells,
                 money: {
                     gold: document.getElementById('money-gold').value,
                     silver: document.getElementById('money-silver').value,
@@ -1987,6 +2335,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 activeConditions = characterData.activeConditions;
             }
             
+            // Load spells
+            if (characterData.spells) {
+                spells = characterData.spells;
+            }
+            
             // Load combat & equipment data
             if (characterData.weapons) weapons = characterData.weapons;
             if (characterData.armour) armour = characterData.armour;
@@ -2003,6 +2356,7 @@ document.addEventListener('DOMContentLoaded', function() {
             displaySkills();
             displayTalents();
             displayConditions();
+            displaySpells();
             displayWeapons();
             displayArmour();
             displayTrappings();
@@ -2030,6 +2384,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 displaySkills(); // Show basic skills immediately
                 displayTalents();
                 displayConditions();
+                displaySpells();
                 displayWeapons();
                 displayArmour();
                 displayTrappings();
@@ -2123,12 +2478,22 @@ function loadConditionsData() {
         })
         .catch(error => {
             console.error('Error loading conditions:', error);
-            // Minimal fallback data
+            // Complete fallback data
             srdConditions = [
-                { name: "Fatigued", stackable: "Yes", effects: "You are exhausted or stressed, and certainly in need of rest. You suffer a –10 penalty to all Tests." },
-                { name: "Stunned", stackable: "Yes", effects: "You have been struck about the head or otherwise disorientated. You are incapable of taking an Action on your turn but are capable of half your normal movement." },
-                { name: "Prone", stackable: "No", effects: "You have been knocked to the ground. You suffer a –20 penalty to Weapon Skill Tests when in combat." }
+                { name: "Ablaze", stackable: "Yes", effects: "You are on fire! At the end of every Round, you suffer 1d10 Wounds, modified by Toughness Bonus and the Armour Points on the least protected Hit Location, with a minimum of 1 Wound suffered. Each extra Ablaze Condition you have adds +1 to the Damage suffered." },
+                { name: "Bleeding", stackable: "Yes", effects: "You are bleeding badly. Lose 1 Wound at the end of every Round, ignoring all modifiers. Additionally, suffer a penalty of –10 to any Tests to resist Festering Wounds, Minor Infection, or Blood Rot." },
+                { name: "Blinded", stackable: "No", effects: "You cannot see. You automatically fail all Tests that rely on vision, and any other Tests are taken with a –30 penalty. You cannot perform ranged attacks beyond Point Blank range." },
+                { name: "Broken", stackable: "No", effects: "Your spirit is broken. You automatically fail Psychology Tests and gain 1 Broken Condition whenever you fail a Psychology Test. You also suffer a –10 penalty to Willpower Tests and Weapon Skill Tests." },
+                { name: "Deafened", stackable: "No", effects: "You cannot hear. You automatically fail all Tests that rely on hearing, and any other Tests involving communication or concentration suffer a –10 penalty." },
+                { name: "Entangled", stackable: "Yes", effects: "You have been caught or snared, and cannot move freely. Whilst entangled, you are considered to be Stationary and cannot leave your current location. You may only take a single Move or Action during your turn, not both." },
+                { name: "Fatigued", stackable: "Yes", effects: "You are exhausted or stressed, and certainly in need of rest. You suffer a –10 penalty to all Tests. Removing a Fatigued Condition normally requires rest, a spell, or a divine effect." },
+                { name: "Poisoned", stackable: "Yes", effects: "You have been poisoned. The exact effects of the poison will be described in the creature, spell, or item that caused this Condition. Generally, Poisoned Conditions are removed by time or appropriate medical attention." },
+                { name: "Prone", stackable: "No", effects: "You have been knocked to the ground. You suffer a –20 penalty to Weapon Skill Tests when in combat, and anyone making melee attacks against you gains a +20 bonus to hit." },
+                { name: "Stunned", stackable: "Yes", effects: "You have been struck about the head or otherwise disorientated or confused. You are incapable of taking an Action on your turn but are capable of half your normal movement. You also suffer a –10 penalty to all Tests." },
+                { name: "Surprised", stackable: "No", effects: "You have been caught off guard. You may not take an Action on your turn, though you may still Oppose any Tests made against you. This Condition is automatically removed at the end of your Turn." },
+                { name: "Unconscious", stackable: "No", effects: "You have been knocked out. You automatically fail all Tests and become unaware of your surroundings. Whilst unconscious, you are considered to be Prone." }
             ];
+            console.log('Using fallback conditions data:', srdConditions.length, 'conditions loaded');
         });
 }
 
