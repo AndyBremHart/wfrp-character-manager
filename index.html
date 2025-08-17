@@ -1351,22 +1351,59 @@
         }
 
         window.filterTalentOptions = function() {
-            const searchText = document.getElementById('talent-search-modal').value.toLowerCase();
+            console.log('filterTalentOptions called!');
+            
+            const searchInput = document.getElementById('talent-search-modal');
             const select = document.getElementById('talent-select');
+            
+            if (!searchInput || !select) {
+                console.error('Elements not found:', { searchInput, select });
+                return;
+            }
+            
+            const searchText = searchInput.value.toLowerCase();
             const options = select.options;
             
+            console.log('Searching for:', searchText);
+            console.log('Total options:', options.length);
+            
+            if (options.length === 0) {
+                console.log('No options available - talent data may not be loaded');
+                return;
+            }
+            
+            let matchCount = 0;
+            let firstMatch = null;
+            
             for (let i = 0; i < options.length; i++) {
-                const talent = JSON.parse(options[i].dataset.talent);
-                const matches = talent.name.toLowerCase().includes(searchText) ||
-                               talent.description.toLowerCase().includes(searchText) ||
-                               (talent.tests && talent.tests.toLowerCase().includes(searchText));
-                
-                options[i].style.display = matches ? '' : 'none';
-                if (matches && !select.value) {
-                    options[i].selected = true;
-                    window.showTalentDetails();
+                try {
+                    const talent = JSON.parse(options[i].dataset.talent);
+                    const matches = searchText === '' || 
+                                   (talent.name && talent.name.toLowerCase().includes(searchText)) ||
+                                   (talent.description && talent.description.toLowerCase().includes(searchText)) ||
+                                   (talent.tests && talent.tests.toLowerCase().includes(searchText));
+                    
+                    options[i].style.display = matches ? '' : 'none';
+                    
+                    if (matches) {
+                        matchCount++;
+                        if (!firstMatch) {
+                            firstMatch = options[i];
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error parsing talent data for option', i, ':', e);
+                    options[i].style.display = 'none';
                 }
             }
+            
+            // Select first match if any
+            if (firstMatch && matchCount > 0) {
+                firstMatch.selected = true;
+                window.showTalentDetails();
+            }
+            
+            console.log('Matches found:', matchCount);
         }
 
 window.showTalentDetails = function() {
