@@ -1462,54 +1462,6 @@ window.confirmAddTalent = function() {
     displayTalents();
     closeAddTalentModal();
 }
-    const select = document.getElementById('talent-select');
-    const selectedOption = select.options[select.selectedIndex];
-    
-    if (!selectedOption) {
-        alert('Please select a talent');
-        return;
-    }
-    
-    const talentData = JSON.parse(selectedOption.dataset.talent);
-    const customisation = document.getElementById('talent-customisation-input').value.trim();
-    const timesTaken = parseInt(document.getElementById('talent-times-input').value) || 1;
-    
-    if (talentData.customisable && !customisation) {
-        alert(`Please specify the type for ${talentData.name}`);
-        return;
-    }
-    
-    const talent = {
-        name: talentData.name,
-        displayName: customisation ? `${talentData.name} (${customisation})` : talentData.name,
-        max: talentData.max,
-        tests: talentData.tests,
-        description: talentData.description,
-        timesTaken: talentData.max === "1" ? 1 : timesTaken,
-        customisation: customisation
-    };
-    
-    const existingIndex = talents.findIndex(t => 
-        t.name === talent.name && t.customisation === talent.customisation
-    );
-    
-    if (existingIndex !== -1) {
-        if (talentData.max !== "1") {
-            talents[existingIndex].timesTaken = Math.min(
-                talents[existingIndex].timesTaken + timesTaken,
-                10
-            );
-        } else {
-            alert('You already have this talent');
-            return;
-        }
-    } else {
-        talents.push(talent);
-    }
-    
-    displayTalents();
-    closeAddTalentModal();
-}
 
 window.closeAddTalentModal = function() {
     document.getElementById('add-talent-modal').style.display = 'none';
@@ -1520,7 +1472,7 @@ window.closeAddTalentModal = function() {
     document.getElementById('talent-customisation').style.display = 'none';
 }
 
-window.displayTalents = function()
+window.displayTalents = function() {
     const tbody = document.getElementById('talents-tbody');
     if (!tbody) return;
     
