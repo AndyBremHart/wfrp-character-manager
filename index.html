@@ -1706,6 +1706,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Load SRD data
             loadSRDData();
+            loadTalentsData();
             
             try {
                 displaySkills(); // Show basic skills immediately
@@ -1734,7 +1735,28 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // SRD Data Loading
-        function loadSRDData() {
+function loadSRDData() {
+    // ... rest of loadSRDData code ...
+}  // This closes loadSRDData
+
+// Load Talents Data - This should be OUTSIDE loadSRDData
+function loadTalentsData() {
+    fetch('Talents.json')
+        .then(response => response.json())
+        .then(data => {
+            srdTalents = data;
+            console.log('Loaded', srdTalents.length, 'talents from SRD');
+        })
+        .catch(error => {
+            console.error('Error loading talents:', error);
+            // Minimal fallback data
+            srdTalents = [
+                { name: "Hardy", max: "Toughness Bonus", tests: "", description: "You gain +1 Wound permanently per level in this Talent.", customisable: false },
+                { name: "Lightning Reflexes", max: "1", tests: "", description: "+5 to Initiative permanently.", customisable: false },
+                { name: "Marksman", max: "1", tests: "Ranged", description: "You gain a permanent +5 BS.", customisable: false }
+            ];
+        });
+}
             // Load weapons data
             fetch('Weapons.json')
                 .then(response => response.json())
