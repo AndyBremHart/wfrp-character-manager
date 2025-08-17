@@ -1,0 +1,62 @@
+[
+    {
+        "name": "Ablaze",
+        "stackable": "Yes",
+        "effects": "You are on fire! This Condition is normally only applied if you are flammable — for example: wearing clothes that can be set alight — but some magical and divine effects can set you alight even if you are not normally combustible!\n\nAt the end of every Round, you suffer 1d10 Wounds, modified by Toughness Bonus and the Armour Points on the least protected Hit Location, with a minimum of 1 Wound suffered. Each extra Ablaze Condition you have adds +1 to the Damage suffered; so, three Ablaze Conditions result in 1d10+2 Damage suffered.\n\nOne Ablaze Condition can be removed with a successful Athletics Test, with each SL removing an extra Ablaze Condition. The Difficulty for this Test is modified by circumstances: it's much easier to put out a fire rolling around on sand than it is in the middle of an oil-soaked kitchen."
+    },
+    {
+        "name": "Bleeding",
+        "stackable": "Yes",
+        "effects": "You are bleeding badly. Lose 1 Wound at the end of every Round, ignoring all modifiers. Additionally, suffer a penalty of –10 to any Tests to resist Festering Wounds, Minor Infection, or Blood Rot. If you reach 0 Wounds, you no longer lose Wounds. At the end of each turn, make a Challenging (+0) Endurance Test or immediately gain the Unconscious Condition.\n\nIf unconscious and bleeding, at the end of Round you have a 10% chance of dying per Bleeding Condition you have. For example, if you had 3 Bleeding Conditions, you would die from blood loss on a roll of 0–30. If you roll a double, your wound clots a little and you lose 1 Bleeding Condition. You cannot regain consciousness until all Bleeding Conditions are removed.\n\nA Bleeding Condition can be removed with a successful Average (+20) Heal Test, with each SL removing an extra Bleeding Condition, or with any spell or prayer that heals Wounds, with 1 Bleeding Condition removed per Wound healed. Also see the rules for Bandages.\n\nOnce all Bleeding Conditions are removed, gain one Fatigued Condition."
+    },
+    {
+        "name": "Blinded",
+        "stackable": "No",
+        "effects": "You cannot see. You automatically fail all Tests that rely on vision, and any other Tests are taken with a –30 penalty. You cannot perform ranged attacks beyond Point Blank range (+30). All opponents count as having the Invisible Creature Trait when attacking you (see Bestiary, page 337). You may attack targets you are engaged with in melee, but suffer a –30 penalty to your Weapon Skill. If you move further than Walking distance in a Round, you must make a Dexterity Test or gain a Prone Condition."
+    },
+    {
+        "name": "Broken",
+        "stackable": "No", 
+        "effects": "Your spirit is broken. You automatically fail Psychology Tests and gain 1 Broken Condition whenever you fail a Psychology Test. You also suffer a –10 penalty to Willpower Tests and Weapon Skill Tests. Psychology Tests caused by Broken Conditions do not cause additional Broken Conditions.\n\nA Broken Condition can be removed with a successful Psychology Test; this Test can be made once per Scene for each Test that failed to result in the Broken Condition being gained. So, if you gained 3 Broken Conditions from failing 3 Fear Tests, you can attempt to remove each one once per Scene with a successful Fear Test. If successful, remove 1 Broken Condition, +1 per SL."
+    },
+    {
+        "name": "Deafened",
+        "stackable": "No",
+        "effects": "You cannot hear. You automatically fail all Tests that rely on hearing, and any other Tests involving communication or concentration suffer a –10 penalty. You may not cast spells that require vocalization."
+    },
+    {
+        "name": "Entangled",
+        "stackable": "Yes",
+        "effects": "You have been caught or snared, and cannot move freely. Whilst entangled, you are considered to be Stationary and cannot leave your current location. You may only take a single Move or Action during your turn, not both. You may attempt to break free with an Athletics Test opposed by whoever or whatever is entangling you; if you succeed, the condition is removed."
+    },
+    {
+        "name": "Fatigued",
+        "stackable": "Yes",
+        "effects": "You are exhausted or stressed, and certainly in need of rest. You suffer a –10 penalty to all Tests. Removing a Fatigued Condition normally requires rest, a spell, or a divine effect, though in some instances, such as when a Fatigued Condition is caused by carrying too much (see Encumbrance), simply changing your circumstances (carrying fewer trappings, for example) can remove a Condition."
+    },
+    {
+        "name": "Poisoned",
+        "stackable": "Yes",
+        "effects": "You have been poisoned. The exact effects of the poison will be described in the creature, spell, or item that caused this Condition. Generally, Poisoned Conditions are removed by time or appropriate medical attention."
+    },
+    {
+        "name": "Prone",
+        "stackable": "No",
+        "effects": "You have been knocked to the ground. You suffer a –20 penalty to Weapon Skill Tests when in combat, and anyone making melee attacks against you gains a +20 bonus to hit. Ranged attacks against you suffer a –20 penalty to hit. On your turn, you must use your Move to stand up and remove this Condition, or you may move at half rate while staying prone."
+    },
+    {
+        "name": "Stunned",
+        "stackable": "Yes",
+        "effects": "You have been struck about the head or otherwise disorientated or confused; your ears are likely ringing, and little makes sense. You are incapable of taking an Action on your turn but are capable of half your normal movement. You can defend yourself in opposed Tests — but not with Language (Magick). You also suffer a –10 penalty to all Tests. If you have any Stunned Conditions, any opponent trying to strike you in Melee Combat gains +1 Advantage before rolling the attack.\n\nAt the end of each Round, you may attempt a Challenging (+0) Endurance Test. If successful, remove a Stunned Condition, with each SL removing an extra Stunned Condition.\n\nOnce all Stunned Conditions are removed, gain 1 Fatigued Condition if you don't already have one."
+    },
+    {
+        "name": "Surprised",
+        "stackable": "No",
+        "effects": "You have been caught off guard. You may not take an Action on your turn, though you may still Oppose any Tests made against you. This Condition is automatically removed at the end of your Turn."
+    },
+    {
+        "name": "Unconscious",
+        "stackable": "No",
+        "effects": "You have been knocked out. You automatically fail all Tests and become unaware of your surroundings. Whilst unconscious, you are considered to be Prone. If you suffer any Wounds whilst unconscious, you have a 50% chance of gaining a Bleeding Condition. To recover consciousness, you must make a Challenging (+0) Endurance Test at the end of each Round. If successful, you lose the Unconscious Condition and gain a Stunned Condition."
+    }
+]
