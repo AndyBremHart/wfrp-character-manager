@@ -696,6 +696,36 @@
                     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 600px; max-width: 700px; max-height: 80vh; overflow-y: auto;">
                         <h3 style="color: #3e2f1f; margin-bottom: 15px;">Add Spell or Prayer</h3>
                         
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Source:</label>
+                            <select id="spell-source-input" style="width: 100%; padding: 5px;" onchange="window.toggleSpellSource()">
+                                <option value="custom">Custom Spell/Prayer</option>
+                                <option value="srd">Select from SRD</option>
+                            </select>
+                        </div>
+                        
+                        <!-- SRD Spell Selection -->
+                        <div id="srd-spell-section" style="display: none; margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Search SRD Spells:</label>
+                            <input type="text" id="srd-spell-search" placeholder="Type to search..." style="width: 100%; padding: 5px; margin-bottom: 10px;" oninput="window.filterSRDSpells()">
+                            
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Select Spell:</label>
+                            <select id="srd-spell-select" size="8" style="width: 100%; padding: 5px;" onchange="window.showSRDSpellDetails()">
+                            </select>
+                            
+                            <div id="srd-spell-details" style="display: none; margin-top: 10px; padding: 10px; background: #e8dfd0; border: 1px solid #8b7355;">
+                                <h4 style="color: #3e2f1f; margin-bottom: 10px;">Spell Details</h4>
+                                <p><strong>Name:</strong> <span id="srd-detail-name"></span></p>
+                                <p><strong>Lore:</strong> <span id="srd-detail-lore"></span></p>
+                                <p><strong>CN:</strong> <span id="srd-detail-cn"></span></p>
+                                <p><strong>Range:</strong> <span id="srd-detail-range"></span></p>
+                                <p><strong>Target:</strong> <span id="srd-detail-target"></span></p>
+                                <p><strong>Duration:</strong> <span id="srd-detail-duration"></span></p>
+                            </div>
+                        </div>
+                        
+                        <!-- Custom Spell Entry -->
+                        <div id="custom-spell-section">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                             <div>
                                 <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Name:</label>
@@ -758,12 +788,15 @@
                                 <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Ingredients/Components:</label>
                                 <input type="text" id="spell-ingredients-input" placeholder="Optional ingredients or components" style="width: 100%; padding: 5px;">
                             </div>
-                            <div style="display: flex; align-items: center; gap: 10px; margin-top: 25px;">
-                                <label style="color: #3e2f1f;">
-                                    <input type="checkbox" id="spell-memorised-input" style="margin-right: 5px;">
-                                    Currently Memorised/Prepared
-                                </label>
-                            </div>
+                        </div>
+                        </div>
+                        
+                        <!-- Memorised checkbox (applies to both SRD and custom spells) -->
+                        <div style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            <label style="color: #3e2f1f;">
+                                <input type="checkbox" id="spell-memorised-input" style="margin-right: 5px;">
+                                Currently Memorised/Prepared
+                            </label>
                         </div>
                         
                         <div style="text-align: center;">
@@ -2078,57 +2111,97 @@ window.updateLoreOptions = function() {
 }
 
 window.confirmAddSpell = function() {
-    const name = document.getElementById('spell-name-input').value.trim();
-    const type = document.getElementById('spell-type-input').value;
-    const lore = document.getElementById('spell-lore-input').value;
-    const cn = document.getElementById('spell-cn-input').value;
-    const range = document.getElementById('spell-range-input').value.trim();
-    const target = document.getElementById('spell-target-input').value.trim();
-    const duration = document.getElementById('spell-duration-input').value.trim();
-    const effect = document.getElementById('spell-effect-input').value.trim();
-    const ingredients = document.getElementById('spell-ingredients-input').value.trim();
+    const source = document.getElementById('spell-source-input').value;
     const memorised = document.getElementById('spell-memorised-input').checked;
+    let spell;
     
-    if (!name) {
-        alert('Please enter a spell/prayer name');
-        return;
+    if (source === 'srd') {
+        // Handle SRD spell selection
+        const select = document.getElementById('srd-spell-select');
+        const selectedOption = select.options[select.selectedIndex];
+        
+        if (!selectedOption) {
+            alert('Please select a spell from the SRD list');
+            return;
+        }
+        
+        const srdSpell = JSON.parse(selectedOption.dataset.spell);
+        
+        // Check if spell already exists
+        const exists = spells.some(s => s.name.toLowerCase() === srdSpell.name.toLowerCase());
+        if (exists) {
+            alert('A spell with this name already exists');
+            return;
+        }
+        
+        // Determine type based on lore
+        const arcaneLores = ['Petty Magic', 'Fire', 'Metal', 'Life', 'Light', 'Heavens', 'Shadow', 'Death', 'Beasts', 'Daemonology'];
+        const type = arcaneLores.includes(srdSpell.lore) ? 'arcane' : 'divine';
+        
+        spell = {
+            name: srdSpell.name,
+            type: type,
+            lore: srdSpell.lore,
+            cn: srdSpell.castingNumber,
+            range: srdSpell.range,
+            target: srdSpell.target.toString(),
+            duration: srdSpell.duration,
+            effect: `${srdSpell.name} (${srdSpell.lore} spell)`, // Placeholder since SRD doesn't include full effects
+            ingredients: '',
+            memorised: memorised
+        };
+    } else {
+        // Handle custom spell entry
+        const name = document.getElementById('spell-name-input').value.trim();
+        const type = document.getElementById('spell-type-input').value;
+        const lore = document.getElementById('spell-lore-input').value;
+        const cn = document.getElementById('spell-cn-input').value;
+        const range = document.getElementById('spell-range-input').value.trim();
+        const target = document.getElementById('spell-target-input').value.trim();
+        const duration = document.getElementById('spell-duration-input').value.trim();
+        const effect = document.getElementById('spell-effect-input').value.trim();
+        const ingredients = document.getElementById('spell-ingredients-input').value.trim();
+        
+        if (!name) {
+            alert('Please enter a spell/prayer name');
+            return;
+        }
+        
+        if (!lore) {
+            alert('Please select a lore or deity');
+            return;
+        }
+        
+        if (!cn || cn < 0) {
+            alert('Please enter a valid Casting Number');
+            return;
+        }
+        
+        if (!effect) {
+            alert('Please describe the spell effect');
+            return;
+        }
+        
+        // Check if spell already exists
+        const exists = spells.some(s => s.name.toLowerCase() === name.toLowerCase());
+        if (exists) {
+            alert('A spell with this name already exists');
+            return;
+        }
+        
+        spell = {
+            name: name,
+            type: type,
+            lore: lore,
+            cn: parseInt(cn),
+            range: range || 'Touch',
+            target: target || '1 target',
+            duration: duration || 'Instant',
+            effect: effect,
+            ingredients: ingredients || '',
+            memorised: memorised
+        };
     }
-    
-    if (!lore) {
-        alert('Please select a lore or deity');
-        return;
-    }
-    
-    if (!cn || cn < 0) {
-        alert('Please enter a valid Casting Number');
-        return;
-    }
-    
-    if (!effect) {
-        alert('Please describe the spell effect');
-        return;
-    }
-    
-    // Check if spell already exists
-    const exists = spells.some(s => s.name.toLowerCase() === name.toLowerCase());
-    if (exists) {
-        alert('A spell with this name already exists');
-        return;
-    }
-    
-    // Create spell object
-    const spell = {
-        name: name,
-        type: type,
-        lore: lore,
-        cn: parseInt(cn),
-        range: range || 'Touch',
-        target: target || '1 target',
-        duration: duration || 'Instant',
-        effect: effect,
-        ingredients: ingredients || '',
-        memorised: memorised
-    };
     
     spells.push(spell);
     displaySpells();
@@ -2137,6 +2210,7 @@ window.confirmAddSpell = function() {
 
 window.closeAddSpellModal = function() {
     document.getElementById('add-spell-modal').style.display = 'none';
+    document.getElementById('spell-source-input').value = 'custom';
     document.getElementById('spell-name-input').value = '';
     document.getElementById('spell-type-input').value = 'arcane';
     document.getElementById('spell-lore-input').value = '';
@@ -2147,6 +2221,96 @@ window.closeAddSpellModal = function() {
     document.getElementById('spell-effect-input').value = '';
     document.getElementById('spell-ingredients-input').value = '';
     document.getElementById('spell-memorised-input').checked = false;
+    document.getElementById('srd-spell-search').value = '';
+    document.getElementById('srd-spell-select').value = '';
+    document.getElementById('srd-spell-details').style.display = 'none';
+    toggleSpellSource(); // Reset to custom view
+}
+
+// SRD Spell Selection Functions
+window.toggleSpellSource = function() {
+    const source = document.getElementById('spell-source-input').value;
+    const customSection = document.getElementById('custom-spell-section');
+    const srdSection = document.getElementById('srd-spell-section');
+    
+    if (source === 'srd') {
+        customSection.style.display = 'none';
+        srdSection.style.display = 'block';
+        populateSRDSpellSelect();
+    } else {
+        customSection.style.display = 'block';
+        srdSection.style.display = 'none';
+    }
+}
+
+window.populateSRDSpellSelect = function() {
+    const select = document.getElementById('srd-spell-select');
+    select.innerHTML = '';
+    
+    const sortedSpells = [...srdSpells].sort((a, b) => a.name.localeCompare(b.name));
+    
+    sortedSpells.forEach(spell => {
+        const option = document.createElement('option');
+        option.value = spell.name;
+        option.textContent = `${spell.name} (${spell.lore}) - CN ${spell.castingNumber}`;
+        option.dataset.spell = JSON.stringify(spell);
+        select.appendChild(option);
+    });
+}
+
+window.filterSRDSpells = function() {
+    const searchText = document.getElementById('srd-spell-search').value.toLowerCase();
+    const select = document.getElementById('srd-spell-select');
+    const options = select.options;
+    
+    let matchCount = 0;
+    let firstMatch = null;
+    
+    for (let i = 0; i < options.length; i++) {
+        try {
+            const spell = JSON.parse(options[i].dataset.spell);
+            const matches = searchText === '' || 
+                           (spell.name && spell.name.toLowerCase().includes(searchText)) ||
+                           (spell.lore && spell.lore.toLowerCase().includes(searchText));
+            
+            options[i].style.display = matches ? '' : 'none';
+            
+            if (matches) {
+                matchCount++;
+                if (!firstMatch) {
+                    firstMatch = options[i];
+                }
+            }
+        } catch (e) {
+            console.error('Error parsing spell data for option', i, ':', e);
+            options[i].style.display = 'none';
+        }
+    }
+    
+    // Select first match if any
+    if (firstMatch && matchCount > 0) {
+        firstMatch.selected = true;
+        window.showSRDSpellDetails();
+    }
+}
+
+window.showSRDSpellDetails = function() {
+    const select = document.getElementById('srd-spell-select');
+    const selectedOption = select.options[select.selectedIndex];
+    
+    if (!selectedOption) return;
+    
+    const spell = JSON.parse(selectedOption.dataset.spell);
+    const detailsDiv = document.getElementById('srd-spell-details');
+    
+    document.getElementById('srd-detail-name').textContent = spell.name;
+    document.getElementById('srd-detail-lore').textContent = spell.lore;
+    document.getElementById('srd-detail-cn').textContent = spell.castingNumber;
+    document.getElementById('srd-detail-range').textContent = spell.range;
+    document.getElementById('srd-detail-target').textContent = spell.target;
+    document.getElementById('srd-detail-duration').textContent = spell.duration;
+    
+    detailsDiv.style.display = 'block';
 }
 
 // Add search and filter listeners for spells
@@ -2379,6 +2543,7 @@ document.addEventListener('DOMContentLoaded', function() {
             loadSRDData();
             loadTalentsData();
             loadConditionsData();
+            loadSpellsData();
             
             try {
                 displaySkills(); // Show basic skills immediately
@@ -2494,6 +2659,30 @@ function loadConditionsData() {
                 { name: "Unconscious", stackable: "No", effects: "You have been knocked out. You automatically fail all Tests and become unaware of your surroundings. Whilst unconscious, you are considered to be Prone." }
             ];
             console.log('Using fallback conditions data:', srdConditions.length, 'conditions loaded');
+        });
+}
+
+// Load Spells Data
+function loadSpellsData() {
+    fetch('Spells.json')
+        .then(response => response.json())
+        .then(data => {
+            srdSpells = data;
+            console.log('Loaded', srdSpells.length, 'spells from SRD');
+        })
+        .catch(error => {
+            console.error('Error loading spells:', error);
+            // Fallback data with common WFRP spells
+            srdSpells = [
+                { name: "Dart", lore: "Petty Magic", castingNumber: 3, range: "12 yards", target: "1", duration: "Instant" },
+                { name: "Light", lore: "Petty Magic", castingNumber: 2, range: "Touch", target: "1", duration: "1 hour" },
+                { name: "Magic Lock", lore: "Petty Magic", castingNumber: 3, range: "Touch", target: "1", duration: "24 hours" },
+                { name: "Fireball", lore: "Fire", castingNumber: 5, range: "24 yards", target: "1", duration: "Instant" },
+                { name: "Flaming Sword of Rhuin", lore: "Fire", castingNumber: 7, range: "6 yards", target: "1", duration: "Willpower Bonus rounds" },
+                { name: "Heal", lore: "Life", castingNumber: 4, range: "Touch", target: "1", duration: "Instant" },
+                { name: "Blessing", lore: "Sigmar", castingNumber: 3, range: "6 yards", target: "Willpower Bonus", duration: "Willpower Bonus rounds" }
+            ];
+            console.log('Using fallback spells data:', srdSpells.length, 'spells loaded');
         });
 }
 
