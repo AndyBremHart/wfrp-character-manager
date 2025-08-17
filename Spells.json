@@ -1,0 +1,1230 @@
+[
+  {
+    "name": "Amber Talons",
+    "lore": "Beasts",
+    "castingNumber": 6,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Beasts"
+  },
+  {
+    "name": "Beast Form",
+    "lore": "Beasts",
+    "castingNumber": 5,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower minutes",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Beasts"
+  },
+  {
+    "name": "Beast Master",
+    "lore": "Beasts",
+    "castingNumber": 10,
+    "range": "Willpower Bonus yards",
+    "target": 1,
+    "duration": "Willpower Bonus days",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Beasts"
+  },
+  {
+    "name": "Beast Tongue",
+    "lore": "Beasts",
+    "castingNumber": 3,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower minutes",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Beasts"
+  },
+  {
+    "name": "Flock of Doom",
+    "lore": "Beasts",
+    "castingNumber": 8,
+    "range": "Willpower yards",
+    "target": "AoE (Willpower Bonus yards)",
+    "duration": "Willpower Bonus rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Beasts"
+  },
+  {
+    "name": "Hunter's Hide",
+    "lore": "Beasts",
+    "castingNumber": 6,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Beasts"
+  },
+  {
+    "name": "The Amber Spear",
+    "lore": "Beasts",
+    "castingNumber": 8,
+    "range": "Willpower yards",
+    "target": "Special",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Beasts"
+  },
+  {
+    "name": "Wyssan's Wildform",
+    "lore": "Beasts",
+    "castingNumber": 8,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Beasts"
+  },
+  {
+    "name": "Destroy Lesser Daemon",
+    "lore": "Daemonology",
+    "castingNumber": 6,
+    "range": "Willpower yards",
+    "target": 1,
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Dark Magic/Lore of Daemonology"
+  },
+  {
+    "name": "Detect Daemon",
+    "lore": "Daemonology",
+    "castingNumber": 4,
+    "range": "Willpower yards",
+    "target": "Special",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Dark Magic/Lore of Daemonology"
+  },
+  {
+    "name": "Manifest Lesser Daemon",
+    "lore": "Daemonology",
+    "castingNumber": 8,
+    "range": "Willpower Bonus yards",
+    "target": "Special",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Dark Magic/Lore of Daemonology"
+  },
+  {
+    "name": "Octagram",
+    "lore": "Daemonology",
+    "castingNumber": 10,
+    "range": "Touch",
+    "target": "AoE (maximum, Willpower Bonus yards across)",
+    "duration": "Willpower minutes",
+    "folder": "4. SRD/Magic/Lores/Dark Magic/Lore of Daemonology"
+  },
+  {
+    "name": "Caress of Laniph",
+    "lore": "Death",
+    "castingNumber": 7,
+    "range": "Touch",
+    "target": "Special",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Death"
+  },
+  {
+    "name": "Dying Words",
+    "lore": "Death",
+    "castingNumber": 6,
+    "range": "Touch",
+    "target": 1,
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Death"
+  },
+  {
+    "name": "Purple Pall of Shyish",
+    "lore": "Death",
+    "castingNumber": 9,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Death"
+  },
+  {
+    "name": "Sanctify",
+    "lore": "Death",
+    "castingNumber": 10,
+    "range": "Touch",
+    "target": "AoE (Willpower Bonus yards)",
+    "duration": "Willpower minutes",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Death"
+  },
+  {
+    "name": "Scythe of Shyish",
+    "lore": "Death",
+    "castingNumber": 6,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Death"
+  },
+  {
+    "name": "Soul Vortex",
+    "lore": "Death",
+    "castingNumber": 8,
+    "range": "Willpower yards",
+    "target": "AoE (Willpower Bonus yards)",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Death"
+  },
+  {
+    "name": "Steal Life",
+    "lore": "Death",
+    "castingNumber": 7,
+    "range": "Willpower yards",
+    "target": 1,
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Death"
+  },
+  {
+    "name": "Swift Passing",
+    "lore": "Death",
+    "castingNumber": 6,
+    "range": "Touch",
+    "target": "Special",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Death"
+  },
+  {
+    "name": "Aqshy's Aegis",
+    "lore": "Fire",
+    "castingNumber": 5,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Fire"
+  },
+  {
+    "name": "Cauterise",
+    "lore": "Fire",
+    "castingNumber": 4,
+    "range": "Touch",
+    "target": 1,
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Fire"
+  },
+  {
+    "name": "Crown of Flame",
+    "lore": "Fire",
+    "castingNumber": 8,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Fire"
+  },
+  {
+    "name": "Firewall",
+    "lore": "Fire",
+    "castingNumber": 6,
+    "range": "Willpower yards",
+    "target": "AoE (Special)",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Fire"
+  },
+  {
+    "name": "Flaming Hearts",
+    "lore": "Fire",
+    "castingNumber": 8,
+    "range": "Willpower yards",
+    "target": "AoE (Willpower Bonus yards)",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Fire"
+  },
+  {
+    "name": "Flaming Sword of Rhuin",
+    "lore": "Fire",
+    "castingNumber": 8,
+    "range": "Willpower yards",
+    "target": 1,
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Fire"
+  },
+  {
+    "name": "Great Fires of U'Zhul",
+    "lore": "Fire",
+    "castingNumber": 10,
+    "range": "Willpower yards",
+    "target": "AoE (Willpower Bonus yards)",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Fire"
+  },
+  {
+    "name": "Purge",
+    "lore": "Fire",
+    "castingNumber": 10,
+    "range": "Willpower yards",
+    "target": "AoE (Willpower Bonus yards)",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Fire"
+  },
+  {
+    "name": "Cerulean Shield",
+    "lore": "Heavens",
+    "castingNumber": 7,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Heavens"
+  },
+  {
+    "name": "Comet of Casandora",
+    "lore": "Heavens",
+    "castingNumber": 10,
+    "range": "Initiative yards",
+    "target": "AoE (Initiative Bonus yards)",
+    "duration": "Special",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Heavens"
+  },
+  {
+    "name": "Fate's Fickle Fingers",
+    "lore": "Heavens",
+    "castingNumber": 6,
+    "range": "You",
+    "target": "AoE (Initiative Bonus yards)",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Heavens"
+  },
+  {
+    "name": "Starcrossed",
+    "lore": "Heavens",
+    "castingNumber": 7,
+    "range": "Willpower yards",
+    "target": 1,
+    "duration": "Initiative Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Heavens"
+  },
+  {
+    "name": "T'Essla's Arc",
+    "lore": "Heavens",
+    "castingNumber": 7,
+    "range": "Willpower yards",
+    "target": 1,
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Heavens"
+  },
+  {
+    "name": "The First Portent of Amul",
+    "lore": "Heavens",
+    "castingNumber": 3,
+    "range": "You",
+    "target": "You",
+    "duration": "Initiative Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Heavens"
+  },
+  {
+    "name": "The Second Portent of Amul",
+    "lore": "Heavens",
+    "castingNumber": 6,
+    "range": "You",
+    "target": "You",
+    "duration": "Initiative Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Heavens"
+  },
+  {
+    "name": "The Third Portent of Amul",
+    "lore": "Heavens",
+    "castingNumber": 12,
+    "range": "You",
+    "target": "You",
+    "duration": "Initiative Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Heavens"
+  },
+  {
+    "name": "Barkskin",
+    "lore": "Life",
+    "castingNumber": 3,
+    "range": "Touch",
+    "target": 1,
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Life"
+  },
+  {
+    "name": "Earthblood",
+    "lore": "Life",
+    "castingNumber": 6,
+    "range": "You",
+    "target": "AoE (Willpower Bonus yards)",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Life"
+  },
+  {
+    "name": "Earthpool",
+    "lore": "Life",
+    "castingNumber": 8,
+    "range": "You",
+    "target": "You",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Life"
+  },
+  {
+    "name": "Fat of the Land",
+    "lore": "Life",
+    "castingNumber": 4,
+    "range": "Touch",
+    "target": 1,
+    "duration": "Willpower Bonus days",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Life"
+  },
+  {
+    "name": "Forest of Thorns",
+    "lore": "Life",
+    "castingNumber": 6,
+    "range": "Willpower yards",
+    "target": "AoE (Willpower Bonus yards)",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Life"
+  },
+  {
+    "name": "Lie of the Land",
+    "lore": "Life",
+    "castingNumber": 5,
+    "range": "Initiative Bonus miles",
+    "target": "You",
+    "duration": "Special",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Life"
+  },
+  {
+    "name": "Lifebloom",
+    "lore": "Life",
+    "castingNumber": 8,
+    "range": "Willpower Bonus yards",
+    "target": "Special",
+    "duration": "Special",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Life"
+  },
+  {
+    "name": "Regenerate",
+    "lore": "Life",
+    "castingNumber": 6,
+    "range": "Touch",
+    "target": 1,
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Life"
+  },
+  {
+    "name": "Banishment",
+    "lore": "Light",
+    "castingNumber": 12,
+    "range": "You",
+    "target": "AoE (Willpower Bonus yards)",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Light"
+  },
+  {
+    "name": "Blinding Light",
+    "lore": "Light",
+    "castingNumber": 5,
+    "range": "Willpower yards",
+    "target": "You",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Light"
+  },
+  {
+    "name": "Clarity of Thought",
+    "lore": "Light",
+    "castingNumber": 6,
+    "range": "Touch",
+    "target": 1,
+    "duration": "Intelligence minutes",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Light"
+  },
+  {
+    "name": "Daemonbane",
+    "lore": "Light",
+    "castingNumber": 10,
+    "range": "Willpower Bonus yards",
+    "target": 1,
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Light"
+  },
+  {
+    "name": "Healing Light",
+    "lore": "Light",
+    "castingNumber": 9,
+    "range": "Willpower Bonus yards",
+    "target": 1,
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Light"
+  },
+  {
+    "name": "Net of Amyntok",
+    "lore": "Light",
+    "castingNumber": 8,
+    "range": "Intelligence Bonus yards",
+    "target": 1,
+    "duration": "Target's Intelligence Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Light"
+  },
+  {
+    "name": "Phâ's Protection",
+    "lore": "Light",
+    "castingNumber": 10,
+    "range": "You",
+    "target": "AoE (Willpower Bonus yards)",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Light"
+  },
+  {
+    "name": "Speed of Thought",
+    "lore": "Light",
+    "castingNumber": 8,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Light"
+  },
+  {
+    "name": "Crucible of Chamon",
+    "lore": "Metal",
+    "castingNumber": 7,
+    "range": "Willpower Bonus yards",
+    "target": 1,
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Metal"
+  },
+  {
+    "name": "Enchant Weapon",
+    "lore": "Metal",
+    "castingNumber": 6,
+    "range": "Touch",
+    "target": "special",
+    "duration": "Willpower Bonus rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Metal"
+  },
+  {
+    "name": "Feather of Lead",
+    "lore": "Metal",
+    "castingNumber": 5,
+    "range": "Willpower yards",
+    "target": "Area of Effect (Willpower Bonus yards)",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Metal"
+  },
+  {
+    "name": "Fool's Gold",
+    "lore": "Metal",
+    "castingNumber": 4,
+    "range": "Touch",
+    "target": 1,
+    "duration": "Willpower minutes",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Metal"
+  },
+  {
+    "name": "Forge of Chamon",
+    "lore": "Metal",
+    "castingNumber": 9,
+    "range": "Willpower Bonus yards",
+    "target": "Special",
+    "duration": "Willpower minutes",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Metal"
+  },
+  {
+    "name": "Glittering Robe",
+    "lore": "Metal",
+    "castingNumber": 5,
+    "range": "You",
+    "target": "You",
+    "duration": "Toughness Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Metal"
+  },
+  {
+    "name": "Mutable Metal",
+    "lore": "Metal",
+    "castingNumber": 5,
+    "range": "Touch",
+    "target": 1,
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Metal"
+  },
+  {
+    "name": "Transmutation of Chamon",
+    "lore": "Metal",
+    "castingNumber": 12,
+    "range": "Willpower yards",
+    "target": "AoE (Willpower Bonus yards)",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Metal"
+  },
+  {
+    "name": "Raise Dead",
+    "lore": "Necromancy",
+    "castingNumber": 8,
+    "range": "Willpower yards",
+    "target": "AoE (Willpower Bonus yards)",
+    "duration": "Until sunrise",
+    "folder": "4. SRD/Magic/Lores/Dark Magic/Lore of Necromancy"
+  },
+  {
+    "name": "Reanimate",
+    "lore": "Necromancy",
+    "castingNumber": 8,
+    "range": "Willpower yards",
+    "target": "AoE (Willpower Bonus yards)",
+    "duration": "Until sunrise",
+    "folder": "4. SRD/Magic/Lores/Dark Magic/Lore of Necromancy"
+  },
+  {
+    "name": "Screaming Skull",
+    "lore": "Necromancy",
+    "castingNumber": 8,
+    "range": "Willpower yards",
+    "target": "Special",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Dark Magic/Lore of Necromancy"
+  },
+  {
+    "name": "Vanhel's Call",
+    "lore": "Necromancy",
+    "castingNumber": 6,
+    "range": "Willpower yards",
+    "target": "Special",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Dark Magic/Lore of Necromancy"
+  },
+  {
+    "name": "Stream of Corruption",
+    "lore": "Nurgle",
+    "castingNumber": 9,
+    "range": "Special",
+    "target": "Special",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Nurgle"
+  },
+  {
+    "name": "Aethyric Armour",
+    "lore": "Petty",
+    "castingNumber": 2,
+    "range": [
+      "You"
+    ],
+    "target": "You",
+    "duration": [
+      "Willpower Bonus Rounds+"
+    ],
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Aethyric Arms",
+    "lore": "Petty",
+    "castingNumber": 2,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds+",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Arrow Shield",
+    "lore": "Petty",
+    "castingNumber": 3,
+    "range": "You",
+    "target": "AoE (Willpower Bonus yards)",
+    "duration": "Willpower Bonus Rounds+",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Blast",
+    "lore": "Petty",
+    "castingNumber": 4,
+    "range": "Willpower yards",
+    "target": "AoE (Willpower Bonus yards)",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Blast of Corruption",
+    "lore": "Petty",
+    "castingNumber": 8,
+    "range": "Willpower yards",
+    "target": "AoE (Willpower Bonus yards)",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Chaos Arcane Spells"
+  },
+  {
+    "name": "Bolt",
+    "lore": "Petty",
+    "castingNumber": 4,
+    "range": "Willpower yards",
+    "target": 1,
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Bolt of Corruption",
+    "lore": "Petty",
+    "castingNumber": 8,
+    "range": "Willpower yards",
+    "target": 1,
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Chaos Arcane Spells"
+  },
+  {
+    "name": "Breath",
+    "lore": "Petty",
+    "castingNumber": 6,
+    "range": "1 yard",
+    "target": "Special",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Bridge",
+    "lore": "Petty",
+    "castingNumber": 4,
+    "range": "Willpower yards",
+    "target": "AoE (see description)",
+    "duration": "Willpower Bonus Rounds+",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Chain Attack",
+    "lore": "Petty",
+    "castingNumber": 6,
+    "range": "Willpower yards",
+    "target": "Special",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Corrosive Blood",
+    "lore": "Petty",
+    "castingNumber": 4,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Daemonic Mien",
+    "lore": "Petty",
+    "castingNumber": 8,
+    "range": "You",
+    "target": "You",
+    "duration": "Fellowship Bonus Rounds+",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Chaos Arcane Spells"
+  },
+  {
+    "name": "Dark Vision",
+    "lore": "Petty",
+    "castingNumber": 1,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Distracting",
+    "lore": "Petty",
+    "castingNumber": 4,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus rounds",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Dome",
+    "lore": "Petty",
+    "castingNumber": 7,
+    "range": "You",
+    "target": "AoE (Willpower Bonus yards)",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Drop",
+    "lore": "Petty",
+    "castingNumber": 1,
+    "range": "Willpower yards",
+    "target": 1,
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Entangle",
+    "lore": "Petty",
+    "castingNumber": 3,
+    "range": "Willpower yards",
+    "target": 1,
+    "duration": "Special",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Fearsome",
+    "lore": "Petty",
+    "castingNumber": 3,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Flight",
+    "lore": "Petty",
+    "castingNumber": 8,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds+",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Foul Messenger",
+    "lore": "Petty",
+    "castingNumber": 8,
+    "range": "Fellowship miles",
+    "target": "Special",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Chaos Arcane Spells"
+  },
+  {
+    "name": "Joyous Aspect",
+    "lore": "Petty",
+    "castingNumber": 4,
+    "range": "Touch",
+    "target": 1,
+    "duration": "Fellowship Bonus Rounds+",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Chaos Arcane Spells"
+  },
+  {
+    "name": "Magic Shield",
+    "lore": "Petty",
+    "castingNumber": 4,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Move Object",
+    "lore": "Petty",
+    "castingNumber": 4,
+    "range": "WP yards",
+    "target": 1,
+    "duration": "1 Round",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Mundane Aura",
+    "lore": "Petty",
+    "castingNumber": 4,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower minutes",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Obsession",
+    "lore": "Petty",
+    "castingNumber": 8,
+    "range": "Initiative Bonus miles",
+    "target": "Special",
+    "duration": "SL days",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Chaos Arcane Spells"
+  },
+  {
+    "name": "Power of Chaos",
+    "lore": "Petty",
+    "castingNumber": 4,
+    "range": "Willpower yards",
+    "target": "AoE (Fellowship Bonus yards)",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Chaos Arcane Spells"
+  },
+  {
+    "name": "Push",
+    "lore": "Petty",
+    "castingNumber": 6,
+    "range": "You",
+    "target": "You",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Rend Aethyr",
+    "lore": "Petty",
+    "castingNumber": 16,
+    "range": "Willpower yards",
+    "target": "Special",
+    "duration": "Willpower Bonus Rounds+",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Chaos Arcane Spells"
+  },
+  {
+    "name": "Slave to Darkness",
+    "lore": "Petty",
+    "castingNumber": 8,
+    "range": "Touch",
+    "target": 1,
+    "duration": "Special",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Chaos Arcane Spells"
+  },
+  {
+    "name": "Teleport",
+    "lore": "Petty",
+    "castingNumber": 5,
+    "range": "You",
+    "target": "You",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Terrifying",
+    "lore": "Petty",
+    "castingNumber": 7,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Ward",
+    "lore": "Petty",
+    "castingNumber": 5,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Arcane Spells"
+  },
+  {
+    "name": "Choking Shadows",
+    "lore": "Shadows",
+    "castingNumber": 6,
+    "range": "Willpower Bonus yards",
+    "target": 1,
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Shadows"
+  },
+  {
+    "name": "Doppelganger",
+    "lore": "Shadows",
+    "castingNumber": 10,
+    "range": "You",
+    "target": "You",
+    "duration": "Intelligence Bonus minutes",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Shadows"
+  },
+  {
+    "name": "Illusion",
+    "lore": "Shadows",
+    "castingNumber": 8,
+    "range": "Willpower yards",
+    "target": "AoE (Initiative Bonus yards)",
+    "duration": "Willpower minutes",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Shadows"
+  },
+  {
+    "name": "Mindslip",
+    "lore": "Shadows",
+    "castingNumber": 6,
+    "range": "1 yard",
+    "target": 1,
+    "duration": "Willpower minutes",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Shadows"
+  },
+  {
+    "name": "Mystifying Miasma",
+    "lore": "Shadows",
+    "castingNumber": 6,
+    "range": "Willpower yards",
+    "target": "AoE (Willpower Bonus yards)",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Shadows"
+  },
+  {
+    "name": "Shadowsteed",
+    "lore": "Shadows",
+    "castingNumber": 6,
+    "range": "Willpower Bonus yards",
+    "target": 1,
+    "duration": "Until the next sunrise",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Shadows"
+  },
+  {
+    "name": "Shadowstep",
+    "lore": "Shadows",
+    "castingNumber": 8,
+    "range": "Willpower yards",
+    "target": "You",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Shadows"
+  },
+  {
+    "name": "Shroud of Invisibility",
+    "lore": "Shadows",
+    "castingNumber": 8,
+    "range": "Touch",
+    "target": 1,
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Colour Magic/Lore of Shadows"
+  },
+  {
+    "name": "Acquiescence",
+    "lore": "Slaanesh",
+    "castingNumber": 5,
+    "range": "Willpower yards",
+    "target": 1,
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Slaanesh"
+  },
+  {
+    "name": "Bension of Tzeentch",
+    "lore": "Tzeentch",
+    "castingNumber": 9,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus minutes",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Bestial Rage",
+    "lore": "Tzeentch",
+    "castingNumber": 6,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Blue Fire of Tzeentch",
+    "lore": "Tzeentch",
+    "castingNumber": 6,
+    "range": "Intelligence yards",
+    "target": "AoE",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Bolt of Change",
+    "lore": "Tzeentch",
+    "castingNumber": 9,
+    "range": "Intelligence yards",
+    "target": 1,
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Boon of Tzeentch",
+    "lore": "Tzeentch",
+    "castingNumber": 9,
+    "range": "You",
+    "target": "You",
+    "duration": "Initiative Bonus days",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Climb",
+    "lore": "Tzeentch",
+    "castingNumber": 5,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus minutes",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Curse of Tzeentch",
+    "lore": "Tzeentch",
+    "castingNumber": 9,
+    "range": "Intelligence yards",
+    "target": 1,
+    "duration": "Varies",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Enrage Beast",
+    "lore": "Tzeentch",
+    "castingNumber": 6,
+    "range": "Willpower yards",
+    "target": 1,
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Gift of the Beast",
+    "lore": "Tzeentch",
+    "castingNumber": 8,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus minutes",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Master of Fortune",
+    "lore": "Tzeentch",
+    "castingNumber": 8,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Days",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Mindfire",
+    "lore": "Tzeentch",
+    "castingNumber": 6,
+    "range": "Intelligence yards",
+    "target": 1,
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Pink Fire of Tzeentch",
+    "lore": "Tzeentch",
+    "castingNumber": 6,
+    "range": "Intelligence yards",
+    "target": 1,
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Sense the Skein",
+    "lore": "Tzeentch",
+    "castingNumber": 3,
+    "range": "You",
+    "target": "You",
+    "duration": "1 Round",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Slave to Chaos",
+    "lore": "Tzeentch",
+    "castingNumber": 18,
+    "range": "Willpower yards",
+    "target": 1,
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Subvert Strength",
+    "lore": "Tzeentch",
+    "castingNumber": 11,
+    "range": "Willpower Bonus yards",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "The Flickering Flames of Fickle Fate",
+    "lore": "Tzeentch",
+    "castingNumber": 4,
+    "range": "Intelligence yards",
+    "target": "Special",
+    "duration": "Willpower Bonus Rounds +",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "The Purple Hand",
+    "lore": "Tzeentch",
+    "castingNumber": 3,
+    "range": "Intelligence yards",
+    "target": 1,
+    "duration": "Varies",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Transformation of the Beast",
+    "lore": "Tzeentch",
+    "castingNumber": 12,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Transformation of Tzeentch",
+    "lore": "Tzeentch",
+    "castingNumber": 10,
+    "range": "Initiative Bonus Yards",
+    "target": 1,
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Treason of Tzeentch",
+    "lore": "Tzeentch",
+    "castingNumber": 6,
+    "range": "Willpower yards",
+    "target": 1,
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Tremor",
+    "lore": "Tzeentch",
+    "castingNumber": 8,
+    "range": "You",
+    "target": "Area of Effect",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Tzeentch's Firestorm",
+    "lore": "Tzeentch",
+    "castingNumber": 11,
+    "range": "Intelligence Yards",
+    "target": "AoE (Initiative Bonus Yards)",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Tzeentch's Golden Aura",
+    "lore": "Tzeentch",
+    "castingNumber": 7,
+    "range": "You",
+    "target": "You",
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Word of Tzeentch",
+    "lore": "Tzeentch",
+    "castingNumber": 7,
+    "range": "Strength Bonus Yards",
+    "target": 1,
+    "duration": "Intelligence Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Chaos Magic/Lore of Tzeentch"
+  },
+  {
+    "name": "Blight",
+    "lore": "Witchcraft",
+    "castingNumber": 14,
+    "range": "Willpower Bonus yards",
+    "target": "Special",
+    "duration": "Special",
+    "folder": "4. SRD/Magic/Lores/Witch Magic/Lore of Witchcraft"
+  },
+  {
+    "name": "Creeping Menace",
+    "lore": "Witchcraft",
+    "castingNumber": 6,
+    "range": "Willpower yards",
+    "target": 1,
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Witch Magic/Lore of Witchcraft"
+  },
+  {
+    "name": "Curse of Crippling Pain",
+    "lore": "Witchcraft",
+    "castingNumber": 10,
+    "range": "Willpower yards",
+    "target": 1,
+    "duration": "Willpower Bonus Rounds",
+    "folder": "4. SRD/Magic/Lores/Witch Magic/Lore of Witchcraft"
+  },
+  {
+    "name": "Curse of Ill-Fortune",
+    "lore": "Witchcraft",
+    "castingNumber": 8,
+    "range": "Willpower Bonus miles",
+    "target": 1,
+    "duration": "Willpower Bonus days",
+    "folder": "4. SRD/Magic/Lores/Witch Magic/Lore of Witchcraft"
+  },
+  {
+    "name": "Haunting Horror",
+    "lore": "Witchcraft",
+    "castingNumber": 8,
+    "range": "Touch",
+    "target": "AoE (a single location)",
+    "duration": "Willpower days",
+    "folder": "4. SRD/Magic/Lores/Witch Magic/Lore of Witchcraft"
+  },
+  {
+    "name": "The Evil Eye",
+    "lore": "Witchcraft",
+    "castingNumber": 6,
+    "range": "Willpower yards",
+    "target": "Special",
+    "duration": "Instant",
+    "folder": "4. SRD/Magic/Lores/Witch Magic/Lore of Witchcraft"
+  }
+]

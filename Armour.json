@@ -1,0 +1,144 @@
+[
+  {
+    "name": "Bracers",
+    "category": "Plate",
+    "ap": 2,
+    "locations": [
+      "Arms"
+    ],
+    "encumbrance": 3,
+    "cost": "8GC"
+  },
+  {
+    "name": "Breastplate (Boiled Leather)",
+    "category": "Boiled Leather",
+    "ap": 2,
+    "locations": [
+      "Body"
+    ],
+    "encumbrance": 2,
+    "cost": "P18D"
+  },
+  {
+    "name": "Breastplate (Plate)",
+    "category": "Plate",
+    "ap": 2,
+    "locations": [
+      "Body"
+    ],
+    "encumbrance": 3,
+    "cost": "10GC"
+  },
+  {
+    "name": "Helm",
+    "category": "Plate",
+    "ap": 2,
+    "locations": [
+      "Head"
+    ],
+    "encumbrance": 2,
+    "cost": "3GC"
+  },
+  {
+    "name": "Leather Jack",
+    "category": "Soft Leather",
+    "ap": 1,
+    "locations": [
+      "Arms",
+      "Body"
+    ],
+    "encumbrance": 1,
+    "cost": "P12D"
+  },
+  {
+    "name": "Leather Jerkin",
+    "category": "Soft Leather",
+    "ap": 1,
+    "locations": [
+      "Body"
+    ],
+    "encumbrance": 1,
+    "cost": "P10D"
+  },
+  {
+    "name": "Leather Leggings",
+    "category": "Soft Leather",
+    "ap": 1,
+    "locations": [
+      "Legs"
+    ],
+    "encumbrance": 1,
+    "cost": "P14D"
+  },
+  {
+    "name": "Leather Skullcap",
+    "category": "Soft Leather",
+    "ap": 1,
+    "locations": [
+      "Head"
+    ],
+    "encumbrance": 1,
+    "cost": "P8D"
+  },
+  {
+    "name": "Mail Chausses",
+    "category": "Mail",
+    "ap": 2,
+    "locations": [
+      "Legs"
+    ],
+    "encumbrance": 3,
+    "cost": "2GC"
+  },
+  {
+    "name": "Mail Coat",
+    "category": "Mail",
+    "ap": 2,
+    "locations": [
+      "Arms",
+      "Body"
+    ],
+    "encumbrance": 3,
+    "cost": "3GC"
+  },
+  {
+    "name": "Mail Coif",
+    "category": "Mail",
+    "ap": 2,
+    "locations": [
+      "Head"
+    ],
+    "encumbrance": 2,
+    "cost": "1GC"
+  },
+  {
+    "name": "Mail Shirt",
+    "category": "Mail",
+    "ap": 2,
+    "locations": [
+      "Body"
+    ],
+    "encumbrance": 2,
+    "cost": "2GC"
+  },
+  {
+    "name": "Open Helm",
+    "category": "Plate",
+    "ap": 2,
+    "locations": [
+      "Head"
+    ],
+    "encumbrance": 1,
+    "cost": "2GC"
+  },
+  {
+    "name": "Plate Leggings",
+    "category": "Plate",
+    "ap": 2,
+    "locations": [
+      "Legs"
+    ],
+    "encumbrance": 3,
+    "cost": "10GC"
+  }
+]

@@ -1,0 +1,1199 @@
+[
+  {
+    "name": "Accurate Shot",
+    "max": "Ballistic Skill Bonus",
+    "category": "combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Acute Sense",
+    "max": "Initiative Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Aethyric Attunement",
+    "max": "Initiative Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Alley Cat",
+    "max": "Initiative Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Ambidextrous",
+    "max": 2,
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Animal Affinity",
+    "max": "Willpower Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Arcane Magic",
+    "max": 1,
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Argumentative",
+    "max": "Fellowship Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Artistic",
+    "max": "Dexterity Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Attractive",
+    "max": "Fellowship Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Battle Rage",
+    "max": "Willpower Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Beat Blade",
+    "max": "Weapon Skill Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Beneath Notice",
+    "max": "Fellowship Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Berserk Charge",
+    "max": "Strength Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Blather",
+    "max": "Fellowship Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Bless",
+    "max": 1,
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Bookish",
+    "max": "Intelligence Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Break and Enter",
+    "max": "Strength Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Briber",
+    "max": "Fellowship Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Cardsharp",
+    "max": "Intelligence Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Careful Strike",
+    "max": "Initiative Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Carouser",
+    "max": "Toughness Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Cat-tongued",
+    "max": "Fellowship Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Catfall",
+    "max": "Agility Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Chaos Magic",
+    "max": "Number of Spells available in chosen Chaos Magic Lore",
+    "category": "Chaos",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Combat Aware",
+    "max": "Initiative Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Combat Master",
+    "max": "Agility Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Combat Reflexes",
+    "max": "Initiative Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Commanding Presence",
+    "max": "Fellowship Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Concoct",
+    "max": "Intelligence Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Contortionist",
+    "max": "Agility Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Coolheaded",
+    "max": 1,
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Crack the Whip",
+    "max": "Dexterity Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Craftsman",
+    "max": "Dexterity Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Criminal",
+    "max": "None",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Deadeye Shot",
+    "max": 1,
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Dealmaker",
+    "max": "Fellowship Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Detect Artefact",
+    "max": "Initiative Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Diceman",
+    "max": "Intelligence Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Dirty Fighting",
+    "max": "Weapon Skill Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Disarm",
+    "max": "Initiative Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Disciple of Change",
+    "max": 1,
+    "category": "chaos",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Distract",
+    "max": "Agility Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Doomed",
+    "max": 1,
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Double Life",
+    "max": 1,
+    "category": "social",
+    "prerequisite": "Secret Identity",
+    "tests": "Various"
+  },
+  {
+    "name": "Drilled",
+    "max": 1,
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Dual Wielder",
+    "max": "Agility Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Embezzle",
+    "max": "Intelligence Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Enclosed Fighter",
+    "max": "Agility Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Etiquette",
+    "max": "Fellowship Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Fast Hands",
+    "max": "Dexterity Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Fast Shot",
+    "max": "Agility Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Fearless",
+    "max": "Willpower Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Feint",
+    "max": "Weapon Skill Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Field Dressing",
+    "max": "Intelligence Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Fisherman",
+    "max": "Initiative Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Flagellant",
+    "max": "Toughness Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Flee!",
+    "max": "Agility Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Fleet Footed",
+    "max": 1,
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Frenzy",
+    "max": 1,
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Frightening",
+    "max": "Strength Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Furious Assault",
+    "max": "Agility Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Gregarious",
+    "max": "Fellowship Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Gunner",
+    "max": "Dexterity Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Hardy",
+    "max": "Toughness Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Hatred",
+    "max": "Willpower Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Holy Hatred",
+    "max": "Fellowship Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Holy Visions",
+    "max": "Initiative Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Hunter's Eye",
+    "max": "Initiative Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Impassioned Zeal",
+    "max": "Fellowship Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Implacable",
+    "max": "Toughness Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "In-fighter",
+    "max": "Dexterity Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Inspiring",
+    "max": "Fellowship Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Instinctive Diction",
+    "max": "Initiative Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Invoke",
+    "max": 1,
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Iron Jaw",
+    "max": "Toughness Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Iron Will",
+    "max": "Willpower Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Jump Up",
+    "max": 1,
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Kingpin",
+    "max": 1,
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Lightning Reflexes",
+    "max": 1,
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Linguistics",
+    "max": "Intelligence Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Lip Reading",
+    "max": "Initiative Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Luck",
+    "max": "Fellowship Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Magic Resistance",
+    "max": "Toughness Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Magical Sense",
+    "max": "Initiative Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Magnum Opus",
+    "max": "None",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Marksman",
+    "max": 1,
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Master of Disguise",
+    "max": "Fellowship Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Master Orator",
+    "max": "Fellowship Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Master Tradesman",
+    "max": "Dexterity Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Menacing",
+    "max": "Strength Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Mimic",
+    "max": "Initiative Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Night Vision",
+    "max": "Initiative Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Nimble Fingered",
+    "max": 1,
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Noble Blood",
+    "max": 1,
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Nose for Trouble",
+    "max": "Initiative Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Numismatics",
+    "max": "Initiative Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Old Salt",
+    "max": "Agility Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Orientation",
+    "max": "Initiative Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Panhandle",
+    "max": "Fellowship Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Perfect Pitch",
+    "max": "Initiative Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Petty Magic",
+    "max": 1,
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Pharmacist",
+    "max": "Intelligence Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Pilot",
+    "max": "Initiative Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Public Speaker",
+    "max": "Fellowship Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Pure Soul",
+    "max": "Willpower Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Rapid Reload",
+    "max": "Dexterity Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Reaction Strike",
+    "max": "Initiative Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Read Write",
+    "max": 1,
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Relentless",
+    "max": "Agility Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Resistance",
+    "max": "Toughness Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Resolute",
+    "max": "Strength Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Reversal",
+    "max": "Weapon Skill Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Riposte",
+    "max": "Agility Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "River Guide",
+    "max": "Initiative Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Robust",
+    "max": "Toughness Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Roughrider",
+    "max": "Agility Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Rover",
+    "max": "Agility Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Savant",
+    "max": "Intelligence Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Savvy",
+    "max": 1,
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Scale Sheer Surface",
+    "max": "Strength Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Schemer",
+    "max": "Intelligence Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Sea Legs",
+    "max": "Toughness Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Seasoned Traveller",
+    "max": "Intelligence Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Second Sight",
+    "max": "Initiative Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Secret Identity",
+    "max": "Intelligence Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Shadow",
+    "max": "Agility Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Sharp",
+    "max": 1,
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Sharpshooter",
+    "max": 1,
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Shieldsman",
+    "max": "Strength Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Sixth Sense",
+    "max": "Initiative Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Slayer",
+    "max": 1,
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Small",
+    "max": 1,
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Sniper",
+    "max": 4,
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Speedreader",
+    "max": "Intelligence Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Sprinter",
+    "max": "Strength Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Step Aside",
+    "max": "Agility Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Stone Soup",
+    "max": "Toughness Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Stout-hearted",
+    "max": "Willpower Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Strider",
+    "max": "Agility Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Strike Mighty Blow",
+    "max": "Strength Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Strike to Injure",
+    "max": "Initiative Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Strike to Stun",
+    "max": "Weapon Skill Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Strong Back",
+    "max": "Strength Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Strong Legs",
+    "max": "Strength Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Strong Swimmer",
+    "max": "Strength Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Strong-minded",
+    "max": "Willpower Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Sturdy",
+    "max": "Strength Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Suave",
+    "max": 1,
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Suffused with Magic",
+    "max": 1,
+    "category": "magical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Super Numerate",
+    "max": "Intelligence Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Supportive",
+    "max": "Fellowship Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Sure Shot",
+    "max": "Initiative Bonus",
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Surgery",
+    "max": "Intelligence Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Tenacious",
+    "max": "Toughness Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Tinker",
+    "max": "Dexterity Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Tower of Memories",
+    "max": "Intelligence Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Trapper",
+    "max": "Initiative Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Trick Riding",
+    "max": "Agility Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Tunnel Rat",
+    "max": "Agility Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Tzeentch's Blessing",
+    "max": 1,
+    "category": "chaos",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Unshakable",
+    "max": "Willpower Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Very Resilient",
+    "max": 1,
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Very Strong",
+    "max": 1,
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "War Leader",
+    "max": "Fellowship Bonus",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "War Wizard",
+    "max": 1,
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Warrior Born",
+    "max": 1,
+    "category": "Combat",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Waterman",
+    "max": "Agility Bonus",
+    "category": "Physical",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Wealthy",
+    "max": "None",
+    "category": "Social",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Well-prepared",
+    "max": "Initiative Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  },
+  {
+    "name": "Witch!",
+    "max": "Willpower Bonus",
+    "category": "Mental",
+    "prerequisite": "none",
+    "tests": "Various"
+  }
+]

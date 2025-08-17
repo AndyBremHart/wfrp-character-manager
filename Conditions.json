@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Ablaze",
+    "type": "condition"
+  },
+  {
+    "name": "Bleeding",
+    "type": "condition"
+  },
+  {
+    "name": "Blinded",
+    "type": "condition"
+  },
+  {
+    "name": "Broken",
+    "type": "condition"
+  },
+  {
+    "name": "Deafened",
+    "type": "condition"
+  },
+  {
+    "name": "Entangled",
+    "type": "condition"
+  },
+  {
+    "name": "Fatigued",
+    "type": "condition"
+  },
+  {
+    "name": "Poisoned",
+    "type": "condition"
+  },
+  {
+    "name": "Prone",
+    "type": "condition"
+  },
+  {
+    "name": "Stunned",
+    "type": "condition"
+  },
+  {
+    "name": "Surprised",
+    "type": "condition"
+  },
+  {
+    "name": "Unconscious",
+    "type": "condition"
+  }
+]

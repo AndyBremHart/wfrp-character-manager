@@ -1,0 +1,683 @@
+[
+  {
+    "name": "Bastard Sword",
+    "category": "two-handed",
+    "damage": "SB+5",
+    "reach": "Long",
+    "encumbrance": 3,
+    "qualities": [
+      "Damaging",
+      "Defensive"
+    ],
+    "flaws": [],
+    "cost": "8GC"
+  },
+  {
+    "name": "Blunderbuss",
+    "category": "blackpowder",
+    "damage": 8,
+    "reach": 20,
+    "encumbrance": 1,
+    "qualities": [
+      "Blackpowder",
+      "Blast 3",
+      "Damaging"
+    ],
+    "flaws": [
+      "Dangerous",
+      "Reload 2"
+    ],
+    "cost": "2GC"
+  },
+  {
+    "name": "Bolas",
+    "category": "throwing",
+    "damage": "SB",
+    "reach": "SB×3",
+    "encumbrance": 0,
+    "qualities": [
+      "Entangle"
+    ],
+    "flaws": [],
+    "cost": "P10D"
+  },
+  {
+    "name": "Bomb",
+    "category": "explosives",
+    "damage": 12,
+    "reach": "SB",
+    "encumbrance": 0,
+    "qualities": [
+      "Blast 5",
+      "Impact"
+    ],
+    "flaws": [
+      "Dangerous"
+    ],
+    "cost": "3GC"
+  },
+  {
+    "name": "Bow",
+    "category": "bow",
+    "damage": "SB+3",
+    "reach": 50,
+    "encumbrance": 2,
+    "qualities": [],
+    "flaws": [],
+    "cost": "4GC"
+  },
+  {
+    "name": "Cavalry Hammer",
+    "category": "cavalry",
+    "damage": "SB+5",
+    "reach": "Long",
+    "encumbrance": 3,
+    "qualities": [
+      "Pummel"
+    ],
+    "flaws": [],
+    "cost": "3GC"
+  },
+  {
+    "name": "Crossbow",
+    "category": "crossbow",
+    "damage": 9,
+    "reach": 60,
+    "encumbrance": 2,
+    "qualities": [],
+    "flaws": [
+      "Reload 1"
+    ],
+    "cost": "5GC"
+  },
+  {
+    "name": "Crossbow Pistol",
+    "category": "crossbow",
+    "damage": 7,
+    "reach": 10,
+    "encumbrance": 0,
+    "qualities": [
+      "Pistol"
+    ],
+    "flaws": [],
+    "cost": "6GC"
+  },
+  {
+    "name": "Dagger",
+    "category": "basic",
+    "damage": "SB+2",
+    "reach": "Very Short",
+    "encumbrance": 0,
+    "qualities": [],
+    "flaws": [],
+    "cost": "P16D"
+  },
+  {
+    "name": "Dart",
+    "category": "throwing",
+    "damage": "SB+1",
+    "reach": "SB×2",
+    "encumbrance": 0,
+    "qualities": [
+      "Impale"
+    ],
+    "flaws": [],
+    "cost": "P2D"
+  },
+  {
+    "name": "Elf Bow",
+    "category": "bow",
+    "damage": "SB+4",
+    "reach": 150,
+    "encumbrance": 2,
+    "qualities": [
+      "Damaging",
+      "Precise"
+    ],
+    "flaws": [],
+    "cost": "10GC"
+  },
+  {
+    "name": "Flail",
+    "category": "flail",
+    "damage": "SB+5",
+    "reach": "Average",
+    "encumbrance": 1,
+    "qualities": [
+      "Distract",
+      "Wrap"
+    ],
+    "flaws": [],
+    "cost": "2GC"
+  },
+  {
+    "name": "Foil",
+    "category": "fencing",
+    "damage": "SB+3",
+    "reach": "Medium",
+    "encumbrance": 1,
+    "qualities": [
+      "Fast",
+      "Impale",
+      "Precise"
+    ],
+    "flaws": [
+      "Undamaging"
+    ],
+    "cost": "5GC"
+  },
+  {
+    "name": "Grain Flail",
+    "category": "flail",
+    "damage": "SB+3",
+    "reach": "Average",
+    "encumbrance": 1,
+    "qualities": [
+      "Distract",
+      "Wrap"
+    ],
+    "flaws": [
+      "Imprecise"
+    ],
+    "cost": "P10D"
+  },
+  {
+    "name": "Great Axe",
+    "category": "two-handed",
+    "damage": "SB+6",
+    "reach": "Long",
+    "encumbrance": 3,
+    "qualities": [
+      "Hack",
+      "Impact"
+    ],
+    "flaws": [
+      "Tiring"
+    ],
+    "cost": "4GC"
+  },
+  {
+    "name": "Halberd",
+    "category": "polearm",
+    "damage": "SB+4",
+    "reach": "Long",
+    "encumbrance": 3,
+    "qualities": [
+      "Defensive",
+      "Hack",
+      "Impale"
+    ],
+    "flaws": [],
+    "cost": "2GC"
+  },
+  {
+    "name": "Hand Weapon",
+    "category": "basic",
+    "damage": "SB+4",
+    "reach": "Average",
+    "encumbrance": 1,
+    "qualities": [],
+    "flaws": [],
+    "cost": "1GC"
+  },
+  {
+    "name": "Handgun",
+    "category": "blackpowder",
+    "damage": 9,
+    "reach": 50,
+    "encumbrance": 2,
+    "qualities": [
+      "Blackpowder",
+      "Damaging"
+    ],
+    "flaws": [
+      "Dangerous",
+      "Reload 3"
+    ],
+    "cost": "4GC"
+  },
+  {
+    "name": "Heavy Crossbow",
+    "category": "crossbow",
+    "damage": 9,
+    "reach": 100,
+    "encumbrance": 3,
+    "qualities": [
+      "Damaging"
+    ],
+    "flaws": [
+      "Reload 2"
+    ],
+    "cost": "7GC"
+  },
+  {
+    "name": "Hochland Long Rifle",
+    "category": "blackpowder",
+    "damage": 9,
+    "reach": 100,
+    "encumbrance": 3,
+    "qualities": [
+      "Accurate",
+      "Blackpowder",
+      "Damaging",
+      "Precise"
+    ],
+    "flaws": [
+      "Reload 4"
+    ],
+    "cost": "100GC"
+  },
+  {
+    "name": "Improvised Weapon",
+    "category": "basic",
+    "damage": "SB+1",
+    "reach": "Varies",
+    "encumbrance": "Varies",
+    "qualities": [],
+    "flaws": [
+      "Undamaging"
+    ],
+    "cost": "—"
+  },
+  {
+    "name": "Incendiary",
+    "category": "explosives",
+    "damage": "Special",
+    "reach": "SB",
+    "encumbrance": 0,
+    "qualities": [
+      "Blast 4"
+    ],
+    "flaws": [
+      "Dangerous"
+    ],
+    "cost": "1GC"
+  },
+  {
+    "name": "Javelin",
+    "category": "throwing",
+    "damage": "SB+3",
+    "reach": "SB×3",
+    "encumbrance": 1,
+    "qualities": [
+      "Impale"
+    ],
+    "flaws": [],
+    "cost": "P10D"
+  },
+  {
+    "name": "Knife",
+    "category": "basic",
+    "damage": "SB+1",
+    "reach": "Very Short",
+    "encumbrance": 0,
+    "qualities": [],
+    "flaws": [
+      "Undamaging"
+    ],
+    "cost": "P8D"
+  },
+  {
+    "name": "Knuckledusters",
+    "category": "brawling",
+    "damage": "SB+2",
+    "reach": "Personal",
+    "encumbrance": 0,
+    "qualities": [],
+    "flaws": [],
+    "cost": "2GC 0/6"
+  },
+  {
+    "name": "Lance",
+    "category": "cavalry",
+    "damage": "SB+6*",
+    "reach": "Very Long",
+    "encumbrance": 3,
+    "qualities": [
+      "Impact",
+      "Impale"
+    ],
+    "flaws": [],
+    "cost": "1GC"
+  },
+  {
+    "name": "Lasso",
+    "category": "entangling",
+    "damage": "—",
+    "reach": "SBx2",
+    "encumbrance": 0,
+    "qualities": [
+      "Entangle"
+    ],
+    "flaws": [],
+    "cost": "P6D"
+  },
+  {
+    "name": "Longbow",
+    "category": "bow",
+    "damage": "SB+4",
+    "reach": 100,
+    "encumbrance": 3,
+    "qualities": [
+      "Damaging"
+    ],
+    "flaws": [],
+    "cost": "5GC"
+  },
+  {
+    "name": "Main Gauche",
+    "category": "parry",
+    "damage": "SB+2",
+    "reach": "Very Short",
+    "encumbrance": 0,
+    "qualities": [
+      "Defensive"
+    ],
+    "flaws": [],
+    "cost": "1GC"
+  },
+  {
+    "name": "Military Flail",
+    "category": "flail",
+    "damage": "SB+6",
+    "reach": "Long",
+    "encumbrance": 2,
+    "qualities": [
+      "Distract",
+      "Impact",
+      "Wrap"
+    ],
+    "flaws": [
+      "Tiring"
+    ],
+    "cost": "3GC"
+  },
+  {
+    "name": "Pick",
+    "category": "two-handed",
+    "damage": "SB+5",
+    "reach": "Average",
+    "encumbrance": 3,
+    "qualities": [
+      "Damaging",
+      "Impale"
+    ],
+    "flaws": [
+      "Slow"
+    ],
+    "cost": "P9D"
+  },
+  {
+    "name": "Pike",
+    "category": "polearm",
+    "damage": "SB+4",
+    "reach": "Massive",
+    "encumbrance": 4,
+    "qualities": [
+      "Impale"
+    ],
+    "flaws": [],
+    "cost": "P18D"
+  },
+  {
+    "name": "Pistol",
+    "category": "blackpowder",
+    "damage": 8,
+    "reach": 20,
+    "encumbrance": 0,
+    "qualities": [
+      "Blackpowder",
+      "Damaging",
+      "Pistol"
+    ],
+    "flaws": [
+      "Reload 1"
+    ],
+    "cost": "8GC"
+  },
+  {
+    "name": "Quarter Staff",
+    "category": "polearm",
+    "damage": "SB+4",
+    "reach": "Long",
+    "encumbrance": 2,
+    "qualities": [
+      "Defensive",
+      "Pummel"
+    ],
+    "flaws": [],
+    "cost": "P3D"
+  },
+  {
+    "name": "Rapier",
+    "category": "fencing",
+    "damage": "SB+4",
+    "reach": "Long",
+    "encumbrance": 1,
+    "qualities": [
+      "Fast",
+      "Impale"
+    ],
+    "flaws": [],
+    "cost": "5GC"
+  },
+  {
+    "name": "Repeater Handgun",
+    "category": "engineering",
+    "damage": 9,
+    "reach": 30,
+    "encumbrance": 3,
+    "qualities": [
+      "Blackpowder",
+      "Damaging",
+      "Repeater 4"
+    ],
+    "flaws": [
+      "Dangerous",
+      "Reload 5"
+    ],
+    "cost": "10GC"
+  },
+  {
+    "name": "Repeater Pistol",
+    "category": "engineering",
+    "damage": 8,
+    "reach": 10,
+    "encumbrance": 1,
+    "qualities": [
+      "Blackpowder",
+      "Damaging",
+      "Pistol",
+      "Repeater 4"
+    ],
+    "flaws": [
+      "Dangerous",
+      "Reload 4"
+    ],
+    "cost": "15GC"
+  },
+  {
+    "name": "Rock",
+    "category": "throwing",
+    "damage": "SB",
+    "reach": "SB×3",
+    "encumbrance": 0,
+    "qualities": [],
+    "flaws": [],
+    "cost": "—"
+  },
+  {
+    "name": "Shield",
+    "category": "basic",
+    "damage": "SB+2",
+    "reach": "Very Short",
+    "encumbrance": 1,
+    "qualities": [
+      "Shield 2",
+      "Defensive"
+    ],
+    "flaws": [
+      "Undamaging"
+    ],
+    "cost": "2GC"
+  },
+  {
+    "name": "Shield (Buckler)",
+    "category": "basic",
+    "damage": "SB+1",
+    "reach": "Personal",
+    "encumbrance": 0,
+    "qualities": [
+      "Shield 1",
+      "Defensive"
+    ],
+    "flaws": [
+      "Undamaging"
+    ],
+    "cost": "18GC 0/2"
+  },
+  {
+    "name": "Shield (Large)",
+    "category": "basic",
+    "damage": "SB+3",
+    "reach": "Very Short",
+    "encumbrance": 3,
+    "qualities": [
+      "Shield 3",
+      "Defensive"
+    ],
+    "flaws": [
+      "Undamaging"
+    ],
+    "cost": "3GC"
+  },
+  {
+    "name": "Shortbow",
+    "category": "bow",
+    "damage": "SB+2",
+    "reach": 20,
+    "encumbrance": 1,
+    "qualities": [],
+    "flaws": [],
+    "cost": "3GC"
+  },
+  {
+    "name": "Sling",
+    "category": "sling",
+    "damage": 6,
+    "reach": 60,
+    "encumbrance": 0,
+    "qualities": [],
+    "flaws": [],
+    "cost": "P1D"
+  },
+  {
+    "name": "Spear",
+    "category": "polearm",
+    "damage": "SB+4",
+    "reach": "Very Long",
+    "encumbrance": 2,
+    "qualities": [
+      "Impale"
+    ],
+    "flaws": [],
+    "cost": "P15D"
+  },
+  {
+    "name": "Staff Sling",
+    "category": "sling",
+    "damage": 7,
+    "reach": 100,
+    "encumbrance": 2,
+    "qualities": [],
+    "flaws": [],
+    "cost": "P4D"
+  },
+  {
+    "name": "Swordbreaker",
+    "category": "parry",
+    "damage": "SB+3",
+    "reach": "Short",
+    "encumbrance": 1,
+    "qualities": [
+      "Defensive",
+      "Trap Blade"
+    ],
+    "flaws": [],
+    "cost": "2GC 0/6"
+  },
+  {
+    "name": "Throwing Axe",
+    "category": "throwing",
+    "damage": "SB+3",
+    "reach": "SB×2",
+    "encumbrance": 1,
+    "qualities": [
+      "Hack"
+    ],
+    "flaws": [],
+    "cost": "1GC"
+  },
+  {
+    "name": "Throwing Knife",
+    "category": "throwing",
+    "damage": "SB+2",
+    "reach": "SB×2",
+    "encumbrance": 0,
+    "qualities": [],
+    "flaws": [],
+    "cost": "P18D"
+  },
+  {
+    "name": "Unarmed",
+    "category": "brawling",
+    "damage": "SB+0",
+    "reach": "Personal",
+    "encumbrance": 0,
+    "qualities": [],
+    "flaws": [
+      "Undamaging"
+    ],
+    "cost": "—"
+  },
+  {
+    "name": "Warhammer",
+    "category": "two-handed",
+    "damage": "SB+6",
+    "reach": "Average",
+    "encumbrance": 3,
+    "qualities": [
+      "Damaging",
+      "Pummel"
+    ],
+    "flaws": [
+      "Slow"
+    ],
+    "cost": "3GC"
+  },
+  {
+    "name": "Whip",
+    "category": "entangling",
+    "damage": "SB+2",
+    "reach": 6,
+    "encumbrance": 0,
+    "qualities": [
+      "Entangle"
+    ],
+    "flaws": [],
+    "cost": "P5D"
+  },
+  {
+    "name": "Zweihänder",
+    "category": "two-handed",
+    "damage": "SB+5",
+    "reach": "Long",
+    "encumbrance": 3,
+    "qualities": [
+      "Damaging",
+      "Hack"
+    ],
+    "flaws": [],
+    "cost": "10GC"
+  }
+]

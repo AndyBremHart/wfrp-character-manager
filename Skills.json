@@ -1,0 +1,272 @@
+[
+  {
+    "name": "Animal Care",
+    "type": "Skill (Advanced)",
+    "grouped": "No",
+    "characteristic": "Intelligence"
+  },
+  {
+    "name": "Animal Training",
+    "type": "Skill (Advanced)",
+    "grouped": "Yes",
+    "characteristic": "Intelligence"
+  },
+  {
+    "name": "Art",
+    "type": "Skill (Basic)",
+    "grouped": "Yes",
+    "characteristic": "Dexterity"
+  },
+  {
+    "name": "Athletics",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Agility"
+  },
+  {
+    "name": "Bribery",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Fellowship"
+  },
+  {
+    "name": "Channelling",
+    "type": "Skill (Advanced)",
+    "grouped": "Yes",
+    "characteristic": "Willpower"
+  },
+  {
+    "name": "Charm",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Fellowship"
+  },
+  {
+    "name": "Charm Animal",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Willpower"
+  },
+  {
+    "name": "Climb",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Strength"
+  },
+  {
+    "name": "Consume Alcohol",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Toughness"
+  },
+  {
+    "name": "Cool",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Willpower"
+  },
+  {
+    "name": "Dodge",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Agility"
+  },
+  {
+    "name": "Drive",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Agility"
+  },
+  {
+    "name": "Endurance",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Toughness"
+  },
+  {
+    "name": "Entertain",
+    "type": "Skill (Basic)",
+    "grouped": "Yes",
+    "characteristic": "Fellowship"
+  },
+  {
+    "name": "Evaluate",
+    "type": "Skill (Advanced)",
+    "grouped": "No",
+    "characteristic": "Intelligence"
+  },
+  {
+    "name": "Gamble",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Intelligence"
+  },
+  {
+    "name": "Gossip",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Fellowship"
+  },
+  {
+    "name": "Haggle",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Fellowship"
+  },
+  {
+    "name": "Heal",
+    "type": "Skill (Advanced)",
+    "grouped": "No",
+    "characteristic": "Intelligence"
+  },
+  {
+    "name": "Intimidate",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Strength"
+  },
+  {
+    "name": "Intuition",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Initiative"
+  },
+  {
+    "name": "Language",
+    "type": "Skill (Advanced)",
+    "grouped": "Yes",
+    "characteristic": "Intelligence"
+  },
+  {
+    "name": "Leadership",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Fellowship"
+  },
+  {
+    "name": "Lore",
+    "type": "Skill (Advanced)",
+    "grouped": "Yes",
+    "characteristic": "Intelligence"
+  },
+  {
+    "name": "Melee",
+    "type": "Skill (Basic)",
+    "grouped": "Yes",
+    "characteristic": "Weapon-Skill"
+  },
+  {
+    "name": "Navigation",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Initiative"
+  },
+  {
+    "name": "Outdoor Survival",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Intelligence"
+  },
+  {
+    "name": "Perception",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Initiative"
+  },
+  {
+    "name": "Perform",
+    "type": "Skill (Advanced)",
+    "grouped": "Yes",
+    "characteristic": "Agility"
+  },
+  {
+    "name": "Pick Lock",
+    "type": "Skill (Advanced)",
+    "grouped": "No",
+    "characteristic": "Dexterity"
+  },
+  {
+    "name": "Play",
+    "type": "Skill (Advanced)",
+    "grouped": "Yes",
+    "characteristic": "Dexterity"
+  },
+  {
+    "name": "Pray",
+    "type": "Skill (Advanced)",
+    "grouped": "No",
+    "characteristic": "Fellowship"
+  },
+  {
+    "name": "Ranged",
+    "type": "Skill (Advanced)",
+    "grouped": "Yes",
+    "characteristic": "Ballistic-Skill"
+  },
+  {
+    "name": "Research",
+    "type": "Skill (Advanced)",
+    "grouped": "No",
+    "characteristic": "Intelligence"
+  },
+  {
+    "name": "Ride",
+    "type": "Skill (Basic)",
+    "grouped": "Yes",
+    "characteristic": "Agility"
+  },
+  {
+    "name": "Row",
+    "type": "Skill (Basic)",
+    "grouped": "No",
+    "characteristic": "Strength"
+  },
+  {
+    "name": "Sail",
+    "type": "Skill (Advanced)",
+    "grouped": "Yes",
+    "characteristic": "Agility"
+  },
+  {
+    "name": "Secret Signs",
+    "type": "Skill (Advanced)",
+    "grouped": "Yes",
+    "characteristic": "Intelligence"
+  },
+  {
+    "name": "Set Trap",
+    "type": "Skill (Advanced)",
+    "grouped": "No",
+    "characteristic": "Dexterity"
+  },
+  {
+    "name": "Sleight of Hand",
+    "type": "Skill (Advanced)",
+    "grouped": "No",
+    "characteristic": "Dexterity"
+  },
+  {
+    "name": "Stealth",
+    "type": "Skill (Basic)",
+    "grouped": "Yes",
+    "characteristic": "Agility"
+  },
+  {
+    "name": "Swim",
+    "type": "Skill (Advanced)",
+    "grouped": "No",
+    "characteristic": "Strength"
+  },
+  {
+    "name": "Track",
+    "type": "Skill (Advanced)",
+    "grouped": "No",
+    "characteristic": "Initiative"
+  },
+  {
+    "name": "Trade",
+    "type": "Skill (Advanced)",
+    "grouped": "Yes",
+    "characteristic": "Dexterity"
+  }
+]
