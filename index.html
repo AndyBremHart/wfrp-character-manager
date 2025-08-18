@@ -655,51 +655,61 @@
             <!-- Conditions & Status Effects -->
             <div class="section">
                 <div class="section-title">Conditions & Status Effects</div>
-                <div class="conditions-controls" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
-                    <button class="control-btn" onclick="window.addCondition()" style="padding: 5px 10px; font-size: 12px;">+ Add Condition</button>
-                    <input type="text" id="conditions-search" placeholder="Search conditions..." style="padding: 5px 10px; border: 1px solid #8b7355; font-family: 'Georgia', serif; background: white;">
+                
+                <!-- Penalty Summary -->
+                <div id="condition-penalties-summary" style="background: #fff8dc; border: 2px solid #d4a574; padding: 10px; margin-bottom: 15px; border-radius: 5px; display: none;">
+                    <h4 style="color: #8b4513; margin: 0 0 8px 0; font-size: 14px;">📊 Active Penalties</h4>
+                    <div id="penalty-text" style="color: #8b4513; font-size: 13px; font-weight: bold;"></div>
                 </div>
                 
-                <table class="skills-table" id="conditions-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 25%;">Condition</th>
-                            <th style="width: 50%;">Effects</th>
-                            <th style="width: 23%;">Duration/Notes</th>
-                            <th style="width: 2%;">Del</th>
-                        </tr>
-                    </thead>
-                    <tbody id="conditions-tbody">
-                    </tbody>
-                </table>
+                <!-- Conditions Controls -->
+                <div class="conditions-controls" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;">
+                    <button class="control-btn" onclick="window.openAddConditionModal()" style="padding: 5px 10px; font-size: 12px;">+ Add Condition</button>
+                    <button class="control-btn" onclick="window.removeAllConditions()" style="padding: 5px 10px; font-size: 12px; background: #c41e3a; color: white;">Clear All</button>
+                    <input type="text" id="conditions-search" placeholder="Search active conditions..." style="padding: 5px 10px; border: 1px solid #8b7355; font-family: 'Georgia', serif; background: white; flex: 1; min-width: 200px;">
+                </div>
+                
+                <!-- Active Conditions Display -->
+                <div id="active-conditions-display" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                    <!-- Conditions will be dynamically populated here -->
+                </div>
+                
+                <!-- No Conditions Message -->
+                <div id="no-conditions-message" style="text-align: center; padding: 20px; color: #666; font-style: italic; display: none;">
+                    No conditions currently affecting this character.
+                </div>
 
                 <!-- Add Condition Modal -->
                 <div id="add-condition-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
-                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 500px; max-width: 600px; max-height: 70vh; overflow-y: auto;">
-                        <h3 style="color: #3e2f1f; margin-bottom: 15px;">Add Condition</h3>
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 500px; max-width: 600px; max-height: 80vh; overflow-y: auto;">
+                        <h3 style="color: #3e2f1f; margin-bottom: 15px;">Add WFRP Condition</h3>
                         
                         <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Search Conditions:</label>
-                            <input type="text" id="condition-search-modal" placeholder="Type to search..." style="width: 100%; padding: 5px;" oninput="window.filterConditionOptions()">
-                        </div>
-                        
-                        <div style="margin-bottom: 10px;">
-                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Select Condition:</label>
-                            <select id="condition-select" size="8" style="width: 100%; padding: 5px;" onchange="window.showConditionDetails()">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Select Condition:</label>
+                            <select id="condition-select" style="width: 100%; padding: 8px; font-size: 14px;" onchange="window.showConditionDetails()">
+                                <option value="">-- Choose a condition --</option>
                             </select>
                         </div>
                         
-                        <div id="condition-details" style="display: none; margin-bottom: 15px; padding: 10px; background: #e8dfd0; border: 1px solid #8b7355;">
-                            <h4 style="color: #3e2f1f; margin-bottom: 10px;">Condition Details</h4>
-                            <p><strong>Name:</strong> <span id="detail-condition-name"></span></p>
-                            <p><strong>Stackable:</strong> <span id="detail-condition-stackable"></span></p>
-                            <p style="margin-top: 10px;"><strong>Effects:</strong></p>
-                            <p id="detail-condition-effects" style="font-style: italic; line-height: 1.4; max-height: 200px; overflow-y: auto;"></p>
+                        <div id="condition-details" style="display: none; margin-bottom: 15px; padding: 15px; background: #e8dfd0; border: 2px solid #8b7355; border-radius: 5px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <h4 style="color: #3e2f1f; margin: 0;" id="detail-condition-name"></h4>
+                                <span id="condition-severity-badge" style="padding: 3px 8px; font-size: 11px; color: white; border-radius: 3px; font-weight: bold;"></span>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <strong style="color: #3e2f1f;">Stackable:</strong> 
+                                <span id="detail-condition-stackable" style="font-weight: bold;"></span>
+                            </div>
+                            <div>
+                                <strong style="color: #3e2f1f;">Effects:</strong>
+                                <p id="detail-condition-effects" style="font-style: italic; line-height: 1.4; margin: 5px 0; color: #333;"></p>
+                            </div>
                         </div>
                         
-                        <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Duration/Notes:</label>
-                            <input type="text" id="condition-notes-input" placeholder="e.g., 3 rounds, until healed, custom notes..." style="width: 100%; padding: 5px;">
+                        <div id="stacks-input-section" style="margin-bottom: 15px; display: none;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Number of Stacks to Add:</label>
+                            <input type="number" id="condition-stacks-input" value="1" min="1" max="10" style="width: 80px; padding: 5px; text-align: center;">
+                            <span style="margin-left: 10px; color: #666; font-size: 13px;">This condition can stack - add multiple at once if needed</span>
                         </div>
                         
                         <div style="text-align: center;">
@@ -1226,6 +1236,82 @@
         let armour = [];
         let trappings = [];
         let consumables = [];
+        
+        // WFRP 4th Edition Official Conditions
+        const wfrpConditions = {
+          "Ablaze": {
+            stackable: true,
+            severity: "severe",
+            effects: { damage: "1d10/round", damagePerStack: "+1" },
+            description: "You are on fire! At the end of every Round, suffer 1d10 Wounds (+1 per extra Ablaze). Remove with Athletics Test."
+          },
+          "Bleeding": {
+            stackable: true,
+            severity: "severe",
+            effects: { damage: "1/round", diseaseResistance: -10 },
+            description: "Lose 1 Wound/round, -10 to resist infections. Remove with Heal Test or healing spells."
+          },
+          "Blinded": {
+            stackable: true,
+            severity: "minor",
+            effects: { sightTests: -10, enemyMeleeBonus: 10 },
+            description: "Cannot see properly. -10 to sight Tests, enemies +10 to hit in melee."
+          },
+          "Broken": {
+            stackable: true,
+            severity: "moderate",
+            effects: { allTests: -10, mustFlee: true },
+            description: "Terrified and panicked. Must flee/hide, -10 to all Tests except running/hiding."
+          },
+          "Deafened": {
+            stackable: true,
+            severity: "minor",
+            effects: { hearingTests: -10, flankingBonus: 10 },
+            description: "-10 to hearing Tests, enemies from flank/rear get extra +10 to hit."
+          },
+          "Entangled": {
+            stackable: true,
+            severity: "positional",
+            effects: { noMovement: true, movementTests: -10 },
+            description: "Cannot move, -10 to movement Tests. Remove with opposed Strength Test."
+          },
+          "Fatigued": {
+            stackable: true,
+            severity: "minor",
+            effects: { allTests: -10 },
+            description: "Exhausted. -10 penalty to ALL Tests."
+          },
+          "Poisoned": {
+            stackable: true,
+            severity: "moderate",
+            effects: { damage: "1/round", allTests: -10 },
+            description: "Lose 1 Wound/round, -10 to all Tests. Remove with Endurance or Heal Tests."
+          },
+          "Prone": {
+            stackable: false,
+            severity: "positional",
+            effects: { movementTests: -20, enemyMeleeBonus: 20 },
+            description: "On the ground. -20 to movement Tests, enemies +20 to hit in melee."
+          },
+          "Stunned": {
+            stackable: true,
+            severity: "moderate",
+            effects: { noActions: true, allTests: -10, enemyAdvantage: 1 },
+            description: "Cannot take Actions, -10 to all Tests, enemies gain +1 Advantage."
+          },
+          "Surprised": {
+            stackable: false,
+            severity: "positional",
+            effects: { noActions: true, noMovement: true, enemyMeleeBonus: 20 },
+            description: "Cannot act or move, enemies +20 to hit."
+          },
+          "Unconscious": {
+            stackable: false,
+            severity: "severe",
+            effects: { incapacitated: true, autoKill: true },
+            description: "Knocked out. Cannot act, attackers auto-hit with killing blows."
+          }
+        };
         let talents = [];
         let srdTalents = [];
         let activeConditions = [];
@@ -2381,198 +2467,326 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Conditions Management Functions
-window.displayConditions = function() {
-    const tbody = document.getElementById('conditions-tbody');
-    if (!tbody) return;
+// WFRP Conditions Management System
+window.getSeverityColor = function(severity) {
+    const colors = {
+        'severe': '#c41e3a',     // Red
+        'moderate': '#ff8c00',   // Orange  
+        'minor': '#ffd700',      // Yellow
+        'positional': '#4682b4'  // Blue
+    };
+    return colors[severity] || '#666666';
+}
+
+window.getConditionDisplayName = function(conditionName, stacks) {
+    const conditionData = wfrpConditions[conditionName];
+    if (!conditionData) return conditionName;
     
+    if (conditionData.stackable && stacks > 1) {
+        return `${conditionName} (x${stacks})`;
+    }
+    return conditionName;
+}
+
+window.addCondition = function(conditionName, stacksToAdd = 1) {
+    const conditionData = wfrpConditions[conditionName];
+    if (!conditionData) {
+        console.error('Unknown condition:', conditionName);
+        return false;
+    }
+    
+    // Find existing condition
+    const existingIndex = activeConditions.findIndex(c => c.name === conditionName);
+    
+    if (existingIndex !== -1) {
+        // Condition already exists
+        if (conditionData.stackable) {
+            // Add stacks to existing condition
+            activeConditions[existingIndex].stacks += stacksToAdd;
+        } else {
+            // Non-stackable - don't add duplicate
+            alert(`${conditionName} is already active and cannot stack!`);
+            return false;
+        }
+    } else {
+        // Create new condition entry
+        activeConditions.push({
+            name: conditionName,
+            stacks: conditionData.stackable ? stacksToAdd : 1
+        });
+    }
+    
+    window.updateConditionDisplay();
+    return true;
+}
+
+window.removeCondition = function(conditionName, stacksToRemove = 1) {
+    const existingIndex = activeConditions.findIndex(c => c.name === conditionName);
+    
+    if (existingIndex === -1) {
+        console.warn('Condition not found:', conditionName);
+        return false;
+    }
+    
+    const condition = activeConditions[existingIndex];
+    const conditionData = wfrpConditions[conditionName];
+    
+    if (conditionData.stackable) {
+        condition.stacks = Math.max(0, condition.stacks - stacksToRemove);
+        if (condition.stacks <= 0) {
+            activeConditions.splice(existingIndex, 1);
+        }
+    } else {
+        activeConditions.splice(existingIndex, 1);
+    }
+    
+    window.updateConditionDisplay();
+    return true;
+}
+
+window.removeAllConditions = function() {
+    if (activeConditions.length === 0) {
+        alert('No conditions to remove!');
+        return;
+    }
+    
+    if (confirm(`Remove all ${activeConditions.length} active conditions?`)) {
+        activeConditions.length = 0;
+        window.updateConditionDisplay();
+    }
+}
+
+window.updateConditionDisplay = function() {
+    const display = document.getElementById('active-conditions-display');
+    const noConditionsMsg = document.getElementById('no-conditions-message');
     const searchText = (document.getElementById('conditions-search')?.value || '').toLowerCase();
     
-    tbody.innerHTML = '';
+    // Clear current display
+    display.innerHTML = '';
     
-    let displayedConditions = activeConditions;
+    // Filter conditions based on search
+    let filteredConditions = activeConditions;
     if (searchText) {
-        displayedConditions = activeConditions.filter(c => 
+        filteredConditions = activeConditions.filter(c => 
             c.name.toLowerCase().includes(searchText) ||
-            c.effects.toLowerCase().includes(searchText) ||
-            (c.notes && c.notes.toLowerCase().includes(searchText))
+            wfrpConditions[c.name]?.description.toLowerCase().includes(searchText)
         );
     }
     
-    displayedConditions.sort((a, b) => a.name.localeCompare(b.name));
-    
-    displayedConditions.forEach((condition, index) => {
-        const row = document.createElement('tr');
-        const effectsPreview = condition.effects.length > 100 ? 
-            condition.effects.substring(0, 100) + '...' : 
-            condition.effects;
+    if (filteredConditions.length === 0) {
+        noConditionsMsg.style.display = 'block';
+        display.style.display = 'none';
+    } else {
+        noConditionsMsg.style.display = 'none';
+        display.style.display = 'grid';
         
-        row.innerHTML = `
-            <td class="skill-name-cell">${condition.name}</td>
-            <td style="font-size: 11px; padding: 5px;">${effectsPreview}</td>
-            <td style="font-size: 11px; padding: 5px;">${condition.notes || '—'}</td>
-            <td><button class="advance-btn" onclick="window.removeCondition(${index})" style="background: #d44; color: white;">×</button></td>
-        `;
-        tbody.appendChild(row);
-    });
+        filteredConditions.forEach(condition => {
+            const conditionData = wfrpConditions[condition.name];
+            if (!conditionData) return;
+            
+            const conditionCard = document.createElement('div');
+            const severityColor = window.getSeverityColor(conditionData.severity);
+            const displayName = window.getConditionDisplayName(condition.name, condition.stacks);
+            
+            conditionCard.style.cssText = `
+                background: #faf8f3;
+                border: 2px solid ${severityColor};
+                border-radius: 5px;
+                padding: 12px;
+                position: relative;
+            `;
+            
+            conditionCard.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <h4 style="margin: 0; color: ${severityColor}; font-size: 16px;">${displayName}</h4>
+                    <button onclick="window.removeCondition('${condition.name}', ${condition.stacks})" 
+                            style="background: #c41e3a; color: white; border: none; width: 20px; height: 20px; border-radius: 3px; cursor: pointer; font-size: 12px; font-weight: bold;">×</button>
+                </div>
+                <p style="font-size: 12px; color: #333; line-height: 1.3; margin: 0 0 10px 0;">${conditionData.description}</p>
+                <div style="display: flex; gap: 5px; align-items: center;">
+                    ${conditionData.stackable ? 
+                        `<button onclick="window.removeCondition('${condition.name}', 1)" style="width: 20px; height: 20px; background: #e8dfd0; border: 1px solid #8b7355; cursor: pointer;">−</button>
+                         <span style="font-size: 12px; color: #666; min-width: 40px; text-align: center;">Stacks: ${condition.stacks}</span>
+                         <button onclick="window.addCondition('${condition.name}', 1)" style="width: 20px; height: 20px; background: #e8dfd0; border: 1px solid #8b7355; cursor: pointer;">+</button>`
+                        : '<span style="font-size: 12px; color: #666;">Cannot stack</span>'
+                    }
+                </div>
+            `;
+            
+            display.appendChild(conditionCard);
+        });
+    }
+    
+    // Update penalty display
+    window.displayConditionPenalties();
 }
 
-window.removeCondition = function(index) {
-    if (confirm('Remove this condition?')) {
-        activeConditions.splice(index, 1);
-        displayConditions();
+window.getActiveConditionPenalties = function() {
+    const penalties = {
+        allTests: 0,
+        movementTests: 0,
+        sightTests: 0,
+        hearingTests: 0,
+        specialEffects: []
+    };
+    
+    activeConditions.forEach(condition => {
+        const conditionData = wfrpConditions[condition.name];
+        if (!conditionData) return;
+        
+        const stacks = condition.stacks || 1;
+        const effects = conditionData.effects;
+        
+        // Calculate cumulative penalties
+        if (effects.allTests) {
+            penalties.allTests += effects.allTests * stacks;
+        }
+        if (effects.movementTests) {
+            penalties.movementTests += effects.movementTests * stacks;
+        }
+        if (effects.sightTests) {
+            penalties.sightTests += effects.sightTests * stacks;
+        }
+        if (effects.hearingTests) {
+            penalties.hearingTests += effects.hearingTests * stacks;
+        }
+        
+        // Special effects (non-stacking)
+        if (effects.noActions) {
+            penalties.specialEffects.push('Cannot take Actions');
+        }
+        if (effects.noMovement) {
+            penalties.specialEffects.push('Cannot move');
+        }
+        if (effects.mustFlee) {
+            penalties.specialEffects.push('Must flee/hide');
+        }
+        if (effects.incapacitated) {
+            penalties.specialEffects.push('Incapacitated');
+        }
+        if (effects.damage) {
+            const damageText = stacks > 1 && effects.damagePerStack ? 
+                `${effects.damage} ${effects.damagePerStack.replace('+1', `+${stacks-1}`)}` : 
+                effects.damage;
+            penalties.specialEffects.push(`Damage: ${damageText}/round`);
+        }
+    });
+    
+    return penalties;
+}
+
+window.displayConditionPenalties = function() {
+    const penalties = window.getActiveConditionPenalties();
+    const summaryDiv = document.getElementById('condition-penalties-summary');
+    const penaltyText = document.getElementById('penalty-text');
+    
+    const penaltyStrings = [];
+    
+    // Test penalties
+    if (penalties.allTests !== 0) {
+        penaltyStrings.push(`All Tests ${penalties.allTests >= 0 ? '+' : ''}${penalties.allTests}`);
+    }
+    if (penalties.movementTests !== 0) {
+        penaltyStrings.push(`Movement Tests ${penalties.movementTests >= 0 ? '+' : ''}${penalties.movementTests}`);
+    }
+    if (penalties.sightTests !== 0) {
+        penaltyStrings.push(`Sight Tests ${penalties.sightTests >= 0 ? '+' : ''}${penalties.sightTests}`);
+    }
+    if (penalties.hearingTests !== 0) {
+        penaltyStrings.push(`Hearing Tests ${penalties.hearingTests >= 0 ? '+' : ''}${penalties.hearingTests}`);
+    }
+    
+    // Special effects
+    penalties.specialEffects.forEach(effect => penaltyStrings.push(effect));
+    
+    if (penaltyStrings.length > 0) {
+        penaltyText.textContent = penaltyStrings.join(' • ');
+        summaryDiv.style.display = 'block';
+    } else {
+        summaryDiv.style.display = 'none';
     }
 }
 
-window.addCondition = function() {
-    populateConditionSelect();
+window.openAddConditionModal = function() {
+    window.populateConditionSelect();
     document.getElementById('add-condition-modal').style.display = 'block';
-    document.getElementById('condition-search-modal').value = '';
-    document.getElementById('condition-search-modal').focus();
 }
 
 window.populateConditionSelect = function() {
     const select = document.getElementById('condition-select');
-    select.innerHTML = '';
+    select.innerHTML = '<option value="">-- Choose a condition --</option>';
     
-    const sortedConditions = [...srdConditions].sort((a, b) => a.name.localeCompare(b.name));
-    
-    sortedConditions.forEach(condition => {
+    Object.keys(wfrpConditions).sort().forEach(conditionName => {
         const option = document.createElement('option');
-        option.value = condition.name;
-        option.textContent = `${condition.name} (${condition.stackable})`;
-        option.dataset.condition = JSON.stringify(condition);
+        option.value = conditionName;
+        option.textContent = conditionName;
         select.appendChild(option);
     });
 }
 
-window.filterConditionOptions = function() {
-    console.log('filterConditionOptions called!');
-    
-    const searchInput = document.getElementById('condition-search-modal');
-    const select = document.getElementById('condition-select');
-    
-    if (!searchInput || !select) {
-        console.error('Elements not found:', { searchInput, select });
-        return;
-    }
-    
-    const searchText = searchInput.value.toLowerCase();
-    const options = select.options;
-    
-    console.log('Searching for:', searchText);
-    console.log('Total options:', options.length);
-    
-    if (options.length === 0) {
-        console.log('No options available - condition data may not be loaded');
-        return;
-    }
-    
-    let matchCount = 0;
-    let firstMatch = null;
-    
-    for (let i = 0; i < options.length; i++) {
-        try {
-            const condition = JSON.parse(options[i].dataset.condition);
-            const matches = searchText === '' || 
-                           (condition.name && condition.name.toLowerCase().includes(searchText)) ||
-                           (condition.effects && condition.effects.toLowerCase().includes(searchText));
-            
-            options[i].style.display = matches ? '' : 'none';
-            
-            if (matches) {
-                matchCount++;
-                if (!firstMatch) {
-                    firstMatch = options[i];
-                }
-            }
-        } catch (e) {
-            console.error('Error parsing condition data for option', i, ':', e);
-            options[i].style.display = 'none';
-        }
-    }
-    
-    // Select first match if any
-    if (firstMatch && matchCount > 0) {
-        firstMatch.selected = true;
-        window.showConditionDetails();
-    }
-    
-    console.log('Matches found:', matchCount);
-}
-
 window.showConditionDetails = function() {
     const select = document.getElementById('condition-select');
-    const selectedOption = select.options[select.selectedIndex];
+    const selectedCondition = select.value;
     
-    if (!selectedOption) return;
+    if (!selectedCondition || !wfrpConditions[selectedCondition]) {
+        document.getElementById('condition-details').style.display = 'none';
+        document.getElementById('stacks-input-section').style.display = 'none';
+        return;
+    }
     
-    const condition = JSON.parse(selectedOption.dataset.condition);
-    const detailsDiv = document.getElementById('condition-details');
+    const conditionData = wfrpConditions[selectedCondition];
+    const severityColor = window.getSeverityColor(conditionData.severity);
     
-    document.getElementById('detail-condition-name').textContent = condition.name;
-    document.getElementById('detail-condition-stackable').textContent = condition.stackable;
-    document.getElementById('detail-condition-effects').textContent = condition.effects;
+    // Update details display
+    document.getElementById('detail-condition-name').textContent = selectedCondition;
+    document.getElementById('detail-condition-stackable').textContent = conditionData.stackable ? 'Yes' : 'No';
+    document.getElementById('detail-condition-effects').textContent = conditionData.description;
     
-    detailsDiv.style.display = 'block';
+    // Update severity badge
+    const badge = document.getElementById('condition-severity-badge');
+    badge.textContent = conditionData.severity.toUpperCase();
+    badge.style.backgroundColor = severityColor;
+    
+    document.getElementById('condition-details').style.display = 'block';
+    
+    // Show stacks input for stackable conditions
+    if (conditionData.stackable) {
+        document.getElementById('stacks-input-section').style.display = 'block';
+    } else {
+        document.getElementById('stacks-input-section').style.display = 'none';
+    }
 }
 
 window.confirmAddCondition = function() {
     const select = document.getElementById('condition-select');
-    const selectedOption = select.options[select.selectedIndex];
+    const selectedCondition = select.value;
     
-    if (!selectedOption) {
+    if (!selectedCondition) {
         alert('Please select a condition');
         return;
     }
     
-    const conditionData = JSON.parse(selectedOption.dataset.condition);
-    const notes = document.getElementById('condition-notes-input').value.trim();
+    const conditionData = wfrpConditions[selectedCondition];
+    const stacksToAdd = conditionData.stackable ? 
+        parseInt(document.getElementById('condition-stacks-input').value) || 1 : 1;
     
-    // Create condition object
-    const condition = {
-        name: conditionData.name,
-        stackable: conditionData.stackable,
-        effects: conditionData.effects,
-        notes: notes || ''
-    };
-    
-    // For stackable conditions, check if it already exists and just add a note about multiple instances
-    if (conditionData.stackable === "Yes") {
-        const existingIndex = activeConditions.findIndex(c => c.name === condition.name);
-        if (existingIndex !== -1) {
-            // Add to existing notes or create new notes about stacking
-            const existingNotes = activeConditions[existingIndex].notes || '';
-            const stackNote = existingNotes ? `${existingNotes}; +1 stack` : '+1 stack';
-            activeConditions[existingIndex].notes = stackNote;
-        } else {
-            activeConditions.push(condition);
-        }
-    } else {
-        // For non-stackable conditions, check if already exists
-        const exists = activeConditions.some(c => c.name === condition.name);
-        if (exists) {
-            alert('This condition is already active and cannot be stacked');
-            return;
-        }
-        activeConditions.push(condition);
+    if (window.addCondition(selectedCondition, stacksToAdd)) {
+        window.closeAddConditionModal();
     }
-    
-    displayConditions();
-    closeAddConditionModal();
 }
 
 window.closeAddConditionModal = function() {
     document.getElementById('add-condition-modal').style.display = 'none';
     document.getElementById('condition-select').value = '';
-    document.getElementById('condition-notes-input').value = '';
+    document.getElementById('condition-stacks-input').value = '1';
     document.getElementById('condition-details').style.display = 'none';
+    document.getElementById('stacks-input-section').style.display = 'none';
 }
 
 // Add search listener for conditions
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('conditions-search')?.addEventListener('input', function() {
-        displayConditions();
+        window.updateConditionDisplay();
     });
 });
 
@@ -3145,7 +3359,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Refresh all displays
             displaySkills();
             displayTalents();
-            displayConditions();
+            window.updateConditionDisplay();
             displaySpells();
             displayWeapons();
             displayArmour();
@@ -3184,7 +3398,7 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 displaySkills(); // Show basic skills immediately
                 displayTalents();
-                displayConditions();
+                window.updateConditionDisplay();
                 displaySpells();
                 displayWeapons();
                 displayArmour();
