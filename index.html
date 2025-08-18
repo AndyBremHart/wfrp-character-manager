@@ -1978,6 +1978,8 @@
                 const init = parseInt(initial.value) || 0;
                 const adv = parseInt(advances.value) || 0;
                 let currentValue = init + adv;
+                let penalties = [];
+                let totalPenalty = 0;
                 
                 // Apply encumbrance penalty to Agility
                 if (char === 'ag') {
@@ -1991,12 +1993,35 @@
                         } else {
                             currentValue = currentValue - agilityPenalty;
                         }
-                        current.style.color = 'red';
-                        current.title = `Base: ${init + adv}, Encumbrance Penalty: -${agilityPenalty}`;
-                    } else {
-                        current.style.color = '';
-                        current.title = '';
+                        penalties.push(`Encumbrance: -${agilityPenalty}`);
+                        totalPenalty += agilityPenalty;
                     }
+                }
+                
+                // Apply critical wound penalties
+                if (typeof window.getCriticalWoundPenalties === 'function') {
+                    const woundPenalties = window.getCriticalWoundPenalties();
+                    const charMap = {
+                        'ws': 'WS', 'bs': 'BS', 's': 'S', 't': 'T', 'i': 'I', 
+                        'ag': 'Ag', 'dex': 'Dex', 'int': 'Int', 'wp': 'WP', 'fel': 'Fel'
+                    };
+                    
+                    const mappedChar = charMap[char];
+                    if (woundPenalties.characteristics[mappedChar]) {
+                        const woundPenalty = Math.abs(woundPenalties.characteristics[mappedChar]);
+                        currentValue = Math.max(0, currentValue - woundPenalty);
+                        penalties.push(`Critical Wounds: -${woundPenalty}`);
+                        totalPenalty += woundPenalty;
+                    }
+                }
+                
+                // Update display styling and tooltips
+                if (totalPenalty > 0) {
+                    current.style.color = 'red';
+                    current.title = `Base: ${init + adv}, ${penalties.join(', ')}`;
+                } else if (char !== 'ag') { // Don't clear ag styling if it was set by encumbrance
+                    current.style.color = '';
+                    current.title = '';
                 }
                 
                 current.value = currentValue;
@@ -3378,6 +3403,18 @@ document.addEventListener('DOMContentLoaded', function() {
 // Critical Wounds Management System
 let woundIdCounter = 1;
 
+// Function to update all characteristics based on critical wound penalties
+window.updateAllCharacteristicsFromWounds = function() {
+    const characteristics = ['ws', 'bs', 's', 't', 'i', 'ag', 'dex', 'int', 'wp', 'fel'];
+    characteristics.forEach(char => {
+        const initialInput = document.getElementById(`${char}-initial`);
+        if (initialInput) {
+            // Trigger the input event to recalculate current value
+            initialInput.dispatchEvent(new Event('input'));
+        }
+    });
+}
+
 window.getSeverityColorForWound = function(wounds) {
     if (wounds === "Death" || wounds >= 5) return '#000000'; // Fatal
     if (wounds >= 4) return '#c41e3a'; // Severe (red)
@@ -3415,6 +3452,7 @@ window.addCriticalWound = function(woundData) {
     
     window.displayCriticalWounds();
     window.updateWoundPenalties();
+    window.updateAllCharacteristicsFromWounds();
     return wound.id;
 }
 
@@ -3430,6 +3468,7 @@ window.removeCriticalWound = function(woundId) {
         criticalWounds.splice(woundIndex, 1);
         window.displayCriticalWounds();
         window.updateWoundPenalties();
+        window.updateAllCharacteristicsFromWounds();
         return true;
     }
     return false;
@@ -3706,6 +3745,7 @@ window.removeAllWounds = function() {
         criticalWounds.length = 0;
         window.displayCriticalWounds();
         window.updateWoundPenalties();
+        window.updateAllCharacteristicsFromWounds();
     }
 }
 
@@ -3773,6 +3813,7 @@ window.confirmAddWound = function() {
             Object.assign(wound, woundData);
             window.displayCriticalWounds();
             window.updateWoundPenalties();
+            window.updateAllCharacteristicsFromWounds();
         }
         window.editingWoundId = null;
     } else {
@@ -4504,6 +4545,7 @@ document.addEventListener('DOMContentLoaded', function() {
             window.updateConditionDisplay();
             window.displayCriticalWounds();
             window.updateWoundPenalties();
+            window.updateAllCharacteristicsFromWounds();
             displaySpells();
             displayWeapons();
             displayArmour();
