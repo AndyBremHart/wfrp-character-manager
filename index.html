@@ -639,7 +639,7 @@
                         </div>
                         
                         <div id="talent-times-taken" style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Times Taken:</label>
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Number to Add:</label>
                             <input type="number" id="talent-times-input" value="1" min="1" max="10" style="width: 100px; padding: 5px;">
                         </div>
                         
@@ -3153,7 +3153,9 @@ window.getTalentCurrentLimit = function(talentName, characteristics) {
 }
 
 window.getTalentCurrentCount = function(talentName) {
-    return talents.filter(t => t.name === talentName).length;
+    // Count both separate entries AND timesTaken for each entry
+    return talents.filter(t => t.name === talentName)
+                 .reduce((total, talent) => total + (talent.timesTaken || 1), 0);
 }
 
 window.canAddTalent = function(talentName) {
