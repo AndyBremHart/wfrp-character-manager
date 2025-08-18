@@ -2962,10 +2962,20 @@ window.confirmAddTalent = function() {
     }
     
     // Check talent limitations first
-    if (talentLimitations[talentData.name] && !window.canAddTalent(talentData.name)) {
+    if (window.isTalentLimited(talentData.name) && !window.canAddTalent(talentData.name)) {
         const currentCount = window.getTalentCurrentCount(talentData.name);
         const currentLimit = window.getTalentCurrentLimit(talentData.name);
-        const limitType = talentLimitations[talentData.name].replace('Bonus', '').toUpperCase();
+        
+        // Determine limit type for error message
+        let limitType = "UNKNOWN";
+        if (talentLimitations[talentData.name]) {
+            limitType = talentLimitations[talentData.name].replace('Bonus', '').toUpperCase();
+        } else if (srdTalents) {
+            const talentInfo = srdTalents.find(t => t.name === talentData.name);
+            if (talentInfo && talentInfo.max) {
+                limitType = talentInfo.max.replace(' Bonus', '').toUpperCase();
+            }
+        }
         
         alert(`Cannot add ${talentData.name}: already at limit (${currentCount}/${currentLimit} based on ${limitType} Bonus)`);
         return;
@@ -3117,8 +3127,69 @@ window.closeAddTalentModal = function() {
 }
 
 // Talent Limitations System
+window.isTalentLimited = function(talentName) {
+    // Check hard-coded limitations first
+    if (talentLimitations[talentName]) {
+        return true;
+    }
+    
+    // Check JSON talent data for characteristic bonus limits
+    if (srdTalents && srdTalents.length > 0) {
+        const talentData = srdTalents.find(t => t.name === talentName);
+        if (talentData && talentData.max) {
+            const bonusTypes = ["Strength Bonus", "Toughness Bonus", "Intelligence Bonus", 
+                              "Willpower Bonus", "Agility Bonus", "Dexterity Bonus", 
+                              "Weapon Skill Bonus", "Ballistic Skill Bonus", "Initiative Bonus", 
+                              "Fellowship Bonus"];
+            return bonusTypes.includes(talentData.max);
+        }
+    }
+    
+    return false;
+}
+
 window.getTalentCurrentLimit = function(talentName, characteristics) {
-    const limitType = talentLimitations[talentName];
+    let limitType = talentLimitations[talentName];
+    
+    // If not in hard-coded list, check JSON talent data for characteristic bonus limits
+    if (!limitType && srdTalents && srdTalents.length > 0) {
+        const talentData = srdTalents.find(t => t.name === talentName);
+        if (talentData && talentData.max) {
+            switch(talentData.max) {
+                case "Strength Bonus":
+                    limitType = "strengthBonus";
+                    break;
+                case "Toughness Bonus":
+                    limitType = "toughnessBonus";
+                    break;
+                case "Intelligence Bonus":
+                    limitType = "intelligenceBonus";
+                    break;
+                case "Willpower Bonus":
+                    limitType = "willpowerBonus";
+                    break;
+                case "Agility Bonus":
+                    limitType = "agilityBonus";
+                    break;
+                case "Dexterity Bonus":
+                    limitType = "dexterityBonus";
+                    break;
+                case "Weapon Skill Bonus":
+                    limitType = "weaponSkillBonus";
+                    break;
+                case "Ballistic Skill Bonus":
+                    limitType = "ballisticSkillBonus";
+                    break;
+                case "Initiative Bonus":
+                    limitType = "initiativeBonus";
+                    break;
+                case "Fellowship Bonus":
+                    limitType = "fellowshipBonus";
+                    break;
+            }
+        }
+    }
+    
     if (!limitType) return 999; // Unlimited talent
     
     // Handle different characteristic bonus types
@@ -3144,6 +3215,15 @@ window.getTalentCurrentLimit = function(talentName, characteristics) {
             break;
         case "weaponSkillBonus":
             characteristicValue = parseInt(document.getElementById('ws-current')?.value) || 0;
+            break;
+        case "ballisticSkillBonus":
+            characteristicValue = parseInt(document.getElementById('bs-current')?.value) || 0;
+            break;
+        case "initiativeBonus":
+            characteristicValue = parseInt(document.getElementById('i-current')?.value) || 0;
+            break;
+        case "fellowshipBonus":
+            characteristicValue = parseInt(document.getElementById('fel-current')?.value) || 0;
             break;
         default:
             return 999; // Unknown limitation type
@@ -3306,7 +3386,7 @@ window.displayTalents = function() {
         const cost = window.getTalentCost(currentTimes - 1); // Cost for next advance
         
         // Check talent limitations
-        const isLimited = talentLimitations[talent.name];
+        const isLimited = window.isTalentLimited(talent.name);
         let timesDisplay = "";
         let canTakeMore = talent.max === "No Limit" || parseInt(talent.max) > currentTimes;
         let limitColor = "";
