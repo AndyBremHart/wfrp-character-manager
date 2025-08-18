@@ -637,6 +637,13 @@
                             <input type="number" id="talent-times-input" value="1" min="1" max="10" style="width: 100px; padding: 5px;">
                         </div>
                         
+                        <div style="margin-bottom: 15px; padding: 10px; background: #f0e6d2; border: 1px solid #8b7355; border-radius: 3px;">
+                            <label style="display: flex; align-items: center; color: #3e2f1f; font-size: 14px; cursor: pointer;">
+                                <input type="checkbox" id="talent-xp-override" style="margin-right: 8px;">
+                                <strong>Add for Free</strong> <span style="margin-left: 8px; font-size: 12px; color: #666;">(mutation, story reward, etc.)</span>
+                            </label>
+                        </div>
+                        
                         <div style="text-align: center;">
                             <button class="control-btn" onclick="window.confirmAddTalent()" style="margin-right: 10px; padding: 8px 16px;">Add Talent</button>
                             <button class="control-btn" onclick="window.closeAddTalentModal()" style="padding: 8px 16px;">Cancel</button>
@@ -1664,17 +1671,42 @@
             const spent = parseInt(xpSpent.value) || 0;
             const current = total - spent;
             
-            if (!window.canAffordAdvance(cost)) {
-                alert(`Insufficient XP! Need ${cost} XP to take ${talent.displayName} again, only have ${current} available.`);
-                return;
+            // Create a custom confirmation dialog with free option
+            const canAfford = window.canAffordAdvance(cost);
+            let confirmationMessage;
+            
+            if (canAfford) {
+                confirmationMessage = `Take ${talent.displayName} again for ${cost} XP? (Current XP: ${current})\n\nClick OK to spend XP, or Cancel to add for free (mutation/story reward).`;
+            } else {
+                confirmationMessage = `Insufficient XP! Need ${cost} XP to take ${talent.displayName} again, only have ${current} available.\n\nClick OK to add for free (mutation/story reward), or Cancel to abort.`;
             }
             
-            if (confirm(`Take ${talent.displayName} again for ${cost} XP? (Current XP: ${current})`)) {
-                if (window.spendXP(cost, `${talent.displayName} talent advance`)) {
+            const userChoice = confirm(confirmationMessage);
+            
+            if (userChoice) {
+                if (canAfford) {
+                    // Normal XP purchase
+                    if (window.spendXP(cost, `${talent.displayName} talent advance`)) {
+                        talent.timesTaken = currentTimes + 1;
+                        window.displayTalents(); // Refresh the display
+                        alert(`${talent.displayName} taken again! Spent ${cost} XP.`);
+                    }
+                } else {
+                    // Free addition (insufficient XP scenario)
                     talent.timesTaken = currentTimes + 1;
                     window.displayTalents(); // Refresh the display
-                    alert(`${talent.displayName} taken again! Spent ${cost} XP.`);
+                    alert(`${talent.displayName} taken again for FREE!`);
                 }
+            } else {
+                if (canAfford) {
+                    // User chose free option when they could afford it
+                    if (confirm(`Add ${talent.displayName} again for FREE? (mutation/story reward)`)) {
+                        talent.timesTaken = currentTimes + 1;
+                        window.displayTalents(); // Refresh the display
+                        alert(`${talent.displayName} taken again for FREE!`);
+                    }
+                }
+                // If they can't afford and clicked cancel, just return
             }
         }
         
@@ -2022,59 +2054,89 @@ window.confirmAddTalent = function() {
         return;
     }
     
-    // Calculate XP cost for the talent(s) being added
-    let totalCost = 0;
+    // Check if XP cost should be overridden (free talent)
+    const isFreeTalent = document.getElementById('talent-xp-override').checked;
     const displayName = customisation ? `${talentData.name} (${customisation})` : talentData.name;
     
-    // Check if this exact talent already exists
-    const existingIndex = talents.findIndex(t => 
-        t.name === talentData.name && t.customisation === customisation
-    );
+    // Calculate XP cost for the talent(s) being added (unless it's free)
+    let totalCost = 0;
     
-    if (existingIndex !== -1) {
-        // Adding to existing talent
-        const currentTimes = talents[existingIndex].timesTaken;
-        const maxAllowed = parseInt(talentData.max) || 10;
-        const actualTimesToAdd = Math.min(timesTaken, maxAllowed - currentTimes);
+    if (!isFreeTalent) {
+        // Check if this exact talent already exists
+        const existingIndex = talents.findIndex(t => 
+            t.name === talentData.name && t.customisation === customisation
+        );
         
-        if (actualTimesToAdd <= 0) {
-            alert(`You already have the maximum number of ${displayName}`);
+        if (existingIndex !== -1) {
+            // Adding to existing talent
+            const currentTimes = talents[existingIndex].timesTaken;
+            const maxAllowed = parseInt(talentData.max) || 10;
+            const actualTimesToAdd = Math.min(timesTaken, maxAllowed - currentTimes);
+            
+            if (actualTimesToAdd <= 0) {
+                alert(`You already have the maximum number of ${displayName}`);
+                return;
+            }
+            
+            // Calculate cost for each additional time
+            for (let i = 0; i < actualTimesToAdd; i++) {
+                totalCost += window.getTalentCost(currentTimes + i);
+            }
+        } else {
+            // New talent - calculate cost for all times
+            for (let i = 0; i < timesTaken; i++) {
+                totalCost += window.getTalentCost(i);
+            }
+        }
+        
+        // Check if player can afford it
+        const total = parseInt(document.getElementById('xp-total').value) || 0;
+        const spent = parseInt(document.getElementById('xp-spent').value) || 0;
+        const current = total - spent;
+        
+        if (!window.canAffordAdvance(totalCost)) {
+            alert(`Insufficient XP! Need ${totalCost} XP to add ${displayName}${timesTaken > 1 ? ` (${timesTaken} times)` : ''}, only have ${current} available.`);
             return;
         }
         
-        // Calculate cost for each additional time
-        for (let i = 0; i < actualTimesToAdd; i++) {
-            totalCost += window.getTalentCost(currentTimes + i);
+        // Confirm the purchase
+        const confirmMessage = timesTaken > 1 ? 
+            `Add ${displayName} ${timesTaken} times for ${totalCost} XP? (Current XP: ${current})` :
+            `Add ${displayName} for ${totalCost} XP? (Current XP: ${current})`;
+            
+        if (!confirm(confirmMessage)) {
+            return;
+        }
+        
+        // Spend the XP
+        if (!window.spendXP(totalCost, `${displayName} talent${timesTaken > 1 ? ` (${timesTaken} times)` : ''}`)) {
+            return;
         }
     } else {
-        // New talent - calculate cost for all times
-        for (let i = 0; i < timesTaken; i++) {
-            totalCost += window.getTalentCost(i);
+        // Free talent - just confirm the addition
+        const confirmMessage = timesTaken > 1 ? 
+            `Add ${displayName} ${timesTaken} times for FREE?` :
+            `Add ${displayName} for FREE?`;
+            
+        if (!confirm(confirmMessage)) {
+            return;
         }
-    }
-    
-    // Check if player can afford it
-    const total = parseInt(document.getElementById('xp-total').value) || 0;
-    const spent = parseInt(document.getElementById('xp-spent').value) || 0;
-    const current = total - spent;
-    
-    if (!window.canAffordAdvance(totalCost)) {
-        alert(`Insufficient XP! Need ${totalCost} XP to add ${displayName}${timesTaken > 1 ? ` (${timesTaken} times)` : ''}, only have ${current} available.`);
-        return;
-    }
-    
-    // Confirm the purchase
-    const confirmMessage = timesTaken > 1 ? 
-        `Add ${displayName} ${timesTaken} times for ${totalCost} XP? (Current XP: ${current})` :
-        `Add ${displayName} for ${totalCost} XP? (Current XP: ${current})`;
         
-    if (!confirm(confirmMessage)) {
-        return;
-    }
-    
-    // Spend the XP
-    if (!window.spendXP(totalCost, `${displayName} talent${timesTaken > 1 ? ` (${timesTaken} times)` : ''}`)) {
-        return;
+        // Check limits even for free talents
+        const existingIndex = talents.findIndex(t => 
+            t.name === talentData.name && t.customisation === customisation
+        );
+        
+        if (existingIndex !== -1) {
+            const currentTimes = talents[existingIndex].timesTaken;
+            const maxAllowed = parseInt(talentData.max) || 10;
+            const actualTimesToAdd = Math.min(timesTaken, maxAllowed - currentTimes);
+            
+            if (actualTimesToAdd <= 0) {
+                alert(`You already have the maximum number of ${displayName}`);
+                return;
+            }
+        }
     }
     
     // Create talent object
@@ -2127,6 +2189,7 @@ window.closeAddTalentModal = function() {
     document.getElementById('talent-select').value = '';
     document.getElementById('talent-customisation-input').value = '';
     document.getElementById('talent-times-input').value = '1';
+    document.getElementById('talent-xp-override').checked = false; // Reset XP override checkbox
     document.getElementById('talent-details').style.display = 'none';
     document.getElementById('talent-customisation').style.display = 'none';
 }
