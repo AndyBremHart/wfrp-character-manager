@@ -571,6 +571,161 @@
             }
         }
 
+        /* Auto-Save Status Indicator Styles */
+        .save-status-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #faf8f3;
+            border: 2px solid #e8dfd0;
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-family: 'Georgia', serif;
+            font-size: 11px;
+            color: #3e2f1f;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .save-status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .save-status-container.saved-local {
+            border-color: #28a745;
+        }
+
+        .save-status-container.saved-local .save-status-indicator {
+            background: #28a745;
+        }
+
+        .save-status-container.saved-cloud {
+            border-color: #007bff;
+        }
+
+        .save-status-container.saved-cloud .save-status-indicator {
+            background: #007bff;
+        }
+
+        .save-status-container.syncing {
+            border-color: #ffc107;
+        }
+
+        .save-status-container.syncing .save-status-indicator {
+            background: #ffc107;
+            animation: pulse 1.5s infinite;
+        }
+
+        .save-status-container.error {
+            border-color: #dc3545;
+        }
+
+        .save-status-container.error .save-status-indicator {
+            background: #dc3545;
+        }
+
+        .save-status-container.offline {
+            border-color: #6c757d;
+        }
+
+        .save-status-container.offline .save-status-indicator {
+            background: #6c757d;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .save-status-text {
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        /* Auto-restore notification styles */
+        .auto-restore-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #faf8f3;
+            border: 3px solid #3e2f1f;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 500px;
+            z-index: 10000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            font-family: 'Georgia', serif;
+        }
+
+        .auto-restore-notification h3 {
+            color: #3e2f1f;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .auto-restore-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .auto-restore-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Georgia', serif;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .auto-restore-btn.primary {
+            background: #3e2f1f;
+            color: #faf8f3;
+        }
+
+        .auto-restore-btn.primary:hover {
+            background: #2a1f14;
+        }
+
+        .auto-restore-btn.secondary {
+            background: #8b7355;
+            color: #faf8f3;
+        }
+
+        .auto-restore-btn.secondary:hover {
+            background: #6d5a43;
+        }
+
+        /* Mobile responsiveness for auto-save UI */
+        @media (max-width: 768px) {
+            .save-status-container {
+                top: 10px;
+                right: 10px;
+                padding: 6px 10px;
+                font-size: 10px;
+            }
+
+            .save-status-indicator {
+                width: 6px;
+                height: 6px;
+            }
+
+            .auto-restore-notification {
+                max-width: 90%;
+                margin: 10px;
+            }
+        }
+
         /* Species Creation Wizard Styles */
         .wizard-step {
             width: 40px;
@@ -807,6 +962,13 @@
     </style>
 </head>
 <body>
+    <!-- Auto-Save Status Indicator -->
+    <div id="save-status-container" class="save-status-container saved-local">
+        <div class="save-status-indicator"></div>
+        <span class="save-status-text" id="save-status-text">Ready</span>
+        <button onclick="triggerImmediateAutoSave()" style="margin-left: 8px; padding: 2px 6px; background: transparent; border: 1px solid #8b7355; border-radius: 3px; font-size: 10px; color: #3e2f1f; cursor: pointer;" title="Force save now">💾</button>
+    </div>
+
     <div class="character-sheet">
         <!-- Header Section -->
         <div class="sheet-header">
@@ -3474,11 +3636,586 @@
 
         // Initialize Google APIs when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize auto-save system first
+            initializeAutoSaveSystem();
+            
             // Add a small delay to ensure Google scripts are loaded
             setTimeout(() => {
                 initializeGoogleAPIs();
             }, 1000);
         });
+
+        // =============== AUTO-SAVE SYSTEM ===============
+        
+        // Auto-save configuration
+        const AUTO_SAVE_CONFIG = {
+            LOCAL_SAVE_DELAY: 2500,  // 2.5 seconds delay after user stops typing
+            SAVE_KEYS: {
+                CHARACTER: 'wfrp_character_autosave',
+                SESSION_NOTES: 'wfrp_session_notes_autosave',
+                TIMESTAMP: 'wfrp_autosave_timestamp',
+                CURRENT_TAB: 'wfrp_current_tab',
+                VERSION: 'wfrp_save_version'
+            },
+            MAX_AGE_HOURS: 24
+        };
+
+        // Auto-save state
+        let autoSaveTimeout;
+        let lastSaveTime = 0;
+        let isAutoSaving = false;
+        let currentActiveTab = 'overview';
+
+        // Save status management
+        function updateSaveStatus(status, message) {
+            const container = document.getElementById('save-status-container');
+            const text = document.getElementById('save-status-text');
+            
+            if (!container || !text) return;
+
+            // Remove all status classes
+            container.className = 'save-status-container';
+            
+            // Add new status class
+            switch (status) {
+                case 'saved-local':
+                    container.classList.add('saved-local');
+                    break;
+                case 'saved-cloud':
+                    container.classList.add('saved-cloud');
+                    break;
+                case 'syncing':
+                    container.classList.add('syncing');
+                    break;
+                case 'error':
+                    container.classList.add('error');
+                    break;
+                case 'offline':
+                    container.classList.add('offline');
+                    break;
+            }
+            
+            text.textContent = message || 'Ready';
+        }
+
+        // Comprehensive data collection function
+        function gatherAllCharacterData() {
+            try {
+                // Start with the same structure as existing save functions
+                const characterData = {
+                    // Basic character info
+                    name: document.getElementById('character-name')?.value || '',
+                    species: document.getElementById('species')?.value || '',
+                    class: document.getElementById('class')?.value || '',
+                    career: document.getElementById('career')?.value || '',
+                    
+                    // Characteristics
+                    characteristics: {},
+                    
+                    // Core stats
+                    wounds: {
+                        current: document.getElementById('wounds-current')?.value || '',
+                        max: document.getElementById('wounds-max')?.value || ''
+                    },
+                    movement: document.getElementById('movement')?.value || '',
+                    fate: document.getElementById('fate')?.value || '',
+                    fortune: document.getElementById('fortune-current')?.value || '',
+                    resilience: document.getElementById('resilience')?.value || '',
+                    resolve: document.getElementById('resolve-current')?.value || '',
+                    motivation: document.getElementById('motivation')?.value || '',
+                    
+                    // Experience
+                    experience: {
+                        total: document.getElementById('xp-total')?.value || '0',
+                        spent: document.getElementById('xp-spent')?.value || '0'
+                    },
+                    
+                    // Status
+                    status: {
+                        tier: document.getElementById('status-tier')?.value || 'Brass',
+                        standing: document.getElementById('status-standing')?.value || ''
+                    },
+                    
+                    // Other stats
+                    sinPoints: document.getElementById('sin-points')?.value || '',
+                    corruptionPoints: document.getElementById('corruption-points')?.value || '',
+                    notes: document.getElementById('quick-notes')?.value || '',
+                    
+                    // Money
+                    money: {
+                        gold: document.getElementById('money-gold')?.value || '',
+                        silver: document.getElementById('money-silver')?.value || '',
+                        brass: document.getElementById('money-brass')?.value || ''
+                    },
+                    
+                    // Complex data structures (with safety checks)
+                    skills: typeof characterSkills !== 'undefined' ? characterSkills : [],
+                    addedSkills: typeof addedSkills !== 'undefined' ? addedSkills : [],
+                    weapons: typeof weapons !== 'undefined' ? weapons : [],
+                    armour: typeof armour !== 'undefined' ? armour : [],
+                    trappings: typeof trappings !== 'undefined' ? trappings : [],
+                    consumables: typeof consumables !== 'undefined' ? consumables : [],
+                    talents: typeof talents !== 'undefined' ? talents : [],
+                    activeConditions: typeof activeConditions !== 'undefined' ? activeConditions : [],
+                    criticalWounds: typeof criticalWounds !== 'undefined' ? criticalWounds : [],
+                    spells: typeof spells !== 'undefined' ? spells : [],
+                    mutations: typeof mutations !== 'undefined' ? mutations : [],
+                    xpLog: typeof xpLog !== 'undefined' ? xpLog : [],
+                    
+                    // Disease tracking
+                    diseaseTracking: {
+                        activeDiseases: (typeof character !== 'undefined' && character.diseaseTracking) ? character.diseaseTracking.activeDiseases || [] : [],
+                        testReminders: document.getElementById('test-reminders')?.value || ''
+                    },
+                    
+                    // Session notes
+                    sessionNotes: typeof sessionNotes !== 'undefined' ? sessionNotes : [],
+                    
+                    // Auto-save metadata
+                    autoSaveTimestamp: new Date().toISOString(),
+                    currentTab: currentActiveTab,
+                    version: '1.0'
+                };
+
+                // Save characteristics
+                if (typeof characteristics !== 'undefined') {
+                    characteristics.forEach(char => {
+                        const initialElement = document.getElementById(`${char}-initial`);
+                        const advancesElement = document.getElementById(`${char}-advances`);
+                        if (initialElement && advancesElement) {
+                            characterData.characteristics[char] = {
+                                initial: initialElement.value || '',
+                                advances: advancesElement.value || ''
+                            };
+                        }
+                    });
+                }
+
+                return characterData;
+            } catch (error) {
+                console.error('Error gathering character data:', error);
+                return null;
+            }
+        }
+
+        // Debounced auto-save function
+        function triggerAutoSave() {
+            clearTimeout(autoSaveTimeout);
+            autoSaveTimeout = setTimeout(performAutoSave, AUTO_SAVE_CONFIG.LOCAL_SAVE_DELAY);
+        }
+
+        // Immediate auto-save (for critical events)
+        function triggerImmediateAutoSave() {
+            clearTimeout(autoSaveTimeout);
+            performAutoSave();
+        }
+
+        // Perform the actual auto-save
+        async function performAutoSave() {
+            if (isAutoSaving) return;
+
+            try {
+                isAutoSaving = true;
+                updateSaveStatus('syncing', 'Saving...');
+
+                const characterData = gatherAllCharacterData();
+                
+                if (!characterData) {
+                    throw new Error('Failed to gather character data');
+                }
+
+                // Save to localStorage
+                localStorage.setItem(AUTO_SAVE_CONFIG.SAVE_KEYS.CHARACTER, JSON.stringify(characterData));
+                localStorage.setItem(AUTO_SAVE_CONFIG.SAVE_KEYS.TIMESTAMP, new Date().toISOString());
+                localStorage.setItem(AUTO_SAVE_CONFIG.SAVE_KEYS.CURRENT_TAB, currentActiveTab);
+                localStorage.setItem(AUTO_SAVE_CONFIG.SAVE_KEYS.VERSION, '1.0');
+
+                lastSaveTime = Date.now();
+                updateSaveStatus('saved-local', 'Saved locally');
+
+                // Try to backup to Google Drive if connected
+                setTimeout(attemptCloudBackup, 1000);
+
+            } catch (error) {
+                console.error('Auto-save failed:', error);
+                updateSaveStatus('error', 'Save failed');
+            } finally {
+                isAutoSaving = false;
+            }
+        }
+
+        // Attempt to backup to Google Drive
+        async function attemptCloudBackup() {
+            if (!isSignedIn || !isOnline()) {
+                updateSaveStatus('offline', isSignedIn ? 'Saved locally (offline)' : 'Saved locally');
+                return;
+            }
+
+            try {
+                updateSaveStatus('syncing', 'Syncing to Drive...');
+                
+                // Use existing Google Drive backup function
+                await backupCharacterToDriveWithRetry();
+                
+                updateSaveStatus('saved-cloud', 'Backed up to Drive');
+            } catch (error) {
+                console.error('Cloud backup failed:', error);
+                updateSaveStatus('saved-local', 'Saved locally (Drive sync failed)');
+            }
+        }
+
+        // Auto-restore functionality
+        function checkForAutoRestore() {
+            try {
+                const savedData = localStorage.getItem(AUTO_SAVE_CONFIG.SAVE_KEYS.CHARACTER);
+                const saveTimestamp = localStorage.getItem(AUTO_SAVE_CONFIG.SAVE_KEYS.TIMESTAMP);
+                
+                if (!savedData || !saveTimestamp) {
+                    updateSaveStatus('saved-local', 'Ready');
+                    return;
+                }
+
+                const saveDate = new Date(saveTimestamp);
+                const hoursAgo = (new Date() - saveDate) / (1000 * 60 * 60);
+
+                // Only auto-restore if save is less than 24 hours old
+                if (hoursAgo > AUTO_SAVE_CONFIG.MAX_AGE_HOURS) {
+                    // Clean up old saves
+                    cleanupOldAutoSaves();
+                    updateSaveStatus('saved-local', 'Ready');
+                    return;
+                }
+
+                // Show restore dialog
+                showAutoRestoreDialog(saveDate, savedData);
+
+            } catch (error) {
+                console.error('Error checking for auto-restore:', error);
+                updateSaveStatus('saved-local', 'Ready');
+            }
+        }
+
+        // Show auto-restore dialog
+        function showAutoRestoreDialog(saveDate, savedData) {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10001;';
+
+            const notification = document.createElement('div');
+            notification.className = 'auto-restore-notification';
+            
+            const timeAgo = getTimeAgoString(saveDate);
+            
+            notification.innerHTML = `
+                <h3>Unsaved Changes Found</h3>
+                <p style="text-align: center; margin-bottom: 10px; color: #666;">
+                    Found character data auto-saved ${timeAgo}
+                </p>
+                <p style="text-align: center; margin-bottom: 15px; color: #3e2f1f;">
+                    Would you like to restore your unsaved changes?
+                </p>
+                <div class="auto-restore-buttons">
+                    <button class="auto-restore-btn primary" onclick="restoreAutoSavedData('${btoa(savedData)}', this)">
+                        Restore Changes
+                    </button>
+                    <button class="auto-restore-btn secondary" onclick="startFresh(this)">
+                        Start Fresh
+                    </button>
+                </div>
+            `;
+
+            overlay.appendChild(notification);
+            document.body.appendChild(overlay);
+        }
+
+        // Restore auto-saved data
+        window.restoreAutoSavedData = function(encodedData, buttonElement) {
+            try {
+                const savedData = atob(encodedData);
+                const characterData = JSON.parse(savedData);
+                
+                // Restore all character data using existing restore logic
+                restoreCharacterDataFromAutoSave(characterData);
+                
+                // Restore the last active tab
+                const savedTab = localStorage.getItem(AUTO_SAVE_CONFIG.SAVE_KEYS.CURRENT_TAB);
+                if (savedTab) {
+                    currentActiveTab = savedTab;
+                    showTab(savedTab);
+                }
+
+                // Close the dialog
+                buttonElement.closest('.auto-restore-notification').parentElement.remove();
+                
+                updateSaveStatus('saved-local', `Restored from ${getTimeAgoString(new Date(characterData.autoSaveTimestamp))}`);
+                
+                // Auto-save the restored data
+                setTimeout(triggerAutoSave, 1000);
+
+            } catch (error) {
+                console.error('Error restoring auto-saved data:', error);
+                alert('Failed to restore saved data. Starting fresh.');
+                startFresh(buttonElement);
+            }
+        }
+
+        // Start fresh (discard auto-saved data)
+        window.startFresh = function(buttonElement) {
+            cleanupOldAutoSaves();
+            buttonElement.closest('.auto-restore-notification').parentElement.remove();
+            updateSaveStatus('saved-local', 'Ready');
+        }
+
+        // Restore character data from auto-save
+        function restoreCharacterDataFromAutoSave(characterData) {
+            // Basic character info
+            if (characterData.name) document.getElementById('character-name').value = characterData.name;
+            if (characterData.species) document.getElementById('species').value = characterData.species;
+            if (characterData.class) document.getElementById('class').value = characterData.class;
+            if (characterData.career) document.getElementById('career').value = characterData.career;
+            
+            // Characteristics
+            if (characterData.characteristics && typeof characteristics !== 'undefined') {
+                characteristics.forEach(char => {
+                    if (characterData.characteristics[char]) {
+                        const initialElement = document.getElementById(`${char}-initial`);
+                        const advancesElement = document.getElementById(`${char}-advances`);
+                        if (initialElement) initialElement.value = characterData.characteristics[char].initial || '';
+                        if (advancesElement) advancesElement.value = characterData.characteristics[char].advances || '';
+                    }
+                });
+            }
+            
+            // Core stats
+            if (characterData.wounds) {
+                if (document.getElementById('wounds-current')) document.getElementById('wounds-current').value = characterData.wounds.current || '';
+                if (document.getElementById('wounds-max')) document.getElementById('wounds-max').value = characterData.wounds.max || '';
+            }
+            
+            if (document.getElementById('movement')) document.getElementById('movement').value = characterData.movement || '';
+            if (document.getElementById('fate')) document.getElementById('fate').value = characterData.fate || '';
+            if (document.getElementById('fortune-current')) document.getElementById('fortune-current').value = characterData.fortune || '';
+            if (document.getElementById('resilience')) document.getElementById('resilience').value = characterData.resilience || '';
+            if (document.getElementById('resolve-current')) document.getElementById('resolve-current').value = characterData.resolve || '';
+            if (document.getElementById('motivation')) document.getElementById('motivation').value = characterData.motivation || '';
+            
+            // Experience
+            if (characterData.experience) {
+                if (document.getElementById('xp-total')) document.getElementById('xp-total').value = characterData.experience.total || '0';
+                if (document.getElementById('xp-spent')) document.getElementById('xp-spent').value = characterData.experience.spent || '0';
+            }
+            
+            // Status
+            if (characterData.status) {
+                if (document.getElementById('status-tier')) document.getElementById('status-tier').value = characterData.status.tier || 'Brass';
+                if (document.getElementById('status-standing')) document.getElementById('status-standing').value = characterData.status.standing || '';
+            }
+            
+            // Other stats
+            if (document.getElementById('sin-points')) document.getElementById('sin-points').value = characterData.sinPoints || '';
+            if (document.getElementById('corruption-points')) document.getElementById('corruption-points').value = characterData.corruptionPoints || '';
+            if (document.getElementById('quick-notes')) document.getElementById('quick-notes').value = characterData.notes || '';
+            
+            // Money
+            if (characterData.money) {
+                if (document.getElementById('money-gold')) document.getElementById('money-gold').value = characterData.money.gold || '';
+                if (document.getElementById('money-silver')) document.getElementById('money-silver').value = characterData.money.silver || '';
+                if (document.getElementById('money-brass')) document.getElementById('money-brass').value = characterData.money.brass || '';
+            }
+            
+            // Complex data structures
+            if (characterData.skills && typeof characterSkills !== 'undefined') {
+                window.characterSkills = characterData.skills;
+                if (typeof displaySkills === 'function') displaySkills();
+            }
+            if (characterData.addedSkills && typeof addedSkills !== 'undefined') {
+                window.addedSkills = characterData.addedSkills;
+            }
+            if (characterData.weapons && typeof weapons !== 'undefined') {
+                window.weapons = characterData.weapons;
+                if (typeof displayWeapons === 'function') displayWeapons();
+            }
+            if (characterData.armour && typeof armour !== 'undefined') {
+                window.armour = characterData.armour;
+                if (typeof displayArmour === 'function') displayArmour();
+            }
+            if (characterData.trappings && typeof trappings !== 'undefined') {
+                window.trappings = characterData.trappings;
+                if (typeof displayTrappings === 'function') displayTrappings();
+            }
+            if (characterData.consumables && typeof consumables !== 'undefined') {
+                window.consumables = characterData.consumables;
+                if (typeof displayConsumables === 'function') displayConsumables();
+            }
+            if (characterData.talents && typeof talents !== 'undefined') {
+                window.talents = characterData.talents;
+                if (typeof displayTalents === 'function') displayTalents();
+            }
+            if (characterData.spells && typeof spells !== 'undefined') {
+                window.spells = characterData.spells;
+                if (typeof displaySpells === 'function') displaySpells();
+            }
+            if (characterData.xpLog && typeof xpLog !== 'undefined') {
+                window.xpLog = characterData.xpLog;
+            }
+            if (characterData.sessionNotes && typeof sessionNotes !== 'undefined') {
+                window.sessionNotes = characterData.sessionNotes;
+            }
+            
+            // Disease tracking
+            if (characterData.diseaseTracking) {
+                if (document.getElementById('test-reminders')) document.getElementById('test-reminders').value = characterData.diseaseTracking.testReminders || '';
+            }
+            
+            // Update displays
+            setTimeout(() => {
+                try {
+                    if (typeof updateEncumbrance === 'function') updateEncumbrance();
+                    if (typeof window.updateXPDisplay === 'function') window.updateXPDisplay();
+                    if (typeof updateTotalAP === 'function') updateTotalAP();
+                } catch (error) {
+                    console.error('Error updating displays:', error);
+                }
+            }, 500);
+        }
+
+        // Utility functions
+        function getTimeAgoString(date) {
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / (1000 * 60));
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            
+            if (diffMins < 1) return 'just now';
+            if (diffMins < 60) return `${diffMins} minute${diffMins === 1 ? '' : 's'} ago`;
+            if (diffHours < 24) return `${diffHours} hour${diffHours === 1 ? '' : 's'} ago`;
+            
+            return date.toLocaleDateString() + ' at ' + date.toLocaleTimeString();
+        }
+
+        function cleanupOldAutoSaves() {
+            Object.values(AUTO_SAVE_CONFIG.SAVE_KEYS).forEach(key => {
+                localStorage.removeItem(key);
+            });
+        }
+
+        // Event listener setup
+        function setupAutoSaveEventListeners() {
+            // Text inputs
+            document.querySelectorAll('input[type="text"], input[type="number"], textarea, select').forEach(element => {
+                if (element.id) {
+                    element.addEventListener('input', triggerAutoSave);
+                    element.addEventListener('change', triggerAutoSave);
+                }
+            });
+
+            // Checkbox inputs
+            document.querySelectorAll('input[type="checkbox"]').forEach(element => {
+                element.addEventListener('change', triggerAutoSave);
+            });
+
+            // Tab switching
+            const originalShowTab = window.showTab;
+            if (originalShowTab) {
+                window.showTab = function(tabId) {
+                    currentActiveTab = tabId;
+                    localStorage.setItem(AUTO_SAVE_CONFIG.SAVE_KEYS.CURRENT_TAB, tabId);
+                    triggerAutoSave();
+                    return originalShowTab.call(this, tabId);
+                };
+            }
+
+            // Window events
+            window.addEventListener('beforeunload', (e) => {
+                triggerImmediateAutoSave();
+                // Note: Modern browsers ignore custom messages
+                e.returnValue = '';
+            });
+
+            window.addEventListener('blur', triggerImmediateAutoSave);
+            window.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'hidden') {
+                    triggerImmediateAutoSave();
+                }
+            });
+
+            // Monitor dynamic content changes
+            const observer = new MutationObserver((mutations) => {
+                let shouldSave = false;
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                        shouldSave = true;
+                    }
+                });
+                if (shouldSave) {
+                    triggerAutoSave();
+                }
+            });
+
+            // Observe changes to tables and dynamic content
+            const tableContainers = document.querySelectorAll('tbody, .session-notes-content');
+            tableContainers.forEach(container => {
+                observer.observe(container, {
+                    childList: true,
+                    subtree: true,
+                    characterData: true
+                });
+            });
+
+            // Override existing functions to trigger auto-save
+            const functionsToOverride = [
+                'addSkill', 'removeSkill', 'updateSkillAdvances',
+                'addWeapon', 'removeWeapon', 'toggleWeaponEquipped',
+                'addArmour', 'removeArmour', 'toggleArmourWorn',
+                'addTrapping', 'removeTrapping', 'updateTrappingQuantity',
+                'addConsumable', 'removeConsumable', 'adjustConsumable',
+                'addTalent', 'removeTalent',
+                'addSpell', 'removeSpell',
+                'addSessionXP', 'spendXP',
+                'saveCurrentSession'
+            ];
+
+            functionsToOverride.forEach(funcName => {
+                const originalFunc = window[funcName];
+                if (typeof originalFunc === 'function') {
+                    window[funcName] = function(...args) {
+                        const result = originalFunc.apply(this, args);
+                        triggerAutoSave();
+                        return result;
+                    };
+                }
+            });
+        }
+
+        // Integration with existing manual save
+        const originalSaveCharacter = window.saveCharacter;
+        if (originalSaveCharacter) {
+            window.saveCharacter = function() {
+                // Call original save function
+                const result = originalSaveCharacter.call(this);
+                
+                // Update auto-save timestamp
+                localStorage.setItem(AUTO_SAVE_CONFIG.SAVE_KEYS.TIMESTAMP, new Date().toISOString());
+                updateSaveStatus('saved-local', 'Manually saved');
+                
+                return result;
+            };
+        }
+
+        // Auto-save system initialization
+        function initializeAutoSaveSystem() {
+            try {
+                // Set up event listeners
+                setupAutoSaveEventListeners();
+                
+                // Check for auto-restore after a short delay to ensure page is loaded
+                setTimeout(checkForAutoRestore, 2000);
+                
+                console.log('Auto-save system initialized');
+            } catch (error) {
+                console.error('Error initializing auto-save system:', error);
+                updateSaveStatus('error', 'Auto-save failed to initialize');
+            }
+        }
 
         // Tab switching functionality
         function showTab(tabId) {
