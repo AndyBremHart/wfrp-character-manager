@@ -538,7 +538,20 @@
                 </div>
                 <div class="header-field">
                     <label>Class</label>
-                    <input type="text" id="class" placeholder="Ranger">
+                    <div style="display: flex; gap: 5px; align-items: center;">
+                        <select id="class" style="flex: 1; padding: 5px; font-family: Georgia, serif; border: 1px solid #8b7355;" onchange="handleClassSelection()">
+                            <option value="">Select Class</option>
+                            <option value="Academic">Academic</option>
+                            <option value="Burgher">Burgher</option>
+                            <option value="Courtier">Courtier</option>
+                            <option value="Peasant">Peasant</option>
+                            <option value="Ranger">Ranger</option>
+                            <option value="Riverfolk">Riverfolk</option>
+                            <option value="Rogue">Rogue</option>
+                            <option value="Warrior">Warrior</option>
+                        </select>
+                        <button onclick="manualOpenClassWizard()" style="padding: 8px 12px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer; font-size: 11px; border-radius: 3px;" title="Open Class Trappings Wizard">Wizard</button>
+                    </div>
                 </div>
                 <div class="header-field">
                     <label>Career</label>
@@ -1798,6 +1811,52 @@
         </div>
     </div>
 
+    <!-- Class Trappings Wizard -->
+    <div id="class-wizard-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 700px; max-width: 900px; max-height: 80vh; overflow-y: auto; border-radius: 10px;">
+            <h2 style="color: #3e2f1f; margin-bottom: 20px; text-align: center;">Class Trappings Wizard</h2>
+            
+            <!-- Progress Indicator -->
+            <div style="display: flex; justify-content: center; margin-bottom: 30px;">
+                <div id="class-step-indicator-1" class="wizard-step active" style="margin: 0 10px;">1. Overview</div>
+                <div id="class-step-indicator-2" class="wizard-step" style="margin: 0 10px;">2. Customisation</div>
+                <div id="class-step-indicator-3" class="wizard-step" style="margin: 0 10px;">3. Confirmation</div>
+            </div>
+            
+            <!-- Step 1: Overview -->
+            <div id="class-wizard-step-1" class="wizard-content">
+                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 1: Class Overview</h3>
+                <div id="class-overview">
+                    <!-- Class info will be populated dynamically -->
+                </div>
+            </div>
+            
+            <!-- Step 2: Customisation -->
+            <div id="class-wizard-step-2" class="wizard-content" style="display: none;">
+                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 2: Customisation</h3>
+                <div id="class-customisation">
+                    <!-- Customisation options will be populated dynamically -->
+                </div>
+            </div>
+            
+            <!-- Step 3: Confirmation -->
+            <div id="class-wizard-step-3" class="wizard-content" style="display: none;">
+                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 3: Confirmation</h3>
+                <div id="class-confirmation">
+                    <!-- Confirmation summary will be populated dynamically -->
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                <button id="class-wizard-prev-btn" class="control-btn" onclick="previousClassWizardStep()" style="padding: 10px 20px;" disabled>← Previous</button>
+                <button id="class-wizard-next-btn" class="control-btn" onclick="nextClassWizardStep()" style="padding: 10px 20px;">Next →</button>
+                <button id="class-wizard-apply-btn" class="control-btn" onclick="applyClassTrappings()" style="padding: 10px 20px; display: none;">Add to Character Sheet</button>
+                <button id="class-wizard-cancel-btn" class="control-btn" onclick="closeClassWizard()" style="padding: 10px 20px; background: #8b0000; color: white;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Control Panel -->
     <div class="control-panel">
         <button class="control-btn" onclick="saveCharacter()">💾 Save</button>
@@ -2430,6 +2489,43 @@
         let srdAmmunition = [];
         let srdDiseases = [];
         let srdSymptoms = [];
+
+        // Class trappings data for class trappings wizard
+        const classTrappings = {
+            "Academic": {
+                fixed: ["Clothing", "Dagger", "Pouch", "Sling Bag", "Writing Kit"],
+                rolls: [
+                    {item: "Parchment", dice: "1d10", unit: "sheets"}
+                ]
+            },
+            "Burgher": {
+                fixed: ["Cloak", "Clothing", "Dagger", "Hat", "Pouch", "Sling Bag", "Lunch"]
+            },
+            "Courtier": {
+                fixed: ["Dagger", "Fine Clothing", "Pouch", "Tweezers", "Ear Pick", "Comb"]
+            },
+            "Peasant": {
+                fixed: ["Cloak", "Clothing", "Dagger", "Pouch", "Sling Bag", "Rations (1 day)"]
+            },
+            "Ranger": {
+                fixed: ["Cloak", "Clothing", "Dagger", "Pouch", "Backpack", "Tinderbox", "Blanket", "Rations (1 day)"]
+            },
+            "Riverfolk": {
+                fixed: ["Cloak", "Clothing", "Dagger", "Pouch", "Sling Bag", "Flask of Spirits"]
+            },
+            "Rogue": {
+                fixed: ["Clothing", "Dagger", "Pouch", "Sling Bag", "2 Candles"],
+                rolls: [
+                    {item: "Matches", dice: "1d10", unit: ""}
+                ],
+                choices: [
+                    {choose: 1, from: ["Hood", "Mask"]}
+                ]
+            },
+            "Warrior": {
+                fixed: ["Clothing", "Hand Weapon", "Dagger", "Pouch"]
+            }
+        };
 
         // Species data for character creation wizard
         const speciesData = {
@@ -7965,6 +8061,16 @@ function loadSymptomsData() {
             usedExtraPoints: 0
         };
 
+        // Class Trappings Wizard Variables
+        let currentClassWizardStep = 1;
+        let selectedClass = '';
+        let classWizardData = {
+            fixed: [],
+            rolls: {},
+            choices: {},
+            finalEquipment: []
+        };
+
         // Species Creation Wizard Functions
         function openSpeciesWizard(species) {
             selectedSpecies = species;
@@ -8999,6 +9105,459 @@ function loadSymptomsData() {
         document.addEventListener('DOMContentLoaded', function() {
             initializeSpeciesDropdown();
         });
+
+        // =============== CLASS TRAPPINGS WIZARD FUNCTIONS ===============
+
+        function handleClassSelection() {
+            const classSelect = document.getElementById('class');
+            const selectedValue = classSelect.value;
+            
+            if (selectedValue && classTrappings[selectedValue]) {
+                // Check if this is the first time selecting a class or changing class
+                const currentClass = selectedClass;
+                if (!currentClass || currentClass !== selectedValue) {
+                    openClassWizard(selectedValue);
+                }
+            }
+        }
+
+        function manualOpenClassWizard() {
+            const classSelect = document.getElementById('class');
+            const selectedValue = classSelect.value;
+            
+            if (!selectedValue) {
+                alert('Please select a class first before opening the wizard.');
+                return;
+            }
+            
+            if (!classTrappings[selectedValue]) {
+                alert('Class data not found. Please refresh the page and try again.');
+                return;
+            }
+            
+            openClassWizard(selectedValue);
+        }
+
+        function openClassWizard(className) {
+            selectedClass = className;
+            const classInfo = classTrappings[className];
+            
+            // Reset wizard data
+            classWizardData = {
+                fixed: [...classInfo.fixed],
+                rolls: {},
+                choices: {},
+                finalEquipment: []
+            };
+            
+            // Initialize step 1
+            initializeClassStep1(classInfo);
+            
+            // Show modal and start at step 1
+            currentClassWizardStep = 1;
+            updateClassWizardDisplay();
+            document.getElementById('class-wizard-modal').style.display = 'block';
+        }
+
+        function initializeClassStep1(classInfo) {
+            const overviewDiv = document.getElementById('class-overview');
+            
+            let overviewHTML = `
+                <h4 style="color: #3e2f1f; margin-bottom: 15px;">${selectedClass} Starting Equipment</h4>
+                <p style="margin-bottom: 15px; color: #666;">This class receives the following equipment:</p>
+                
+                <div style="background: #f9f7f1; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                    <h5 style="color: #3e2f1f; margin-bottom: 10px;">Fixed Equipment:</h5>
+                    <ul style="margin-left: 20px;">
+            `;
+            
+            classInfo.fixed.forEach(item => {
+                overviewHTML += `<li>${item}</li>`;
+            });
+            
+            overviewHTML += `</ul></div>`;
+            
+            // Show dice rolls if any
+            if (classInfo.rolls && classInfo.rolls.length > 0) {
+                overviewHTML += `
+                    <div style="background: #e8f4fd; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                        <h5 style="color: #3e2f1f; margin-bottom: 10px;">Dice Roll Required:</h5>
+                        <ul style="margin-left: 20px;">
+                `;
+                
+                classInfo.rolls.forEach(roll => {
+                    overviewHTML += `<li>Roll ${roll.dice} for ${roll.item}${roll.unit ? ` (${roll.unit})` : ''}</li>`;
+                });
+                
+                overviewHTML += `</ul></div>`;
+            }
+            
+            // Show choices if any
+            if (classInfo.choices && classInfo.choices.length > 0) {
+                overviewHTML += `
+                    <div style="background: #fff4e6; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                        <h5 style="color: #3e2f1f; margin-bottom: 10px;">Choices Required:</h5>
+                        <ul style="margin-left: 20px;">
+                `;
+                
+                classInfo.choices.forEach(choice => {
+                    overviewHTML += `<li>Choose ${choice.choose} from: ${choice.from.join(', ')}</li>`;
+                });
+                
+                overviewHTML += `</ul></div>`;
+            }
+            
+            overviewHTML += `<p style="color: #666; margin-top: 15px;">Click "Next" to proceed to customisation${(!classInfo.rolls || classInfo.rolls.length === 0) && (!classInfo.choices || classInfo.choices.length === 0) ? ' (or skip if no customisation needed)' : ''}.</p>`;
+            
+            overviewDiv.innerHTML = overviewHTML;
+        }
+
+        function initializeClassStep2() {
+            const classInfo = classTrappings[selectedClass];
+            const customisationDiv = document.getElementById('class-customisation');
+            
+            let needsCustomisation = false;
+            let customisationHTML = '';
+            
+            // Handle dice rolls
+            if (classInfo.rolls && classInfo.rolls.length > 0) {
+                needsCustomisation = true;
+                customisationHTML += `
+                    <div style="background: #e8f4fd; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                        <h5 style="color: #3e2f1f; margin-bottom: 15px;">Dice Rolls</h5>
+                `;
+                
+                classInfo.rolls.forEach((roll, index) => {
+                    customisationHTML += `
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">
+                                Roll ${roll.dice} for ${roll.item}${roll.unit ? ` (${roll.unit})` : ''}:
+                            </label>
+                            <input type="number" id="roll-${index}" min="1" max="10" placeholder="Enter result..." 
+                                   style="padding: 8px; border: 1px solid #ccc; border-radius: 3px; width: 100px;"
+                                   oninput="updateRollResult(${index}, this.value)">
+                        </div>
+                    `;
+                });
+                
+                customisationHTML += `</div>`;
+            }
+            
+            // Handle choices
+            if (classInfo.choices && classInfo.choices.length > 0) {
+                needsCustomisation = true;
+                customisationHTML += `
+                    <div style="background: #fff4e6; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                        <h5 style="color: #3e2f1f; margin-bottom: 15px;">Equipment Choices</h5>
+                `;
+                
+                classInfo.choices.forEach((choice, choiceIndex) => {
+                    customisationHTML += `
+                        <div style="margin-bottom: 15px;">
+                            <p style="margin-bottom: 10px; color: #3e2f1f; font-weight: bold;">Choose ${choice.choose}:</p>
+                    `;
+                    
+                    choice.from.forEach((option, optionIndex) => {
+                        customisationHTML += `
+                            <label style="display: block; margin-bottom: 5px; cursor: pointer;">
+                                <input type="radio" name="choice-${choiceIndex}" value="${option}" 
+                                       onchange="updateChoiceResult(${choiceIndex}, this.value)" style="margin-right: 8px;">
+                                ${option}
+                            </label>
+                        `;
+                    });
+                    
+                    customisationHTML += `</div>`;
+                });
+                
+                customisationHTML += `</div>`;
+            }
+            
+            if (!needsCustomisation) {
+                customisationHTML = `
+                    <div style="text-align: center; padding: 40px; color: #666; font-style: italic;">
+                        <p>No customisation needed for this class.</p>
+                        <p>All equipment is fixed. Click "Next" to proceed to confirmation.</p>
+                    </div>
+                `;
+            }
+            
+            customisationDiv.innerHTML = customisationHTML;
+        }
+
+        function updateRollResult(rollIndex, value) {
+            const classInfo = classTrappings[selectedClass];
+            const roll = classInfo.rolls[rollIndex];
+            
+            if (value && value > 0) {
+                classWizardData.rolls[roll.item] = parseInt(value);
+            } else {
+                delete classWizardData.rolls[roll.item];
+            }
+        }
+
+        function updateChoiceResult(choiceIndex, value) {
+            classWizardData.choices[choiceIndex] = value;
+        }
+
+        function initializeClassStep3() {
+            const classInfo = classTrappings[selectedClass];
+            const confirmationDiv = document.getElementById('class-confirmation');
+            
+            // Generate final equipment list
+            const finalEquipment = [...classInfo.fixed];
+            
+            // Add rolled items
+            if (classInfo.rolls) {
+                classInfo.rolls.forEach(roll => {
+                    const rollResult = classWizardData.rolls[roll.item];
+                    if (rollResult) {
+                        const itemName = roll.unit ? `${roll.item} (${rollResult})` : `${rollResult} ${roll.item}`;
+                        finalEquipment.push(itemName);
+                    }
+                });
+            }
+            
+            // Add chosen items
+            if (classInfo.choices) {
+                classInfo.choices.forEach((choice, index) => {
+                    const chosen = classWizardData.choices[index];
+                    if (chosen) {
+                        finalEquipment.push(chosen);
+                    }
+                });
+            }
+            
+            classWizardData.finalEquipment = finalEquipment;
+            
+            // Categorize equipment
+            const weapons = finalEquipment.filter(item => 
+                item.toLowerCase().includes('dagger') || 
+                item.toLowerCase().includes('hand weapon')
+            );
+            
+            const trappings = finalEquipment.filter(item => 
+                !item.toLowerCase().includes('dagger') && 
+                !item.toLowerCase().includes('hand weapon')
+            );
+            
+            let confirmationHTML = `
+                <h4 style="color: #3e2f1f; margin-bottom: 15px;">Final Equipment Summary</h4>
+                <p style="margin-bottom: 20px; color: #666;">The following equipment will be added to your character sheet:</p>
+            `;
+            
+            if (weapons.length > 0) {
+                confirmationHTML += `
+                    <div style="background: #ffe6e6; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                        <h5 style="color: #3e2f1f; margin-bottom: 10px;">Weapons (will be added to Weapons table):</h5>
+                        <ul style="margin-left: 20px;">
+                `;
+                weapons.forEach(weapon => {
+                    confirmationHTML += `<li>${weapon}</li>`;
+                });
+                confirmationHTML += `</ul></div>`;
+            }
+            
+            if (trappings.length > 0) {
+                confirmationHTML += `
+                    <div style="background: #e6f3ff; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                        <h5 style="color: #3e2f1f; margin-bottom: 10px;">Trappings (will be added to Trappings list):</h5>
+                        <ul style="margin-left: 20px;">
+                `;
+                trappings.forEach(trapping => {
+                    confirmationHTML += `<li>${trapping}</li>`;
+                });
+                confirmationHTML += `</ul></div>`;
+            }
+            
+            confirmationHTML += `<p style="color: #666; margin-top: 15px;">Click "Add to Character Sheet" to complete the process.</p>`;
+            
+            confirmationDiv.innerHTML = confirmationHTML;
+        }
+
+        function validateClassWizardStep(step) {
+            const classInfo = classTrappings[selectedClass];
+            
+            switch(step) {
+                case 1:
+                    return true;
+                    
+                case 2:
+                    // Validate dice rolls
+                    if (classInfo.rolls) {
+                        for (const roll of classInfo.rolls) {
+                            if (!classWizardData.rolls[roll.item]) {
+                                alert(`Please enter the dice roll result for ${roll.item}.`);
+                                return false;
+                            }
+                        }
+                    }
+                    
+                    // Validate choices
+                    if (classInfo.choices) {
+                        for (let i = 0; i < classInfo.choices.length; i++) {
+                            if (!classWizardData.choices[i]) {
+                                alert(`Please make a choice for option ${i + 1}.`);
+                                return false;
+                            }
+                        }
+                    }
+                    
+                    return true;
+                    
+                default:
+                    return true;
+            }
+        }
+
+        function nextClassWizardStep() {
+            if (currentClassWizardStep < 3) {
+                // Validate current step before proceeding
+                if (validateClassWizardStep(currentClassWizardStep)) {
+                    currentClassWizardStep++;
+                    
+                    // Initialize the next step
+                    if (currentClassWizardStep === 2) initializeClassStep2();
+                    else if (currentClassWizardStep === 3) initializeClassStep3();
+                    
+                    updateClassWizardDisplay();
+                }
+            }
+        }
+
+        function previousClassWizardStep() {
+            if (currentClassWizardStep > 1) {
+                currentClassWizardStep--;
+                updateClassWizardDisplay();
+            }
+        }
+
+        function updateClassWizardDisplay() {
+            // Update step indicators
+            for (let i = 1; i <= 3; i++) {
+                const indicator = document.getElementById(`class-step-indicator-${i}`);
+                indicator.className = 'wizard-step';
+                if (i < currentClassWizardStep) {
+                    indicator.classList.add('completed');
+                } else if (i === currentClassWizardStep) {
+                    indicator.classList.add('active');
+                }
+            }
+
+            // Show/hide wizard content
+            for (let i = 1; i <= 3; i++) {
+                const content = document.getElementById(`class-wizard-step-${i}`);
+                content.style.display = i === currentClassWizardStep ? 'block' : 'none';
+            }
+
+            // Update navigation buttons
+            const prevBtn = document.getElementById('class-wizard-prev-btn');
+            const nextBtn = document.getElementById('class-wizard-next-btn');
+            const applyBtn = document.getElementById('class-wizard-apply-btn');
+
+            prevBtn.disabled = currentClassWizardStep === 1;
+            nextBtn.style.display = currentClassWizardStep === 3 ? 'none' : 'inline-block';
+            applyBtn.style.display = currentClassWizardStep === 3 ? 'inline-block' : 'none';
+        }
+
+        function applyClassTrappings() {
+            try {
+                // Set class selection
+                const classField = document.getElementById('class');
+                if (classField) {
+                    classField.value = selectedClass;
+                }
+
+                // Apply equipment
+                classWizardData.finalEquipment.forEach(item => {
+                    if (item.toLowerCase().includes('dagger') || item.toLowerCase().includes('hand weapon')) {
+                        // Add to weapons
+                        addWeaponDirectly(item);
+                    } else {
+                        // Add to trappings
+                        addTrappingDirectly(item);
+                    }
+                });
+
+                // Close wizard and show success message
+                closeClassWizard();
+                alert(`${selectedClass} equipment added successfully!`);
+                
+            } catch (error) {
+                console.error('Error applying class trappings:', error);
+                alert('There was an error applying the class equipment. Please try again.');
+            }
+        }
+
+        function addWeaponDirectly(weaponName) {
+            // Try to find weapon in srdWeapons data
+            let weaponData = null;
+            
+            if (weaponName.toLowerCase().includes('dagger')) {
+                weaponData = srdWeapons.find(w => w.name.toLowerCase() === 'dagger');
+            } else if (weaponName.toLowerCase().includes('hand weapon')) {
+                weaponData = srdWeapons.find(w => w.name.toLowerCase() === 'hand weapon');
+            }
+            
+            if (weaponData) {
+                // Add weapon with full stats
+                weapons.push({
+                    name: weaponData.name,
+                    damage: weaponData.damage || '',
+                    group: weaponData.group || '',
+                    reach: weaponData.reach || '',
+                    range: weaponData.range || '',
+                    reload: weaponData.reload || '',
+                    traits: weaponData.traits || '',
+                    enc: weaponData.enc || 0,
+                    cost: weaponData.cost || '',
+                    availability: weaponData.availability || ''
+                });
+                
+                displayWeapons();
+            } else {
+                // Add as basic weapon entry
+                weapons.push({
+                    name: weaponName,
+                    damage: '',
+                    group: '',
+                    reach: '',
+                    range: '',
+                    reload: '',
+                    traits: '',
+                    enc: 0,
+                    cost: '',
+                    availability: ''
+                });
+                
+                displayWeapons();
+            }
+        }
+
+        function addTrappingDirectly(trappingName) {
+            // Add to trappings list
+            trappings.push({
+                name: trappingName,
+                enc: 0,
+                notes: ''
+            });
+            
+            displayTrappings();
+        }
+
+        function closeClassWizard() {
+            document.getElementById('class-wizard-modal').style.display = 'none';
+            
+            // Reset wizard state
+            currentClassWizardStep = 1;
+            selectedClass = '';
+            classWizardData = {
+                fixed: [],
+                rolls: {},
+                choices: {},
+                finalEquipment: []
+            };
+        }
 
     </script>
 </body>
