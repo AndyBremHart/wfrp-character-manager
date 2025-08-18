@@ -394,7 +394,13 @@
                 </div>
                 <div class="header-field">
                     <label>Species</label>
-                    <input type="text" id="species" placeholder="Human">
+                    <select id="species" style="width: 100%; padding: 5px; font-family: Georgia, serif; border: 1px solid #8b7355;">
+                        <option value="Human">Human</option>
+                        <option value="Dwarf">Dwarf</option>
+                        <option value="Halfling">Halfling</option>
+                        <option value="High Elf">High Elf</option>
+                        <option value="Wood Elf">Wood Elf</option>
+                    </select>
                 </div>
                 <div class="header-field">
                     <label>Class</label>
@@ -1012,7 +1018,7 @@
                             <th>Wounds</th>
                             <td style="width: 40%;"><input type="number" id="wounds-current" placeholder="12"></td>
                             <td style="width: 10%; text-align: center;">/</td>
-                            <td style="width: 40%;"><input type="number" id="wounds-max" placeholder="12"></td>
+                            <td style="width: 40%;"><input type="number" id="wounds-max" placeholder="12" readonly style="background: #f5f5f0; color: #666;" title="Auto-calculated based on species and characteristics"></td>
                         </tr>
                         <tr>
                             <th>Hardy</th>
@@ -1896,6 +1902,36 @@
           }
         };
 
+        // WFRP Talent Limitations - talents limited by characteristic bonuses
+        const talentLimitations = {
+          "Hardy": "toughnessBonus",
+          "Savvy": "intelligenceBonus", 
+          "Luck": "willpowerBonus",
+          "Sharp": "intelligenceBonus",
+          "Strong Back": "strengthBonus",
+          "Flee!": "agilityBonus",
+          "Very Strong": "strengthBonus", 
+          "Lightning Reflexes": "agilityBonus",
+          "Sturdy": "strengthBonus",
+          "Iron Jaw": "toughnessBonus",
+          "Iron Will": "willpowerBonus",
+          "Coolheaded": "willpowerBonus",
+          "Fast Hands": "dexterityBonus",
+          "Very Fast": "agilityBonus",
+          "Nimble Fingered": "dexterityBonus",
+          "Night Vision": "intelligenceBonus",
+          "Acute Sense": "intelligenceBonus",
+          "Perfect Pitch": "intelligenceBonus",
+          "Artistic": "dexterityBonus",
+          "Strong-minded": "willpowerBonus",
+          "Resistance": "toughnessBonus",
+          "Magic Resistance": "willpowerBonus",
+          "Specialist Weapon Group": "strengthBonus",
+          "Weapon Master": "weaponSkillBonus",
+          "Ambidextrous": "dexterityBonus",
+          "Combat Reflexes": "agilityBonus"
+        };
+
         let talents = [];
         let srdTalents = [];
         let activeConditions = [];
@@ -2032,6 +2068,18 @@
                 // Update XP cost displays
                 if (window.updateAdvanceCosts) {
                     window.updateAdvanceCosts();
+                }
+                
+                // Update talent limits display when characteristics change
+                if (typeof window.updateTalentLimitsDisplay === 'function') {
+                    window.updateTalentLimitsDisplay();
+                }
+                
+                // Update max wounds when strength, toughness, or willpower change
+                if (char === 's' || char === 't' || char === 'wp') {
+                    if (typeof window.updateMaxWounds === 'function') {
+                        window.updateMaxWounds();
+                    }
                 }
                 
                 // Update encumbrance when Strength or Toughness changes
@@ -2901,6 +2949,16 @@ window.confirmAddTalent = function() {
         return;
     }
     
+    // Check talent limitations first
+    if (talentLimitations[talentData.name] && !window.canAddTalent(talentData.name)) {
+        const currentCount = window.getTalentCurrentCount(talentData.name);
+        const currentLimit = window.getTalentCurrentLimit(talentData.name);
+        const limitType = talentLimitations[talentData.name].replace('Bonus', '').toUpperCase();
+        
+        alert(`Cannot add ${talentData.name}: already at limit (${currentCount}/${currentLimit} based on ${limitType} Bonus)`);
+        return;
+    }
+    
     // Check if XP cost should be overridden (free talent)
     const isFreeTalent = document.getElementById('talent-xp-override').checked;
     const displayName = customisation ? `${talentData.name} (${customisation})` : talentData.name;
@@ -3029,6 +3087,11 @@ window.confirmAddTalent = function() {
     
     displayTalents();
     closeAddTalentModal();
+    
+    // Update max wounds if Hardy talent was added
+    if (talentData.name === "Hardy" && typeof window.updateMaxWounds === 'function') {
+        window.updateMaxWounds();
+    }
 }
 
 window.closeAddTalentModal = function() {
@@ -3039,6 +3102,169 @@ window.closeAddTalentModal = function() {
     document.getElementById('talent-xp-override').checked = false; // Reset XP override checkbox
     document.getElementById('talent-details').style.display = 'none';
     document.getElementById('talent-customisation').style.display = 'none';
+}
+
+// Talent Limitations System
+window.getTalentCurrentLimit = function(talentName, characteristics) {
+    const limitType = talentLimitations[talentName];
+    if (!limitType) return 999; // Unlimited talent
+    
+    // Handle different characteristic bonus types
+    let characteristicValue = 0;
+    switch(limitType) {
+        case "strengthBonus":
+            characteristicValue = parseInt(document.getElementById('s-current')?.value) || 0;
+            break;
+        case "toughnessBonus":
+            characteristicValue = parseInt(document.getElementById('t-current')?.value) || 0;
+            break;
+        case "intelligenceBonus":
+            characteristicValue = parseInt(document.getElementById('int-current')?.value) || 0;
+            break;
+        case "willpowerBonus":
+            characteristicValue = parseInt(document.getElementById('wp-current')?.value) || 0;
+            break;
+        case "agilityBonus":
+            characteristicValue = parseInt(document.getElementById('ag-current')?.value) || 0;
+            break;
+        case "dexterityBonus":
+            characteristicValue = parseInt(document.getElementById('dex-current')?.value) || 0;
+            break;
+        case "weaponSkillBonus":
+            characteristicValue = parseInt(document.getElementById('ws-current')?.value) || 0;
+            break;
+        default:
+            return 999; // Unknown limitation type
+    }
+    
+    return Math.floor(characteristicValue / 10);
+}
+
+window.getTalentCurrentCount = function(talentName) {
+    return talents.filter(t => t.name === talentName).length;
+}
+
+window.canAddTalent = function(talentName) {
+    const currentCount = window.getTalentCurrentCount(talentName);
+    const currentLimit = window.getTalentCurrentLimit(talentName);
+    
+    return currentCount < currentLimit;
+}
+
+window.getTalentLimitWarnings = function() {
+    const warnings = [];
+    const talentCounts = {};
+    
+    // Count occurrences of each talent
+    talents.forEach(talent => {
+        talentCounts[talent.name] = (talentCounts[talent.name] || 0) + 1;
+    });
+    
+    // Check each limited talent
+    Object.keys(talentCounts).forEach(talentName => {
+        if (talentLimitations[talentName]) {
+            const count = talentCounts[talentName];
+            const limit = window.getTalentCurrentLimit(talentName);
+            
+            if (count > limit) {
+                warnings.push({
+                    talent: talentName,
+                    count: count,
+                    limit: limit,
+                    excess: count - limit
+                });
+            }
+        }
+    });
+    
+    return warnings;
+}
+
+window.updateTalentLimitsDisplay = function() {
+    // Force refresh of talent display to show updated limits
+    window.displayTalents();
+}
+
+window.checkTalentLimits = function() {
+    const warnings = window.getTalentLimitWarnings();
+    
+    if (warnings.length > 0) {
+        const warningMessages = warnings.map(w => 
+            `${w.talent}: ${w.count}/${w.limit} (${w.excess} over limit)`
+        );
+        
+        console.warn('Talent Limit Warnings:', warningMessages);
+        return warnings;
+    }
+    
+    return [];
+}
+
+// Max Wounds Auto-Calculation System
+window.calculateMaxWounds = function() {
+    const species = document.getElementById('species')?.value || 'Human';
+    const strength = parseInt(document.getElementById('s-current')?.value) || 0;
+    const toughness = parseInt(document.getElementById('t-current')?.value) || 0;
+    const willpower = parseInt(document.getElementById('wp-current')?.value) || 0;
+    
+    const sb = Math.floor(strength / 10);
+    const tb = Math.floor(toughness / 10);
+    const wpb = Math.floor(willpower / 10);
+    
+    let baseWounds;
+    switch(species) {
+        case "Human":
+        case "Dwarf": 
+        case "High Elf":
+        case "Wood Elf":
+            baseWounds = sb + (2 * tb) + wpb;
+            break;
+        case "Halfling":
+            baseWounds = (2 * tb) + wpb; // No Strength Bonus for Halflings
+            break;
+        default:
+            baseWounds = sb + (2 * tb) + wpb; // Default to human
+    }
+    
+    // Add Hardy talent bonus
+    const hardyCount = window.getTalentCurrentCount("Hardy");
+    const hardyBonus = hardyCount * tb;
+    
+    const totalWounds = baseWounds + hardyBonus;
+    
+    // Update tooltip with calculation breakdown
+    const woundsMaxField = document.getElementById('wounds-max');
+    if (woundsMaxField) {
+        let tooltip = `SB(${sb}) + 2×TB(${2*tb}) + WPB(${wpb})`;
+        if (species === "Halfling") {
+            tooltip = `2×TB(${2*tb}) + WPB(${wpb}) (Halfling)`;
+        }
+        if (hardyCount > 0) {
+            tooltip += ` + Hardy(${hardyCount}×TB=${hardyBonus})`;
+        }
+        tooltip += ` = ${totalWounds}`;
+        woundsMaxField.title = tooltip;
+    }
+    
+    return totalWounds;
+}
+
+window.updateMaxWounds = function() {
+    const maxWounds = window.calculateMaxWounds();
+    const woundsMaxField = document.getElementById('wounds-max');
+    const woundsCurrentField = document.getElementById('wounds-current');
+    
+    if (woundsMaxField) {
+        woundsMaxField.value = maxWounds;
+        
+        // Update wounds current if it exceeds new max
+        if (woundsCurrentField) {
+            const currentWounds = parseInt(woundsCurrentField.value) || 0;
+            if (currentWounds > maxWounds) {
+                woundsCurrentField.value = maxWounds;
+            }
+        }
+    }
 }
 
 window.displayTalents = function() {
@@ -3064,10 +3290,35 @@ window.displayTalents = function() {
         const currentTimes = talent.timesTaken || 1;
         const cleanTalentKey = talent.displayName.replace(/\s+/g, '-').replace(/[()]/g, '').toLowerCase();
         const cost = window.getTalentCost(currentTimes - 1); // Cost for next advance
-        const canTakeMore = talent.max === "No Limit" || parseInt(talent.max) > currentTimes;
+        
+        // Check talent limitations
+        const isLimited = talentLimitations[talent.name];
+        let limitInfo = "";
+        let canTakeMore = talent.max === "No Limit" || parseInt(talent.max) > currentTimes;
+        let limitColor = "";
+        
+        if (isLimited) {
+            const currentCount = window.getTalentCurrentCount(talent.name);
+            const currentLimit = window.getTalentCurrentLimit(talent.name);
+            
+            // Determine color based on limit status
+            if (currentCount > currentLimit) {
+                limitColor = "color: #c41e3a; font-weight: bold;"; // Red - over limit
+            } else if (currentCount >= currentLimit) {
+                limitColor = "color: #ff8c00; font-weight: bold;"; // Orange - at limit
+                canTakeMore = false; // Can't take more when at limit
+            } else {
+                limitColor = "color: #0a7c0a;"; // Green - can take more
+            }
+            
+            limitInfo = `<span style="${limitColor}"> (${currentCount}/${currentLimit})</span>`;
+            
+            // Override talent max display for limited talents
+            canTakeMore = canTakeMore && (currentCount < currentLimit);
+        }
         
         row.innerHTML = `
-            <td class="skill-name-cell">${talent.displayName}</td>
+            <td class="skill-name-cell">${talent.displayName}${limitInfo}</td>
             <td style="text-align: center;">${talent.max === "1" ? "1" : `${currentTimes}/${talent.max}`}</td>
             <td style="text-align: center;">
                 ${canTakeMore ? 
@@ -3085,8 +3336,14 @@ window.displayTalents = function() {
 
 window.removeTalent = function(index) {
     if (confirm('Remove this talent?')) {
+        const removedTalent = talents[index];
         talents.splice(index, 1);
         displayTalents();
+        
+        // Update max wounds if Hardy talent was removed
+        if (removedTalent.name === "Hardy" && typeof window.updateMaxWounds === 'function') {
+            window.updateMaxWounds();
+        }
     }
 }
 
@@ -4540,6 +4797,13 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('skills-filter').addEventListener('change', function() {
             displaySkills();
         });
+        
+        // Species change listener for max wounds calculation
+        document.getElementById('species')?.addEventListener('change', function() {
+            if (typeof window.updateMaxWounds === 'function') {
+                window.updateMaxWounds();
+            }
+        });
 
         // Generic function to modify values with + and - buttons (global scope)
         window.modifyValue = function(elementId, amount) {
@@ -4800,6 +5064,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             current.updateFunction();
                         }
                     });
+                    // Initialize max wounds calculation
+                    if (typeof window.updateMaxWounds === 'function') {
+                        window.updateMaxWounds();
+                    }
                 }, 100);
                 
                 console.log('Initialization complete');
