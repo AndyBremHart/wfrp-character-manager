@@ -730,30 +730,27 @@
             <div class="section">
                 <div class="section-title">Diseases & Ailments</div>
                 
-                <!-- Disease Notes for Narrative -->
-                <div class="disease-notes" style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Disease History & Current Status:</label>
-                    <div class="template-helper" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
-                        <select id="disease-template-select" style="flex: 1; padding: 5px; border: 1px solid #8b7355; font-family: 'Georgia', serif;">
-                            <option value="">Insert disease template...</option>
-                            <!-- Populated from diseases.json -->
-                        </select>
-                        <button id="insert-template-btn" class="control-btn" onclick="window.insertDiseaseTemplate()" style="padding: 5px 10px; font-size: 12px;">Insert Template</button>
-                    </div>
-                    <textarea id="disease-notes-textarea" rows="8" placeholder="Record contracted diseases, incubation periods, symptoms, treatments, and recovery progress..." style="width: 100%; padding: 10px; border: 1px solid #8b7355; font-family: 'Georgia', serif; resize: vertical; background: white;"></textarea>
+                <!-- Disease Controls -->
+                <div class="disease-controls" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;">
+                    <button class="control-btn" onclick="window.openAddDiseaseModal()" style="padding: 5px 10px; font-size: 12px;">+ Add Disease</button>
+                    <button class="control-btn" onclick="window.removeAllDiseases()" style="padding: 5px 10px; font-size: 12px; background: #c41e3a; color: white;">Clear All</button>
+                    <input type="text" id="diseases-search" placeholder="Search active diseases..." style="padding: 5px 10px; border: 1px solid #8b7355; font-family: 'Georgia', serif; background: white; flex: 1; min-width: 200px;">
                 </div>
                 
-                <!-- Active Symptoms for Mechanics -->
-                <div class="active-symptoms" style="margin-bottom: 20px;">
-                    <h4 style="color: #3e2f1f; margin: 0 0 10px 0; font-size: 14px;">Current Symptoms (Mechanical Effects)</h4>
-                    <div class="symptoms-grid" id="symptoms-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; margin-bottom: 15px; padding: 15px; background: #f8f6f0; border: 2px solid #8b7355; border-radius: 5px;">
-                        <!-- Generated checkboxes from symptoms.json -->
-                    </div>
-                    
-                    <div class="symptom-effects-summary" id="symptom-effects-summary" style="display: none; padding: 15px; background: #fff4e0; border: 2px solid #ff8c00; border-radius: 5px;">
-                        <h4 style="color: #8b4513; margin: 0 0 8px 0; font-size: 14px;">📊 Active Symptom Effects</h4>
-                        <div id="symptom-effects-text" style="color: #8b4513; font-size: 13px; font-weight: bold;"></div>
-                    </div>
+                <!-- Active Diseases Display -->
+                <div id="active-diseases-display" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                    <!-- Diseases will be dynamically populated here -->
+                </div>
+                
+                <!-- No Diseases Message -->
+                <div id="no-diseases-message" style="text-align: center; padding: 20px; color: #666; font-style: italic; display: none;">
+                    No diseases currently affecting this character.
+                </div>
+                
+                <!-- Active Symptoms Summary -->
+                <div class="symptom-effects-summary" id="symptom-effects-summary" style="display: none; padding: 15px; background: #fff4e0; border: 2px solid #ff8c00; border-radius: 5px; margin-bottom: 15px;">
+                    <h4 style="color: #8b4513; margin: 0 0 8px 0; font-size: 14px;">📊 Active Symptom Effects</h4>
+                    <div id="symptom-effects-text" style="color: #8b4513; font-size: 13px; font-weight: bold;"></div>
                 </div>
                 
                 <!-- Test Reminders -->
@@ -766,6 +763,40 @@
                 <div class="status-interactions" id="status-interactions" style="display:none; padding: 15px; background: #ffe4e6; border: 2px solid #c41e3a; border-radius: 5px;">
                     <h5 style="color: #8b0000; margin: 0 0 8px 0; font-size: 14px;">⚠️ Status Effect Interactions</h5>
                     <div class="interaction-warnings" id="interaction-warnings" style="color: #8b0000; font-size: 13px;"></div>
+                </div>
+
+                <!-- Add Disease Modal -->
+                <div id="add-disease-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;">
+                        <h3 style="margin-top: 0; color: #3e2f1f; text-align: center;">Add Disease</h3>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Select Disease:</label>
+                            <select id="disease-select" style="width: 100%; padding: 8px; font-size: 14px;" onchange="window.showDiseaseDetails()">
+                                <option value="">-- Choose a disease --</option>
+                            </select>
+                        </div>
+                        
+                        <div id="disease-details" style="margin-bottom: 20px; display: none; padding: 15px; background: #f8f6f0; border-radius: 5px;">
+                            <div id="disease-info"></div>
+                            <div id="disease-symptoms" style="margin-top: 10px;"></div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Contract Date:</label>
+                            <input type="date" id="disease-contract-date" style="width: 100%; padding: 5px;">
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Notes:</label>
+                            <textarea id="disease-notes-input" rows="3" placeholder="Additional notes about contraction, symptoms, treatment..." style="width: 100%; padding: 8px; resize: vertical;"></textarea>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <button class="control-btn" onclick="window.confirmAddDisease()" style="margin-right: 10px; padding: 8px 16px;">Add Disease</button>
+                            <button class="control-btn" onclick="window.closeAddDiseaseModal()" style="padding: 8px 16px;">Cancel</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1518,9 +1549,7 @@
                 awaitingTest: false
             },
             diseaseTracking: {
-                notes: "", // Narrative disease history and current status
-                activeSymptoms: [], // Array of active symptom keys
-                diseaseHistory: [], // For immunity tracking  
+                activeDiseases: [], // Array of active disease objects with id, name, contractDate, notes, symptoms
                 testReminders: "" // Upcoming tests/checks needed
             }
         };
@@ -2068,6 +2097,9 @@
         let criticalWounds = []; // Active character critical wounds
         let spells = [];
         let srdSpells = [];
+        
+        // Disease management
+        let diseaseIdCounter = 1;
 
         // SRD Data (will be loaded from JSON files)
         let srdWeapons = [];
@@ -4712,134 +4744,269 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Disease & Symptom Management System
-window.populateDiseaseTemplates = function() {
-    const select = document.getElementById('disease-template-select');
-    if (!select || !srdDiseases) return;
+window.openAddDiseaseModal = function() {
+    const modal = document.getElementById('add-disease-modal');
+    const select = document.getElementById('disease-select');
     
-    // Clear existing options except first
-    while (select.children.length > 1) {
-        select.removeChild(select.lastChild);
+    // Clear and populate disease dropdown
+    select.innerHTML = '<option value="">-- Choose a disease --</option>';
+    
+    if (srdDiseases && srdDiseases.length > 0) {
+        srdDiseases.forEach(disease => {
+            const option = document.createElement('option');
+            option.value = disease.name;
+            option.textContent = disease.name;
+            select.appendChild(option);
+        });
     }
     
-    // Add disease options
-    srdDiseases.forEach(disease => {
-        const option = document.createElement('option');
-        option.value = disease.name;
-        option.textContent = disease.name;
-        select.appendChild(option);
-    });
+    // Set default contract date to today
+    document.getElementById('disease-contract-date').value = new Date().toISOString().split('T')[0];
+    
+    modal.style.display = 'block';
 }
 
-window.insertDiseaseTemplate = function() {
-    const select = document.getElementById('disease-template-select');
-    const textarea = document.getElementById('disease-notes-textarea');
-    if (!select || !textarea || !select.value) return;
-    
-    const selectedDisease = srdDiseases.find(d => d.name === select.value);
-    if (!selectedDisease) return;
-    
-    const today = new Date().toLocaleDateString();
-    const template = `
-**${selectedDisease.name}** (Contracted: ${today})
-- Contraction: ${selectedDisease.contraction || 'N/A'}
-- Incubation: ${selectedDisease.incubation || 'N/A'}  
-- Duration: ${selectedDisease.duration || 'N/A'}
-- Symptoms: ${selectedDisease.symptoms ? selectedDisease.symptoms.join(', ') : 'N/A'}
-- Notes: 
+window.closeAddDiseaseModal = function() {
+    document.getElementById('add-disease-modal').style.display = 'none';
+    document.getElementById('disease-select').value = '';
+    document.getElementById('disease-details').style.display = 'none';
+    document.getElementById('disease-notes-input').value = '';
+}
 
----
-`;
+window.showDiseaseDetails = function() {
+    const select = document.getElementById('disease-select');
+    const detailsDiv = document.getElementById('disease-details');
+    const infoDiv = document.getElementById('disease-info');
+    const symptomsDiv = document.getElementById('disease-symptoms');
     
-    // Insert at cursor position or append
-    if (textarea.selectionStart !== undefined) {
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-        textarea.value = textarea.value.substring(0, start) + template + textarea.value.substring(end);
-        textarea.selectionStart = textarea.selectionEnd = start + template.length;
+    if (!select.value) {
+        detailsDiv.style.display = 'none';
+        return;
+    }
+    
+    const disease = srdDiseases.find(d => d.name === select.value);
+    if (!disease) return;
+    
+    // Display disease information
+    infoDiv.innerHTML = `
+        <h4 style="margin: 0 0 8px 0; color: #3e2f1f;">${disease.name}</h4>
+        <p style="margin: 5px 0; font-size: 12px;"><strong>Contraction:</strong> ${disease.contraction || 'N/A'}</p>
+        <p style="margin: 5px 0; font-size: 12px;"><strong>Incubation:</strong> ${disease.incubation || 'N/A'}</p>
+        <p style="margin: 5px 0; font-size: 12px;"><strong>Duration:</strong> ${disease.duration || 'N/A'}</p>
+        ${disease.permanent ? `<p style="margin: 5px 0; font-size: 12px;"><strong>Permanent:</strong> ${disease.permanent}</p>` : ''}
+    `;
+    
+    // Display associated symptoms
+    if (disease.symptoms && disease.symptoms.length > 0) {
+        const symptomDetails = disease.symptoms.map(symptomName => {
+            const symptom = srdSymptoms.find(s => s.name.toLowerCase() === symptomName.toLowerCase().replace(/\s+/g, '').replace(/-/g, ''));
+            return symptom ? symptom.name : symptomName;
+        }).join(', ');
+        
+        symptomsDiv.innerHTML = `
+            <p style="margin: 8px 0 0 0; font-size: 12px;"><strong>Symptoms:</strong> ${symptomDetails}</p>
+            <p style="margin: 5px 0 0 0; font-size: 11px; color: #666;"><em>These symptoms will be automatically applied when the disease is added.</em></p>
+        `;
     } else {
-        textarea.value += template;
+        symptomsDiv.innerHTML = '';
     }
     
-    // Update character data
-    character.diseaseTracking.notes = textarea.value;
-    
-    // Reset select
-    select.value = '';
-    
-    // Focus back to textarea
-    textarea.focus();
+    detailsDiv.style.display = 'block';
 }
 
-window.generateSymptomCheckboxes = function() {
-    const grid = document.getElementById('symptoms-grid');
-    if (!grid || !srdSymptoms) return;
+window.confirmAddDisease = function() {
+    const select = document.getElementById('disease-select');
+    const contractDate = document.getElementById('disease-contract-date').value;
+    const notes = document.getElementById('disease-notes-input').value;
     
-    // Clear existing content
-    grid.innerHTML = '';
+    if (!select.value) {
+        alert('Please select a disease');
+        return;
+    }
     
-    // Group symptoms by type or alphabetically
-    const sortedSymptoms = [...srdSymptoms].sort((a, b) => a.name.localeCompare(b.name));
+    if (!contractDate) {
+        alert('Please enter a contract date');
+        return;
+    }
     
-    sortedSymptoms.forEach(symptom => {
-        const checkboxContainer = document.createElement('div');
-        checkboxContainer.style.cssText = 'display: flex; align-items: flex-start; gap: 8px; padding: 8px; background: white; border: 1px solid #ddd; border-radius: 3px;';
-        
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = `symptom-${symptom.name.toLowerCase().replace(/\s+/g, '-')}`;
-        checkbox.value = symptom.name;
-        checkbox.addEventListener('change', window.updateSymptomEffects);
-        
-        // Check if this symptom is active
-        checkbox.checked = character.diseaseTracking.activeSymptoms.includes(symptom.name);
-        
-        const label = document.createElement('label');
-        label.htmlFor = checkbox.id;
-        label.style.cssText = 'font-size: 12px; cursor: pointer; flex: 1;';
-        
-        // Build tooltip content
-        let tooltipContent = symptom.name;
-        if (symptom.mechanicalEffects && Object.keys(symptom.mechanicalEffects).length > 0) {
-            const effects = Object.entries(symptom.mechanicalEffects)
-                .map(([key, value]) => `${key}: ${value > 0 ? '+' : ''}${value}`)
-                .join(', ');
-            tooltipContent += `\nEffects: ${effects}`;
+    const disease = srdDiseases.find(d => d.name === select.value);
+    if (!disease) return;
+    
+    // Check if disease already exists
+    const existingDisease = character.diseaseTracking.activeDiseases.find(d => d.name === disease.name);
+    if (existingDisease) {
+        alert(`${disease.name} is already affecting this character`);
+        return;
+    }
+    
+    // Create disease object
+    const newDisease = {
+        id: diseaseIdCounter++,
+        name: disease.name,
+        contractDate: contractDate,
+        notes: notes,
+        symptoms: disease.symptoms || [],
+        diseaseData: disease
+    };
+    
+    // Add to character
+    character.diseaseTracking.activeDiseases.push(newDisease);
+    
+    // Apply symptoms automatically
+    if (disease.symptoms && disease.symptoms.length > 0) {
+        disease.symptoms.forEach(symptomName => {
+            // Find matching symptom (handle different naming formats)
+            const matchingSymptom = srdSymptoms.find(s => 
+                s.name.toLowerCase() === symptomName.toLowerCase() ||
+                s.name.toLowerCase().replace(/\s+/g, '') === symptomName.toLowerCase().replace(/\s+/g, '').replace(/-/g, '')
+            );
+            
+            if (matchingSymptom) {
+                // Add symptom to active list if not already present
+                const activeSymptoms = window.getActiveSymptoms();
+                if (!activeSymptoms.includes(matchingSymptom.name)) {
+                    activeSymptoms.push(matchingSymptom.name);
+                }
+            }
+        });
+    }
+    
+    // Refresh displays
+    window.displayActiveDiseases();
+    window.updateSymptomEffects();
+    window.closeAddDiseaseModal();
+}
+
+window.getActiveSymptoms = function() {
+    // Get symptoms from all active diseases
+    const activeSymptoms = [];
+    character.diseaseTracking.activeDiseases.forEach(disease => {
+        if (disease.symptoms) {
+            disease.symptoms.forEach(symptomName => {
+                // Find matching symptom in srdSymptoms
+                const matchingSymptom = srdSymptoms.find(s => 
+                    s.name.toLowerCase() === symptomName.toLowerCase() ||
+                    s.name.toLowerCase().replace(/\s+/g, '') === symptomName.toLowerCase().replace(/\s+/g, '').replace(/-/g, '')
+                );
+                
+                if (matchingSymptom && !activeSymptoms.includes(matchingSymptom.name)) {
+                    activeSymptoms.push(matchingSymptom.name);
+                }
+            });
         }
-        
-        if (symptom.diseases && symptom.diseases.length > 0) {
-            tooltipContent += `\nFound in: ${symptom.diseases.join(', ')}`;
-        }
-        
-        label.title = tooltipContent;
-        label.textContent = symptom.name;
-        
-        // Add visual indication for symptoms with effects
-        if (symptom.mechanicalEffects && Object.keys(symptom.mechanicalEffects).length > 0) {
-            label.style.fontWeight = 'bold';
-            label.style.color = '#8b4513';
-        }
-        
-        checkboxContainer.appendChild(checkbox);
-        checkboxContainer.appendChild(label);
-        grid.appendChild(checkboxContainer);
     });
+    return activeSymptoms;
+}
+
+window.displayActiveDiseases = function() {
+    const display = document.getElementById('active-diseases-display');
+    const noDiseasesMsg = document.getElementById('no-diseases-message');
+    const searchText = (document.getElementById('diseases-search')?.value || '').toLowerCase();
+    
+    if (!display) return;
+    
+    // Clear current display
+    display.innerHTML = '';
+    
+    const activeDiseases = character.diseaseTracking.activeDiseases || [];
+    let filteredDiseases = activeDiseases;
+    
+    // Apply search filter
+    if (searchText) {
+        filteredDiseases = activeDiseases.filter(disease => 
+            disease.name.toLowerCase().includes(searchText) ||
+            (disease.notes && disease.notes.toLowerCase().includes(searchText))
+        );
+    }
+    
+    if (filteredDiseases.length === 0) {
+        noDiseasesMsg.style.display = 'block';
+        return;
+    }
+    
+    noDiseasesMsg.style.display = 'none';
+    
+    filteredDiseases.forEach(disease => {
+        const diseaseCard = document.createElement('div');
+        diseaseCard.style.cssText = 'background: white; border: 2px solid #8b7355; border-radius: 5px; padding: 15px; position: relative;';
+        
+        const contractDate = new Date(disease.contractDate).toLocaleDateString();
+        const daysSince = Math.floor((new Date() - new Date(disease.contractDate)) / (1000 * 60 * 60 * 24));
+        
+        // Build symptoms display
+        let symptomsDisplay = 'None';
+        if (disease.symptoms && disease.symptoms.length > 0) {
+            symptomsDisplay = disease.symptoms.map(symptomName => {
+                const symptom = srdSymptoms.find(s => 
+                    s.name.toLowerCase() === symptomName.toLowerCase() ||
+                    s.name.toLowerCase().replace(/\s+/g, '') === symptomName.toLowerCase().replace(/\s+/g, '').replace(/-/g, '')
+                );
+                return symptom ? symptom.name : symptomName;
+            }).join(', ');
+        }
+        
+        diseaseCard.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h4 style="margin: 0; color: #3e2f1f; font-size: 14px;">${disease.name}</h4>
+                <div>
+                    <button onclick="window.editDisease(${disease.id})" style="padding: 3px 6px; font-size: 10px; margin-right: 5px; cursor: pointer;">Edit</button>
+                    <button onclick="window.removeDisease(${disease.id})" style="padding: 3px 6px; font-size: 10px; background: #d44; color: white; cursor: pointer;">Remove</button>
+                </div>
+            </div>
+            <div style="font-size: 11px; color: #666; margin-bottom: 8px;">
+                <strong>Contracted:</strong> ${contractDate} (${daysSince} days ago)
+            </div>
+            <div style="font-size: 11px; margin-bottom: 8px;">
+                <strong>Symptoms:</strong> <span style="color: #8b4513;">${symptomsDisplay}</span>
+            </div>
+            ${disease.notes ? `<div style="font-size: 11px; margin-bottom: 8px;"><strong>Notes:</strong> ${disease.notes}</div>` : ''}
+            <div style="font-size: 10px; color: #666;">
+                <strong>Duration:</strong> ${disease.diseaseData?.duration || 'Unknown'} • 
+                <strong>Incubation:</strong> ${disease.diseaseData?.incubation || 'Unknown'}
+            </div>
+        `;
+        
+        display.appendChild(diseaseCard);
+    });
+}
+
+window.removeDisease = function(diseaseId) {
+    const disease = character.diseaseTracking.activeDiseases.find(d => d.id === diseaseId);
+    if (!disease) return;
+    
+    if (confirm(`Remove ${disease.name}? This will also remove associated symptoms.`)) {
+        // Remove the disease
+        const index = character.diseaseTracking.activeDiseases.findIndex(d => d.id === diseaseId);
+        if (index !== -1) {
+            character.diseaseTracking.activeDiseases.splice(index, 1);
+        }
+        
+        // Refresh displays
+        window.displayActiveDiseases();
+        window.updateSymptomEffects();
+    }
+}
+
+window.removeAllDiseases = function() {
+    if (character.diseaseTracking.activeDiseases.length === 0) {
+        alert('No diseases to remove');
+        return;
+    }
+    
+    if (confirm('Remove all diseases and their symptoms?')) {
+        character.diseaseTracking.activeDiseases = [];
+        window.displayActiveDiseases();
+        window.updateSymptomEffects();
+    }
 }
 
 window.updateSymptomEffects = function() {
-    // Get all checked symptom checkboxes
-    const checkedSymptoms = [];
-    const checkboxes = document.querySelectorAll('#symptoms-grid input[type="checkbox"]:checked');
-    
-    checkboxes.forEach(checkbox => {
-        checkedSymptoms.push(checkbox.value);
-    });
-    
-    // Update character data
-    character.diseaseTracking.activeSymptoms = checkedSymptoms;
+    // Get all active symptoms from diseases
+    const activeSymptoms = window.getActiveSymptoms();
     
     // Calculate combined effects
     const combinedEffects = {};
-    checkedSymptoms.forEach(symptomName => {
+    activeSymptoms.forEach(symptomName => {
         const symptom = srdSymptoms.find(s => s.name === symptomName);
         if (symptom && symptom.mechanicalEffects) {
             Object.entries(symptom.mechanicalEffects).forEach(([key, value]) => {
@@ -4886,7 +5053,8 @@ window.getSymptomPenalties = function() {
         tests: {}
     };
     
-    character.diseaseTracking.activeSymptoms.forEach(symptomName => {
+    const activeSymptoms = window.getActiveSymptoms();
+    activeSymptoms.forEach(symptomName => {
         const symptom = srdSymptoms.find(s => s.name === symptomName);
         if (symptom && symptom.mechanicalEffects) {
             Object.entries(symptom.mechanicalEffects).forEach(([key, value]) => {
@@ -4905,7 +5073,7 @@ window.getSymptomPenalties = function() {
 
 window.checkStatusInteractions = function() {
     const currentActiveConditions = window.activeConditions || [];
-    const activeSymptoms = character.diseaseTracking.activeSymptoms || [];
+    const activeSymptoms = window.getActiveSymptoms();
     const interactions = [];
     
     // Check for condition/symptom overlaps
@@ -4945,13 +5113,6 @@ window.checkStatusInteractions = function() {
     }
 }
 
-window.updateDiseaseNotes = function() {
-    const textarea = document.getElementById('disease-notes-textarea');
-    if (textarea) {
-        character.diseaseTracking.notes = textarea.value;
-    }
-}
-
 window.updateTestReminders = function() {
     const textarea = document.getElementById('test-reminders');
     if (textarea) {
@@ -4961,15 +5122,17 @@ window.updateTestReminders = function() {
 
 // Event listeners for disease tracking
 document.addEventListener('DOMContentLoaded', function() {
-    const diseaseNotes = document.getElementById('disease-notes-textarea');
     const testReminders = document.getElementById('test-reminders');
-    
-    if (diseaseNotes) {
-        diseaseNotes.addEventListener('input', window.updateDiseaseNotes);
-    }
+    const diseasesSearch = document.getElementById('diseases-search');
     
     if (testReminders) {
         testReminders.addEventListener('input', window.updateTestReminders);
+    }
+    
+    if (diseasesSearch) {
+        diseasesSearch.addEventListener('input', function() {
+            window.displayActiveDiseases();
+        });
     }
 });
 
@@ -5837,9 +6000,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 corruptionPoints: document.getElementById('corruption-points').value,
                 mutations: mutations,
                 diseaseTracking: {
-                    notes: document.getElementById('disease-notes-textarea').value || '',
-                    activeSymptoms: character.diseaseTracking.activeSymptoms || [],
-                    diseaseHistory: character.diseaseTracking.diseaseHistory || [],
+                    activeDiseases: character.diseaseTracking.activeDiseases || [],
                     testReminders: document.getElementById('test-reminders').value || ''
                 },
                 money: {
@@ -5990,12 +6151,14 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Load disease tracking data
             if (characterData.diseaseTracking) {
-                document.getElementById('disease-notes-textarea').value = characterData.diseaseTracking.notes || '';
                 document.getElementById('test-reminders').value = characterData.diseaseTracking.testReminders || '';
-                character.diseaseTracking.activeSymptoms = characterData.diseaseTracking.activeSymptoms || [];
-                character.diseaseTracking.diseaseHistory = characterData.diseaseTracking.diseaseHistory || [];
-                character.diseaseTracking.notes = characterData.diseaseTracking.notes || '';
+                character.diseaseTracking.activeDiseases = characterData.diseaseTracking.activeDiseases || [];
                 character.diseaseTracking.testReminders = characterData.diseaseTracking.testReminders || '';
+                
+                // Update disease counter to prevent ID conflicts
+                if (character.diseaseTracking.activeDiseases.length > 0) {
+                    diseaseIdCounter = Math.max(...character.diseaseTracking.activeDiseases.map(d => d.id)) + 1;
+                }
             }
             
             // Refresh all displays
@@ -6021,8 +6184,8 @@ document.addEventListener('DOMContentLoaded', function() {
             window.updateCorruptionStatus();
             
             // Update disease system displays
-            if (typeof window.generateSymptomCheckboxes === 'function') {
-                window.generateSymptomCheckboxes();
+            if (typeof window.displayActiveDiseases === 'function') {
+                window.displayActiveDiseases();
             }
             if (typeof window.updateSymptomEffects === 'function') {
                 window.updateSymptomEffects();
@@ -6097,11 +6260,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     
                     // Initialize disease system
-                    if (typeof window.generateSymptomCheckboxes === 'function') {
-                        window.generateSymptomCheckboxes();
-                    }
-                    if (typeof window.populateDiseaseTemplates === 'function') {
-                        window.populateDiseaseTemplates();
+                    if (typeof window.displayActiveDiseases === 'function') {
+                        window.displayActiveDiseases();
                     }
                 }, 100);
                 
@@ -6231,8 +6391,6 @@ function loadDiseasesData() {
         .then(data => {
             srdDiseases = data;
             console.log('Loaded', srdDiseases.length, 'diseases from SRD');
-            // Populate disease template dropdown
-            window.populateDiseaseTemplates();
         })
         .catch(error => {
             console.error('Error loading diseases:', error);
@@ -6243,7 +6401,6 @@ function loadDiseasesData() {
                 { name: "Festering Wound", contraction: "Easy (+40) Endurance Test", incubation: "1d10 days", duration: "1d10 days", symptoms: ["fever", "lingering"] }
             ];
             console.log('Using fallback diseases data:', srdDiseases.length, 'diseases loaded');
-            window.populateDiseaseTemplates();
         });
 }
 
@@ -6254,8 +6411,6 @@ function loadSymptomsData() {
         .then(data => {
             srdSymptoms = data;
             console.log('Loaded', srdSymptoms.length, 'symptoms from SRD');
-            // Generate symptom checkboxes
-            window.generateSymptomCheckboxes();
         })
         .catch(error => {
             console.error('Error loading symptoms:', error);
@@ -6266,7 +6421,6 @@ function loadSymptomsData() {
                 { name: "Coughs and Sneezes", mechanicalEffects: {}, diseases: ["Itching Pox"] }
             ];
             console.log('Using fallback symptoms data:', srdSymptoms.length, 'symptoms loaded');
-            window.generateSymptomCheckboxes();
         });
 }
 
