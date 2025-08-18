@@ -5953,6 +5953,24 @@ window.populateSRDSpellSelect = function() {
     const loreFilter = document.getElementById('srd-lore-filter');
     select.innerHTML = '';
     
+    console.log('populateSRDSpellSelect called, srdSpells length:', srdSpells.length);
+    
+    if (srdSpells.length === 0) {
+        // If no spells loaded, show a message and try to load them
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = 'Loading spells...';
+        select.appendChild(option);
+        
+        // Try to reload spells data
+        loadSpellsData().then(() => {
+            if (srdSpells.length > 0) {
+                window.populateSRDSpellSelect(); // Retry once data is loaded
+            }
+        });
+        return;
+    }
+    
     // Populate lore filter if it's empty
     if (loreFilter && loreFilter.options.length <= 1) {
         const lores = [...new Set(srdSpells.map(s => s.lore))].sort();
@@ -6534,25 +6552,27 @@ function loadConditionsData() {
 
 // Load Spells Data
 function loadSpellsData() {
-    fetch('Spells.json')
+    return fetch('Spells.json')
         .then(response => response.json())
         .then(data => {
             srdSpells = data;
             console.log('Loaded', srdSpells.length, 'spells from SRD');
+            return srdSpells;
         })
         .catch(error => {
             console.error('Error loading spells:', error);
             // Fallback data with common WFRP spells
             srdSpells = [
-                { name: "Dart", lore: "Petty Magic", castingNumber: 3, range: "12 yards", target: "1", duration: "Instant" },
-                { name: "Light", lore: "Petty Magic", castingNumber: 2, range: "Touch", target: "1", duration: "1 hour" },
-                { name: "Magic Lock", lore: "Petty Magic", castingNumber: 3, range: "Touch", target: "1", duration: "24 hours" },
+                { name: "Dart", lore: "Petty", castingNumber: 3, range: "12 yards", target: "1", duration: "Instant" },
+                { name: "Light", lore: "Petty", castingNumber: 2, range: "Touch", target: "1", duration: "1 hour" },
+                { name: "Magic Lock", lore: "Petty", castingNumber: 3, range: "Touch", target: "1", duration: "24 hours" },
                 { name: "Fireball", lore: "Fire", castingNumber: 5, range: "24 yards", target: "1", duration: "Instant" },
                 { name: "Flaming Sword of Rhuin", lore: "Fire", castingNumber: 7, range: "6 yards", target: "1", duration: "Willpower Bonus rounds" },
                 { name: "Heal", lore: "Life", castingNumber: 4, range: "Touch", target: "1", duration: "Instant" },
                 { name: "Blessing", lore: "Sigmar", castingNumber: 3, range: "6 yards", target: "Willpower Bonus", duration: "Willpower Bonus rounds" }
             ];
             console.log('Using fallback spells data:', srdSpells.length, 'spells loaded');
+            return srdSpells;
         });
 }
 
