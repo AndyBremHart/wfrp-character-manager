@@ -8547,26 +8547,59 @@ function loadSymptomsData() {
             const speciesInfo = speciesData[selectedSpecies];
             
             try {
+                // Apply species selection
+                const speciesField = document.getElementById('species');
+                if (speciesField) {
+                    speciesField.value = selectedSpecies;
+                }
+
                 // Apply characteristics
                 Object.keys(wizardData.characteristics).forEach(char => {
                     const charData = wizardData.characteristics[char];
                     const currentField = document.getElementById(`${char.toLowerCase()}-current`);
                     if (currentField) {
                         currentField.value = charData.total;
-                        if (currentField.updateFunction) {
-                            currentField.updateFunction();
-                        }
+                        // Trigger any update functions
+                        const event = new Event('input', { bubbles: true });
+                        currentField.dispatchEvent(event);
                     }
                 });
 
-                // Apply fate, resilience, and movement
+                // Apply wounds
+                const woundsField = document.getElementById('wounds-max');
+                if (woundsField) {
+                    woundsField.value = wizardData.wounds;
+                }
+
+                // Apply fate, resilience, and movement using wizard data
                 const fateField = document.getElementById('fate-current');
                 const resilienceField = document.getElementById('resilience-current');
                 const movementField = document.getElementById('movement');
 
-                if (fateField) fateField.value = speciesInfo.baseFate;
-                if (resilienceField) resilienceField.value = speciesInfo.baseResilience;
-                if (movementField) movementField.value = speciesInfo.movement;
+                if (fateField) fateField.value = wizardData.fate.total;
+                if (resilienceField) resilienceField.value = wizardData.resilience.total;
+                if (movementField) movementField.value = wizardData.movement;
+
+                // Apply skills (add them to existing skills)
+                const allSelectedSkills = [...wizardData.skills.step3, ...wizardData.skills.step4];
+                allSelectedSkills.forEach(skillName => {
+                    const advances = wizardData.skills.step3.includes(skillName) ? 5 : 3;
+                    window.addSkill(skillName, advances);
+                });
+
+                // Apply talents
+                const allTalents = [...wizardData.talents.fixed];
+                wizardData.talents.choices.forEach(choice => {
+                    if (Array.isArray(choice)) {
+                        allTalents.push(...choice);
+                    } else if (choice) {
+                        allTalents.push(choice);
+                    }
+                });
+                
+                allTalents.forEach(talentName => {
+                    window.addTalent(talentName);
+                });
 
                 // Close wizard and show success message
                 closeSpeciesWizard();
