@@ -8411,7 +8411,7 @@ function loadSymptomsData() {
                                     </label>
                                     ${needsCustomization ? `
                                         <div style="margin-left: 24px; margin-top: 5px;">
-                                            <input type="text" id="${inputId}" placeholder="Specify ${baseTalentName}..." style="padding: 4px 8px; border: 1px solid #ccc; border-radius: 3px; font-size: 12px; width: 200px;" disabled>
+                                            <input type="text" id="${inputId}" placeholder="Specify ${baseTalentName}..." style="padding: 4px 8px; border: 1px solid #ccc; border-radius: 3px; font-size: 12px; width: 200px;" disabled oninput="updateTalentCustomization(${choiceIndex}, ${talentIndex}, this.value)">
                                         </div>
                                     ` : ''}
                                 </div>
@@ -8425,7 +8425,7 @@ function loadSymptomsData() {
                                     </label>
                                     ${needsCustomization ? `
                                         <div style="margin-left: 24px; margin-top: 5px;">
-                                            <input type="text" id="${inputId}" placeholder="Specify ${baseTalentName}..." style="padding: 4px 8px; border: 1px solid #ccc; border-radius: 3px; font-size: 12px; width: 200px;" disabled>
+                                            <input type="text" id="${inputId}" placeholder="Specify ${baseTalentName}..." style="padding: 4px 8px; border: 1px solid #ccc; border-radius: 3px; font-size: 12px; width: 200px;" disabled oninput="updateTalentCustomization(${choiceIndex}, ${talentIndex}, this.value)">
                                         </div>
                                     ` : ''}
                                 </div>
@@ -8490,6 +8490,26 @@ function loadSymptomsData() {
                     talent: radio.value,
                     customization: ''
                 };
+            }
+        }
+
+        function updateTalentCustomization(choiceIndex, talentIndex, customization) {
+            const choice = wizardData.talents.choices[choiceIndex];
+            
+            if (Array.isArray(choice)) {
+                // Multiple choice - find the talent and update its customization
+                const talent = choice.find(t => {
+                    const choiceGroup = document.querySelectorAll(`input[name="talent-choice-${choiceIndex}"]`);
+                    const talentValue = choiceGroup[talentIndex]?.value;
+                    return (typeof t === 'string' ? t : t.talent) === talentValue;
+                });
+                
+                if (talent && typeof talent === 'object') {
+                    talent.customization = customization;
+                }
+            } else if (choice && typeof choice === 'object') {
+                // Single choice - update the customization
+                choice.customization = customization;
             }
         }
 
