@@ -6043,41 +6043,37 @@ window.filterSRDSpells = function() {
     const loreFilter = document.getElementById('srd-lore-filter').value;
     const categoryFilter = document.getElementById('srd-category-filter').value;
     const select = document.getElementById('srd-spell-select');
-    const options = select.options;
     
-    let matchCount = 0;
-    let firstMatch = null;
+    // Clear and rebuild the select list with filtered options
+    select.innerHTML = '';
     
-    for (let i = 0; i < options.length; i++) {
-        try {
-            const spell = JSON.parse(options[i].dataset.spell);
-            const matchesSearch = searchText === '' || 
-                           (spell.name && spell.name.toLowerCase().includes(searchText));
-            const matchesLore = loreFilter === '' || spell.lore === loreFilter;
-            const matchesCategory = categoryFilter === '' || getSpellCategory(spell) === categoryFilter;
-            const matches = matchesSearch && matchesLore && matchesCategory;
-            
-            options[i].style.display = matches ? '' : 'none';
-            
-            if (matches) {
-                matchCount++;
-                if (!firstMatch) {
-                    firstMatch = options[i];
-                }
-            }
-        } catch (e) {
-            console.error('Error parsing spell data for option', i, ':', e);
-            options[i].style.display = 'none';
-        }
-    }
+    // Filter the spells data directly
+    const filteredSpells = srdSpells.filter(spell => {
+        const matchesSearch = searchText === '' || 
+                       (spell.name && spell.name.toLowerCase().includes(searchText));
+        const matchesLore = loreFilter === '' || spell.lore === loreFilter;
+        const matchesCategory = categoryFilter === '' || getSpellCategory(spell) === categoryFilter;
+        
+        return matchesSearch && matchesLore && matchesCategory;
+    });
+    
+    // Rebuild the select options with filtered spells
+    const sortedSpells = filteredSpells.sort((a, b) => a.name.localeCompare(b.name));
+    
+    sortedSpells.forEach(spell => {
+        const option = document.createElement('option');
+        option.value = spell.name;
+        option.textContent = `${spell.name} (${spell.lore}) - CN ${spell.castingNumber}`;
+        option.dataset.spell = JSON.stringify(spell);
+        select.appendChild(option);
+    });
     
     // Update count
-    document.getElementById('srd-spell-count').textContent = `(${matchCount} spells found)`;
-    
+    document.getElementById('srd-spell-count').textContent = `(${sortedSpells.length} spells found)`;
     
     // Select first match if any
-    if (firstMatch && matchCount > 0) {
-        firstMatch.selected = true;
+    if (sortedSpells.length > 0) {
+        select.selectedIndex = 0;
         window.showSRDSpellDetails();
     }
 }
