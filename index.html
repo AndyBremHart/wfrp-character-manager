@@ -1352,28 +1352,45 @@
         });
 
         // Auto-update max displays when fate/resilience change via direct input
+        let previousFate = 0;
+        let previousResilience = 0;
+        
         document.getElementById('fate').addEventListener('input', () => {
+            const fate = parseInt(document.getElementById('fate').value) || 0;
+            const change = fate - previousFate;
+            previousFate = fate;
+            
             window.updateFateFortuneResilienceResolveDisplay();
             
-            // Check if current fortune exceeds new max
-            const fate = parseInt(document.getElementById('fate').value) || 0;
+            // Apply the same logic as the +/- buttons
             const fortuneCurrentField = document.getElementById('fortune-current');
             const currentFortune = parseInt(fortuneCurrentField.value) || 0;
             
-            if (currentFortune > fate) {
+            if (change > 0) {
+                // Fate increased - add the same amount to current fortune
+                fortuneCurrentField.value = currentFortune + change;
+            } else if (currentFortune > fate) {
+                // Fate decreased - cap current fortune at new max
                 fortuneCurrentField.value = fate;
             }
         });
 
         document.getElementById('resilience').addEventListener('input', () => {
+            const resilience = parseInt(document.getElementById('resilience').value) || 0;
+            const change = resilience - previousResilience;
+            previousResilience = resilience;
+            
             window.updateFateFortuneResilienceResolveDisplay();
             
-            // Check if current resolve exceeds new max
-            const resilience = parseInt(document.getElementById('resilience').value) || 0;
+            // Apply the same logic as the +/- buttons
             const resolveCurrentField = document.getElementById('resolve-current');
             const currentResolve = parseInt(resolveCurrentField.value) || 0;
             
-            if (currentResolve > resilience) {
+            if (change > 0) {
+                // Resilience increased - add the same amount to current resolve
+                resolveCurrentField.value = currentResolve + change;
+            } else if (currentResolve > resilience) {
+                // Resilience decreased - cap current resolve at new max
                 resolveCurrentField.value = resilience;
             }
         });
@@ -1755,11 +1772,16 @@
             const fortuneMax = document.getElementById('fortune-max');
             fortuneMax.textContent = newFate;
             
-            // Check if current fortune exceeds new max
+            // When fate increases, increase current fortune by the same amount
+            // When fate decreases, cap current fortune at new max
             const fortuneCurrentField = document.getElementById('fortune-current');
             const currentFortune = parseInt(fortuneCurrentField.value) || 0;
             
-            if (currentFortune > newFate) {
+            if (change > 0) {
+                // Fate increased - add the same amount to current fortune
+                fortuneCurrentField.value = currentFortune + change;
+            } else if (currentFortune > newFate) {
+                // Fate decreased - cap current fortune at new max
                 fortuneCurrentField.value = newFate;
             }
             
@@ -1794,11 +1816,16 @@
             const resolveMax = document.getElementById('resolve-max');
             resolveMax.textContent = newResilience;
             
-            // Check if current resolve exceeds new max
+            // When resilience increases, increase current resolve by the same amount
+            // When resilience decreases, cap current resolve at new max
             const resolveCurrentField = document.getElementById('resolve-current');
             const currentResolve = parseInt(resolveCurrentField.value) || 0;
             
-            if (currentResolve > newResilience) {
+            if (change > 0) {
+                // Resilience increased - add the same amount to current resolve
+                resolveCurrentField.value = currentResolve + change;
+            } else if (currentResolve > newResilience) {
+                // Resilience decreased - cap current resolve at new max
                 resolveCurrentField.value = newResilience;
             }
             
@@ -3144,6 +3171,8 @@ document.addEventListener('DOMContentLoaded', function() {
             window.updateXPDisplay();
             
             // Initialize Fate/Fortune/Resilience/Resolve system
+            previousFate = parseInt(document.getElementById('fate').value) || 0;
+            previousResilience = parseInt(document.getElementById('resilience').value) || 0;
             window.updateFateFortuneResilienceResolveDisplay();
             
             // Load SRD data
