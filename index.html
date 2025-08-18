@@ -8591,8 +8591,8 @@ function loadSymptomsData() {
                 return;
             }
 
-            // Check if talent already exists
-            const existingTalent = talents.find(t => t.name === talentName);
+            // Check if talent already exists (by name and customisation)
+            const existingTalent = talents.find(t => t.name === talentName && (t.customisation || '') === '');
             if (existingTalent) {
                 // If it's a multiple talent, increase the times taken
                 if (baseTalent.max && baseTalent.max !== "1") {
@@ -8601,14 +8601,15 @@ function loadSymptomsData() {
                 return;
             }
 
-            // Add the talent
+            // Add the talent with proper structure
             talents.push({
                 name: talentName,
-                description: baseTalent.description || '',
+                displayName: talentName,
+                max: baseTalent.max || "1",
                 tests: baseTalent.tests || '',
+                description: baseTalent.description || '',
                 timesTaken: 1,
-                customisation: '',
-                notes: ''
+                customisation: ''
             });
 
             // Refresh the talents display
