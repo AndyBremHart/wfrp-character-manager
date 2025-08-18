@@ -8520,21 +8520,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 sinPoints: document.getElementById('sin-points').value,
                 notes: document.getElementById('quick-notes').value,
-                skills: characterSkills,
-                addedSkills: addedSkills,
+                skills: typeof characterSkills !== 'undefined' ? characterSkills : [],
+                addedSkills: typeof addedSkills !== 'undefined' ? addedSkills : [],
                 // New combat & equipment data
-                weapons: weapons,
-                armour: armour,
-                trappings: trappings,
-                consumables: consumables,
-                talents: talents,
-                activeConditions: activeConditions,
-                criticalWounds: criticalWounds,
-                spells: spells,
+                weapons: typeof weapons !== 'undefined' ? weapons : [],
+                armour: typeof armour !== 'undefined' ? armour : [],
+                trappings: typeof trappings !== 'undefined' ? trappings : [],
+                consumables: typeof consumables !== 'undefined' ? consumables : [],
+                talents: typeof talents !== 'undefined' ? talents : [],
+                activeConditions: typeof activeConditions !== 'undefined' ? activeConditions : [],
+                criticalWounds: typeof criticalWounds !== 'undefined' ? criticalWounds : [],
+                spells: typeof spells !== 'undefined' ? spells : [],
                 corruptionPoints: document.getElementById('corruption-points').value,
-                mutations: mutations,
+                mutations: typeof mutations !== 'undefined' ? mutations : [],
                 diseaseTracking: {
-                    activeDiseases: character.diseaseTracking.activeDiseases || [],
+                    activeDiseases: (typeof character !== 'undefined' && character.diseaseTracking) ? character.diseaseTracking.activeDiseases || [] : [],
                     testReminders: document.getElementById('test-reminders').value || ''
                 },
                 money: {
@@ -8542,16 +8542,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     silver: document.getElementById('money-silver').value,
                     brass: document.getElementById('money-brass').value
                 },
-                xpLog: xpLog
+                xpLog: typeof xpLog !== 'undefined' ? xpLog : []
             };
             
             // Save characteristics
-            characteristics.forEach(char => {
-                characterData.characteristics[char] = {
-                    initial: document.getElementById(`${char}-initial`).value,
-                    advances: document.getElementById(`${char}-advances`).value
-                };
-            });
+            if (typeof characteristics !== 'undefined') {
+                characteristics.forEach(char => {
+                    characterData.characteristics[char] = {
+                        initial: document.getElementById(`${char}-initial`).value,
+                        advances: document.getElementById(`${char}-advances`).value
+                    };
+                });
+            }
             
             localStorage.setItem('wfrpCharacter', JSON.stringify(characterData));
             alert('Character saved!');
@@ -9163,7 +9165,10 @@ function loadSymptomsData() {
                     <td>${weapon.damage}</td>
                     <td style="font-size: 11px;">${weapon.qualities}</td>
                     <td><input type="checkbox" ${weapon.equipped ? 'checked' : ''} onchange="window.toggleWeaponEquipped(${index})"></td>
-                    <td><button class="advance-btn" onclick="window.removeWeapon(${index})" style="background: #d44; color: white;">×</button></td>
+                    <td>
+                        <button class="advance-btn" onclick="window.editWeapon(${index})" style="background: #8b7355; color: white; margin-right: 2px;">✎</button>
+                        <button class="advance-btn" onclick="window.removeWeapon(${index})" style="background: #d44; color: white;">×</button>
+                    </td>
                 `;
                 tbody.appendChild(row);
             });
@@ -9179,6 +9184,65 @@ function loadSymptomsData() {
                 displayWeapons();
                 updateEncumbrance();
             }
+        }
+
+        // Edit weapon function
+        window.editWeapon = function(index) {
+            const weapon = weapons[index];
+            
+            // Create modal for weapon editing
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;';
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; max-width: 500px; max-height: 70vh; overflow-y: auto;';
+            
+            modalContent.innerHTML = `
+                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Edit Weapon</h3>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Weapon Name:</label>
+                    <input type="text" id="edit-weapon-name" value="${weapon.name}" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Weapon Group:</label>
+                    <input type="text" id="edit-weapon-group" value="${weapon.group}" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Encumbrance:</label>
+                    <input type="number" id="edit-weapon-enc" value="${weapon.encumbrance}" step="0.1" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Range/Reach:</label>
+                    <input type="text" id="edit-weapon-range" value="${weapon.range}" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Damage:</label>
+                    <input type="text" id="edit-weapon-damage" value="${weapon.damage}" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Qualities:</label>
+                    <input type="text" id="edit-weapon-qualities" value="${weapon.qualities}" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                </div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button onclick="window.confirmEditWeapon(${index})" style="margin-right: 10px; padding: 8px 16px; background: #3e2f1f; color: #faf8f3; border: none; cursor: pointer;">Save Changes</button>
+                    <button onclick="window.closeModal()" style="padding: 8px 16px; background: #8b7355; color: #faf8f3; border: none; cursor: pointer;">Cancel</button>
+                </div>
+            `;
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+        }
+
+        window.confirmEditWeapon = function(index) {
+            // Update weapon with new values
+            weapons[index] = {
+                ...weapons[index],
+                name: document.getElementById('edit-weapon-name').value,
+                group: document.getElementById('edit-weapon-group').value,
+                encumbrance: parseFloat(document.getElementById('edit-weapon-enc').value) || 0,
+                range: document.getElementById('edit-weapon-range').value,
+                damage: document.getElementById('edit-weapon-damage').value,
+                qualities: document.getElementById('edit-weapon-qualities').value
+            };
+            
+            displayWeapons();
+            updateEncumbrance();
+            window.closeModal();
         }
 
         // Armour Management
@@ -9319,7 +9383,10 @@ function loadSymptomsData() {
                     <td>${piece.legs || '-'}</td>
                     <td style="font-size: 11px;">${piece.qualities}</td>
                     <td><input type="checkbox" ${piece.worn ? 'checked' : ''} onchange="window.toggleArmourWorn(${index})"></td>
-                    <td><button class="advance-btn" onclick="window.removeArmour(${index})" style="background: #d44; color: white;">×</button></td>
+                    <td>
+                        <button class="advance-btn" onclick="window.editArmour(${index})" style="background: #8b7355; color: white; margin-right: 2px;">✎</button>
+                        <button class="advance-btn" onclick="window.removeArmour(${index})" style="background: #d44; color: white;">×</button>
+                    </td>
                 `;
                 tbody.appendChild(row);
             });
@@ -9338,6 +9405,81 @@ function loadSymptomsData() {
                 updateEncumbrance();
                 updateTotalAP();
             }
+        }
+
+        // Edit armour function
+        window.editArmour = function(index) {
+            const piece = armour[index];
+            
+            // Create modal for armour editing
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;';
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; max-width: 500px; max-height: 70vh; overflow-y: auto;';
+            
+            modalContent.innerHTML = `
+                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Edit Armour</h3>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Armour Name:</label>
+                    <input type="text" id="edit-armour-name" value="${piece.name}" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Type:</label>
+                    <input type="text" id="edit-armour-type" value="${piece.type}" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Encumbrance:</label>
+                    <input type="number" id="edit-armour-enc" value="${piece.encumbrance}" step="0.1" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px;">
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Head AP:</label>
+                            <input type="number" id="edit-armour-head" value="${piece.head || 0}" min="0" style="width: 100%; padding: 5px;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Arms AP:</label>
+                            <input type="number" id="edit-armour-arms" value="${piece.arms || 0}" min="0" style="width: 100%; padding: 5px;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Body AP:</label>
+                            <input type="number" id="edit-armour-body" value="${piece.body || 0}" min="0" style="width: 100%; padding: 5px;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Legs AP:</label>
+                            <input type="number" id="edit-armour-legs" value="${piece.legs || 0}" min="0" style="width: 100%; padding: 5px;">
+                        </div>
+                    </div>
+                    
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Qualities:</label>
+                    <input type="text" id="edit-armour-qualities" value="${piece.qualities}" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                </div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button onclick="window.confirmEditArmour(${index})" style="margin-right: 10px; padding: 8px 16px; background: #3e2f1f; color: #faf8f3; border: none; cursor: pointer;">Save Changes</button>
+                    <button onclick="window.closeModal()" style="padding: 8px 16px; background: #8b7355; color: #faf8f3; border: none; cursor: pointer;">Cancel</button>
+                </div>
+            `;
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+        }
+
+        window.confirmEditArmour = function(index) {
+            // Update armour with new values
+            armour[index] = {
+                ...armour[index],
+                name: document.getElementById('edit-armour-name').value,
+                type: document.getElementById('edit-armour-type').value,
+                encumbrance: parseFloat(document.getElementById('edit-armour-enc').value) || 0,
+                head: parseInt(document.getElementById('edit-armour-head').value) || 0,
+                arms: parseInt(document.getElementById('edit-armour-arms').value) || 0,
+                body: parseInt(document.getElementById('edit-armour-body').value) || 0,
+                legs: parseInt(document.getElementById('edit-armour-legs').value) || 0,
+                qualities: document.getElementById('edit-armour-qualities').value
+            };
+            
+            displayArmour();
+            updateEncumbrance();
+            updateTotalAP();
+            window.closeModal();
         }
 
         window.updateTotalAP = function() {
@@ -9389,7 +9531,10 @@ function loadSymptomsData() {
                     <td style="font-weight: bold;">${totalEnc}</td>
                     <td>${item.location}</td>
                     <td><input type="text" value="${item.notes}" onchange="window.updateTrappingNotes(${index}, this.value)" style="width: 100%; border: none; font-size: 11px;"></td>
-                    <td><button class="advance-btn" onclick="window.removeTrapping(${index})" style="background: #d44; color: white;">×</button></td>
+                    <td>
+                        <button class="advance-btn" onclick="window.editTrapping(${index})" style="background: #8b7355; color: white; margin-right: 2px;">✎</button>
+                        <button class="advance-btn" onclick="window.removeTrapping(${index})" style="background: #d44; color: white;">×</button>
+                    </td>
                 `;
                 tbody.appendChild(row);
             });
@@ -9411,6 +9556,69 @@ function loadSymptomsData() {
                 displayTrappings();
                 updateEncumbrance();
             }
+        }
+
+        // Edit trapping function
+        window.editTrapping = function(index) {
+            const item = trappings[index];
+            
+            // Create modal for trapping editing
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;';
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; max-width: 500px; max-height: 70vh; overflow-y: auto;';
+            
+            modalContent.innerHTML = `
+                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Edit Trapping</h3>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Item Name:</label>
+                    <input type="text" id="edit-trapping-name" value="${item.name}" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Quantity:</label>
+                    <input type="number" id="edit-trapping-quantity" value="${item.quantity}" min="1" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Encumbrance (per item):</label>
+                    <input type="number" id="edit-trapping-enc" value="${item.encumbrance}" step="0.1" min="0" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Location:</label>
+                    <select id="edit-trapping-location" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                        <option value="On person" ${item.location === 'On person' ? 'selected' : ''}>On person</option>
+                        <option value="Backpack" ${item.location === 'Backpack' ? 'selected' : ''}>Backpack</option>
+                        <option value="Belt" ${item.location === 'Belt' ? 'selected' : ''}>Belt</option>
+                        <option value="Pouch" ${item.location === 'Pouch' ? 'selected' : ''}>Pouch</option>
+                        <option value="Horse" ${item.location === 'Horse' ? 'selected' : ''}>Horse</option>
+                        <option value="Cart" ${item.location === 'Cart' ? 'selected' : ''}>Cart</option>
+                        <option value="Stashed" ${item.location === 'Stashed' ? 'selected' : ''}>Stashed</option>
+                    </select>
+                    
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Notes:</label>
+                    <textarea id="edit-trapping-notes" style="width: 100%; margin-bottom: 10px; padding: 5px; min-height: 60px;">${item.notes || ''}</textarea>
+                </div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button onclick="window.confirmEditTrapping(${index})" style="margin-right: 10px; padding: 8px 16px; background: #3e2f1f; color: #faf8f3; border: none; cursor: pointer;">Save Changes</button>
+                    <button onclick="window.closeModal()" style="padding: 8px 16px; background: #8b7355; color: #faf8f3; border: none; cursor: pointer;">Cancel</button>
+                </div>
+            `;
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+        }
+
+        window.confirmEditTrapping = function(index) {
+            // Update trapping with new values
+            trappings[index] = {
+                ...trappings[index],
+                name: document.getElementById('edit-trapping-name').value,
+                quantity: parseInt(document.getElementById('edit-trapping-quantity').value) || 1,
+                encumbrance: parseFloat(document.getElementById('edit-trapping-enc').value) || 0,
+                location: document.getElementById('edit-trapping-location').value,
+                notes: document.getElementById('edit-trapping-notes').value
+            };
+            
+            displayTrappings();
+            updateEncumbrance();
+            window.closeModal();
         }
 
         // Consumables Management
@@ -9652,7 +9860,10 @@ function loadSymptomsData() {
                     </td>
                     <td><input type="number" value="${item.maximum}" min="0" onchange="window.setConsumableMax(${index}, this.value)" style="width: 60px;"></td>
                     <td><input type="text" value="${item.notes}" onchange="window.updateConsumableNotes(${index}, this.value)" style="width: 100%; border: none; font-size: 11px;"></td>
-                    <td><button class="advance-btn" onclick="window.removeConsumable(${index})" style="background: #d44; color: white;">×</button></td>
+                    <td>
+                        <button class="advance-btn" onclick="window.editConsumable(${index})" style="background: #8b7355; color: white; margin-right: 2px;">✎</button>
+                        <button class="advance-btn" onclick="window.removeConsumable(${index})" style="background: #d44; color: white;">×</button>
+                    </td>
                 `;
                 tbody.appendChild(row);
             });
@@ -9686,6 +9897,70 @@ function loadSymptomsData() {
                 consumables.splice(index, 1);
                 displayConsumables();
             }
+        }
+
+        // Edit consumable function
+        window.editConsumable = function(index) {
+            const item = consumables[index];
+            
+            // Create modal for consumable editing
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;';
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; max-width: 500px; max-height: 70vh; overflow-y: auto;';
+            
+            modalContent.innerHTML = `
+                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Edit Consumable</h3>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Item Name:</label>
+                    <input type="text" id="edit-consumable-name" value="${item.name}" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Current Amount:</label>
+                    <input type="number" id="edit-consumable-current" value="${item.current}" min="0" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Maximum Amount:</label>
+                    <input type="number" id="edit-consumable-max" value="${item.maximum}" min="0" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Type:</label>
+                    <select id="edit-consumable-type" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                        <option value="Ammunition" ${item.type === 'Ammunition' ? 'selected' : ''}>Ammunition</option>
+                        <option value="Food & Drink" ${item.type === 'Food & Drink' ? 'selected' : ''}>Food & Drink</option>
+                        <option value="Medicine" ${item.type === 'Medicine' ? 'selected' : ''}>Medicine</option>
+                        <option value="Poison" ${item.type === 'Poison' ? 'selected' : ''}>Poison</option>
+                        <option value="Potion" ${item.type === 'Potion' ? 'selected' : ''}>Potion</option>
+                        <option value="Other" ${item.type === 'Other' ? 'selected' : ''}>Other</option>
+                    </select>
+                    
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Notes:</label>
+                    <textarea id="edit-consumable-notes" style="width: 100%; margin-bottom: 10px; padding: 5px; min-height: 60px;">${item.notes || ''}</textarea>
+                </div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button onclick="window.confirmEditConsumable(${index})" style="margin-right: 10px; padding: 8px 16px; background: #3e2f1f; color: #faf8f3; border: none; cursor: pointer;">Save Changes</button>
+                    <button onclick="window.closeModal()" style="padding: 8px 16px; background: #8b7355; color: #faf8f3; border: none; cursor: pointer;">Cancel</button>
+                </div>
+            `;
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+        }
+
+        window.confirmEditConsumable = function(index) {
+            const currentVal = parseInt(document.getElementById('edit-consumable-current').value) || 0;
+            const maxVal = parseInt(document.getElementById('edit-consumable-max').value) || 0;
+            
+            // Update consumable with new values
+            consumables[index] = {
+                ...consumables[index],
+                name: document.getElementById('edit-consumable-name').value,
+                current: Math.min(currentVal, maxVal),
+                maximum: maxVal,
+                type: document.getElementById('edit-consumable-type').value,
+                notes: document.getElementById('edit-consumable-notes').value
+            };
+            
+            displayConsumables();
+            window.closeModal();
         }
 
         // Encumbrance Calculation
