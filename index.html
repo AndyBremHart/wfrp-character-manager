@@ -726,6 +726,119 @@
                 </div>
             </div>
 
+            <!-- Corruption & Mutations -->
+            <div class="section">
+                <div class="section-title">Corruption & Mutations</div>
+                
+                <!-- Corruption Tracking -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; padding: 15px; background: #f8f6f0; border: 2px solid #8b7355; border-radius: 5px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Corruption Points:</label>
+                        <input type="number" id="corruption-points" value="0" min="0" style="width: 80px; padding: 5px; text-align: center; font-weight: bold;" onchange="window.updateCorruptionStatus()">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Threshold:</label>
+                        <div id="corruption-threshold" style="padding: 5px; text-align: center; font-weight: bold; color: #666; background: #e8dfd0; border-radius: 3px;">0</div>
+                        <div style="font-size: 10px; color: #666; text-align: center; margin-top: 2px;">(WP Bonus + T Bonus)</div>
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Physical Mutations:</label>
+                        <div id="physical-mutation-counter" style="padding: 5px; text-align: center; font-weight: bold; color: #666; background: #e8dfd0; border-radius: 3px;">0/0</div>
+                        <div style="font-size: 10px; color: #666; text-align: center; margin-top: 2px;">(Current/T Bonus)</div>
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Mental Corruptions:</label>
+                        <div id="mental-corruption-counter" style="padding: 5px; text-align: center; font-weight: bold; color: #666; background: #e8dfd0; border-radius: 3px;">0/0</div>
+                        <div style="font-size: 10px; color: #666; text-align: center; margin-top: 2px;">(Current/WP Bonus)</div>
+                    </div>
+                </div>
+                
+                <!-- Corruption Status Warnings -->
+                <div id="corruption-test-warning" style="background: #fff2dc; border: 2px solid #ff8c00; padding: 10px; margin-bottom: 15px; border-radius: 5px; display: none;">
+                    <h4 style="color: #cc7000; margin: 0 0 8px 0; font-size: 14px;">⚠️ Corruption Test Required</h4>
+                    <div style="color: #cc7000; font-size: 13px;">Corruption exceeds threshold! Make a Challenging (+0) Endurance Test or gain a mutation.</div>
+                </div>
+                
+                <div id="character-destruction-warning" style="background: #ffe4e6; border: 2px solid #c41e3a; padding: 10px; margin-bottom: 15px; border-radius: 5px; display: none;">
+                    <h4 style="color: #8b0000; margin: 0 0 8px 0; font-size: 14px;">💀 CHARACTER AT RISK</h4>
+                    <div id="destruction-warning-text" style="color: #8b0000; font-size: 13px; font-weight: bold;"></div>
+                </div>
+                
+                <div id="character-lost-warning" style="background: #2d1b1b; border: 2px solid #000; padding: 15px; margin-bottom: 15px; border-radius: 5px; display: none;">
+                    <h4 style="color: #c41e3a; margin: 0 0 8px 0; font-size: 16px; text-align: center;">💀 CHARACTER LOST TO CHAOS 💀</h4>
+                    <div style="color: #c41e3a; font-size: 14px; text-align: center; font-weight: bold;">This character has been consumed by mutation and is no longer playable.</div>
+                </div>
+                
+                <!-- Fellowship Warning -->
+                <div id="fellowship-warning" style="background: #fff8dc; border: 2px solid #d4a574; padding: 10px; margin-bottom: 15px; border-radius: 5px; display: none;">
+                    <h4 style="color: #8b4513; margin: 0 0 8px 0; font-size: 14px;">👥 Fellowship Penalties</h4>
+                    <div id="fellowship-warning-text" style="color: #8b4513; font-size: 13px;"></div>
+                    <div style="color: #8b4513; font-size: 11px; margin-top: 8px; font-style: italic;">GM guidance: Apply circumstantial penalties based on situation and NPCs' reactions.</div>
+                </div>
+                
+                <!-- Add Mutation Controls -->
+                <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;">
+                    <button class="control-btn" onclick="window.openAddMutationModal()" style="padding: 5px 10px; font-size: 12px;">+ Add Mutation</button>
+                    <input type="text" id="mutations-search" placeholder="Search mutations..." style="padding: 5px 10px; border: 1px solid #8b7355; font-family: 'Georgia', serif; background: white; flex: 1; min-width: 200px;" oninput="window.displayMutations()">
+                </div>
+                
+                <!-- Active Mutations Display -->
+                <div id="active-mutations-display" style="margin-bottom: 15px;">
+                    <!-- Mutations will be dynamically populated here -->
+                </div>
+                
+                <!-- No Mutations Message -->
+                <div id="no-mutations-message" style="text-align: center; padding: 20px; color: #666; font-style: italic;">
+                    No mutations or corruptions currently affecting this character.
+                </div>
+                
+                <!-- Add Mutation Modal -->
+                <div id="add-mutation-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 600px; max-width: 700px; max-height: 80vh; overflow-y: auto;">
+                        <h3 style="color: #3e2f1f; margin-bottom: 15px;">Add Mutation or Corruption</h3>
+                        
+                        <!-- Species Mutation Guidance -->
+                        <div id="species-guidance" style="background: #e8dfd0; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
+                            <div style="font-size: 12px; color: #3e2f1f;"><strong>Species Mutation Distribution:</strong></div>
+                            <div id="species-guidance-text" style="font-size: 11px; color: #666; margin-top: 3px;"></div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Mutation Type:</label>
+                            <select id="mutation-type-select" style="width: 100%; padding: 8px; font-size: 14px;" onchange="window.updateMutationOptions()">
+                                <option value="">-- Choose Type --</option>
+                                <option value="physical">Physical Mutation</option>
+                                <option value="mental">Mental Corruption</option>
+                            </select>
+                        </div>
+                        
+                        <div id="mutation-selection" style="margin-bottom: 15px; display: none;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Specific Mutation:</label>
+                            <select id="mutation-select" style="width: 100%; padding: 8px; font-size: 14px;" onchange="window.showMutationDetails()">
+                                <option value="">-- Choose Mutation --</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Mutation Details Display -->
+                        <div id="mutation-details" style="display: none; background: #f8f6f0; padding: 15px; border: 1px solid #8b7355; border-radius: 5px; margin-bottom: 15px;">
+                            <h4 id="detail-mutation-name" style="color: #3e2f1f; margin: 0 0 8px 0;"></h4>
+                            <div id="detail-mutation-description" style="margin-bottom: 8px; font-style: italic;"></div>
+                            <div><strong>Effects:</strong> <span id="detail-mutation-effects"></span></div>
+                            <div id="detail-mutation-obvious" style="margin-top: 8px; font-size: 12px;"></div>
+                            <div id="detail-mutation-fellowship" style="margin-top: 8px; font-size: 12px; color: #8b4513;"></div>
+                        </div>
+                        
+                        <div style="text-align: right; margin-top: 20px;">
+                            <button onclick="window.closeAddMutationModal()" style="padding: 8px 16px; margin-right: 10px; background: #ccc; border: none; cursor: pointer;">Cancel</button>
+                            <button id="confirm-add-mutation-btn" onclick="window.confirmAddMutation()" style="padding: 8px 16px; background: #4682b4; color: white; border: none; cursor: pointer;" disabled>Add Mutation</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Critical Wounds & Injuries -->
             <div class="section">
                 <div class="section-title">Critical Wounds & Injuries</div>
@@ -1364,8 +1477,13 @@
             motivation: '',
             shortTermAmbitions: '',
             longTermAmbitions: '',
-            corruption: { current: 0, max: 0 },
-            mutations: []
+            corruption: {
+                points: 0,
+                threshold: 0,
+                physicalMutations: [],
+                mentalCorruptions: [],
+                awaitingTest: false
+            }
         };
 
         // Expose character to window for debugging
@@ -1611,6 +1729,269 @@
           "Teeth": "-1 Fellowship per 2 teeth lost"
         };
 
+        // WFRP 4th Edition Corruption & Mutation System
+        const physicalMutations = {
+          "01-05": {
+            name: "Animalistic Legs",
+            description: "Your legs become those of a goat, with hooves",
+            effect: "Move +1, obvious mutation affecting social interactions",
+            modifiers: { movement: 1 },
+            obvious: true,
+            fellowshipImpact: "Disturbing animal legs cause fear and revulsion in civilized folk"
+          },
+          "06-10": {
+            name: "Bestial Face", 
+            description: "Face becomes that of a dog or wolf",
+            effect: "Intimidate +10, obvious mutation affecting social interactions",
+            modifiers: { intimidate: 10 },
+            obvious: true,
+            fellowshipImpact: "Bestial features mark you as touched by Chaos"
+          },
+          "11-15": {
+            name: "Big Ears",
+            description: "Ears grow to twice normal size",
+            effect: "Perception +10 for hearing, obvious mutation",
+            modifiers: { perception: 10 },
+            obvious: true,
+            fellowshipImpact: "Enlarged ears draw unwanted attention and mockery"
+          },
+          "16-20": {
+            name: "Bulging Eyes",
+            description: "Eyes bulge unnaturally from their sockets",
+            effect: "Perception +5, obvious mutation affecting appearance",
+            modifiers: { perception: 5 },
+            obvious: true,
+            fellowshipImpact: "Grotesque eyes unnerve those who look upon you"
+          },
+          "21-25": {
+            name: "Chaos Organ",
+            description: "Develop a new organ with unknown function",
+            effect: "No immediate mechanical effect, obvious if exposed",
+            modifiers: {},
+            obvious: false,
+            fellowshipImpact: "Hidden unless revealed, then causes horror",
+            special: "GM determines organ's eventual effect"
+          },
+          "26-30": {
+            name: "Claws",
+            description: "Fingernails become razor-sharp claws",
+            effect: "Unarmed attacks gain +1 damage, obvious mutation",
+            modifiers: { unarmedDamage: 1 },
+            obvious: true,
+            fellowshipImpact: "Predatory claws mark you as dangerous"
+          },
+          "31-35": {
+            name: "Disturbing Grace",
+            description: "Move with unnaturally fluid, hypnotic motion",
+            effect: "Agility +5, but unsettling to watch",
+            modifiers: { agility: 5 },
+            obvious: true,
+            fellowshipImpact: "Uncanny movements make others deeply uncomfortable"
+          },
+          "36-40": {
+            name: "Extra Mouth",
+            description: "Additional mouth appears somewhere on body",
+            effect: "Can speak/eat simultaneously, obvious mutation",
+            modifiers: {},
+            obvious: true,
+            fellowshipImpact: "Extra mouth horrifies and disgusts witnesses"
+          },
+          "41-45": {
+            name: "Inhuman Beauty",
+            description: "Beauty becomes perfect but cold and alien",
+            effect: "Fellowship +10, but something feels wrong",
+            modifiers: { fellowship: 10 },
+            obvious: false,
+            fellowshipImpact: "Attracts attention but causes unease in long interactions",
+            special: "Not immediately obvious as mutation"
+          },
+          "46-50": {
+            name: "Iron Skin",
+            description: "Skin becomes metallic and hard",
+            effect: "Toughness +5, obvious metallic appearance",
+            modifiers: { toughness: 5 },
+            obvious: true,
+            fellowshipImpact: "Metallic skin marks you as clearly inhuman"
+          },
+          "51-55": {
+            name: "Long Limbs",
+            description: "Arms and legs grow unnaturally long",
+            effect: "Reach increases by one step, obvious mutation",
+            modifiers: { reach: 1 },
+            obvious: true,
+            fellowshipImpact: "Distorted proportions cause fear and disgust"
+          },
+          "56-60": {
+            name: "Moronic",
+            description: "Intelligence diminishes significantly",
+            effect: "Intelligence -10, speech becomes simple",
+            modifiers: { intelligence: -10 },
+            obvious: true,
+            fellowshipImpact: "Reduced mental capacity obvious in speech and behavior"
+          },
+          "61-65": {
+            name: "Pin Head",
+            description: "Head shrinks to tiny proportions",
+            effect: "Intelligence -5, obvious physical deformity",
+            modifiers: { intelligence: -5 },
+            obvious: true,
+            fellowshipImpact: "Grotesquely small head causes revulsion and mockery"
+          },
+          "66-70": {
+            name: "Pointed Head",
+            description: "Skull elongates into cone shape",
+            effect: "Must modify all headwear, obvious mutation",
+            modifiers: {},
+            obvious: true,
+            fellowshipImpact: "Distinctive head shape impossible to hide"
+          },
+          "71-75": {
+            name: "Rotting Flesh",
+            description: "Flesh constantly decays and regenerates",
+            effect: "Toughness +5 but Fellowship -10, nauseating odor",
+            modifiers: { toughness: 5, fellowship: -10 },
+            obvious: true,
+            fellowshipImpact: "Rotting stench and appearance cause immediate revulsion",
+            special: "Cannot scar from wounds"
+          },
+          "76-80": {
+            name: "Short Limbs",
+            description: "Arms and legs shrink to half normal length",
+            effect: "Move -1, obvious physical limitation",
+            modifiers: { movement: -1 },
+            obvious: true,
+            fellowshipImpact: "Stunted limbs mark you as cursed by Chaos"
+          },
+          "81-85": {
+            name: "Silly Voice",
+            description: "Voice becomes high-pitched and ridiculous",
+            effect: "Intimidate -20, Charm +5 (disarming)",
+            modifiers: { intimidate: -20, charm: 5 },
+            obvious: true,
+            fellowshipImpact: "Impossible to be taken seriously in formal situations"
+          },
+          "86-90": {
+            name: "Thorny Scales",
+            description: "Skin develops sharp, thorny scales",
+            effect: "Armor +1 AP, Agility -5, opponents take damage when grappling",
+            modifiers: { armor: 1, agility: -5 },
+            obvious: true,
+            fellowshipImpact: "Inhuman scaled appearance causes fear"
+          },
+          "91-95": {
+            name: "Transparent Skin",
+            description: "Skin becomes see-through, showing internal organs",
+            effect: "Disguise impossible, nauseating to behold",
+            modifiers: {},
+            obvious: true,
+            fellowshipImpact: "Horrifying transparency causes immediate revulsion"
+          },
+          "96-100": {
+            name: "Withered Limb",
+            description: "One limb becomes useless and withered",
+            effect: "Lose use of random limb until healed",
+            modifiers: {},
+            obvious: true,
+            fellowshipImpact: "Withered limb marks divine punishment or curse",
+            special: "GM determines which limb is affected"
+          }
+        };
+
+        const mentalCorruptions = {
+          "01-10": {
+            name: "Aggression",
+            description: "Become increasingly violent and hostile",
+            effect: "Difficulty controlling anger, prone to violence",
+            modifiers: {},
+            obvious: false,
+            mentalEffect: "Must pass WP test to avoid violence when provoked"
+          },
+          "11-20": {
+            name: "Animosity",
+            description: "Develop irrational hatred for specific group",
+            effect: "Cannot help but antagonize chosen group",
+            modifiers: {},
+            obvious: false,
+            mentalEffect: "Compelled to act against hated group",
+            special: "GM determines target of animosity"
+          },
+          "21-30": {
+            name: "Blasphemous Rage",
+            description: "Uncontrollable urge to desecrate holy sites",
+            effect: "Cannot resist defiling religious symbols",
+            modifiers: {},
+            obvious: false,
+            mentalEffect: "Must deface religious imagery when encountered"
+          },
+          "31-40": {
+            name: "Cowardice",
+            description: "Overwhelming fear in face of danger",
+            effect: "Take Fear from situations others find normal",
+            modifiers: {},
+            obvious: false,
+            mentalEffect: "Gain Fear condition in combat situations"
+          },
+          "41-50": {
+            name: "Frenzy",
+            description: "Enter uncontrollable violent rage",
+            effect: "Risk entering Frenzy in stressful situations",
+            modifiers: {},
+            obvious: false,
+            mentalEffect: "May gain Frenzy condition when stressed"
+          },
+          "51-60": {
+            name: "Prejudice",
+            description: "Develop extreme prejudice against group",
+            effect: "Cannot interact normally with chosen group",
+            modifiers: {},
+            obvious: false,
+            mentalEffect: "Fellowship -20 with prejudiced group",
+            special: "GM determines target of prejudice"
+          },
+          "61-70": {
+            name: "Compulsion",
+            description: "Compelled to perform specific ritual behavior",
+            effect: "Must perform compulsion regularly or suffer penalties",
+            modifiers: {},
+            obvious: false,
+            mentalEffect: "Take -10 to all tests if compulsion not performed",
+            special: "GM determines nature of compulsion"
+          },
+          "71-80": {
+            name: "Paranoia",
+            description: "Everyone is plotting against you",
+            effect: "Cannot trust anyone completely",
+            modifiers: {},
+            obvious: false,
+            mentalEffect: "Difficulty accepting help or working in groups"
+          },
+          "81-90": {
+            name: "Phobia",
+            description: "Develop crippling fear of common thing",
+            effect: "Take Terror from specific stimulus",
+            modifiers: {},
+            obvious: false,
+            mentalEffect: "Gain Terror condition when phobia triggered",
+            special: "GM determines object of phobia"
+          },
+          "91-100": {
+            name: "Corruption of Form",
+            description: "Mind becomes alien and inhuman",
+            effect: "Gradually lose human thought patterns",
+            modifiers: {},
+            obvious: false,
+            mentalEffect: "Increasingly inhuman decision making"
+          }
+        };
+
+        const speciesMutationTables = {
+          "Human": { physical: "01-50", mental: "51-100" },
+          "Dwarf": { physical: "01-05", mental: "06-100" },
+          "Halfling": { physical: "01-10", mental: "11-100" },
+          "High Elf": { physical: "01-00", mental: "01-100" },
+          "Wood Elf": { physical: "01-00", mental: "01-100" }
+        };
+
         // WFRP Talent Limitations - talents limited by characteristic bonuses
         const talentLimitations = {
           "Hardy": "toughnessBonus",
@@ -1788,6 +2169,13 @@
                 if (char === 's' || char === 't' || char === 'wp') {
                     if (typeof window.updateMaxWounds === 'function') {
                         window.updateMaxWounds();
+                    }
+                }
+                
+                // Update corruption threshold when willpower or toughness change
+                if (char === 'wp' || char === 't') {
+                    if (typeof window.updateCorruptionThreshold === 'function') {
+                        window.updateCorruptionThreshold();
                     }
                 }
                 
@@ -4265,6 +4653,427 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Corruption & Mutation Management System
+window.updateCorruptionThreshold = function() {
+    const willpower = parseInt(document.getElementById('wp-current')?.value) || 0;
+    const toughness = parseInt(document.getElementById('t-current')?.value) || 0;
+    
+    const wpBonus = Math.floor(willpower / 10);
+    const tBonus = Math.floor(toughness / 10);
+    const threshold = wpBonus + tBonus;
+    
+    character.corruption.threshold = threshold;
+    
+    const thresholdDisplay = document.getElementById('corruption-threshold');
+    if (thresholdDisplay) {
+        thresholdDisplay.textContent = threshold;
+    }
+    
+    // Update mutation limits
+    const physicalCounter = document.getElementById('physical-mutation-counter');
+    const mentalCounter = document.getElementById('mental-corruption-counter');
+    
+    if (physicalCounter) {
+        const physicalCount = character.corruption.physicalMutations.length;
+        physicalCounter.textContent = `${physicalCount}/${tBonus}`;
+        physicalCounter.style.color = physicalCount >= tBonus ? '#c41e3a' : (physicalCount >= tBonus - 1 ? '#ff8c00' : '#666');
+    }
+    
+    if (mentalCounter) {
+        const mentalCount = character.corruption.mentalCorruptions.length;
+        mentalCounter.textContent = `${mentalCount}/${wpBonus}`;
+        mentalCounter.style.color = mentalCount >= wpBonus ? '#c41e3a' : (mentalCount >= wpBonus - 1 ? '#ff8c00' : '#666');
+    }
+    
+    window.updateCorruptionStatus();
+    window.checkCharacterDestruction();
+}
+
+window.updateCorruptionStatus = function() {
+    const points = parseInt(document.getElementById('corruption-points')?.value) || 0;
+    character.corruption.points = points;
+    
+    const threshold = character.corruption.threshold;
+    const testWarning = document.getElementById('corruption-test-warning');
+    
+    if (points > threshold && threshold > 0) {
+        character.corruption.awaitingTest = true;
+        if (testWarning) testWarning.style.display = 'block';
+    } else {
+        character.corruption.awaitingTest = false;
+        if (testWarning) testWarning.style.display = 'none';
+    }
+    
+    window.checkCharacterDestruction();
+}
+
+window.checkCharacterDestruction = function() {
+    const willpower = parseInt(document.getElementById('wp-current')?.value) || 0;
+    const toughness = parseInt(document.getElementById('t-current')?.value) || 0;
+    const wpBonus = Math.floor(willpower / 10);
+    const tBonus = Math.floor(toughness / 10);
+    
+    const physicalCount = character.corruption.physicalMutations.length;
+    const mentalCount = character.corruption.mentalCorruptions.length;
+    
+    const destructionWarning = document.getElementById('character-destruction-warning');
+    const destructionText = document.getElementById('destruction-warning-text');
+    const lostWarning = document.getElementById('character-lost-warning');
+    
+    // Check if character is lost
+    if (physicalCount > tBonus || mentalCount > wpBonus) {
+        if (lostWarning) lostWarning.style.display = 'block';
+        if (destructionWarning) destructionWarning.style.display = 'none';
+    }
+    // Check if character is at risk
+    else if (physicalCount === tBonus || mentalCount === wpBonus) {
+        if (destructionWarning) destructionWarning.style.display = 'block';
+        if (lostWarning) lostWarning.style.display = 'none';
+        
+        let warnings = [];
+        if (physicalCount === tBonus) {
+            warnings.push(`Physical mutations at limit (${physicalCount}/${tBonus})`);
+        }
+        if (mentalCount === wpBonus) {
+            warnings.push(`Mental corruptions at limit (${mentalCount}/${wpBonus})`);
+        }
+        if (destructionText) {
+            destructionText.textContent = warnings.join(' • ') + ' - One more mutation will destroy this character!';
+        }
+    }
+    // Character approaching risk
+    else if (physicalCount === tBonus - 1 || mentalCount === wpBonus - 1) {
+        if (destructionWarning) destructionWarning.style.display = 'block';
+        if (lostWarning) lostWarning.style.display = 'none';
+        
+        let warnings = [];
+        if (physicalCount === tBonus - 1) {
+            warnings.push(`Physical mutations near limit (${physicalCount}/${tBonus})`);
+        }
+        if (mentalCount === wpBonus - 1) {
+            warnings.push(`Mental corruptions near limit (${mentalCount}/${wpBonus})`);
+        }
+        if (destructionText) {
+            destructionText.textContent = warnings.join(' • ') + ' - Character approaching corruption limits!';
+        }
+    }
+    else {
+        if (destructionWarning) destructionWarning.style.display = 'none';
+        if (lostWarning) lostWarning.style.display = 'none';
+    }
+}
+
+window.displayMutations = function() {
+    const display = document.getElementById('active-mutations-display');
+    const noMutationsMsg = document.getElementById('no-mutations-message');
+    const searchText = (document.getElementById('mutations-search')?.value || '').toLowerCase();
+    
+    if (!display) return;
+    
+    const allMutations = [
+        ...character.corruption.physicalMutations.map(m => ({...m, type: 'physical'})),
+        ...character.corruption.mentalCorruptions.map(m => ({...m, type: 'mental'}))
+    ];
+    
+    let filteredMutations = allMutations;
+    if (searchText) {
+        filteredMutations = allMutations.filter(m => 
+            m.name.toLowerCase().includes(searchText) ||
+            m.description.toLowerCase().includes(searchText) ||
+            m.effect.toLowerCase().includes(searchText)
+        );
+    }
+    
+    display.innerHTML = '';
+    
+    if (filteredMutations.length === 0) {
+        noMutationsMsg.style.display = 'block';
+        display.style.display = 'none';
+    } else {
+        noMutationsMsg.style.display = 'none';
+        display.style.display = 'block';
+        
+        const table = document.createElement('table');
+        table.style.cssText = 'width: 100%; border-collapse: collapse; background: #faf8f3; border: 2px solid #8b7355;';
+        
+        const thead = document.createElement('thead');
+        thead.innerHTML = `
+            <tr style="background: #e8dfd0; color: #3e2f1f; font-weight: bold;">
+                <th style="border: 1px solid #8b7355; padding: 8px; text-align: left;">Mutation</th>
+                <th style="border: 1px solid #8b7355; padding: 8px; text-align: left;">Type</th>
+                <th style="border: 1px solid #8b7355; padding: 8px; text-align: left;">Effects</th>
+                <th style="border: 1px solid #8b7355; padding: 8px; text-align: center;">Action</th>
+            </tr>
+        `;
+        table.appendChild(thead);
+        
+        const tbody = document.createElement('tbody');
+        
+        filteredMutations.forEach(mutation => {
+            const row = document.createElement('tr');
+            const typeColor = mutation.type === 'physical' ? '#c41e3a' : '#4682b4';
+            
+            row.innerHTML = `
+                <td style="border: 1px solid #8b7355; padding: 8px; vertical-align: top;">
+                    <div style="font-weight: bold; color: ${typeColor};">${mutation.name}</div>
+                    <div style="font-size: 11px; font-style: italic; color: #666; margin-top: 3px;">${mutation.description}</div>
+                </td>
+                <td style="border: 1px solid #8b7355; padding: 8px; text-align: center; vertical-align: middle;">
+                    <span style="color: ${typeColor}; font-weight: bold; text-transform: capitalize;">${mutation.type}</span>
+                </td>
+                <td style="border: 1px solid #8b7355; padding: 8px; vertical-align: top; font-size: 12px;">
+                    ${mutation.effect}
+                    ${mutation.obvious ? '<div style="color: #8b4513; font-size: 10px; margin-top: 5px;">⚠️ Obvious mutation</div>' : ''}
+                </td>
+                <td style="border: 1px solid #8b7355; padding: 8px; text-align: center; vertical-align: middle;">
+                    <button onclick="window.removeMutation('${mutation.id}')" style="padding: 4px 8px; font-size: 10px; background: #c41e3a; color: white; border: none; cursor: pointer; border-radius: 2px;">Remove</button>
+                </td>
+            `;
+            
+            tbody.appendChild(row);
+        });
+        
+        table.appendChild(tbody);
+        display.appendChild(table);
+    }
+    
+    window.updateFellowshipWarning();
+}
+
+window.updateFellowshipWarning = function() {
+    const obviousMutations = character.corruption.physicalMutations.filter(m => m.obvious);
+    const fellowshipWarning = document.getElementById('fellowship-warning');
+    const fellowshipText = document.getElementById('fellowship-warning-text');
+    
+    if (obviousMutations.length > 0 && fellowshipWarning && fellowshipText) {
+        fellowshipWarning.style.display = 'block';
+        
+        let warningText = '<strong>Obvious mutations affecting social interactions:</strong><br>';
+        obviousMutations.forEach(mutation => {
+            warningText += `• <strong>${mutation.name}:</strong> ${mutation.fellowshipImpact}<br>`;
+        });
+        
+        fellowshipText.innerHTML = warningText;
+    } else if (fellowshipWarning) {
+        fellowshipWarning.style.display = 'none';
+    }
+    
+    // Update Fellowship characteristic display
+    window.updateCharacteristicWithMutations('fel');
+}
+
+window.updateCharacteristicWithMutations = function(charId) {
+    const currentField = document.getElementById(`${charId}-current`);
+    if (!currentField) return;
+    
+    const baseValue = parseInt(currentField.value) || 0;
+    let mutationModifier = 0;
+    
+    // Calculate mutation modifiers
+    const allMutations = [...character.corruption.physicalMutations, ...character.corruption.mentalCorruptions];
+    allMutations.forEach(mutation => {
+        if (mutation.modifiers) {
+            const charMap = {
+                'fel': 'fellowship',
+                'int': 'intelligence',
+                'ag': 'agility',
+                't': 'toughness'
+            };
+            
+            const modKey = charMap[charId] || charId;
+            if (mutation.modifiers[modKey]) {
+                mutationModifier += mutation.modifiers[modKey];
+            }
+        }
+    });
+    
+    // Apply modifiers without changing the actual value
+    if (mutationModifier !== 0) {
+        const displayValue = baseValue + mutationModifier;
+        // Show modified value with indicator
+        currentField.setAttribute('data-mutation-modifier', mutationModifier);
+    }
+}
+
+window.openAddMutationModal = function() {
+    const modal = document.getElementById('add-mutation-modal');
+    const species = document.getElementById('species')?.value || 'Human';
+    const guidanceText = document.getElementById('species-guidance-text');
+    
+    if (guidanceText) {
+        const speciesTable = speciesMutationTables[species];
+        guidanceText.innerHTML = `<strong>${species}:</strong> Physical Mutations (${speciesTable.physical}), Mental Corruptions (${speciesTable.mental})`;
+        
+        if (species === 'High Elf' || species === 'Wood Elf') {
+            guidanceText.innerHTML += '<br><span style="color: #c41e3a;">Note: Elves can only gain mental corruptions!</span>';
+        }
+    }
+    
+    modal.style.display = 'block';
+    
+    // Reset form
+    document.getElementById('mutation-type-select').value = '';
+    document.getElementById('mutation-selection').style.display = 'none';
+    document.getElementById('mutation-details').style.display = 'none';
+    document.getElementById('confirm-add-mutation-btn').disabled = true;
+}
+
+window.closeAddMutationModal = function() {
+    document.getElementById('add-mutation-modal').style.display = 'none';
+}
+
+window.updateMutationOptions = function() {
+    const typeSelect = document.getElementById('mutation-type-select');
+    const mutationSelection = document.getElementById('mutation-selection');
+    const mutationSelect = document.getElementById('mutation-select');
+    
+    if (!typeSelect.value) {
+        mutationSelection.style.display = 'none';
+        return;
+    }
+    
+    mutationSelection.style.display = 'block';
+    mutationSelect.innerHTML = '<option value="">-- Choose Mutation --</option>';
+    
+    const mutations = typeSelect.value === 'physical' ? physicalMutations : mentalCorruptions;
+    
+    Object.entries(mutations).forEach(([range, mutation]) => {
+        const option = document.createElement('option');
+        option.value = range;
+        option.textContent = `[${range}] ${mutation.name}`;
+        mutationSelect.appendChild(option);
+    });
+}
+
+window.showMutationDetails = function() {
+    const typeSelect = document.getElementById('mutation-type-select');
+    const mutationSelect = document.getElementById('mutation-select');
+    const detailsDiv = document.getElementById('mutation-details');
+    const confirmBtn = document.getElementById('confirm-add-mutation-btn');
+    
+    if (!mutationSelect.value) {
+        detailsDiv.style.display = 'none';
+        confirmBtn.disabled = true;
+        return;
+    }
+    
+    const mutations = typeSelect.value === 'physical' ? physicalMutations : mentalCorruptions;
+    const mutation = mutations[mutationSelect.value];
+    
+    if (mutation) {
+        document.getElementById('detail-mutation-name').textContent = mutation.name;
+        document.getElementById('detail-mutation-description').textContent = mutation.description;
+        document.getElementById('detail-mutation-effects').textContent = mutation.effect;
+        
+        const obviousDiv = document.getElementById('detail-mutation-obvious');
+        if (mutation.obvious) {
+            obviousDiv.innerHTML = '<span style="color: #c41e3a;">⚠️ This is an obvious mutation that will affect social interactions</span>';
+        } else {
+            obviousDiv.innerHTML = '<span style="color: #4682b4;">✓ This mutation can be concealed</span>';
+        }
+        
+        const fellowshipDiv = document.getElementById('detail-mutation-fellowship');
+        if (mutation.fellowshipImpact) {
+            fellowshipDiv.innerHTML = `<strong>Social Impact:</strong> ${mutation.fellowshipImpact}`;
+        } else if (mutation.mentalEffect) {
+            fellowshipDiv.innerHTML = `<strong>Mental Effect:</strong> ${mutation.mentalEffect}`;
+        } else {
+            fellowshipDiv.innerHTML = '';
+        }
+        
+        detailsDiv.style.display = 'block';
+        confirmBtn.disabled = false;
+    }
+}
+
+window.confirmAddMutation = function() {
+    const typeSelect = document.getElementById('mutation-type-select');
+    const mutationSelect = document.getElementById('mutation-select');
+    
+    if (!typeSelect.value || !mutationSelect.value) return;
+    
+    const mutations = typeSelect.value === 'physical' ? physicalMutations : mentalCorruptions;
+    const mutation = mutations[mutationSelect.value];
+    
+    if (!mutation) return;
+    
+    // Create mutation object with unique ID
+    const mutationData = {
+        ...mutation,
+        id: Date.now(),
+        range: mutationSelect.value
+    };
+    
+    // Add to appropriate array
+    if (typeSelect.value === 'physical') {
+        character.corruption.physicalMutations.push(mutationData);
+    } else {
+        character.corruption.mentalCorruptions.push(mutationData);
+    }
+    
+    // Reduce corruption by WP Bonus
+    const willpower = parseInt(document.getElementById('wp-current')?.value) || 0;
+    const wpBonus = Math.floor(willpower / 10);
+    const currentCorruption = parseInt(document.getElementById('corruption-points')?.value) || 0;
+    const newCorruption = Math.max(0, currentCorruption - wpBonus);
+    
+    document.getElementById('corruption-points').value = newCorruption;
+    character.corruption.points = newCorruption;
+    
+    // Apply mutation effects to characteristics
+    if (mutation.modifiers) {
+        Object.keys(mutation.modifiers).forEach(stat => {
+            if (stat === 'movement') {
+                // Update movement
+                const currentMove = parseInt(document.getElementById('movement')?.value) || 0;
+                document.getElementById('movement').value = currentMove + mutation.modifiers[stat];
+            }
+        });
+    }
+    
+    // Update displays
+    window.updateCorruptionThreshold();
+    window.displayMutations();
+    window.updateCorruptionStatus();
+    window.closeAddMutationModal();
+    
+    // Alert about corruption reduction
+    alert(`Mutation added! Corruption reduced by ${wpBonus} points (WP Bonus).`);
+}
+
+window.removeMutation = function(mutationId) {
+    mutationId = parseInt(mutationId);
+    
+    // Find and remove from physical mutations
+    let index = character.corruption.physicalMutations.findIndex(m => m.id === mutationId);
+    if (index !== -1) {
+        const mutation = character.corruption.physicalMutations[index];
+        if (confirm(`Remove physical mutation "${mutation.name}"?`)) {
+            // Reverse mutation effects
+            if (mutation.modifiers && mutation.modifiers.movement) {
+                const currentMove = parseInt(document.getElementById('movement')?.value) || 0;
+                document.getElementById('movement').value = currentMove - mutation.modifiers.movement;
+            }
+            
+            character.corruption.physicalMutations.splice(index, 1);
+            window.updateCorruptionThreshold();
+            window.displayMutations();
+            return;
+        }
+    }
+    
+    // Find and remove from mental corruptions
+    index = character.corruption.mentalCorruptions.findIndex(m => m.id === mutationId);
+    if (index !== -1) {
+        const mutation = character.corruption.mentalCorruptions[index];
+        if (confirm(`Remove mental corruption "${mutation.name}"?`)) {
+            character.corruption.mentalCorruptions.splice(index, 1);
+            window.updateCorruptionThreshold();
+            window.displayMutations();
+        }
+    }
+}
+
 // Spells & Prayers Management Functions
 window.displaySpells = function() {
     const tbody = document.getElementById('spells-tbody');
@@ -4710,6 +5519,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 activeConditions: activeConditions,
                 criticalWounds: criticalWounds,
                 spells: spells,
+                corruptionPoints: document.getElementById('corruption-points').value,
+                mutations: mutations,
                 money: {
                     gold: document.getElementById('money-gold').value,
                     silver: document.getElementById('money-silver').value,
@@ -4836,6 +5647,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 spells = characterData.spells;
             }
             
+            // Load corruption points and mutations
+            if (characterData.corruptionPoints !== undefined) {
+                document.getElementById('corruption-points').value = characterData.corruptionPoints;
+                window.updateCorruptionStatus();
+            }
+            
+            if (characterData.mutations) {
+                mutations = characterData.mutations;
+                // Update mutation counter to prevent ID conflicts
+                if (mutations.length > 0) {
+                    mutationIdCounter = Math.max(...mutations.map(m => m.id)) + 1;
+                }
+            }
+            
             // Load combat & equipment data
             if (characterData.weapons) weapons = characterData.weapons;
             if (characterData.armour) armour = characterData.armour;
@@ -4867,6 +5692,8 @@ document.addEventListener('DOMContentLoaded', function() {
             displayTrappings();
             displayConsumables();
             updateTotalAP();
+            window.displayMutations();
+            window.updateCorruptionStatus();
             
             // Update encumbrance after everything is loaded
             setTimeout(() => {
@@ -4906,6 +5733,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 displayArmour();
                 displayTrappings();
                 displayConsumables();
+                window.displayMutations();
                 
                 // Set up initial encumbrance calculation after a short delay to ensure values are loaded
                 setTimeout(() => {
@@ -4920,6 +5748,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Initialize max wounds calculation
                     if (typeof window.updateMaxWounds === 'function') {
                         window.updateMaxWounds();
+                    }
+                    
+                    // Initialize corruption system
+                    if (typeof window.updateCorruptionThreshold === 'function') {
+                        window.updateCorruptionThreshold();
+                    }
+                    if (typeof window.updateCorruptionStatus === 'function') {
+                        window.updateCorruptionStatus();
                     }
                 }, 100);
                 
