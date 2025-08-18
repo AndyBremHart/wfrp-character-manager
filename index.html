@@ -8567,16 +8567,29 @@ function loadSymptomsData() {
             const skillKey = skillName; // Use full name as key (e.g., "Melee (Basic)")
             const displayName = skillName;
 
-            // Check if this exact skill already exists
+            // For basic ungrouped skills, they should already exist in characterSkills
+            // Just add advances to them rather than creating duplicates
+            if (baseSkill.type === 'Basic' && !baseSkill.grouped && !specialization) {
+                // This is a basic skill like "Charm" - just add advances
+                if (!characterSkills[skillKey]) {
+                    characterSkills[skillKey] = { career: false, advances: 0, notes: '' };
+                }
+                characterSkills[skillKey].advances += advances;
+                displaySkills();
+                return;
+            }
+
+            // Check if this exact skill already exists in addedSkills
             if (addedSkills.find(s => s.key === skillKey)) {
                 // If it exists, just add advances
                 if (characterSkills[skillKey]) {
                     characterSkills[skillKey].advances += advances;
                 }
+                displaySkills();
                 return;
             }
 
-            // Add the skill to addedSkills
+            // Add the skill to addedSkills (for specialized/grouped skills)
             addedSkills.push({
                 key: skillKey,
                 name: baseName,
@@ -8595,15 +8608,45 @@ function loadSymptomsData() {
 
         // Helper function to directly add a talent to the character
         function addTalentDirectly(talentName) {
-            // Find the talent in srdTalents
-            const baseTalent = srdTalents.find(t => t.name === talentName);
+            // Parse talent name and customization
+            let baseName, customisation = '';
+            const match = talentName.match(/^(.+?)\s*\((.+)\)$/);
+            
+            if (match) {
+                baseName = match[1].trim();
+                const customPart = match[2].trim();
+                
+                // Handle specific customizations
+                if (customPart.toLowerCase().includes('any one') || customPart.toLowerCase().includes('choose one')) {
+                    // For "any one" talents, use a default or prompt for specification
+                    if (baseName === 'Acute Sense') {
+                        customisation = 'Sight'; // Default to sight for character creation
+                    } else if (baseName === 'Craftsman') {
+                        customisation = 'Metalworking'; // Default craft
+                    } else if (baseName === 'Resistance') {
+                        customisation = 'Disease'; // Default resistance
+                    } else {
+                        customisation = customPart; // Use the original text for now
+                    }
+                } else {
+                    customisation = customPart;
+                }
+            } else {
+                baseName = talentName;
+            }
+
+            // Find the talent in srdTalents using base name
+            const baseTalent = srdTalents.find(t => t.name === baseName);
             if (!baseTalent) {
-                console.warn(`Talent "${talentName}" not found in srdTalents`);
+                console.warn(`Talent "${baseName}" not found in srdTalents`);
                 return;
             }
 
+            // Create display name
+            const displayName = customisation ? `${baseName} (${customisation})` : baseName;
+
             // Check if talent already exists (by name and customisation)
-            const existingTalent = talents.find(t => t.name === talentName && (t.customisation || '') === '');
+            const existingTalent = talents.find(t => t.name === baseName && (t.customisation || '') === customisation);
             if (existingTalent) {
                 // If it's a multiple talent, increase the times taken
                 if (baseTalent.max && baseTalent.max !== "1") {
@@ -8614,13 +8657,13 @@ function loadSymptomsData() {
 
             // Add the talent with proper structure
             talents.push({
-                name: talentName,
-                displayName: talentName,
+                name: baseName,
+                displayName: displayName,
                 max: baseTalent.max || "1",
                 tests: baseTalent.tests || '',
                 description: baseTalent.description || '',
                 timesTaken: 1,
-                customisation: ''
+                customisation: customisation
             });
 
             // Refresh the talents display
