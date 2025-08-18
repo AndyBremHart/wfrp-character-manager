@@ -8002,7 +8002,7 @@ function loadSymptomsData() {
             const speciesInfoDiv = document.getElementById('species-info');
             speciesInfoDiv.innerHTML = `
                 <h4 style="color: #3e2f1f; margin-bottom: 10px;">${selectedSpecies}</h4>
-                <p><strong>Fate:</strong> ${speciesInfo.fate} | <strong>Resilience:</strong> ${speciesInfo.resilience} | <strong>Movement:</strong> ${speciesInfo.movement}</p>
+                <p><strong>Fate:</strong> ${speciesInfo.baseFate} | <strong>Resilience:</strong> ${speciesInfo.baseResilience} | <strong>Movement:</strong> ${speciesInfo.movement}</p>
                 <p><strong>Species Skills:</strong> ${speciesInfo.skills.join(', ')}</p>
                 <p><strong>Fixed Talents:</strong> ${speciesInfo.fixedTalents ? speciesInfo.fixedTalents.join(', ') : 'None'}</p>
             `;
@@ -8244,7 +8244,6 @@ function loadSymptomsData() {
                     
                 case 5:
                     // Check talent selections
-                    const speciesInfo = speciesData[selectedSpecies];
                     if (speciesInfo.talentChoices) {
                         // Check that all talent choices are made
                         for (let i = 0; i < speciesInfo.talentChoices.length; i++) {
@@ -8350,13 +8349,6 @@ function loadSymptomsData() {
             // Handle fixed talents (automatic)
             if (speciesInfo.fixedTalents) {
                 wizardData.talents.fixed = [...speciesInfo.fixedTalents];
-                const randomTalentsList = document.getElementById('random-talents-list');
-                randomTalentsList.innerHTML = wizardData.talents.fixed.map(talent => 
-                    `<span style="display: inline-block; background: #d4e6f1; padding: 5px 10px; margin: 2px; border-radius: 3px;">${talent}</span>`
-                ).join('');
-            } else if (speciesInfo.randomTalents) {
-                // Fallback for species that still use the old system
-                wizardData.talents.fixed = [...speciesInfo.randomTalents];
                 const randomTalentsList = document.getElementById('random-talents-list');
                 randomTalentsList.innerHTML = wizardData.talents.fixed.map(talent => 
                     `<span style="display: inline-block; background: #d4e6f1; padding: 5px 10px; margin: 2px; border-radius: 3px;">${talent}</span>`
@@ -8567,8 +8559,8 @@ function loadSymptomsData() {
                 const resilienceField = document.getElementById('resilience-current');
                 const movementField = document.getElementById('movement');
 
-                if (fateField) fateField.value = speciesInfo.fate;
-                if (resilienceField) resilienceField.value = speciesInfo.resilience;
+                if (fateField) fateField.value = speciesInfo.baseFate;
+                if (resilienceField) resilienceField.value = speciesInfo.baseResilience;
                 if (movementField) movementField.value = speciesInfo.movement;
 
                 // Close wizard and show success message
