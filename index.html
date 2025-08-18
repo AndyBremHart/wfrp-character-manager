@@ -3936,11 +3936,21 @@
                 // Restore all character data using existing restore logic
                 restoreCharacterDataFromAutoSave(characterData);
                 
-                // Restore the last active tab
+                // Restore the last active tab with additional safety
                 const savedTab = localStorage.getItem(AUTO_SAVE_CONFIG.SAVE_KEYS.CURRENT_TAB);
                 if (savedTab) {
-                    currentActiveTab = savedTab;
-                    showTab(savedTab);
+                    // Use setTimeout to ensure DOM is fully ready for tab switching
+                    setTimeout(() => {
+                        try {
+                            currentActiveTab = savedTab;
+                            showTab(savedTab);
+                        } catch (tabError) {
+                            console.warn('Failed to restore tab, using default:', tabError);
+                            // Fallback to overview tab
+                            currentActiveTab = 'overview';
+                            showTab('overview');
+                        }
+                    }, 100);
                 }
 
                 // Close the dialog
@@ -4217,25 +4227,90 @@
             }
         }
 
-        // Tab switching functionality
-        function showTab(tabId) {
-            // Hide all tabs
-            const tabs = document.querySelectorAll('.tab-content');
-            tabs.forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Remove active class from all buttons
-            const buttons = document.querySelectorAll('.tab-button');
-            buttons.forEach(button => {
-                button.classList.remove('active');
-            });
-            
-            // Show selected tab
-            document.getElementById(tabId).classList.add('active');
-            
-            // Add active class to clicked button
-            event.target.classList.add('active');
+        // Tab switching functionality with enhanced error handling
+        function showTab(tabId, retryCount = 0) {
+            try {
+                // Validate that we have a valid tabId
+                if (!tabId || typeof tabId !== 'string') {
+                    console.warn('Invalid tabId provided, defaulting to overview');
+                    tabId = 'overview';
+                }
+
+                // Hide all tabs
+                const tabs = document.querySelectorAll('.tab-content');
+                tabs.forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                // Remove active class from all buttons
+                const buttons = document.querySelectorAll('.tab-button');
+                buttons.forEach(button => {
+                    button.classList.remove('active');
+                });
+                
+                // Show selected tab (with validation and retry logic)
+                let targetTab = document.getElementById(tabId);
+                if (targetTab) {
+                    targetTab.classList.add('active');
+                } else {
+                    // If tab not found and this is first retry, wait and try again
+                    if (retryCount < 1) {
+                        console.warn(`Tab with ID '${tabId}' not found, retrying in 500ms...`);
+                        setTimeout(() => showTab(tabId, retryCount + 1), 500);
+                        return;
+                    }
+                    
+                    // After retry, fallback to overview
+                    console.warn(`Tab with ID '${tabId}' not found after retry, defaulting to overview tab`);
+                    targetTab = document.getElementById('overview');
+                    if (targetTab) {
+                        targetTab.classList.add('active');
+                        tabId = 'overview'; // Update the tabId for consistency
+                    } else {
+                        console.error('Critical: Even overview tab not found');
+                        return; // Exit if we can't even find overview
+                    }
+                }
+                
+                // Add active class to corresponding button (safer approach)
+                const targetButton = document.querySelector(`.tab-button[onclick*="${tabId}"]`);
+                if (targetButton) {
+                    targetButton.classList.add('active');
+                } else if (typeof event !== 'undefined' && event.target) {
+                    // Fallback to event.target if available (for manual clicks)
+                    event.target.classList.add('active');
+                }
+                
+                // Update current active tab for auto-save
+                currentActiveTab = tabId;
+                
+            } catch (error) {
+                console.error('Error in showTab function:', error);
+                // Ultimate fallback to overview tab
+                try {
+                    const overviewTab = document.getElementById('overview');
+                    if (overviewTab) {
+                        // Clear all active states first
+                        document.querySelectorAll('.tab-content').forEach(tab => {
+                            tab.classList.remove('active');
+                        });
+                        document.querySelectorAll('.tab-button').forEach(button => {
+                            button.classList.remove('active');
+                        });
+                        
+                        overviewTab.classList.add('active');
+                        currentActiveTab = 'overview';
+                        
+                        // Try to activate overview button
+                        const overviewButton = document.querySelector('.tab-button[onclick*="overview"]');
+                        if (overviewButton) {
+                            overviewButton.classList.add('active');
+                        }
+                    }
+                } catch (fallbackError) {
+                    console.error('Critical error: Could not access overview tab:', fallbackError);
+                }
+            }
         }
 
         // Initialize character data
