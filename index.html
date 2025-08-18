@@ -1314,6 +1314,11 @@
                 // Update all skill totals when characteristics change
                 updateAllSkillTotals();
                 
+                // Update XP cost displays
+                if (window.updateAdvanceCosts) {
+                    window.updateAdvanceCosts();
+                }
+                
                 // Update encumbrance when Strength or Toughness changes
                 if (char === 's' || char === 't') {
                     updateEncumbrance();
@@ -1773,7 +1778,9 @@
             }
             
             if (skill) {
-                const totalElement = document.getElementById(`skill-total-${skillKey.replace(/\s+/g, '-').replace(/[()]/g, '')}`);
+                // Match the ID generation from displaySkills function
+                const cleanKey = skillKey.replace(/\s+/g, '-').replace(/[()]/g, '').toLowerCase();
+                const totalElement = document.getElementById(`skill-total-${cleanKey}`);
                 if (totalElement) {
                     totalElement.textContent = calculateSkillTotal(skill, skillKey);
                 }
