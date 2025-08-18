@@ -1671,6 +1671,7 @@
                 <div class="wizard-step" id="step-indicator-3">3</div>
                 <div class="wizard-step" id="step-indicator-4">4</div>
                 <div class="wizard-step" id="step-indicator-5">5</div>
+                <div class="wizard-step" id="step-indicator-6">6</div>
             </div>
             
             <!-- Step 1: Species Information and Characteristics -->
@@ -1680,116 +1681,71 @@
                     <!-- Species info will be populated dynamically -->
                 </div>
                 
-                <h4 style="color: #3e2f1f; margin-bottom: 10px;">Distribute Characteristic Advances</h4>
-                <p style="margin-bottom: 15px; color: #666;">You have <span id="remaining-char-points">0</span> points to distribute among your characteristics.</p>
+                <h4 style="color: #3e2f1f; margin-bottom: 10px;">Roll or Enter Characteristics</h4>
+                <p style="margin-bottom: 15px; color: #666;">Roll 2d10+species base for each characteristic, or enter values manually. Click "Roll All" for automatic dice rolls.</p>
                 
-                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 20px;">
-                    <div class="char-advance-group">
-                        <label>WS</label>
-                        <div style="display: flex; align-items: center; gap: 5px;">
-                            <span id="char-ws-base">20</span>
-                            <span>+</span>
-                            <input type="number" id="char-ws-advance" min="0" max="10" value="0" style="width: 50px;">
-                            <span>=</span>
-                            <strong id="char-ws-total">20</strong>
-                        </div>
-                    </div>
-                    <div class="char-advance-group">
-                        <label>BS</label>
-                        <div style="display: flex; align-items: center; gap: 5px;">
-                            <span id="char-bs-base">20</span>
-                            <span>+</span>
-                            <input type="number" id="char-bs-advance" min="0" max="10" value="0" style="width: 50px;">
-                            <span>=</span>
-                            <strong id="char-bs-total">20</strong>
-                        </div>
-                    </div>
-                    <div class="char-advance-group">
-                        <label>S</label>
-                        <div style="display: flex; align-items: center; gap: 5px;">
-                            <span id="char-s-base">20</span>
-                            <span>+</span>
-                            <input type="number" id="char-s-advance" min="0" max="10" value="0" style="width: 50px;">
-                            <span>=</span>
-                            <strong id="char-s-total">20</strong>
-                        </div>
-                    </div>
-                    <div class="char-advance-group">
-                        <label>T</label>
-                        <div style="display: flex; align-items: center; gap: 5px;">
-                            <span id="char-t-base">20</span>
-                            <span>+</span>
-                            <input type="number" id="char-t-advance" min="0" max="10" value="0" style="width: 50px;">
-                            <span>=</span>
-                            <strong id="char-t-total">20</strong>
-                        </div>
-                    </div>
-                    <div class="char-advance-group">
-                        <label>I</label>
-                        <div style="display: flex; align-items: center; gap: 5px;">
-                            <span id="char-i-base">20</span>
-                            <span>+</span>
-                            <input type="number" id="char-i-advance" min="0" max="10" value="0" style="width: 50px;">
-                            <span>=</span>
-                            <strong id="char-i-total">20</strong>
-                        </div>
-                    </div>
-                    <div class="char-advance-group">
-                        <label>Ag</label>
-                        <div style="display: flex; align-items: center; gap: 5px;">
-                            <span id="char-ag-base">20</span>
-                            <span>+</span>
-                            <input type="number" id="char-ag-advance" min="0" max="10" value="0" style="width: 50px;">
-                            <span>=</span>
-                            <strong id="char-ag-total">20</strong>
-                        </div>
-                    </div>
-                    <div class="char-advance-group">
-                        <label>Dex</label>
-                        <div style="display: flex; align-items: center; gap: 5px;">
-                            <span id="char-dex-base">20</span>
-                            <span>+</span>
-                            <input type="number" id="char-dex-advance" min="0" max="10" value="0" style="width: 50px;">
-                            <span>=</span>
-                            <strong id="char-dex-total">20</strong>
-                        </div>
-                    </div>
-                    <div class="char-advance-group">
-                        <label>Int</label>
-                        <div style="display: flex; align-items: center; gap: 5px;">
-                            <span id="char-int-base">20</span>
-                            <span>+</span>
-                            <input type="number" id="char-int-advance" min="0" max="10" value="0" style="width: 50px;">
-                            <span>=</span>
-                            <strong id="char-int-total">20</strong>
-                        </div>
-                    </div>
-                    <div class="char-advance-group">
-                        <label>WP</label>
-                        <div style="display: flex; align-items: center; gap: 5px;">
-                            <span id="char-wp-base">20</span>
-                            <span>+</span>
-                            <input type="number" id="char-wp-advance" min="0" max="10" value="0" style="width: 50px;">
-                            <span>=</span>
-                            <strong id="char-wp-total">20</strong>
-                        </div>
-                    </div>
-                    <div class="char-advance-group">
-                        <label>Fel</label>
-                        <div style="display: flex; align-items: center; gap: 5px;">
-                            <span id="char-fel-base">20</span>
-                            <span>+</span>
-                            <input type="number" id="char-fel-advance" min="0" max="10" value="0" style="width: 50px;">
-                            <span>=</span>
-                            <strong id="char-fel-total">20</strong>
-                        </div>
-                    </div>
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <button onclick="rollAllCharacteristics()" class="control-btn" style="padding: 8px 16px;">Roll All Characteristics</button>
+                </div>
+                
+                <div id="characteristics-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 20px;">
+                    <!-- Characteristics will be populated dynamically -->
                 </div>
             </div>
             
-            <!-- Step 2: Skills Selection (5 advances) -->
+            <!-- Step 2: Wounds, Fate, and Resilience -->
             <div id="wizard-step-2" class="wizard-content" style="display: none;">
-                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 2: Skill Selection (5 Advances)</h3>
+                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 2: Wounds, Fate, and Resilience</h3>
+                
+                <div style="background: #f5f2e8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    <h4 style="color: #3e2f1f; margin-bottom: 10px;">Wounds Calculation</h4>
+                    <p style="margin-bottom: 10px; color: #666;">Formula: <span id="wounds-formula">SB + (2 × TB) + WPB</span></p>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                        <span>Calculated Wounds:</span>
+                        <strong id="calculated-wounds" style="font-size: 18px; color: #3e2f1f;">0</strong>
+                    </div>
+                </div>
+                
+                <div style="background: #f5f2e8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    <h4 style="color: #3e2f1f; margin-bottom: 10px;">Fate and Resilience Distribution</h4>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        Base Values: <span id="base-fate-resilience">Fate 0, Resilience 0</span><br>
+                        You have <span id="extra-points-remaining">0</span> extra points to distribute between Fate and Resilience.
+                    </p>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="char-advance-group">
+                            <label>Fate Points</label>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span id="base-fate">0</span>
+                                <span>+</span>
+                                <input type="number" id="extra-fate" min="0" max="5" value="0" style="width: 50px; text-align: center;" onchange="updateExtraPointsDistribution()">
+                                <span>=</span>
+                                <strong id="total-fate">0</strong>
+                            </div>
+                        </div>
+                        <div class="char-advance-group">
+                            <label>Resilience Points</label>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span id="base-resilience">0</span>
+                                <span>+</span>
+                                <input type="number" id="extra-resilience" min="0" max="5" value="0" style="width: 50px; text-align: center;" onchange="updateExtraPointsDistribution()">
+                                <span>=</span>
+                                <strong id="total-resilience">0</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: #f5f2e8; padding: 15px; border-radius: 5px;">
+                    <h4 style="color: #3e2f1f; margin-bottom: 10px;">Movement</h4>
+                    <p>Movement: <strong id="species-movement">4</strong></p>
+                </div>
+            </div>
+            
+            <!-- Step 3: Skills Selection (5 advances) -->
+            <div id="wizard-step-3" class="wizard-content" style="display: none;">
+                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 3: Skill Selection (5 Advances)</h3>
                 <p style="margin-bottom: 15px; color: #666;">Select 5 skills from your species list to receive +5 advances each. Remaining: <span id="remaining-skill-points-1">5</span></p>
                 
                 <div id="species-skills-list-1" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
@@ -1797,9 +1753,9 @@
                 </div>
             </div>
             
-            <!-- Step 3: Skills Selection (3 advances) -->
-            <div id="wizard-step-3" class="wizard-content" style="display: none;">
-                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 3: Skill Selection (3 Advances)</h3>
+            <!-- Step 4: Skills Selection (3 advances) -->
+            <div id="wizard-step-4" class="wizard-content" style="display: none;">
+                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 4: Skill Selection (3 Advances)</h3>
                 <p style="margin-bottom: 15px; color: #666;">Select 3 additional skills from your species list to receive +3 advances each. Remaining: <span id="remaining-skill-points-2">3</span></p>
                 
                 <div id="species-skills-list-2" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
@@ -1807,9 +1763,9 @@
                 </div>
             </div>
             
-            <!-- Step 4: Talents Selection -->
-            <div id="wizard-step-4" class="wizard-content" style="display: none;">
-                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 4: Talent Selection</h3>
+            <!-- Step 5: Talents Selection -->
+            <div id="wizard-step-5" class="wizard-content" style="display: none;">
+                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 5: Talent Selection</h3>
                 
                 <div id="random-talents-section" style="background: #f5f2e8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
                     <h4 style="color: #3e2f1f; margin-bottom: 10px;">Species Talents (Automatic)</h4>
@@ -1826,9 +1782,9 @@
                 </div>
             </div>
             
-            <!-- Step 5: Confirmation -->
-            <div id="wizard-step-5" class="wizard-content" style="display: none;">
-                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 5: Confirmation</h3>
+            <!-- Step 6: Confirmation -->
+            <div id="wizard-step-6" class="wizard-content" style="display: none;">
+                <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 6: Confirmation</h3>
                 <p style="margin-bottom: 20px; color: #666;">Review your character creation choices below. Click "Apply to Character" to finalize your character.</p>
                 
                 <div id="creation-summary" style="background: #f5f2e8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
@@ -2483,16 +2439,16 @@
         const speciesData = {
             "Human": {
                 characteristics: {
-                    "WS": { initial: 20, advances: 5 },
-                    "BS": { initial: 20, advances: 5 },
-                    "S": { initial: 20, advances: 5 },
-                    "T": { initial: 20, advances: 5 },
-                    "I": { initial: 20, advances: 5 },
-                    "Ag": { initial: 20, advances: 5 },
-                    "Dex": { initial: 20, advances: 5 },
-                    "Int": { initial: 20, advances: 5 },
-                    "WP": { initial: 20, advances: 5 },
-                    "Fel": { initial: 20, advances: 5 }
+                    "WS": { base: 20, min: 22, max: 40 },
+                    "BS": { base: 20, min: 22, max: 40 },
+                    "S": { base: 20, min: 22, max: 40 },
+                    "T": { base: 20, min: 22, max: 40 },
+                    "I": { base: 20, min: 22, max: 40 },
+                    "Ag": { base: 20, min: 22, max: 40 },
+                    "Dex": { base: 20, min: 22, max: 40 },
+                    "Int": { base: 20, min: 22, max: 40 },
+                    "WP": { base: 20, min: 22, max: 40 },
+                    "Fel": { base: 20, min: 22, max: 40 }
                 },
                 skills: [
                     "Animal Care", "Charm", "Cool", "Evaluate", "Gossip", "Haggle", 
@@ -2507,24 +2463,25 @@
                     "Resistance", "Sharp", "Sixth Sense", "Super Numerate", 
                     "Very Resilient", "Very Strong", "Warrior Born"
                 ],
-                fate: 2,
-                resilience: 2,
-                extraPoints: 20,
+                baseFate: 2,
+                baseResilience: 1,
+                extraPoints: 3,
                 movement: 4,
+                woundsFormula: "SB + (2 × TB) + WPB",
                 randomTalents: ["Savvy", "Suave"]
             },
             "Dwarf": {
                 characteristics: {
-                    "WS": { initial: 30, advances: 5 },
-                    "BS": { initial: 20, advances: 3 },
-                    "S": { initial: 20, advances: 3 },
-                    "T": { initial: 30, advances: 5 },
-                    "I": { initial: 20, advances: 3 },
-                    "Ag": { initial: 10, advances: 3 },
-                    "Dex": { initial: 30, advances: 3 },
-                    "Int": { initial: 20, advances: 3 },
-                    "WP": { initial: 40, advances: 5 },
-                    "Fel": { initial: 10, advances: 3 }
+                    "WS": { base: 30, min: 32, max: 50 },
+                    "BS": { base: 20, min: 22, max: 40 },
+                    "S": { base: 20, min: 22, max: 40 },
+                    "T": { base: 30, min: 32, max: 50 },
+                    "I": { base: 20, min: 22, max: 40 },
+                    "Ag": { base: 10, min: 12, max: 30 },
+                    "Dex": { base: 30, min: 32, max: 50 },
+                    "Int": { base: 20, min: 22, max: 40 },
+                    "WP": { base: 40, min: 42, max: 60 },
+                    "Fel": { base: 10, min: 12, max: 30 }
                 },
                 skills: [
                     "Consume Alcohol", "Cool", "Endurance", "Entertain (Storytelling)", 
@@ -2538,24 +2495,25 @@
                     "Luck", "Marksman", "Orientation", "Resistance", "Sharp", 
                     "Stone Soup", "Strong Legs", "Sturdy", "Tinker", "Warrior Born"
                 ],
-                fate: 1,
-                resilience: 4,
-                extraPoints: 0,
+                baseFate: 0,
+                baseResilience: 2,
+                extraPoints: 2,
                 movement: 3,
+                woundsFormula: "SB + (2 × TB) + WPB",
                 randomTalents: ["Magic Resistance", "Night Vision", "Read/Write", "Relentless", "Resolute", "Sturdy"]
             },
             "Halfling": {
                 characteristics: {
-                    "WS": { initial: 10, advances: 3 },
-                    "BS": { initial: 30, advances: 5 },
-                    "S": { initial: 10, advances: 2 },
-                    "T": { initial: 20, advances: 3 },
-                    "I": { initial: 20, advances: 5 },
-                    "Ag": { initial: 30, advances: 5 },
-                    "Dex": { initial: 30, advances: 5 },
-                    "Int": { initial: 20, advances: 3 },
-                    "WP": { initial: 30, advances: 5 },
-                    "Fel": { initial: 30, advances: 3 }
+                    "WS": { base: 10, min: 12, max: 30 },
+                    "BS": { base: 30, min: 32, max: 50 },
+                    "S": { base: 10, min: 12, max: 30 },
+                    "T": { base: 20, min: 22, max: 40 },
+                    "I": { base: 20, min: 22, max: 40 },
+                    "Ag": { base: 20, min: 22, max: 40 },
+                    "Dex": { base: 30, min: 32, max: 50 },
+                    "Int": { base: 20, min: 22, max: 40 },
+                    "WP": { base: 30, min: 32, max: 50 },
+                    "Fel": { base: 30, min: 32, max: 50 }
                 },
                 skills: [
                     "Charm", "Consume Alcohol", "Cool", "Dodge", "Gamble", "Gossip", 
@@ -2569,24 +2527,25 @@
                     "Sharp", "Specialist Weapon Group (Sling)", "Stable", 
                     "Stone Soup", "Strong Legs", "Sturdy", "Super Numerate"
                 ],
-                fate: 2,
-                resilience: 2,
-                extraPoints: 0,
+                baseFate: 0,
+                baseResilience: 2,
+                extraPoints: 3,
                 movement: 3,
+                woundsFormula: "(2 × TB) + WPB",
                 randomTalents: ["Acute Sense (Taste)", "Night Vision", "Resistance (Chaos)", "Small"]
             },
             "High Elf": {
                 characteristics: {
-                    "WS": { initial: 30, advances: 4 },
-                    "BS": { initial: 30, advances: 4 },
-                    "S": { initial: 20, advances: 3 },
-                    "T": { initial: 20, advances: 3 },
-                    "I": { initial: 40, advances: 5 },
-                    "Ag": { initial: 30, advances: 4 },
-                    "Dex": { initial: 30, advances: 4 },
-                    "Int": { initial: 35, advances: 4 },
-                    "WP": { initial: 30, advances: 4 },
-                    "Fel": { initial: 30, advances: 4 }
+                    "WS": { base: 30, min: 32, max: 50 },
+                    "BS": { base: 30, min: 32, max: 50 },
+                    "S": { base: 20, min: 22, max: 40 },
+                    "T": { base: 20, min: 22, max: 40 },
+                    "I": { base: 40, min: 42, max: 60 },
+                    "Ag": { base: 30, min: 32, max: 50 },
+                    "Dex": { base: 30, min: 32, max: 50 },
+                    "Int": { base: 30, min: 32, max: 50 },
+                    "WP": { base: 30, min: 32, max: 50 },
+                    "Fel": { base: 20, min: 22, max: 40 }
                 },
                 skills: [
                     "Athletics", "Climb", "Cool", "Evaluate", "Language (Eltharin)", 
@@ -2600,24 +2559,25 @@
                     "Marksman", "Noble Blood", "Orientation", "Perfect Pitch", "Pure Soul", 
                     "Sharp", "Strong Legs", "Talented", "Very Resilient", "Warrior Born"
                 ],
-                fate: 1,
-                resilience: 1,
-                extraPoints: 0,
+                baseFate: 0,
+                baseResilience: 0,
+                extraPoints: 2,
                 movement: 5,
+                woundsFormula: "SB + (2 × TB) + WPB",
                 randomTalents: ["Acute Sense (Sight)", "Coolheaded", "Night Vision", "Read/Write", "Second Sight", "Sixth Sense"]
             },
             "Wood Elf": {
                 characteristics: {
-                    "WS": { initial: 30, advances: 4 },
-                    "BS": { initial: 30, advances: 5 },
-                    "S": { initial: 20, advances: 3 },
-                    "T": { initial: 20, advances: 3 },
-                    "I": { initial: 40, advances: 5 },
-                    "Ag": { initial: 30, advances: 5 },
-                    "Dex": { initial: 30, advances: 4 },
-                    "Int": { initial: 30, advances: 4 },
-                    "WP": { initial: 30, advances: 4 },
-                    "Fel": { initial: 20, advances: 3 }
+                    "WS": { base: 30, min: 32, max: 50 },
+                    "BS": { base: 30, min: 32, max: 50 },
+                    "S": { base: 20, min: 22, max: 40 },
+                    "T": { base: 20, min: 22, max: 40 },
+                    "I": { base: 40, min: 42, max: 60 },
+                    "Ag": { base: 30, min: 32, max: 50 },
+                    "Dex": { base: 30, min: 32, max: 50 },
+                    "Int": { base: 30, min: 32, max: 50 },
+                    "WP": { base: 30, min: 32, max: 50 },
+                    "Fel": { base: 20, min: 22, max: 40 }
                 },
                 skills: [
                     "Athletics", "Climb", "Endurance", "Entertain (Storytelling)", 
@@ -2631,10 +2591,11 @@
                     "Magical Sense", "Marksman", "Orientation", "Perfect Pitch", "Pure Soul", 
                     "Rover", "Sharp", "Sixth Sense", "Strong Legs", "Very Resilient", "Warrior Born"
                 ],
-                fate: 1,
-                resilience: 1,
-                extraPoints: 0,
+                baseFate: 0,
+                baseResilience: 0,
+                extraPoints: 2,
                 movement: 5,
+                woundsFormula: "SB + (2 × TB) + WPB",
                 randomTalents: ["Acute Sense (Sight)", "Hardy", "Night Vision", "Read/Write", "Rural", "Second Sight"]
             }
         };
@@ -7950,10 +7911,14 @@ function loadSymptomsData() {
         let selectedSpecies = '';
         let wizardData = {
             characteristics: {},
-            skills: { step2: [], step3: [] },
+            wounds: 0,
+            fate: { base: 0, extra: 0, total: 0 },
+            resilience: { base: 0, extra: 0, total: 0 },
+            movement: 0,
+            skills: { step3: [], step4: [] },
             talents: { random: [], selected: [] },
-            totalCharPoints: 0,
-            usedCharPoints: 0
+            extraPoints: 0,
+            usedExtraPoints: 0
         };
 
         // Species Creation Wizard Functions
@@ -7969,10 +7934,14 @@ function loadSymptomsData() {
             // Reset wizard data
             wizardData = {
                 characteristics: {},
-                skills: { step2: [], step3: [] },
+                wounds: 0,
+                fate: { base: speciesInfo.baseFate, extra: 0, total: speciesInfo.baseFate },
+                resilience: { base: speciesInfo.baseResilience, extra: 0, total: speciesInfo.baseResilience },
+                movement: speciesInfo.movement,
+                skills: { step3: [], step4: [] },
                 talents: { random: [], selected: [] },
-                totalCharPoints: speciesInfo.extraPoints,
-                usedCharPoints: 0
+                extraPoints: speciesInfo.extraPoints,
+                usedExtraPoints: 0
             };
 
             // Initialize Step 1 with species data
@@ -7994,57 +7963,173 @@ function loadSymptomsData() {
                 <p><strong>Random Talents:</strong> ${speciesInfo.randomTalents.join(', ')}</p>
             `;
 
-            // Update characteristic base values and advance limits
+            // Create characteristics grid dynamically
+            const characteristicsGrid = document.getElementById('characteristics-grid');
+            characteristicsGrid.innerHTML = '';
+            
             Object.keys(speciesInfo.characteristics).forEach(char => {
                 const charData = speciesInfo.characteristics[char];
-                const baseSpan = document.getElementById(`char-${char.toLowerCase()}-base`);
-                const advanceInput = document.getElementById(`char-${char.toLowerCase()}-advance`);
-                const totalSpan = document.getElementById(`char-${char.toLowerCase()}-total`);
+                const charDiv = document.createElement('div');
+                charDiv.className = 'char-advance-group';
+                charDiv.innerHTML = `
+                    <label>${char}</label>
+                    <div style="display: flex; align-items: center; gap: 5px; flex-direction: column;">
+                        <div style="font-size: 11px; color: #666;">
+                            Base: <span id="char-${char.toLowerCase()}-base">${charData.base}</span> | 
+                            Range: <span id="char-${char.toLowerCase()}-range">${charData.min}-${charData.max}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <input type="number" id="char-${char.toLowerCase()}-total" min="${charData.min}" max="${charData.max}" value="${charData.base}" style="width: 60px; text-align: center;" placeholder="${charData.min}-${charData.max}">
+                            <button onclick="rollSingleCharacteristic('${char.toLowerCase()}')" style="padding: 2px 6px; font-size: 10px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">Roll</button>
+                        </div>
+                    </div>
+                `;
+                characteristicsGrid.appendChild(charDiv);
                 
-                if (baseSpan && advanceInput && totalSpan) {
-                    baseSpan.textContent = charData.initial;
-                    advanceInput.max = charData.advances;
-                    advanceInput.value = 0;
-                    totalSpan.textContent = charData.initial;
-                    
-                    // Add event listener for real-time calculation
-                    advanceInput.addEventListener('input', updateCharacteristicTotals);
-                }
+                // Store in wizard data
+                wizardData.characteristics[char] = {
+                    base: charData.base,
+                    total: charData.base,
+                    min: charData.min,
+                    max: charData.max
+                };
             });
-
-            // Update remaining points display
-            document.getElementById('remaining-char-points').textContent = speciesInfo.extraPoints;
         }
 
-        function updateCharacteristicTotals() {
-            const speciesInfo = speciesData[selectedSpecies];
-            let totalUsed = 0;
+        // Dice rolling functions
+        function rollD10() {
+            return Math.floor(Math.random() * 10) + 1;
+        }
 
-            Object.keys(speciesInfo.characteristics).forEach(char => {
-                const charData = speciesInfo.characteristics[char];
-                const advanceInput = document.getElementById(`char-${char.toLowerCase()}-advance`);
-                const totalSpan = document.getElementById(`char-${char.toLowerCase()}-total`);
+        function roll2D10() {
+            return rollD10() + rollD10();
+        }
+
+        function rollSingleCharacteristic(char) {
+            const speciesInfo = speciesData[selectedSpecies];
+            const charData = speciesInfo.characteristics[char.toUpperCase()];
+            
+            if (charData) {
+                const roll = roll2D10();
+                const total = charData.base + roll;
                 
-                if (advanceInput && totalSpan) {
-                    const advances = parseInt(advanceInput.value) || 0;
-                    totalSpan.textContent = charData.initial + advances;
-                    totalUsed += advances;
+                const totalInput = document.getElementById(`char-${char.toLowerCase()}-total`);
+                if (totalInput) {
+                    totalInput.value = total;
                     
                     // Store in wizard data
-                    wizardData.characteristics[char] = {
-                        base: charData.initial,
-                        advances: advances,
-                        total: charData.initial + advances
+                    wizardData.characteristics[char.toUpperCase()] = {
+                        base: charData.base,
+                        roll: roll,
+                        total: total,
+                        min: charData.min,
+                        max: charData.max
                     };
                 }
-            });
+                
+                // Show roll result briefly
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = `${roll}!`;
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 1000);
+            }
+        }
 
-            wizardData.usedCharPoints = totalUsed;
-            document.getElementById('remaining-char-points').textContent = wizardData.totalCharPoints - totalUsed;
+        function rollAllCharacteristics() {
+            const characteristics = ['ws', 'bs', 's', 't', 'i', 'ag', 'dex', 'int', 'wp', 'fel'];
+            characteristics.forEach(char => {
+                rollSingleCharacteristic(char);
+            });
+        }
+
+        // Step 2 functions: Wounds, Fate, and Resilience
+        function initializeStep2() {
+            const speciesInfo = speciesData[selectedSpecies];
+            
+            // Update wounds formula display
+            document.getElementById('wounds-formula').textContent = speciesInfo.woundsFormula;
+            
+            // Calculate and display wounds
+            calculateWounds();
+            
+            // Update fate and resilience displays
+            document.getElementById('base-fate-resilience').textContent = `Fate ${speciesInfo.baseFate}, Resilience ${speciesInfo.baseResilience}`;
+            document.getElementById('extra-points-remaining').textContent = speciesInfo.extraPoints;
+            
+            document.getElementById('base-fate').textContent = speciesInfo.baseFate;
+            document.getElementById('base-resilience').textContent = speciesInfo.baseResilience;
+            document.getElementById('total-fate').textContent = speciesInfo.baseFate;
+            document.getElementById('total-resilience').textContent = speciesInfo.baseResilience;
+            
+            // Reset extra points
+            document.getElementById('extra-fate').value = 0;
+            document.getElementById('extra-resilience').value = 0;
+            
+            // Update movement
+            document.getElementById('species-movement').textContent = speciesInfo.movement;
+        }
+
+        function calculateWounds() {
+            const speciesInfo = speciesData[selectedSpecies];
+            let wounds = 0;
+            
+            // Get current characteristic values
+            const s = parseInt(document.getElementById('char-s-total')?.value) || wizardData.characteristics.S?.total || 0;
+            const t = parseInt(document.getElementById('char-t-total')?.value) || wizardData.characteristics.T?.total || 0;
+            const wp = parseInt(document.getElementById('char-wp-total')?.value) || wizardData.characteristics.WP?.total || 0;
+            
+            // Calculate bonus values (tens digit)
+            const sb = Math.floor(s / 10);
+            const tb = Math.floor(t / 10);
+            const wpb = Math.floor(wp / 10);
+            
+            // Apply species-specific formula
+            if (selectedSpecies === "Halfling") {
+                wounds = (2 * tb) + wpb;
+            } else {
+                wounds = sb + (2 * tb) + wpb;
+            }
+            
+            wizardData.wounds = wounds;
+            document.getElementById('calculated-wounds').textContent = wounds;
+        }
+
+        function updateExtraPointsDistribution() {
+            const speciesInfo = speciesData[selectedSpecies];
+            const extraFate = parseInt(document.getElementById('extra-fate').value) || 0;
+            const extraResilience = parseInt(document.getElementById('extra-resilience').value) || 0;
+            const totalUsed = extraFate + extraResilience;
+            
+            // Validate total doesn't exceed available points
+            if (totalUsed > speciesInfo.extraPoints) {
+                alert(`You can only distribute ${speciesInfo.extraPoints} extra points total.`);
+                // Reset the field that caused the overflow
+                if (event.target.id === 'extra-fate') {
+                    document.getElementById('extra-fate').value = Math.max(0, speciesInfo.extraPoints - extraResilience);
+                } else {
+                    document.getElementById('extra-resilience').value = Math.max(0, speciesInfo.extraPoints - extraFate);
+                }
+                return;
+            }
+            
+            // Update totals
+            const totalFate = speciesInfo.baseFate + extraFate;
+            const totalResilience = speciesInfo.baseResilience + extraResilience;
+            
+            document.getElementById('total-fate').textContent = totalFate;
+            document.getElementById('total-resilience').textContent = totalResilience;
+            document.getElementById('extra-points-remaining').textContent = speciesInfo.extraPoints - totalUsed;
+            
+            // Store in wizard data
+            wizardData.fate = { base: speciesInfo.baseFate, extra: extraFate, total: totalFate };
+            wizardData.resilience = { base: speciesInfo.baseResilience, extra: extraResilience, total: totalResilience };
+            wizardData.usedExtraPoints = totalUsed;
         }
 
         function nextWizardStep() {
-            if (currentWizardStep < 5) {
+            if (currentWizardStep < 6) {
                 // Validate current step before proceeding
                 if (validateWizardStep(currentWizardStep)) {
                     currentWizardStep++;
@@ -8054,6 +8139,7 @@ function loadSymptomsData() {
                     else if (currentWizardStep === 3) initializeStep3();
                     else if (currentWizardStep === 4) initializeStep4();
                     else if (currentWizardStep === 5) initializeStep5();
+                    else if (currentWizardStep === 6) initializeStep6();
                     
                     updateWizardDisplay();
                 }
@@ -8072,30 +8158,56 @@ function loadSymptomsData() {
             
             switch(step) {
                 case 1:
-                    // Check if characteristic points are properly distributed
-                    if (wizardData.usedCharPoints !== wizardData.totalCharPoints) {
-                        alert(`Please distribute all ${wizardData.totalCharPoints} characteristic points. You have used ${wizardData.usedCharPoints}.`);
-                        return false;
-                    }
-                    return true;
+                    // Update characteristics from input fields and validate ranges
+                    let allValid = true;
+                    Object.keys(speciesInfo.characteristics).forEach(char => {
+                        const totalInput = document.getElementById(`char-${char.toLowerCase()}-total`);
+                        if (totalInput) {
+                            const total = parseInt(totalInput.value) || speciesInfo.characteristics[char].base;
+                            const charData = speciesInfo.characteristics[char];
+                            
+                            // Validate range
+                            if (total < charData.min || total > charData.max) {
+                                alert(`${char} must be between ${charData.min} and ${charData.max} for ${selectedSpecies}.`);
+                                allValid = false;
+                                return;
+                            }
+                            
+                            wizardData.characteristics[char] = {
+                                base: charData.base,
+                                total: total,
+                                min: charData.min,
+                                max: charData.max
+                            };
+                        }
+                    });
+                    return allValid;
                     
                 case 2:
-                    // Check if 5 skills are selected
-                    if (wizardData.skills.step2.length !== 5) {
-                        alert('Please select exactly 5 skills for +5 advances.');
+                    // Validate extra points distribution
+                    if (wizardData.usedExtraPoints !== speciesInfo.extraPoints) {
+                        alert(`Please distribute all ${speciesInfo.extraPoints} extra points between Fate and Resilience.`);
                         return false;
                     }
                     return true;
                     
                 case 3:
-                    // Check if 3 skills are selected
-                    if (wizardData.skills.step3.length !== 3) {
-                        alert('Please select exactly 3 skills for +3 advances.');
+                    // Check if 5 skills are selected
+                    if (wizardData.skills.step3.length !== 5) {
+                        alert('Please select exactly 5 skills for +5 advances.');
                         return false;
                     }
                     return true;
                     
                 case 4:
+                    // Check if 3 skills are selected
+                    if (wizardData.skills.step4.length !== 3) {
+                        alert('Please select exactly 3 skills for +3 advances.');
+                        return false;
+                    }
+                    return true;
+                    
+                case 5:
                     // Check if 1 talent is selected
                     if (wizardData.talents.selected.length !== 1) {
                         alert('Please select exactly 1 additional talent.');
@@ -8108,7 +8220,7 @@ function loadSymptomsData() {
             }
         }
 
-        function initializeStep2() {
+        function initializeStep3() {
             const speciesInfo = speciesData[selectedSpecies];
             const skillsList = document.getElementById('species-skills-list-1');
             skillsList.innerHTML = '';
@@ -8117,8 +8229,8 @@ function loadSymptomsData() {
                 const skillDiv = document.createElement('div');
                 skillDiv.className = 'skill-checkbox-item';
                 skillDiv.innerHTML = `
-                    <input type="checkbox" id="skill1-${skill}" value="${skill}" onchange="updateSkillSelection(1, this)">
-                    <label for="skill1-${skill}">${skill}</label>
+                    <input type="checkbox" id="skill3-${skill}" value="${skill}" onchange="updateSkillSelection(3, this)">
+                    <label for="skill3-${skill}">${skill}</label>
                 `;
                 skillsList.appendChild(skillDiv);
             });
@@ -8126,22 +8238,22 @@ function loadSymptomsData() {
             document.getElementById('remaining-skill-points-1').textContent = 5;
         }
 
-        function initializeStep3() {
+        function initializeStep4() {
             const speciesInfo = speciesData[selectedSpecies];
             const skillsList = document.getElementById('species-skills-list-2');
             skillsList.innerHTML = '';
 
-            // Only show skills not selected in step 2
+            // Only show skills not selected in step 3
             const availableSkills = speciesInfo.skills.filter(skill => 
-                !wizardData.skills.step2.includes(skill)
+                !wizardData.skills.step3.includes(skill)
             );
 
             availableSkills.forEach(skill => {
                 const skillDiv = document.createElement('div');
                 skillDiv.className = 'skill-checkbox-item';
                 skillDiv.innerHTML = `
-                    <input type="checkbox" id="skill2-${skill}" value="${skill}" onchange="updateSkillSelection(2, this)">
-                    <label for="skill2-${skill}">${skill}</label>
+                    <input type="checkbox" id="skill4-${skill}" value="${skill}" onchange="updateSkillSelection(4, this)">
+                    <label for="skill4-${skill}">${skill}</label>
                 `;
                 skillsList.appendChild(skillDiv);
             });
@@ -8150,9 +8262,9 @@ function loadSymptomsData() {
         }
 
         function updateSkillSelection(step, checkbox) {
-            const maxSelections = step === 1 ? 5 : 3;
-            const currentSelections = step === 1 ? wizardData.skills.step2 : wizardData.skills.step3;
-            const remainingSpan = step === 1 ? 
+            const maxSelections = step === 3 ? 5 : 3;
+            const currentSelections = step === 3 ? wizardData.skills.step3 : wizardData.skills.step4;
+            const remainingSpan = step === 3 ? 
                 document.getElementById('remaining-skill-points-1') : 
                 document.getElementById('remaining-skill-points-2');
 
@@ -8173,7 +8285,7 @@ function loadSymptomsData() {
             remainingSpan.textContent = maxSelections - currentSelections.length;
         }
 
-        function initializeStep4() {
+        function initializeStep5() {
             const speciesInfo = speciesData[selectedSpecies];
             
             // Show random talents
@@ -8206,7 +8318,7 @@ function loadSymptomsData() {
             wizardData.talents.selected = radio.checked ? [radio.value] : [];
         }
 
-        function initializeStep5() {
+        function initializeStep6() {
             const speciesInfo = speciesData[selectedSpecies];
             const summaryDiv = document.getElementById('creation-summary');
             
@@ -8220,10 +8332,11 @@ function loadSymptomsData() {
 
             Object.keys(wizardData.characteristics).forEach(char => {
                 const charData = wizardData.characteristics[char];
+                const rollText = charData.roll ? ` (rolled ${charData.roll})` : '';
                 summaryHTML += `
                     <div style="text-align: center; padding: 8px; background: white; border: 1px solid #d0c5a0;">
                         <strong>${char}</strong><br>
-                        ${charData.base} + ${charData.advances} = <strong>${charData.total}</strong>
+                        ${charData.base}${rollText} = <strong>${charData.total}</strong>
                     </div>
                 `;
             });
@@ -8233,24 +8346,27 @@ function loadSymptomsData() {
                 </div>
                 
                 <div style="margin-bottom: 15px;">
+                    <h5 style="color: #3e2f1f;">Wounds, Fate, and Resilience:</h5>
+                    <p><strong>Wounds:</strong> ${wizardData.wounds}</p>
+                    <p><strong>Fate:</strong> ${wizardData.fate.base} + ${wizardData.fate.extra} = ${wizardData.fate.total}</p>
+                    <p><strong>Resilience:</strong> ${wizardData.resilience.base} + ${wizardData.resilience.extra} = ${wizardData.resilience.total}</p>
+                    <p><strong>Movement:</strong> ${wizardData.movement}</p>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
                     <h5 style="color: #3e2f1f;">Skills with +5 Advances:</h5>
-                    <p>${wizardData.skills.step2.join(', ')}</p>
+                    <p>${wizardData.skills.step3.join(', ')}</p>
                 </div>
                 
                 <div style="margin-bottom: 15px;">
                     <h5 style="color: #3e2f1f;">Skills with +3 Advances:</h5>
-                    <p>${wizardData.skills.step3.join(', ')}</p>
+                    <p>${wizardData.skills.step4.join(', ')}</p>
                 </div>
                 
                 <div style="margin-bottom: 15px;">
                     <h5 style="color: #3e2f1f;">Talents:</h5>
                     <p><strong>Species Talents:</strong> ${wizardData.talents.random.join(', ')}</p>
                     <p><strong>Selected Talent:</strong> ${wizardData.talents.selected.join(', ')}</p>
-                </div>
-                
-                <div>
-                    <h5 style="color: #3e2f1f;">Other Benefits:</h5>
-                    <p><strong>Fate Points:</strong> ${speciesInfo.fate} | <strong>Resilience:</strong> ${speciesInfo.resilience} | <strong>Movement:</strong> ${speciesInfo.movement}</p>
                 </div>
             `;
 
@@ -8259,7 +8375,7 @@ function loadSymptomsData() {
 
         function updateWizardDisplay() {
             // Update step indicators
-            for (let i = 1; i <= 5; i++) {
+            for (let i = 1; i <= 6; i++) {
                 const indicator = document.getElementById(`step-indicator-${i}`);
                 indicator.className = 'wizard-step';
                 if (i < currentWizardStep) {
@@ -8270,7 +8386,7 @@ function loadSymptomsData() {
             }
 
             // Show/hide wizard content
-            for (let i = 1; i <= 5; i++) {
+            for (let i = 1; i <= 6; i++) {
                 const content = document.getElementById(`wizard-step-${i}`);
                 content.style.display = i === currentWizardStep ? 'block' : 'none';
             }
@@ -8281,8 +8397,8 @@ function loadSymptomsData() {
             const applyBtn = document.getElementById('wizard-apply-btn');
 
             prevBtn.disabled = currentWizardStep === 1;
-            nextBtn.style.display = currentWizardStep === 5 ? 'none' : 'inline-block';
-            applyBtn.style.display = currentWizardStep === 5 ? 'inline-block' : 'none';
+            nextBtn.style.display = currentWizardStep === 6 ? 'none' : 'inline-block';
+            applyBtn.style.display = currentWizardStep === 6 ? 'inline-block' : 'none';
         }
 
         function applySpeciesCreation() {
@@ -8328,10 +8444,14 @@ function loadSymptomsData() {
             selectedSpecies = '';
             wizardData = {
                 characteristics: {},
-                skills: { step2: [], step3: [] },
+                wounds: 0,
+                fate: { base: 0, extra: 0, total: 0 },
+                resilience: { base: 0, extra: 0, total: 0 },
+                movement: 0,
+                skills: { step3: [], step4: [] },
                 talents: { random: [], selected: [] },
-                totalCharPoints: 0,
-                usedCharPoints: 0
+                extraPoints: 0,
+                usedExtraPoints: 0
             };
         }
 
