@@ -2616,8 +2616,28 @@
             const skillData = characterSkills[skillKey] || { advances: 0 };
             const charValue = parseInt(document.getElementById(`${skill.characteristic.toLowerCase()}-current`).value) || 0;
             const advances = skillData.advances || 0;
+            let baseTotal = charValue + advances;
             
-            return charValue + advances;
+            // Apply critical wound penalties to skills
+            if (typeof window.getSkillPenaltiesFromWounds === 'function') {
+                const woundPenalties = window.getSkillPenaltiesFromWounds(skillKey);
+                baseTotal = Math.max(0, baseTotal - woundPenalties.totalPenalty);
+                
+                // Update visual indicators for penalized skills
+                setTimeout(() => {
+                    const cleanKey = skillKey.replace(/\s+/g, '-').replace(/[()]/g, '').toLowerCase();
+                    const totalElement = document.getElementById(`skill-total-${cleanKey}`);
+                    if (totalElement && woundPenalties.totalPenalty > 0) {
+                        totalElement.style.color = 'red';
+                        totalElement.title = `Base: ${charValue + advances}, Critical Wounds: -${woundPenalties.totalPenalty}\n${woundPenalties.penalties.join('\n')}`;
+                    } else if (totalElement) {
+                        totalElement.style.color = '';
+                        totalElement.title = '';
+                    }
+                }, 10);
+            }
+            
+            return baseTotal;
         }
 
         window.updateSkillData = function(skillKey, property, value) {
@@ -3415,6 +3435,162 @@ window.updateAllCharacteristicsFromWounds = function() {
     });
 }
 
+// Function to get skill penalties from critical wounds
+window.getSkillPenaltiesFromWounds = function(skillName) {
+    let totalPenalty = 0;
+    const penalties = [];
+    
+    criticalWounds.forEach(wound => {
+        // Check permanent effects for skill penalties
+        if (wound.permanentEffects) {
+            wound.permanentEffects.forEach(effect => {
+                // Language Tests penalties
+                if (effect.includes('Language Tests') && isLanguageSkill(skillName)) {
+                    const penaltyMatch = effect.match(/-(\d+)/);
+                    if (penaltyMatch) {
+                        const penalty = parseInt(penaltyMatch[1]);
+                        totalPenalty += penalty;
+                        penalties.push(`${wound.name}: -${penalty}`);
+                    }
+                }
+                // Ranged Tests penalties
+                else if (effect.includes('Ranged Tests') && isRangedSkill(skillName)) {
+                    const penaltyMatch = effect.match(/-(\d+)/);
+                    if (penaltyMatch) {
+                        const penalty = parseInt(penaltyMatch[1]);
+                        totalPenalty += penalty;
+                        penalties.push(`${wound.name}: -${penalty}`);
+                    }
+                }
+                // Movement Tests penalties  
+                else if (effect.includes('Movement Tests') && isMovementSkill(skillName)) {
+                    const penaltyMatch = effect.match(/-(\d+)/);
+                    if (penaltyMatch) {
+                        const penalty = parseInt(penaltyMatch[1]);
+                        totalPenalty += penalty;
+                        penalties.push(`${wound.name}: -${penalty}`);
+                    }
+                }
+                // Hearing Tests penalties
+                else if (effect.includes('Hearing Tests') && isHearingSkill(skillName)) {
+                    const penaltyMatch = effect.match(/-(\d+)/);
+                    if (penaltyMatch) {
+                        const penalty = parseInt(penaltyMatch[1]);
+                        totalPenalty += penalty;
+                        penalties.push(`${wound.name}: -${penalty}`);
+                    }
+                }
+                // Sight Tests penalties
+                else if (effect.includes('Sight Tests') && isSightSkill(skillName)) {
+                    const penaltyMatch = effect.match(/-(\d+)/);
+                    if (penaltyMatch) {
+                        const penalty = parseInt(penaltyMatch[1]);
+                        totalPenalty += penalty;
+                        penalties.push(`${wound.name}: -${penalty}`);
+                    }
+                }
+                // Dexterity Tests penalties
+                else if (effect.includes('Dexterity Tests') && isDexteritySkill(skillName)) {
+                    const penaltyMatch = effect.match(/-(\d+)/);
+                    if (penaltyMatch) {
+                        const penalty = parseInt(penaltyMatch[1]);
+                        totalPenalty += penalty;
+                        penalties.push(`${wound.name}: -${penalty}`);
+                    }
+                }
+            });
+        }
+        
+        // Check injury effects
+        if (wound.injuries) {
+            wound.injuries.forEach(injuryName => {
+                const injury = injuryTypes[injuryName];
+                if (injury && injury.effects[wound.location.replace(/^(Left |Right )/, '')]) {
+                    const effect = injury.effects[wound.location.replace(/^(Left |Right )/, '')];
+                    
+                    // Check for specific skill penalties in injury effects
+                    if (effect.includes('-10 to Tests using arm') && isArmBasedSkill(skillName)) {
+                        totalPenalty += 10;
+                        penalties.push(`${wound.name} (${injuryName}): -10`);
+                    } else if (effect.includes('-20 to Tests using arm') && isArmBasedSkill(skillName)) {
+                        totalPenalty += 20;
+                        penalties.push(`${wound.name} (${injuryName}): -20`);
+                    } else if (effect.includes('-10 to Tests using leg') && isLegBasedSkill(skillName)) {
+                        totalPenalty += 10;
+                        penalties.push(`${wound.name} (${injuryName}): -10`);
+                    } else if (effect.includes('-20 to Tests using leg') && isLegBasedSkill(skillName)) {
+                        totalPenalty += 20;
+                        penalties.push(`${wound.name} (${injuryName}): -20`);
+                    } else if (effect.includes('-10 to head-based Tests') && isHeadBasedSkill(skillName)) {
+                        totalPenalty += 10;
+                        penalties.push(`${wound.name} (${injuryName}): -10`);
+                    } else if (effect.includes('-20 to head-based Tests') && isHeadBasedSkill(skillName)) {
+                        totalPenalty += 20;
+                        penalties.push(`${wound.name} (${injuryName}): -20`);
+                    } else if (effect.includes('-10 to body-based Tests') && isBodyBasedSkill(skillName)) {
+                        totalPenalty += 10;
+                        penalties.push(`${wound.name} (${injuryName}): -10`);
+                    } else if (effect.includes('-20 to body-based Tests') && isBodyBasedSkill(skillName)) {
+                        totalPenalty += 20;
+                        penalties.push(`${wound.name} (${injuryName}): -20`);
+                    }
+                }
+            });
+        }
+    });
+    
+    return { totalPenalty, penalties };
+}
+
+// Helper functions to determine skill categories
+function isLanguageSkill(skillName) {
+    return skillName.includes('Language') || skillName === 'Language (Classical)' || skillName === 'Language (Guilder)';
+}
+
+function isRangedSkill(skillName) {
+    return skillName === 'Ranged (Bow)' || skillName === 'Ranged (Crossbow)' || skillName === 'Ranged (Engineering)' || 
+           skillName === 'Ranged (Entangling)' || skillName === 'Ranged (Explosives)' || skillName === 'Ranged (Sling)' || 
+           skillName === 'Ranged (Throwing)';
+}
+
+function isMovementSkill(skillName) {
+    return skillName === 'Athletics' || skillName === 'Climb' || skillName === 'Dodge' || skillName === 'Stealth';
+}
+
+function isHearingSkill(skillName) {
+    return skillName === 'Perception' || skillName === 'Track';
+}
+
+function isSightSkill(skillName) {
+    return skillName === 'Perception' || skillName === 'Track' || skillName === 'Art' || 
+           skillName.includes('Ranged') || skillName === 'Navigation';
+}
+
+function isDexteritySkill(skillName) {
+    return skillName === 'Art' || skillName === 'Sleight of Hand' || skillName === 'Pick Lock' || 
+           skillName === 'Trade (any)' || skillName.includes('Trade');
+}
+
+function isArmBasedSkill(skillName) {
+    return skillName.includes('Melee') || skillName.includes('Ranged') || skillName === 'Athletics' || 
+           skillName === 'Art' || skillName === 'Sleight of Hand' || skillName === 'Pick Lock' || 
+           skillName.includes('Trade');
+}
+
+function isLegBasedSkill(skillName) {
+    return skillName === 'Athletics' || skillName === 'Climb' || skillName === 'Dodge' || 
+           skillName === 'Stealth' || skillName === 'Row';
+}
+
+function isHeadBasedSkill(skillName) {
+    return skillName.includes('Language') || skillName === 'Entertain (Storytelling)' || 
+           skillName === 'Charm' || skillName === 'Gossip' || skillName === 'Leadership';
+}
+
+function isBodyBasedSkill(skillName) {
+    return skillName === 'Endurance' || skillName === 'Swim' || skillName === 'Athletics';
+}
+
 window.getSeverityColorForWound = function(wounds) {
     if (wounds === "Death" || wounds >= 5) return '#000000'; // Fatal
     if (wounds >= 4) return '#c41e3a'; // Severe (red)
@@ -3453,6 +3629,10 @@ window.addCriticalWound = function(woundData) {
     window.displayCriticalWounds();
     window.updateWoundPenalties();
     window.updateAllCharacteristicsFromWounds();
+    // Update all skills to reflect wound penalties
+    if (typeof window.updateAllSkillTotals === 'function') {
+        window.updateAllSkillTotals();
+    }
     return wound.id;
 }
 
@@ -3469,6 +3649,10 @@ window.removeCriticalWound = function(woundId) {
         window.displayCriticalWounds();
         window.updateWoundPenalties();
         window.updateAllCharacteristicsFromWounds();
+        // Update all skills to reflect wound penalties
+        if (typeof window.updateAllSkillTotals === 'function') {
+            window.updateAllSkillTotals();
+        }
         return true;
     }
     return false;
@@ -3746,6 +3930,10 @@ window.removeAllWounds = function() {
         window.displayCriticalWounds();
         window.updateWoundPenalties();
         window.updateAllCharacteristicsFromWounds();
+        // Update all skills to reflect wound penalties
+        if (typeof window.updateAllSkillTotals === 'function') {
+            window.updateAllSkillTotals();
+        }
     }
 }
 
@@ -3814,6 +4002,10 @@ window.confirmAddWound = function() {
             window.displayCriticalWounds();
             window.updateWoundPenalties();
             window.updateAllCharacteristicsFromWounds();
+            // Update all skills to reflect wound penalties
+            if (typeof window.updateAllSkillTotals === 'function') {
+                window.updateAllSkillTotals();
+            }
         }
         window.editingWoundId = null;
     } else {
@@ -4546,6 +4738,12 @@ document.addEventListener('DOMContentLoaded', function() {
             window.displayCriticalWounds();
             window.updateWoundPenalties();
             window.updateAllCharacteristicsFromWounds();
+            // Update all skills to reflect wound penalties after characteristics are updated
+            setTimeout(() => {
+                if (typeof window.updateAllSkillTotals === 'function') {
+                    window.updateAllSkillTotals();
+                }
+            }, 50);
             displaySpells();
             displayWeapons();
             displayArmour();
