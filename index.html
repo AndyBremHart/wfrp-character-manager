@@ -1133,16 +1133,6 @@
                             <td style="width: 10%; text-align: center;">/</td>
                             <td style="width: 40%;"><input type="number" id="wounds-max" placeholder="12" readonly style="background: #f5f5f0; color: #666;" title="Auto-calculated based on species and characteristics"></td>
                         </tr>
-                        <tr>
-                            <th>Hardy</th>
-                            <td colspan="3"><input type="number" id="hardy" placeholder="0"></td>
-                        </tr>
-                        <tr>
-                            <th>Corruption</th>
-                            <td style="width: 40%;"><input type="number" id="corruption-current" placeholder="0"></td>
-                            <td style="width: 10%; text-align: center;">/</td>
-                            <td style="width: 40%;"><input type="number" id="corruption-max" placeholder="10"></td>
-                        </tr>
                     </table>
 
                     <table class="secondary-table">
@@ -5487,11 +5477,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     current: document.getElementById('wounds-current').value,
                     max: document.getElementById('wounds-max').value
                 },
-                hardy: document.getElementById('hardy').value,
-                corruption: {
-                    current: document.getElementById('corruption-current').value,
-                    max: document.getElementById('corruption-max').value
-                },
                 movement: document.getElementById('movement').value,
                 fate: document.getElementById('fate').value,
                 fortune: document.getElementById('fortune-current').value,
@@ -5573,12 +5558,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('wounds-max').value = characterData.wounds.max || '';
             }
             
-            document.getElementById('hardy').value = characterData.hardy || '';
-            
-            if (characterData.corruption) {
-                document.getElementById('corruption-current').value = characterData.corruption.current || '';
-                document.getElementById('corruption-max').value = characterData.corruption.max || '';
-            }
             
             document.getElementById('movement').value = characterData.movement || '';
             movement.dispatchEvent(new Event('input'));

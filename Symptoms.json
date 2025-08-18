@@ -1,0 +1,226 @@
+[
+  {
+    "name": "Blight",
+    "type": "symptom",
+    "diseases": [
+      "The Black Plague",
+      "Blood Rot"
+    ],
+    "tags": [
+      "symptom",
+      "fatal",
+      "poison",
+      "physical"
+    ],
+    "content": "---\nname: Blight\ntype: symptom\ndiseases:\n  - The Black Plague\n  - Blood Rot\ntags:\n  - symptom\n  - fatal\n  - poison\n  - physical\n---\nYou are seriously ill and perhaps close to [[The Cult of Morr|Morr]]'s Portal as deadly poisons flood your body.\n\nPass a Very Easy (+60) [[Endurance]] daily (normally when you sleep) or die, passing away, perhaps in your sleep, perhaps lost in a fever, perhaps in agony. If [[Blight]] is marked as (Moderate), this Test is Easy (+40); if marked as (Severe), this Test is Average (+20).\n\n**Treatment:** None that work.\n\n*Source: WFRP Core Rulebook*",
+    "mechanicalEffects": {},
+    "folder": "4. SRD/Symptoms"
+  },
+  {
+    "name": "Buboes",
+    "type": "symptom",
+    "diseases": [
+      "The Black Plague"
+    ],
+    "tags": [
+      "symptom",
+      "physical",
+      "fellowship",
+      "painful",
+      "disgusting"
+    ],
+    "content": "---\nname: Buboes\ntype: symptom\ndiseases:\n  - The Black Plague\ntags:\n  - symptom\n  - physical\n  - fellowship\n  - painful\n  - disgusting\n---\nYou have huge swellings of the lymph nodes, possibly in the groin, neck or armpits. These are enormously painful and may bleed or seep pus. They are disgusting, smelly, and some would argue a sure sign of the Lord of Pestilence's favour, believing they hide tiny, growing Daemons. Common practice is to lance these terrible expressions of taint to remove whatever nestles within, though doing so often results in [[Festering Wound|Festering Wounds]].\n\nSuffer a penalty of –10 to all physical Tests, and to all Fellowship Tests if the buboes can be seen (or smelled!).\n\n**Treatment:** A successful [[Heal]] Test with Surgery can lance your buboes, removing the penalty. If the Test is failed, gain a [[Festering Wound]]. If your [[Buboes]] are lanced, make a Difficult (–10) [[Endurance]] Test once per day or more swell into place.\n\n*Source: WFRP Core Rulebook*",
+    "mechanicalEffects": {
+      "fellowship": -10
+    },
+    "folder": "4. SRD/Symptoms"
+  },
+  {
+    "name": "Convulsions",
+    "type": "symptom",
+    "diseases": [
+      "Ratte Fever"
+    ],
+    "tags": [
+      "symptom",
+      "physical",
+      "spasms",
+      "incapacitation"
+    ],
+    "content": "---\nname: Convulsions\ntype: symptom\ndiseases:\n  - Ratte Fever\ntags:\n  - symptom\n  - physical\n  - spasms\n  - incapacitation\n---\nYour body periodically spasms or shakes as the infection seemingly uses you like a puppet.\n\nSuffer a penalty of –10 to all physical Tests as your body convulses beyond your control. If this symptom is marked as (Moderate), the penalty increases to –20. If it is marked as (Severe), you need to be tied down in order not to hurt yourself, leaving you effectively incapacitated.\n\n**Treatment:** Rare herbs and alchemical mixes can lessen this symptom for a day, bringing Severe down to Moderate, and Moderate down to standard convulsions. These can be created by any with the [[Trade]] (Apothecary) skill and access to the appropriate ingredients (which can cost upwards of 10 shillings or more per dose). The final medicine is Rare and usually genuine (80%), and can be bought for around 1 GC per dose from Apothecaries, putting it beyond the reach of most citizens of the Empire.\n\n*Source: WFRP Core Rulebook*",
+    "mechanicalEffects": {},
+    "folder": "4. SRD/Symptoms"
+  },
+  {
+    "name": "Coughs and Sneezes",
+    "type": "symptom",
+    "diseases": [
+      "Itching Pox"
+    ],
+    "tags": [
+      "symptom",
+      "contagious",
+      "spreading",
+      "respiratory"
+    ],
+    "content": "---\nname: Coughs and Sneezes\ntype: symptom\ndiseases:\n  - Itching Pox\ntags:\n  - symptom\n  - contagious\n  - spreading\n  - respiratory\n---\nYou intermittently cough or sneeze, spreading your disease to all around you. Any characters in your environment are exposed to the disease you carry, and need Test for Contraction once per hour, or part thereof, of exposure.\n\n**Treatment:** None that work.\n\n*Source: WFRP Core Rulebook*",
+    "mechanicalEffects": {},
+    "folder": "4. SRD/Symptoms"
+  },
+  {
+    "name": "Fever",
+    "type": "symptom",
+    "diseases": [
+      "The Black Plague",
+      "Blood Rot",
+      "The Bloody Flux",
+      "Festering Wound",
+      "Ratte Fever"
+    ],
+    "tags": [
+      "symptom",
+      "physical",
+      "fellowship",
+      "incapacitation"
+    ],
+    "content": "---\nname: Fever\ntype: symptom\ndiseases:\n  - The Black Plague\n  - Blood Rot\n  - The Bloody Flux\n  - Festering Wound\n  - Ratte Fever\ntags:\n  - symptom\n  - physical\n  - fellowship\n  - incapacitation\n---\nYour temperature is high, you're likely sweating, and you really don't look at all well. Suffer a penalty of –10 to all physical and Fellowship Tests. If your [[Fever]] is marked as (Severe), it has completely incapacitated you, leaving you bed-ridden. Take the [[Unconscious]] Condition, though expenditure of a Resolve point can bring consciousness for a few minutes.\n\n**Treatment:** There are many common, often disgusting, remedies for a fever, most of which don't work (only 10% of commercial cures are genuine). A successful [[Heal]] Test does little more that inform you how long the fever will likely last. The cures range from a few pennies to many shillings in cost. If genuine, they will remove the symptoms of a [[Fever]] (not a severe one) if you pass a Challenging (+0) [[Endurance]] Test.\n\n*Source: WFRP Core Rulebook*",
+    "mechanicalEffects": {
+      "fellowship": -10
+    },
+    "folder": "4. SRD/Symptoms"
+  },
+  {
+    "name": "Flux",
+    "type": "symptom",
+    "diseases": [
+      "The Bloody Flux",
+      "Galloping Trots"
+    ],
+    "tags": [
+      "symptom",
+      "digestive",
+      "embarrassing",
+      "incapacitation"
+    ],
+    "content": "---\nname: Flux\ntype: symptom\ndiseases:\n  - The Bloody Flux\n  - Galloping Trots\ntags:\n  - symptom\n  - digestive\n  - embarrassing\n  - incapacitation\n---\nThere's a rumble and a grumble, then you're off for yet another sprint to the splattered outhouse. Pale and weary, you've had better days. Any given situation may be the moment you just have to go to the privy. You are expected to take every opportunity you can to pop off for an essential stop, and this is largely left in your hands. In addition, the GM can choose any point during the session's play to claim you need to go. You have a number of rounds equal to your Toughness Bonus to get to an appropriate place to relieve yourself; whether you get there in time or not, your body will empty itself in a spectacular fashion. If the [[Flux]] is marked as (Moderate), the GM can make you go twice a session. If it is marked as (Severe), the GM can do it three times, and you will also lose 1 Wound per visit, as [[the bloody flux]] leaves you utterly drained.\n\n**Treatment:** Real cures for the [[Flux]] are rare (10% of commercial remedies are genuine), but many apothecaries and herbalists swear theirs work every time. Costs vary widely according to where you buy the cures, from a few brass coins to small bag of silver. If genuine, the [[Flux]] can be held off for your Toughness Bonus in hours by taking a remedy.\n\n*Source: WFRP Core Rulebook*",
+    "mechanicalEffects": {},
+    "folder": "4. SRD/Symptoms"
+  },
+  {
+    "name": "Gangrene",
+    "type": "symptom",
+    "diseases": [
+      "The Black Plague"
+    ],
+    "tags": [
+      "symptom",
+      "physical",
+      "fatal",
+      "amputation",
+      "fellowship"
+    ],
+    "content": "---\nname: Gangrene\ntype: symptom\ndiseases:\n  - The Black Plague\ntags:\n  - symptom\n  - physical\n  - fatal\n  - amputation\n  - fellowship\n---\nYour flesh is turning black, dying, infected with something awful, and it isn't going to get better. Roll percentile dice to determine a Hit Location (see Combat). If you roll Body, luckily the [[Gangrene]] did not settle in during this infection. If you roll Head, your nose is affected. If you roll Arms, it's your fingers. If you roll Leg, it's your feet. Each day, roll an Average (+20) [[Endurance]] Test. If you pass, you hold off the [[Gangrene]]; if you fail, it grows worse. If you ever fail more times than you have Toughness Bonus, you completely lose all capability with the affected location. If this occurs, use the same rules as Amputation (see Critical Wounds).\n\nFor as long as you have [[Gangrene]], suffer a penalty –10 to all Fellowship Tests, and suffer the [[Wounded]] symptom. Further, if not already suffering it, you also suffer from [[Blight]] until the affected tissue is amputated; this remains even if you are cured of the disease that started the [[Gangrene]].\n\n**Treatment:** Amputation of the gangrenous location is the only effective treatment.\n\n*Source: WFRP Core Rulebook*",
+    "mechanicalEffects": {
+      "fellowship": -10
+    },
+    "folder": "4. SRD/Symptoms"
+  },
+  {
+    "name": "Lingering",
+    "type": "symptom",
+    "diseases": [
+      "The Bloody Flux",
+      "Festering Wound",
+      "Minor Infection",
+      "Packer's Pox",
+      "Ratte Fever"
+    ],
+    "tags": [
+      "symptom",
+      "persistent",
+      "infection",
+      "progression"
+    ],
+    "content": "---\nname: Lingering\ntype: symptom\ndiseases:\n  - The Bloody Flux\n  - Festering Wound\n  - Minor Infection\n  - Packer's Pox\n  - Ratte Fever\ntags:\n  - symptom\n  - persistent\n  - infection\n  - progression\n---\nYou have an infection that just refuses to go away. Indeed, you fear it may be getting worse… After your disease reaches the end of its duration, attempt an [[Endurance]] Test with the Difficulty marked on the symptom like so: [[Lingering]] (Average) or [[Lingering]] (Easy). If this scores a Marginal Failure (0), the duration extends for an extra 1d10 days. If it scores a Failure (–2), develop a [[Festering Wound]]. On an Astounding Failure (–6), you instead develop [[Blood Rot]].\n\n**Treatment:** Cures for lingering infections are commonplace and usually relatively cheap, rarely costing more than a shilling. However, almost all are fake or based on faulty lore. Any bought cure has only a 10% chance of being genuine, but if so will negate the need to roll the [[Endurance]] Test if taken on the correct day (which will require a successful [[Heal]] Test to determine).\n\n*Source: WFRP Core Rulebook*",
+    "mechanicalEffects": {},
+    "folder": "4. SRD/Symptoms"
+  },
+  {
+    "name": "Malaise",
+    "type": "symptom",
+    "diseases": [
+      "The Black Plague",
+      "Blood Rot",
+      "The Bloody Flux",
+      "Festering Wound",
+      "Galloping Trots",
+      "Minor Infection",
+      "Ratte Fever"
+    ],
+    "tags": [
+      "symptom",
+      "fatigue",
+      "condition",
+      "general"
+    ],
+    "content": "---\nname: Malaise\ntype: symptom\ndiseases:\n  - The Black Plague\n  - Blood Rot\n  - The Bloody Flux\n  - Festering Wound\n  - Galloping Trots\n  - Minor Infection\n  - Ratte Fever\ntags:\n  - symptom\n  - fatigue\n  - condition\n  - general\n---\nYou don't feel at all well. You are tired, find it hard to concentrate, and just generally ill. Take a [[Fatigued]] Condition that you can only remove when you have recovered from your illness.\n\n**Treatment:** Medicine treating [[Malaise]], costing anything from a few pence to a handful of silver, is usually genuine (75% chance); and, if so, pass a Challenging (+0) [[Endurance]] Test to ignore the symptom for the day.\n\n*Source: WFRP Core Rulebook*",
+    "mechanicalEffects": {},
+    "folder": "4. SRD/Symptoms"
+  },
+  {
+    "name": "Nausea",
+    "type": "symptom",
+    "diseases": [
+      "The Bloody Flux",
+      "Galloping Trots"
+    ],
+    "tags": [
+      "symptom",
+      "sickness",
+      "vomiting",
+      "movement"
+    ],
+    "content": "---\nname: Nausea\ntype: symptom\ndiseases:\n  - The Bloody Flux\n  - Galloping Trots\ntags:\n  - symptom\n  - sickness\n  - vomiting\n  - movement\n---\nYou feel very sick and are prone to vomiting if you move around too quickly. Whenever you fail a Test involving physical movement, your nausea overwhelms you and you vomit. You gain the [[Stunned]] condition, which represents you being sick repeatedly or dry heaving, depending upon your current circumstances.\n\n**Treatment:** Remedies for [[Nausea]] are Common and usually genuine (60% chance), and typically cost around thirty pennies; if genuine, pass a Challenging (+0) [[Endurance]] Test, and the [[Nausea]] can be ignored for a number of hours equal to your Toughness Bonus.\n\n*Source: WFRP Core Rulebook*",
+    "mechanicalEffects": {},
+    "folder": "4. SRD/Symptoms"
+  },
+  {
+    "name": "Pox",
+    "type": "symptom",
+    "diseases": [
+      "Itching Pox",
+      "Packer's Pox",
+      "Ratte Fever"
+    ],
+    "tags": [
+      "symptom",
+      "fellowship",
+      "cosmetic",
+      "scarring",
+      "itching"
+    ],
+    "content": "---\nname: Pox\ntype: symptom\ndiseases:\n  - Itching Pox\n  - Packer's Pox\n  - Ratte Fever\ntags:\n  - symptom\n  - fellowship\n  - cosmetic\n  - scarring\n  - itching\n---\nYou are covered in pustules, inflamed swellings, disgusting rashes, or itchy spots, which are unlikely to be your most attractive feature. [[Pox]] are largely a cosmetic issue, resulting in a penalty of –10 to Fellowship Tests. Additionally, remember to roleplay and describe all the scratching; if you want to withhold from this for a while, pass an Average (+20) [[Cool]] Test. When the [[Pox]] ends, attempt an Average (+20) [[Cool]] Test. If this fails, reverse the Test dice and apply permanent scarring to that Hit Location, showing an area where you scratched and the pox there healed badly. If the Hit Location is the head, permanently lose 1 in Fellowship. See Combat for more on Hit Locations.\n\n**Treatment:** Poxes are exceedingly common, and so are remedies, which are usually creams or oils. Larger temples of Shallya often keep a stock of the cream for free (though donations are expected) and apothecaries and herbalists of all kinds sell similar products for relatively low prices (rarely more than six or seven pence for a week's worth of treatment, with a 90% chance of being genuine medicine). Using a cream increases all [[Cool]] Tests to resist scratching to Very Easy (+60), but is usually unsightly.\n\n*Source: WFRP Core Rulebook*",
+    "mechanicalEffects": {
+      "fellowship": -10
+    },
+    "folder": "4. SRD/Symptoms"
+  },
+  {
+    "name": "Wounded",
+    "type": "symptom",
+    "diseases": [
+      "Festering Wound",
+      "Minor Infection",
+      "Ratte Fever"
+    ],
+    "tags": [
+      "symptom",
+      "wound",
+      "infection",
+      "healing"
+    ],
+    "content": "---\nname: Wounded\ntype: symptom\ndiseases:\n  - Festering Wound\n  - Minor Infection\n  - Ratte Fever\ntags:\n  - symptom\n  - wound\n  - infection\n  - healing\n---\nYou have a wound or open sore that does not heal properly because of an infection. For each [[Wounded]] symptom you have, you cannot heal one of your Wounds, which stays open and sore, possibly seeping foul-smelling pus. Every day, take an Easy (+20) [[Endurance]] Test or gain a [[Festering Wound]] if you do not already have one.\n\n**Treatment:** A daily successful [[Heal]] Test ensures the Wound is clean and does not require an [[Endurance]] Test to be further infected.\n\n*Source: WFRP Core Rulebook*",
+    "mechanicalEffects": {},
+    "folder": "4. SRD/Symptoms"
+  }
+]
