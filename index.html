@@ -1681,12 +1681,8 @@
                     <!-- Species info will be populated dynamically -->
                 </div>
                 
-                <h4 style="color: #3e2f1f; margin-bottom: 10px;">Roll or Enter Characteristics</h4>
-                <p style="margin-bottom: 15px; color: #666;">Roll 2d10+species base for each characteristic, or enter values manually. Click "Roll All" for automatic dice rolls.</p>
-                
-                <div style="text-align: center; margin-bottom: 15px;">
-                    <button onclick="rollAllCharacteristics()" class="control-btn" style="padding: 8px 16px;">Roll All Characteristics</button>
-                </div>
+                <h4 style="color: #3e2f1f; margin-bottom: 10px;">Enter Characteristics</h4>
+                <p style="margin-bottom: 15px; color: #666;">Roll 2d10 for each characteristic and enter your dice result (2-20). The total will be calculated automatically.</p>
                 
                 <div id="characteristics-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 20px;">
                     <!-- Characteristics will be populated dynamically -->
@@ -1746,7 +1742,7 @@
             <!-- Step 3: Skills Selection (5 advances) -->
             <div id="wizard-step-3" class="wizard-content" style="display: none;">
                 <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 3: Skill Selection (5 Advances)</h3>
-                <p style="margin-bottom: 15px; color: #666;">Select 5 skills from your species list to receive +5 advances each. Remaining: <span id="remaining-skill-points-1">5</span></p>
+                <p style="margin-bottom: 15px; color: #666;">Select 3 skills from your species list to receive +5 advances each. Remaining: <span id="remaining-skill-points-1">3</span></p>
                 
                 <div id="species-skills-list-1" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
                     <!-- Skills will be populated dynamically -->
@@ -1768,14 +1764,14 @@
                 <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 5: Talent Selection</h3>
                 
                 <div id="random-talents-section" style="background: #f5f2e8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
-                    <h4 style="color: #3e2f1f; margin-bottom: 10px;">Species Talents (Automatic)</h4>
+                    <h4 style="color: #3e2f1f; margin-bottom: 10px;">Fixed Species Talents (Automatic)</h4>
                     <div id="random-talents-list">
-                        <!-- Random talents will be populated dynamically -->
+                        <!-- Fixed talents will be populated dynamically -->
                     </div>
                 </div>
                 
-                <h4 style="color: #3e2f1f; margin-bottom: 10px;">Choose Additional Talent</h4>
-                <p style="margin-bottom: 15px; color: #666;">Select one additional talent from your species list:</p>
+                <h4 style="color: #3e2f1f; margin-bottom: 10px;">Talent Choices</h4>
+                <p style="margin-bottom: 15px; color: #666;">Make your talent selections below:</p>
                 
                 <div id="species-talents-list" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
                     <!-- Talents will be populated dynamically -->
@@ -2456,19 +2452,40 @@
                     "Lore (Reikland)", "Melee (Basic)", "Ranged (Bow)"
                 ],
                 talents: [
-                    "Doomed", "Savvy", "Suave", "Ambidextrous", "Acute Sense", 
-                    "Coolheaded", "Flee!", "Hardy", "Luck", "Marksman", 
+                    "Savvy", "Suave", "Acute Sense (any one)", "Ambidextrous", "Animal Affinity", 
+                    "Artistic", "Attractive", "Coolheaded", "Craftsman (any one)", "Flee!", 
+                    "Hardy", "Lightning Reflexes", "Linguistics", "Luck", "Marksman", 
                     "Mimic", "Night Vision", "Nimble Fingered", "Noble Blood", 
                     "Orientation", "Perfect Pitch", "Pure Soul", "Read/Write", 
-                    "Resistance", "Sharp", "Sixth Sense", "Super Numerate", 
-                    "Very Resilient", "Very Strong", "Warrior Born"
+                    "Resistance (any one)", "Savvy", "Sharp", "Sixth Sense", "Super Numerate", 
+                    "Strong Legs", "Sturdy", "Suave", "Very Resilient", "Very Strong", "Warrior Born"
                 ],
                 baseFate: 2,
                 baseResilience: 1,
                 extraPoints: 3,
                 movement: 4,
                 woundsFormula: "SB + (2 × TB) + WPB",
-                randomTalents: ["Savvy", "Suave"]
+                fixedTalents: ["Doomed"],
+                talentChoices: [
+                    {
+                        description: "Choose one:",
+                        options: ["Savvy", "Suave"]
+                    },
+                    {
+                        description: "Choose three talents:",
+                        options: [
+                            "Acute Sense (any one)", "Ambidextrous", "Animal Affinity", "Artistic", 
+                            "Attractive", "Coolheaded", "Craftsman (any one)", "Flee!", "Hardy", 
+                            "Lightning Reflexes", "Linguistics", "Luck", "Marksman", "Mimic", 
+                            "Night Vision", "Nimble Fingered", "Noble Blood", "Orientation", 
+                            "Perfect Pitch", "Pure Soul", "Read/Write", "Resistance (any one)", 
+                            "Savvy", "Sharp", "Sixth Sense", "Strong Legs", "Sturdy", "Suave", 
+                            "Super Numerate", "Very Resilient", "Very Strong", "Warrior Born"
+                        ],
+                        multiple: true,
+                        count: 3
+                    }
+                ]
             },
             "Dwarf": {
                 characteristics: {
@@ -2489,18 +2506,24 @@
                     "Lore (Metallurgy)", "Melee (Basic)", "Ranged (Crossbow)", "Trade (any)"
                 ],
                 talents: [
-                    "Magic Resistance", "Night Vision", "Read/Write", "Relentless", 
-                    "Resolute", "Sturdy", "Acute Sense", "Artistic", "Craftsman", 
-                    "Dealer", "Grudge-born Fury", "Guild Memory", "Hardy", "Impassioned Zeal", 
-                    "Luck", "Marksman", "Orientation", "Resistance", "Sharp", 
-                    "Stone Soup", "Strong Legs", "Sturdy", "Tinker", "Warrior Born"
+                    "Read/Write", "Relentless", "Resolute", "Strong Minded"
                 ],
                 baseFate: 0,
                 baseResilience: 2,
                 extraPoints: 2,
                 movement: 3,
                 woundsFormula: "SB + (2 × TB) + WPB",
-                randomTalents: ["Magic Resistance", "Night Vision", "Read/Write", "Relentless", "Resolute", "Sturdy"]
+                fixedTalents: ["Magic Resistance", "Night Vision", "Sturdy"],
+                talentChoices: [
+                    {
+                        description: "Choose one:",
+                        options: ["Read/Write", "Relentless"]
+                    },
+                    {
+                        description: "Choose one:",
+                        options: ["Resolute", "Strong Minded"]
+                    }
+                ]
             },
             "Halfling": {
                 characteristics: {
@@ -2520,19 +2543,28 @@
                     "Haggle", "Language (Halfling)", "Lore (Reikland)", "Perception", 
                     "Sleight of Hand", "Stealth (Rural)"
                 ],
-                talents: [
-                    "Acute Sense (Taste)", "Night Vision", "Resistance (Chaos)", 
-                    "Small", "Acute Sense", "Cook", "Dealmaker", "Fisherman", 
-                    "Flee!", "Luck", "Marksman", "Nimble Fingered", "Pure Soul", 
-                    "Sharp", "Specialist Weapon Group (Sling)", "Stable", 
-                    "Stone Soup", "Strong Legs", "Sturdy", "Super Numerate"
-                ],
                 baseFate: 0,
                 baseResilience: 2,
                 extraPoints: 3,
                 movement: 3,
                 woundsFormula: "(2 × TB) + WPB",
-                randomTalents: ["Acute Sense (Taste)", "Night Vision", "Resistance (Chaos)", "Small"]
+                fixedTalents: ["Acute Sense (Taste)", "Night Vision", "Resistance (Chaos)", "Small"],
+                talentChoices: [
+                    {
+                        description: "Choose two talents:",
+                        options: [
+                            "Acute Sense (any one)", "Ambidextrous", "Animal Affinity", "Artistic", 
+                            "Attractive", "Coolheaded", "Craftsman (any one)", "Flee!", "Hardy", 
+                            "Lightning Reflexes", "Linguistics", "Luck", "Marksman", "Mimic", 
+                            "Night Vision", "Nimble Fingered", "Noble Blood", "Orientation", 
+                            "Perfect Pitch", "Pure Soul", "Read/Write", "Resistance (any one)", 
+                            "Savvy", "Sharp", "Sixth Sense", "Strong Legs", "Sturdy", "Suave", 
+                            "Super Numerate", "Very Resilient", "Very Strong", "Warrior Born"
+                        ],
+                        multiple: true,
+                        count: 2
+                    }
+                ]
             },
             "High Elf": {
                 characteristics: {
@@ -2553,18 +2585,24 @@
                     "Play (any)", "Ranged (Bow)", "Sail"
                 ],
                 talents: [
-                    "Acute Sense (Sight)", "Coolheaded", "Night Vision", "Read/Write", 
-                    "Second Sight", "Sixth Sense", "Artistic", "Attractive", "Coolheaded", 
-                    "Etiquette", "Flee!", "Lightning Reflexes", "Luck", "Magical Sense", 
-                    "Marksman", "Noble Blood", "Orientation", "Perfect Pitch", "Pure Soul", 
-                    "Sharp", "Strong Legs", "Talented", "Very Resilient", "Warrior Born"
+                    "Coolheaded", "Savvy", "Second Sight", "Sixth Sense"
                 ],
                 baseFate: 0,
                 baseResilience: 0,
                 extraPoints: 2,
                 movement: 5,
                 woundsFormula: "SB + (2 × TB) + WPB",
-                randomTalents: ["Acute Sense (Sight)", "Coolheaded", "Night Vision", "Read/Write", "Second Sight", "Sixth Sense"]
+                fixedTalents: ["Acute Sense (Sight)", "Night Vision", "Read/Write"],
+                talentChoices: [
+                    {
+                        description: "Choose one:",
+                        options: ["Coolheaded", "Savvy"]
+                    },
+                    {
+                        description: "Choose one:",
+                        options: ["Second Sight", "Sixth Sense"]
+                    }
+                ]
             },
             "Wood Elf": {
                 characteristics: {
@@ -2585,18 +2623,24 @@
                     "Outdoor Survival", "Perception", "Ranged (Bow)", "Stealth (Rural)"
                 ],
                 talents: [
-                    "Acute Sense (Sight)", "Hardy", "Night Vision", "Read/Write", 
-                    "Rural", "Second Sight", "Acute Sense", "Animal Affinity", "Artistic", 
-                    "Attractive", "Flee!", "Fleet Footed", "Lightning Reflexes", "Luck", 
-                    "Magical Sense", "Marksman", "Orientation", "Perfect Pitch", "Pure Soul", 
-                    "Rover", "Sharp", "Sixth Sense", "Strong Legs", "Very Resilient", "Warrior Born"
+                    "Hardy", "Second Sight", "Read/Write", "Very Resilient"
                 ],
                 baseFate: 0,
                 baseResilience: 0,
                 extraPoints: 2,
                 movement: 5,
                 woundsFormula: "SB + (2 × TB) + WPB",
-                randomTalents: ["Acute Sense (Sight)", "Hardy", "Night Vision", "Read/Write", "Rural", "Second Sight"]
+                fixedTalents: ["Acute Sense (Sight)", "Night Vision", "Rover"],
+                talentChoices: [
+                    {
+                        description: "Choose one:",
+                        options: ["Hardy", "Second Sight"]
+                    },
+                    {
+                        description: "Choose one:",
+                        options: ["Read/Write", "Very Resilient"]
+                    }
+                ]
             }
         };
 
@@ -7916,7 +7960,7 @@ function loadSymptomsData() {
             resilience: { base: 0, extra: 0, total: 0 },
             movement: 0,
             skills: { step3: [], step4: [] },
-            talents: { random: [], selected: [] },
+            talents: { fixed: [], choices: [], selected: [] },
             extraPoints: 0,
             usedExtraPoints: 0
         };
@@ -7975,12 +8019,14 @@ function loadSymptomsData() {
                     <label>${char}</label>
                     <div style="display: flex; align-items: center; gap: 5px; flex-direction: column;">
                         <div style="font-size: 11px; color: #666;">
-                            Base: <span id="char-${char.toLowerCase()}-base">${charData.base}</span> | 
                             Range: <span id="char-${char.toLowerCase()}-range">${charData.min}-${charData.max}</span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 5px;">
-                            <input type="number" id="char-${char.toLowerCase()}-total" min="${charData.min}" max="${charData.max}" value="${charData.base}" style="width: 60px; text-align: center;" placeholder="${charData.min}-${charData.max}">
-                            <button onclick="rollSingleCharacteristic('${char.toLowerCase()}')" style="padding: 2px 6px; font-size: 10px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">Roll</button>
+                            <span id="char-${char.toLowerCase()}-base">${charData.base}</span>
+                            <span>+</span>
+                            <input type="number" id="char-${char.toLowerCase()}-roll" min="2" max="20" value="0" style="width: 50px; text-align: center;" placeholder="2-20" oninput="updateCharacteristicTotal('${char.toLowerCase()}')">
+                            <span>=</span>
+                            <strong id="char-${char.toLowerCase()}-total">${charData.base}</strong>
                         </div>
                     </div>
                 `;
@@ -7989,6 +8035,7 @@ function loadSymptomsData() {
                 // Store in wizard data
                 wizardData.characteristics[char] = {
                     base: charData.base,
+                    roll: 0,
                     total: charData.base,
                     min: charData.min,
                     max: charData.max
@@ -7996,53 +8043,31 @@ function loadSymptomsData() {
             });
         }
 
-        // Dice rolling functions
-        function rollD10() {
-            return Math.floor(Math.random() * 10) + 1;
-        }
-
-        function roll2D10() {
-            return rollD10() + rollD10();
-        }
-
-        function rollSingleCharacteristic(char) {
+        // Characteristic calculation function
+        function updateCharacteristicTotal(char) {
             const speciesInfo = speciesData[selectedSpecies];
             const charData = speciesInfo.characteristics[char.toUpperCase()];
             
             if (charData) {
-                const roll = roll2D10();
+                const rollInput = document.getElementById(`char-${char.toLowerCase()}-roll`);
+                const totalSpan = document.getElementById(`char-${char.toLowerCase()}-total`);
+                
+                const roll = parseInt(rollInput.value) || 0;
                 const total = charData.base + roll;
                 
-                const totalInput = document.getElementById(`char-${char.toLowerCase()}-total`);
-                if (totalInput) {
-                    totalInput.value = total;
-                    
-                    // Store in wizard data
-                    wizardData.characteristics[char.toUpperCase()] = {
-                        base: charData.base,
-                        roll: roll,
-                        total: total,
-                        min: charData.min,
-                        max: charData.max
-                    };
-                }
+                totalSpan.textContent = total;
                 
-                // Show roll result briefly
-                const button = event.target;
-                const originalText = button.textContent;
-                button.textContent = `${roll}!`;
-                setTimeout(() => {
-                    button.textContent = originalText;
-                }, 1000);
+                // Store in wizard data
+                wizardData.characteristics[char.toUpperCase()] = {
+                    base: charData.base,
+                    roll: roll,
+                    total: total,
+                    min: charData.min,
+                    max: charData.max
+                };
             }
         }
 
-        function rollAllCharacteristics() {
-            const characteristics = ['ws', 'bs', 's', 't', 'i', 'ag', 'dex', 'int', 'wp', 'fel'];
-            characteristics.forEach(char => {
-                rollSingleCharacteristic(char);
-            });
-        }
 
         // Step 2 functions: Wounds, Fate, and Resilience
         function initializeStep2() {
@@ -8075,10 +8100,10 @@ function loadSymptomsData() {
             const speciesInfo = speciesData[selectedSpecies];
             let wounds = 0;
             
-            // Get current characteristic values
-            const s = parseInt(document.getElementById('char-s-total')?.value) || wizardData.characteristics.S?.total || 0;
-            const t = parseInt(document.getElementById('char-t-total')?.value) || wizardData.characteristics.T?.total || 0;
-            const wp = parseInt(document.getElementById('char-wp-total')?.value) || wizardData.characteristics.WP?.total || 0;
+            // Get current characteristic values from the totals
+            const s = parseInt(document.getElementById('char-s-total')?.textContent) || wizardData.characteristics.S?.total || 0;
+            const t = parseInt(document.getElementById('char-t-total')?.textContent) || wizardData.characteristics.T?.total || 0;
+            const wp = parseInt(document.getElementById('char-wp-total')?.textContent) || wizardData.characteristics.WP?.total || 0;
             
             // Calculate bonus values (tens digit)
             const sb = Math.floor(s / 10);
@@ -8161,20 +8186,30 @@ function loadSymptomsData() {
                     // Update characteristics from input fields and validate ranges
                     let allValid = true;
                     Object.keys(speciesInfo.characteristics).forEach(char => {
-                        const totalInput = document.getElementById(`char-${char.toLowerCase()}-total`);
-                        if (totalInput) {
-                            const total = parseInt(totalInput.value) || speciesInfo.characteristics[char].base;
+                        const rollInput = document.getElementById(`char-${char.toLowerCase()}-roll`);
+                        const totalSpan = document.getElementById(`char-${char.toLowerCase()}-total`);
+                        if (rollInput && totalSpan) {
+                            const roll = parseInt(rollInput.value) || 0;
+                            const total = parseInt(totalSpan.textContent) || speciesInfo.characteristics[char].base;
                             const charData = speciesInfo.characteristics[char];
                             
-                            // Validate range
+                            // Validate dice roll range (2-20)
+                            if (roll > 0 && (roll < 2 || roll > 20)) {
+                                alert(`Dice roll for ${char} must be between 2 and 20.`);
+                                allValid = false;
+                                return;
+                            }
+                            
+                            // Validate final total range
                             if (total < charData.min || total > charData.max) {
-                                alert(`${char} must be between ${charData.min} and ${charData.max} for ${selectedSpecies}.`);
+                                alert(`${char} total (${total}) must be between ${charData.min} and ${charData.max} for ${selectedSpecies}.`);
                                 allValid = false;
                                 return;
                             }
                             
                             wizardData.characteristics[char] = {
                                 base: charData.base,
+                                roll: roll,
                                 total: total,
                                 min: charData.min,
                                 max: charData.max
@@ -8192,9 +8227,9 @@ function loadSymptomsData() {
                     return true;
                     
                 case 3:
-                    // Check if 5 skills are selected
-                    if (wizardData.skills.step3.length !== 5) {
-                        alert('Please select exactly 5 skills for +5 advances.');
+                    // Check if 3 skills are selected
+                    if (wizardData.skills.step3.length !== 3) {
+                        alert('Please select exactly 3 skills for +5 advances.');
                         return false;
                     }
                     return true;
@@ -8208,10 +8243,34 @@ function loadSymptomsData() {
                     return true;
                     
                 case 5:
-                    // Check if 1 talent is selected
-                    if (wizardData.talents.selected.length !== 1) {
-                        alert('Please select exactly 1 additional talent.');
-                        return false;
+                    // Check talent selections
+                    const speciesInfo = speciesData[selectedSpecies];
+                    if (speciesInfo.talentChoices) {
+                        // Check that all talent choices are made
+                        for (let i = 0; i < speciesInfo.talentChoices.length; i++) {
+                            const choice = speciesInfo.talentChoices[i];
+                            const selection = wizardData.talents.choices[i];
+                            
+                            if (choice.multiple) {
+                                // Multiple selection validation
+                                if (!selection || !Array.isArray(selection) || selection.length !== choice.count) {
+                                    alert(`Please select exactly ${choice.count} talents for choice ${i + 1}.`);
+                                    return false;
+                                }
+                            } else {
+                                // Single selection validation
+                                if (!selection) {
+                                    alert(`Please make a selection for talent choice ${i + 1}.`);
+                                    return false;
+                                }
+                            }
+                        }
+                    } else {
+                        // Fallback for old system
+                        if (wizardData.talents.selected.length !== 1) {
+                            alert('Please select exactly 1 additional talent.');
+                            return false;
+                        }
                     }
                     return true;
                     
@@ -8235,7 +8294,7 @@ function loadSymptomsData() {
                 skillsList.appendChild(skillDiv);
             });
 
-            document.getElementById('remaining-skill-points-1').textContent = 5;
+            document.getElementById('remaining-skill-points-1').textContent = 3;
         }
 
         function initializeStep4() {
@@ -8262,7 +8321,7 @@ function loadSymptomsData() {
         }
 
         function updateSkillSelection(step, checkbox) {
-            const maxSelections = step === 3 ? 5 : 3;
+            const maxSelections = 3; // Both steps now select 3 skills each
             const currentSelections = step === 3 ? wizardData.skills.step3 : wizardData.skills.step4;
             const remainingSpan = step === 3 ? 
                 document.getElementById('remaining-skill-points-1') : 
@@ -8288,34 +8347,106 @@ function loadSymptomsData() {
         function initializeStep5() {
             const speciesInfo = speciesData[selectedSpecies];
             
-            // Show random talents
-            wizardData.talents.random = [...speciesInfo.randomTalents];
-            const randomTalentsList = document.getElementById('random-talents-list');
-            randomTalentsList.innerHTML = wizardData.talents.random.map(talent => 
-                `<span style="display: inline-block; background: #d4e6f1; padding: 5px 10px; margin: 2px; border-radius: 3px;">${talent}</span>`
-            ).join('');
-
-            // Show selectable talents (excluding random ones)
-            const selectableTalents = speciesInfo.talents.filter(talent => 
-                !speciesInfo.randomTalents.includes(talent)
-            );
+            // Handle fixed talents (automatic)
+            if (speciesInfo.fixedTalents) {
+                wizardData.talents.fixed = [...speciesInfo.fixedTalents];
+                const randomTalentsList = document.getElementById('random-talents-list');
+                randomTalentsList.innerHTML = wizardData.talents.fixed.map(talent => 
+                    `<span style="display: inline-block; background: #d4e6f1; padding: 5px 10px; margin: 2px; border-radius: 3px;">${talent}</span>`
+                ).join('');
+            } else if (speciesInfo.randomTalents) {
+                // Fallback for species that still use the old system
+                wizardData.talents.fixed = [...speciesInfo.randomTalents];
+                const randomTalentsList = document.getElementById('random-talents-list');
+                randomTalentsList.innerHTML = wizardData.talents.fixed.map(talent => 
+                    `<span style="display: inline-block; background: #d4e6f1; padding: 5px 10px; margin: 2px; border-radius: 3px;">${talent}</span>`
+                ).join('');
+            }
 
             const talentsList = document.getElementById('species-talents-list');
             talentsList.innerHTML = '';
 
-            selectableTalents.forEach(talent => {
-                const talentDiv = document.createElement('div');
-                talentDiv.className = 'talent-checkbox-item';
-                talentDiv.innerHTML = `
-                    <input type="radio" name="selected-talent" id="talent-${talent}" value="${talent}" onchange="updateTalentSelection(this)">
-                    <label for="talent-${talent}">${talent}</label>
-                `;
-                talentsList.appendChild(talentDiv);
-            });
+            // Handle talent choices
+            if (speciesInfo.talentChoices) {
+                speciesInfo.talentChoices.forEach((choice, choiceIndex) => {
+                    const choiceDiv = document.createElement('div');
+                    choiceDiv.style.marginBottom = '20px';
+                    choiceDiv.style.padding = '15px';
+                    choiceDiv.style.border = '1px solid #d0c5a0';
+                    choiceDiv.style.borderRadius = '5px';
+                    choiceDiv.style.background = '#f9f7f1';
+                    
+                    let choiceHTML = `<h5 style="color: #3e2f1f; margin-bottom: 10px;">${choice.description}</h5>`;
+                    
+                    choice.options.forEach(talent => {
+                        if (choice.multiple) {
+                            choiceHTML += `
+                                <label style="display: block; margin-bottom: 5px; cursor: pointer;">
+                                    <input type="checkbox" name="talent-choice-${choiceIndex}" value="${talent}" onchange="updateMultipleTalentChoiceSelection(${choiceIndex}, this)" style="margin-right: 8px;">
+                                    ${talent}
+                                </label>
+                            `;
+                        } else {
+                            choiceHTML += `
+                                <label style="display: block; margin-bottom: 5px; cursor: pointer;">
+                                    <input type="radio" name="talent-choice-${choiceIndex}" value="${talent}" onchange="updateTalentChoiceSelection(${choiceIndex}, this)" style="margin-right: 8px;">
+                                    ${talent}
+                                </label>
+                            `;
+                        }
+                    });
+                    
+                    choiceDiv.innerHTML = choiceHTML;
+                    talentsList.appendChild(choiceDiv);
+                });
+                
+                // Initialize choices array
+                wizardData.talents.choices = speciesInfo.talentChoices.map(choice => 
+                    choice.multiple ? [] : null
+                );
+            } else {
+                // Fallback for species that still use the old single-choice system
+                const selectableTalents = speciesInfo.talents.filter(talent => 
+                    !wizardData.talents.fixed.includes(talent)
+                );
+
+                selectableTalents.forEach(talent => {
+                    const talentDiv = document.createElement('div');
+                    talentDiv.className = 'talent-checkbox-item';
+                    talentDiv.innerHTML = `
+                        <input type="radio" name="selected-talent" id="talent-${talent}" value="${talent}" onchange="updateTalentSelection(this)">
+                        <label for="talent-${talent}">${talent}</label>
+                    `;
+                    talentsList.appendChild(talentDiv);
+                });
+            }
         }
 
         function updateTalentSelection(radio) {
             wizardData.talents.selected = radio.checked ? [radio.value] : [];
+        }
+
+        function updateTalentChoiceSelection(choiceIndex, radio) {
+            if (radio.checked) {
+                wizardData.talents.choices[choiceIndex] = radio.value;
+            }
+        }
+
+        function updateMultipleTalentChoiceSelection(choiceIndex, checkbox) {
+            if (!wizardData.talents.choices[choiceIndex]) {
+                wizardData.talents.choices[choiceIndex] = [];
+            }
+            
+            if (checkbox.checked) {
+                if (!wizardData.talents.choices[choiceIndex].includes(checkbox.value)) {
+                    wizardData.talents.choices[choiceIndex].push(checkbox.value);
+                }
+            } else {
+                const index = wizardData.talents.choices[choiceIndex].indexOf(checkbox.value);
+                if (index > -1) {
+                    wizardData.talents.choices[choiceIndex].splice(index, 1);
+                }
+            }
         }
 
         function initializeStep6() {
@@ -8354,19 +8485,33 @@ function loadSymptomsData() {
                 </div>
                 
                 <div style="margin-bottom: 15px;">
-                    <h5 style="color: #3e2f1f;">Skills with +5 Advances:</h5>
+                    <h5 style="color: #3e2f1f;">Skills with +5 Advances (3 selected):</h5>
                     <p>${wizardData.skills.step3.join(', ')}</p>
                 </div>
                 
                 <div style="margin-bottom: 15px;">
-                    <h5 style="color: #3e2f1f;">Skills with +3 Advances:</h5>
+                    <h5 style="color: #3e2f1f;">Skills with +3 Advances (3 selected):</h5>
                     <p>${wizardData.skills.step4.join(', ')}</p>
                 </div>
                 
                 <div style="margin-bottom: 15px;">
                     <h5 style="color: #3e2f1f;">Talents:</h5>
-                    <p><strong>Species Talents:</strong> ${wizardData.talents.random.join(', ')}</p>
-                    <p><strong>Selected Talent:</strong> ${wizardData.talents.selected.join(', ')}</p>
+                    <p><strong>Fixed Talents:</strong> ${wizardData.talents.fixed.join(', ')}</p>
+                    ${wizardData.talents.choices.length > 0 ? 
+                        (() => {
+                            let chosenTalents = [];
+                            wizardData.talents.choices.forEach(choice => {
+                                if (Array.isArray(choice)) {
+                                    chosenTalents.push(...choice);
+                                } else if (choice) {
+                                    chosenTalents.push(choice);
+                                }
+                            });
+                            return chosenTalents.length > 0 ? 
+                                `<p><strong>Chosen Talents:</strong> ${chosenTalents.join(', ')}</p>` : '';
+                        })() : 
+                        (wizardData.talents.selected.length > 0 ? 
+                            `<p><strong>Selected Talent:</strong> ${wizardData.talents.selected.join(', ')}</p>` : '')}
                 </div>
             `;
 
@@ -8449,7 +8594,7 @@ function loadSymptomsData() {
                 resilience: { base: 0, extra: 0, total: 0 },
                 movement: 0,
                 skills: { step3: [], step4: [] },
-                talents: { random: [], selected: [] },
+                talents: { fixed: [], choices: [], selected: [] },
                 extraPoints: 0,
                 usedExtraPoints: 0
             };
