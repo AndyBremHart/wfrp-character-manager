@@ -726,6 +726,49 @@
                 </div>
             </div>
 
+            <!-- Diseases & Ailments -->
+            <div class="section">
+                <div class="section-title">Diseases & Ailments</div>
+                
+                <!-- Disease Notes for Narrative -->
+                <div class="disease-notes" style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Disease History & Current Status:</label>
+                    <div class="template-helper" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
+                        <select id="disease-template-select" style="flex: 1; padding: 5px; border: 1px solid #8b7355; font-family: 'Georgia', serif;">
+                            <option value="">Insert disease template...</option>
+                            <!-- Populated from diseases.json -->
+                        </select>
+                        <button id="insert-template-btn" class="control-btn" onclick="window.insertDiseaseTemplate()" style="padding: 5px 10px; font-size: 12px;">Insert Template</button>
+                    </div>
+                    <textarea id="disease-notes-textarea" rows="8" placeholder="Record contracted diseases, incubation periods, symptoms, treatments, and recovery progress..." style="width: 100%; padding: 10px; border: 1px solid #8b7355; font-family: 'Georgia', serif; resize: vertical; background: white;"></textarea>
+                </div>
+                
+                <!-- Active Symptoms for Mechanics -->
+                <div class="active-symptoms" style="margin-bottom: 20px;">
+                    <h4 style="color: #3e2f1f; margin: 0 0 10px 0; font-size: 14px;">Current Symptoms (Mechanical Effects)</h4>
+                    <div class="symptoms-grid" id="symptoms-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; margin-bottom: 15px; padding: 15px; background: #f8f6f0; border: 2px solid #8b7355; border-radius: 5px;">
+                        <!-- Generated checkboxes from symptoms.json -->
+                    </div>
+                    
+                    <div class="symptom-effects-summary" id="symptom-effects-summary" style="display: none; padding: 15px; background: #fff4e0; border: 2px solid #ff8c00; border-radius: 5px;">
+                        <h4 style="color: #8b4513; margin: 0 0 8px 0; font-size: 14px;">📊 Active Symptom Effects</h4>
+                        <div id="symptom-effects-text" style="color: #8b4513; font-size: 13px; font-weight: bold;"></div>
+                    </div>
+                </div>
+                
+                <!-- Test Reminders -->
+                <div class="disease-reminders" style="margin-bottom: 20px;">
+                    <h4 style="color: #3e2f1f; margin: 0 0 10px 0; font-size: 14px;">Upcoming Tests & Reminders</h4>
+                    <textarea id="test-reminders" rows="3" placeholder="Endurance tests needed, treatment schedules, recovery milestones..." style="width: 100%; padding: 10px; border: 1px solid #8b7355; font-family: 'Georgia', serif; resize: vertical; background: white;"></textarea>
+                </div>
+                
+                <!-- Cross-Reference Warnings -->
+                <div class="status-interactions" id="status-interactions" style="display:none; padding: 15px; background: #ffe4e6; border: 2px solid #c41e3a; border-radius: 5px;">
+                    <h5 style="color: #8b0000; margin: 0 0 8px 0; font-size: 14px;">⚠️ Status Effect Interactions</h5>
+                    <div class="interaction-warnings" id="interaction-warnings" style="color: #8b0000; font-size: 13px;"></div>
+                </div>
+            </div>
+
             <!-- Corruption & Mutations -->
             <div class="section">
                 <div class="section-title">Corruption & Mutations</div>
@@ -1473,6 +1516,12 @@
                 physicalMutations: [],
                 mentalCorruptions: [],
                 awaitingTest: false
+            },
+            diseaseTracking: {
+                notes: "", // Narrative disease history and current status
+                activeSymptoms: [], // Array of active symptom keys
+                diseaseHistory: [], // For immunity tracking  
+                testReminders: "" // Upcoming tests/checks needed
             }
         };
 
@@ -2024,6 +2073,8 @@
         let srdWeapons = [];
         let srdArmour = [];
         let srdAmmunition = [];
+        let srdDiseases = [];
+        let srdSymptoms = [];
 
         // Define all available skills
         const allSkills = [
@@ -2128,6 +2179,23 @@
                         currentValue = Math.max(0, currentValue - woundPenalty);
                         penalties.push(`Critical Wounds: -${woundPenalty}`);
                         totalPenalty += woundPenalty;
+                    }
+                }
+                
+                // Apply symptom penalties
+                if (typeof window.getSymptomPenalties === 'function') {
+                    const symptomPenalties = window.getSymptomPenalties();
+                    const charMap = {
+                        'ws': 'WS', 'bs': 'BS', 's': 'S', 't': 'T', 'i': 'I', 
+                        'ag': 'Ag', 'dex': 'Dex', 'int': 'Int', 'wp': 'WP', 'fel': 'Fel'
+                    };
+                    
+                    const mappedChar = charMap[char];
+                    if (symptomPenalties.characteristics[mappedChar]) {
+                        const symptomPenalty = Math.abs(symptomPenalties.characteristics[mappedChar]);
+                        currentValue = Math.max(0, currentValue - symptomPenalty);
+                        penalties.push(`Symptoms: -${symptomPenalty}`);
+                        totalPenalty += symptomPenalty;
                     }
                 }
                 
@@ -4643,6 +4711,268 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Disease & Symptom Management System
+window.populateDiseaseTemplates = function() {
+    const select = document.getElementById('disease-template-select');
+    if (!select || !srdDiseases) return;
+    
+    // Clear existing options except first
+    while (select.children.length > 1) {
+        select.removeChild(select.lastChild);
+    }
+    
+    // Add disease options
+    srdDiseases.forEach(disease => {
+        const option = document.createElement('option');
+        option.value = disease.name;
+        option.textContent = disease.name;
+        select.appendChild(option);
+    });
+}
+
+window.insertDiseaseTemplate = function() {
+    const select = document.getElementById('disease-template-select');
+    const textarea = document.getElementById('disease-notes-textarea');
+    if (!select || !textarea || !select.value) return;
+    
+    const selectedDisease = srdDiseases.find(d => d.name === select.value);
+    if (!selectedDisease) return;
+    
+    const today = new Date().toLocaleDateString();
+    const template = `
+**${selectedDisease.name}** (Contracted: ${today})
+- Contraction: ${selectedDisease.contraction || 'N/A'}
+- Incubation: ${selectedDisease.incubation || 'N/A'}  
+- Duration: ${selectedDisease.duration || 'N/A'}
+- Symptoms: ${selectedDisease.symptoms ? selectedDisease.symptoms.join(', ') : 'N/A'}
+- Notes: 
+
+---
+`;
+    
+    // Insert at cursor position or append
+    if (textarea.selectionStart !== undefined) {
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        textarea.value = textarea.value.substring(0, start) + template + textarea.value.substring(end);
+        textarea.selectionStart = textarea.selectionEnd = start + template.length;
+    } else {
+        textarea.value += template;
+    }
+    
+    // Update character data
+    character.diseaseTracking.notes = textarea.value;
+    
+    // Reset select
+    select.value = '';
+    
+    // Focus back to textarea
+    textarea.focus();
+}
+
+window.generateSymptomCheckboxes = function() {
+    const grid = document.getElementById('symptoms-grid');
+    if (!grid || !srdSymptoms) return;
+    
+    // Clear existing content
+    grid.innerHTML = '';
+    
+    // Group symptoms by type or alphabetically
+    const sortedSymptoms = [...srdSymptoms].sort((a, b) => a.name.localeCompare(b.name));
+    
+    sortedSymptoms.forEach(symptom => {
+        const checkboxContainer = document.createElement('div');
+        checkboxContainer.style.cssText = 'display: flex; align-items: flex-start; gap: 8px; padding: 8px; background: white; border: 1px solid #ddd; border-radius: 3px;';
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `symptom-${symptom.name.toLowerCase().replace(/\s+/g, '-')}`;
+        checkbox.value = symptom.name;
+        checkbox.addEventListener('change', window.updateSymptomEffects);
+        
+        // Check if this symptom is active
+        checkbox.checked = character.diseaseTracking.activeSymptoms.includes(symptom.name);
+        
+        const label = document.createElement('label');
+        label.htmlFor = checkbox.id;
+        label.style.cssText = 'font-size: 12px; cursor: pointer; flex: 1;';
+        
+        // Build tooltip content
+        let tooltipContent = symptom.name;
+        if (symptom.mechanicalEffects && Object.keys(symptom.mechanicalEffects).length > 0) {
+            const effects = Object.entries(symptom.mechanicalEffects)
+                .map(([key, value]) => `${key}: ${value > 0 ? '+' : ''}${value}`)
+                .join(', ');
+            tooltipContent += `\nEffects: ${effects}`;
+        }
+        
+        if (symptom.diseases && symptom.diseases.length > 0) {
+            tooltipContent += `\nFound in: ${symptom.diseases.join(', ')}`;
+        }
+        
+        label.title = tooltipContent;
+        label.textContent = symptom.name;
+        
+        // Add visual indication for symptoms with effects
+        if (symptom.mechanicalEffects && Object.keys(symptom.mechanicalEffects).length > 0) {
+            label.style.fontWeight = 'bold';
+            label.style.color = '#8b4513';
+        }
+        
+        checkboxContainer.appendChild(checkbox);
+        checkboxContainer.appendChild(label);
+        grid.appendChild(checkboxContainer);
+    });
+}
+
+window.updateSymptomEffects = function() {
+    // Get all checked symptom checkboxes
+    const checkedSymptoms = [];
+    const checkboxes = document.querySelectorAll('#symptoms-grid input[type="checkbox"]:checked');
+    
+    checkboxes.forEach(checkbox => {
+        checkedSymptoms.push(checkbox.value);
+    });
+    
+    // Update character data
+    character.diseaseTracking.activeSymptoms = checkedSymptoms;
+    
+    // Calculate combined effects
+    const combinedEffects = {};
+    checkedSymptoms.forEach(symptomName => {
+        const symptom = srdSymptoms.find(s => s.name === symptomName);
+        if (symptom && symptom.mechanicalEffects) {
+            Object.entries(symptom.mechanicalEffects).forEach(([key, value]) => {
+                combinedEffects[key] = (combinedEffects[key] || 0) + value;
+            });
+        }
+    });
+    
+    // Display effects summary
+    const summary = document.getElementById('symptom-effects-summary');
+    const text = document.getElementById('symptom-effects-text');
+    
+    if (Object.keys(combinedEffects).length > 0) {
+        const effectStrings = Object.entries(combinedEffects)
+            .map(([key, value]) => `${key.charAt(0).toUpperCase() + key.slice(1)}: ${value > 0 ? '+' : ''}${value}`)
+            .join(' • ');
+        
+        text.textContent = effectStrings;
+        summary.style.display = 'block';
+    } else {
+        summary.style.display = 'none';
+    }
+    
+    // Update characteristic calculations
+    window.updateAllCharacteristicsFromSymptoms();
+    
+    // Check for interactions
+    window.checkStatusInteractions();
+}
+
+window.updateAllCharacteristicsFromSymptoms = function() {
+    const characteristics = ['ws', 'bs', 's', 't', 'i', 'ag', 'dex', 'int', 'wp', 'fel'];
+    characteristics.forEach(char => {
+        const current = document.getElementById(`${char}-current`);
+        if (current && current.updateFunction) {
+            current.updateFunction();
+        }
+    });
+}
+
+window.getSymptomPenalties = function() {
+    const penalties = {
+        characteristics: {},
+        tests: {}
+    };
+    
+    character.diseaseTracking.activeSymptoms.forEach(symptomName => {
+        const symptom = srdSymptoms.find(s => s.name === symptomName);
+        if (symptom && symptom.mechanicalEffects) {
+            Object.entries(symptom.mechanicalEffects).forEach(([key, value]) => {
+                if (['fellowship', 'toughness', 'strength', 'agility', 'dexterity', 'intelligence', 'willpower'].includes(key.toLowerCase())) {
+                    const charKey = key.charAt(0).toUpperCase() + key.slice(1);
+                    penalties.characteristics[charKey] = (penalties.characteristics[charKey] || 0) + value;
+                } else {
+                    penalties.tests[key] = (penalties.tests[key] || 0) + value;
+                }
+            });
+        }
+    });
+    
+    return penalties;
+}
+
+window.checkStatusInteractions = function() {
+    const activeConditions = activeConditions || [];
+    const activeSymptoms = character.diseaseTracking.activeSymptoms || [];
+    const interactions = [];
+    
+    // Check for condition/symptom overlaps
+    activeConditions.forEach(condition => {
+        activeSymptoms.forEach(symptomName => {
+            const symptom = srdSymptoms.find(s => s.name === symptomName);
+            if (symptom && symptom.interactsWith && symptom.interactsWith.includes(condition.name.toLowerCase())) {
+                interactions.push(`${symptom.name} interacts with ${condition.name} condition`);
+            }
+        });
+    });
+    
+    // Check for Fellowship penalties stacking
+    let fellowshipPenalties = 0;
+    activeConditions.forEach(condition => {
+        if (condition.effects && condition.effects.includes('Fellowship')) {
+            fellowshipPenalties++;
+        }
+    });
+    
+    const symptomPenalties = window.getSymptomPenalties();
+    if (symptomPenalties.characteristics.Fellowship && fellowshipPenalties > 0) {
+        interactions.push(`Fellowship penalties stacking: Conditions + Symptoms = ${symptomPenalties.characteristics.Fellowship + (fellowshipPenalties * -10)}`);
+    }
+    
+    // Display interactions
+    const interactionsDiv = document.getElementById('status-interactions');
+    const warningsDiv = document.getElementById('interaction-warnings');
+    
+    if (interactions.length > 0) {
+        warningsDiv.innerHTML = interactions.map(interaction => 
+            `<div style="margin-bottom: 5px;">• ${interaction}</div>`
+        ).join('');
+        interactionsDiv.style.display = 'block';
+    } else {
+        interactionsDiv.style.display = 'none';
+    }
+}
+
+window.updateDiseaseNotes = function() {
+    const textarea = document.getElementById('disease-notes-textarea');
+    if (textarea) {
+        character.diseaseTracking.notes = textarea.value;
+    }
+}
+
+window.updateTestReminders = function() {
+    const textarea = document.getElementById('test-reminders');
+    if (textarea) {
+        character.diseaseTracking.testReminders = textarea.value;
+    }
+}
+
+// Event listeners for disease tracking
+document.addEventListener('DOMContentLoaded', function() {
+    const diseaseNotes = document.getElementById('disease-notes-textarea');
+    const testReminders = document.getElementById('test-reminders');
+    
+    if (diseaseNotes) {
+        diseaseNotes.addEventListener('input', window.updateDiseaseNotes);
+    }
+    
+    if (testReminders) {
+        testReminders.addEventListener('input', window.updateTestReminders);
+    }
+});
+
 // Corruption & Mutation Management System
 window.updateCorruptionThreshold = function() {
     const willpower = parseInt(document.getElementById('wp-current')?.value) || 0;
@@ -5506,6 +5836,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 spells: spells,
                 corruptionPoints: document.getElementById('corruption-points').value,
                 mutations: mutations,
+                diseaseTracking: {
+                    notes: document.getElementById('disease-notes-textarea').value || '',
+                    activeSymptoms: character.diseaseTracking.activeSymptoms || [],
+                    diseaseHistory: character.diseaseTracking.diseaseHistory || [],
+                    testReminders: document.getElementById('test-reminders').value || ''
+                },
                 money: {
                     gold: document.getElementById('money-gold').value,
                     silver: document.getElementById('money-silver').value,
@@ -5652,6 +5988,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('money-brass').value = characterData.money.brass || '0';
             }
             
+            // Load disease tracking data
+            if (characterData.diseaseTracking) {
+                document.getElementById('disease-notes-textarea').value = characterData.diseaseTracking.notes || '';
+                document.getElementById('test-reminders').value = characterData.diseaseTracking.testReminders || '';
+                character.diseaseTracking.activeSymptoms = characterData.diseaseTracking.activeSymptoms || [];
+                character.diseaseTracking.diseaseHistory = characterData.diseaseTracking.diseaseHistory || [];
+                character.diseaseTracking.notes = characterData.diseaseTracking.notes || '';
+                character.diseaseTracking.testReminders = characterData.diseaseTracking.testReminders || '';
+            }
+            
             // Refresh all displays
             displaySkills();
             displayTalents();
@@ -5673,6 +6019,17 @@ document.addEventListener('DOMContentLoaded', function() {
             updateTotalAP();
             window.displayMutations();
             window.updateCorruptionStatus();
+            
+            // Update disease system displays
+            if (typeof window.generateSymptomCheckboxes === 'function') {
+                window.generateSymptomCheckboxes();
+            }
+            if (typeof window.updateSymptomEffects === 'function') {
+                window.updateSymptomEffects();
+            }
+            if (typeof window.checkStatusInteractions === 'function') {
+                window.checkStatusInteractions();
+            }
             
             // Update encumbrance after everything is loaded
             setTimeout(() => {
@@ -5701,6 +6058,8 @@ document.addEventListener('DOMContentLoaded', function() {
             loadTalentsData();
             loadConditionsData();
             loadSpellsData();
+            loadDiseasesData();
+            loadSymptomsData();
             
             try {
                 displaySkills(); // Show basic skills immediately
@@ -5735,6 +6094,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     if (typeof window.updateCorruptionStatus === 'function') {
                         window.updateCorruptionStatus();
+                    }
+                    
+                    // Initialize disease system
+                    if (typeof window.generateSymptomCheckboxes === 'function') {
+                        window.generateSymptomCheckboxes();
+                    }
+                    if (typeof window.populateDiseaseTemplates === 'function') {
+                        window.populateDiseaseTemplates();
                     }
                 }, 100);
                 
@@ -5854,6 +6221,52 @@ function loadSpellsData() {
                 { name: "Blessing", lore: "Sigmar", castingNumber: 3, range: "6 yards", target: "Willpower Bonus", duration: "Willpower Bonus rounds" }
             ];
             console.log('Using fallback spells data:', srdSpells.length, 'spells loaded');
+        });
+}
+
+// Load Diseases Data
+function loadDiseasesData() {
+    fetch('diseases.json')
+        .then(response => response.json())
+        .then(data => {
+            srdDiseases = data;
+            console.log('Loaded', srdDiseases.length, 'diseases from SRD');
+            // Populate disease template dropdown
+            window.populateDiseaseTemplates();
+        })
+        .catch(error => {
+            console.error('Error loading diseases:', error);
+            // Fallback data with common WFRP diseases
+            srdDiseases = [
+                { name: "Itching Pox", contraction: "Average (+20) Endurance Test", incubation: "1d10 days", duration: "1d10+7 days", symptoms: ["coughs-sneezes", "pox"] },
+                { name: "The Bloody Flux", contraction: "Easy (+40) Toughness Test", incubation: "2d10 days", duration: "1d10 days", symptoms: ["flux", "fever"] },
+                { name: "Festering Wound", contraction: "Easy (+40) Endurance Test", incubation: "1d10 days", duration: "1d10 days", symptoms: ["fever", "lingering"] }
+            ];
+            console.log('Using fallback diseases data:', srdDiseases.length, 'diseases loaded');
+            window.populateDiseaseTemplates();
+        });
+}
+
+// Load Symptoms Data
+function loadSymptomsData() {
+    fetch('symptoms.json')
+        .then(response => response.json())
+        .then(data => {
+            srdSymptoms = data;
+            console.log('Loaded', srdSymptoms.length, 'symptoms from SRD');
+            // Generate symptom checkboxes
+            window.generateSymptomCheckboxes();
+        })
+        .catch(error => {
+            console.error('Error loading symptoms:', error);
+            // Fallback data with common WFRP symptoms
+            srdSymptoms = [
+                { name: "Fever", mechanicalEffects: { fellowship: -10 }, diseases: ["The Black Plague", "Blood Rot"] },
+                { name: "Pox", mechanicalEffects: { fellowship: -10 }, diseases: ["Itching Pox"] },
+                { name: "Coughs and Sneezes", mechanicalEffects: {}, diseases: ["Itching Pox"] }
+            ];
+            console.log('Using fallback symptoms data:', srdSymptoms.length, 'symptoms loaded');
+            window.generateSymptomCheckboxes();
         });
 }
 
