@@ -8004,7 +8004,7 @@ function loadSymptomsData() {
                 <h4 style="color: #3e2f1f; margin-bottom: 10px;">${selectedSpecies}</h4>
                 <p><strong>Fate:</strong> ${speciesInfo.fate} | <strong>Resilience:</strong> ${speciesInfo.resilience} | <strong>Movement:</strong> ${speciesInfo.movement}</p>
                 <p><strong>Species Skills:</strong> ${speciesInfo.skills.join(', ')}</p>
-                <p><strong>Random Talents:</strong> ${speciesInfo.randomTalents.join(', ')}</p>
+                <p><strong>Fixed Talents:</strong> ${speciesInfo.fixedTalents ? speciesInfo.fixedTalents.join(', ') : 'None'}</p>
             `;
 
             // Create characteristics grid dynamically
