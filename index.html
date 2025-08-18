@@ -524,13 +524,17 @@
                 </div>
                 <div class="header-field">
                     <label>Species</label>
-                    <select id="species" style="width: 100%; padding: 5px; font-family: Georgia, serif; border: 1px solid #8b7355;">
-                        <option value="Human">Human</option>
-                        <option value="Dwarf">Dwarf</option>
-                        <option value="Halfling">Halfling</option>
-                        <option value="High Elf">High Elf</option>
-                        <option value="Wood Elf">Wood Elf</option>
-                    </select>
+                    <div style="display: flex; gap: 5px; align-items: center;">
+                        <select id="species" style="flex: 1; padding: 5px; font-family: Georgia, serif; border: 1px solid #8b7355;">
+                            <option value="">Select Species</option>
+                            <option value="Human">Human</option>
+                            <option value="Dwarf">Dwarf</option>
+                            <option value="Halfling">Halfling</option>
+                            <option value="High Elf">High Elf</option>
+                            <option value="Wood Elf">Wood Elf</option>
+                        </select>
+                        <button onclick="manualOpenSpeciesWizard()" style="padding: 8px 12px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer; font-size: 11px; border-radius: 3px;" title="Open Species Creation Wizard">Wizard</button>
+                    </div>
                 </div>
                 <div class="header-field">
                     <label>Class</label>
@@ -8331,6 +8335,48 @@ function loadSymptomsData() {
             };
         }
 
+        // Manual species wizard trigger
+        function manualOpenSpeciesWizard() {
+            const speciesSelect = document.getElementById('species');
+            const selectedValue = speciesSelect.value;
+            
+            if (!selectedValue) {
+                alert('Please select a species first before opening the wizard.');
+                return;
+            }
+            
+            if (!speciesData[selectedValue]) {
+                alert('Species data not found. Please refresh the page and try again.');
+                return;
+            }
+            
+            // Ask for confirmation if character has data
+            const hasData = checkCharacterHasData();
+            if (hasData) {
+                const confirmed = confirm('This will overwrite existing character data. Are you sure you want to proceed with the species creation wizard?');
+                if (!confirmed) {
+                    return;
+                }
+            }
+            
+            openSpeciesWizard(selectedValue);
+        }
+
+        // Check if character has significant data
+        function checkCharacterHasData() {
+            const characterName = document.getElementById('character-name').value;
+            const wsValue = document.getElementById('ws-current').value;
+            const bsValue = document.getElementById('bs-current').value;
+            
+            // Character has data if:
+            // - Has a name, or
+            // - Any characteristic is not default (20), or
+            // - Has any skills with advances
+            return characterName || 
+                   (wsValue && wsValue != 20) || 
+                   (bsValue && bsValue != 20);
+        }
+
         // Add species dropdown change detection
         function initializeSpeciesDropdown() {
             const speciesSelect = document.getElementById('species');
@@ -8339,12 +8385,17 @@ function loadSymptomsData() {
                     const selectedValue = this.value;
                     if (selectedValue && speciesData[selectedValue]) {
                         // Check if character is mostly empty (new character)
-                        const characterName = document.getElementById('character-name').value;
-                        const wsValue = document.getElementById('ws-current').value;
+                        const hasData = checkCharacterHasData();
                         
-                        if (!characterName && (!wsValue || wsValue == 20)) {
-                            // Open species wizard for new character
+                        if (!hasData) {
+                            // Auto-open wizard for new character
                             openSpeciesWizard(selectedValue);
+                        } else {
+                            // Ask if they want to open the wizard for existing character
+                            const shouldOpen = confirm('Would you like to open the Species Creation Wizard? This will overwrite existing character data.');
+                            if (shouldOpen) {
+                                openSpeciesWizard(selectedValue);
+                            }
                         }
                     }
                 });
