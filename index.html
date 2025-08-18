@@ -8553,15 +8553,15 @@ function loadSymptomsData() {
                     speciesField.value = selectedSpecies;
                 }
 
-                // Apply characteristics
+                // Apply characteristics to initial values
                 Object.keys(wizardData.characteristics).forEach(char => {
                     const charData = wizardData.characteristics[char];
-                    const currentField = document.getElementById(`${char.toLowerCase()}-current`);
-                    if (currentField) {
-                        currentField.value = charData.total;
+                    const initialField = document.getElementById(`${char.toLowerCase()}-initial`);
+                    if (initialField) {
+                        initialField.value = charData.total;
                         // Trigger any update functions
                         const event = new Event('input', { bubbles: true });
-                        currentField.dispatchEvent(event);
+                        initialField.dispatchEvent(event);
                     }
                 });
 
@@ -8572,8 +8572,8 @@ function loadSymptomsData() {
                 }
 
                 // Apply fate, resilience, and movement using wizard data
-                const fateField = document.getElementById('fate-current');
-                const resilienceField = document.getElementById('resilience-current');
+                const fateField = document.getElementById('fate');
+                const resilienceField = document.getElementById('resilience');
                 const movementField = document.getElementById('movement');
 
                 if (fateField) fateField.value = wizardData.fate.total;
