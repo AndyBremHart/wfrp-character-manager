@@ -2937,10 +2937,45 @@ window.showTalentDetails = function() {
         document.getElementById('talent-customisation-input').value = '';
     }
     
-    const maxTimes = talent.max === "1" ? 1 : 10;
-    document.getElementById('talent-times-input').max = maxTimes;
+    // Calculate max allowed to add based on limitations
+    let maxAllowedToAdd = 10; // Default for unlimited talents
     
-    timesDiv.style.display = talent.max === "1" ? 'none' : 'block';
+    if (talent.max === "1") {
+        maxAllowedToAdd = 1;
+        timesDiv.style.display = 'none';
+    } else {
+        timesDiv.style.display = 'block';
+        
+        // Check for characteristic bonus limitations
+        if (window.isTalentLimited(talent.name)) {
+            const currentCount = window.getTalentCurrentCount(talent.name);
+            const currentLimit = window.getTalentCurrentLimit(talent.name);
+            maxAllowedToAdd = Math.max(0, currentLimit - currentCount);
+            
+            // Update the label to show max allowed
+            const label = document.querySelector('label[for="talent-times-input"]') || 
+                         document.querySelector('#talent-times-taken label');
+            if (label) {
+                if (maxAllowedToAdd === 0) {
+                    label.innerHTML = `Number to Add: <span style="color: #c41e3a;">(Already at limit ${currentCount}/${currentLimit})</span>`;
+                } else {
+                    label.innerHTML = `Number to Add: <span style="color: #666; font-size: 12px;">(Max: ${maxAllowedToAdd} more)</span>`;
+                }
+            }
+        } else {
+            // For unlimited talents, show standard label
+            const label = document.querySelector('label[for="talent-times-input"]') || 
+                         document.querySelector('#talent-times-taken label');
+            if (label) {
+                label.textContent = 'Number to Add:';
+            }
+        }
+    }
+    
+    // Set the input max and reset value to valid range
+    const timesInput = document.getElementById('talent-times-input');
+    timesInput.max = maxAllowedToAdd;
+    timesInput.value = Math.min(parseInt(timesInput.value) || 1, maxAllowedToAdd);
 }
 
 window.confirmAddTalent = function() {
@@ -2962,23 +2997,31 @@ window.confirmAddTalent = function() {
     }
     
     // Check talent limitations first
-    if (window.isTalentLimited(talentData.name) && !window.canAddTalent(talentData.name)) {
+    if (window.isTalentLimited(talentData.name)) {
         const currentCount = window.getTalentCurrentCount(talentData.name);
         const currentLimit = window.getTalentCurrentLimit(talentData.name);
+        const maxAllowedToAdd = Math.max(0, currentLimit - currentCount);
         
-        // Determine limit type for error message
-        let limitType = "UNKNOWN";
-        if (talentLimitations[talentData.name]) {
-            limitType = talentLimitations[talentData.name].replace('Bonus', '').toUpperCase();
-        } else if (srdTalents) {
-            const talentInfo = srdTalents.find(t => t.name === talentData.name);
-            if (talentInfo && talentInfo.max) {
-                limitType = talentInfo.max.replace(' Bonus', '').toUpperCase();
+        // Check if trying to add more than allowed
+        if (timesTaken > maxAllowedToAdd) {
+            // Determine limit type for error message
+            let limitType = "UNKNOWN";
+            if (talentLimitations[talentData.name]) {
+                limitType = talentLimitations[talentData.name].replace('Bonus', '').toUpperCase();
+            } else if (srdTalents) {
+                const talentInfo = srdTalents.find(t => t.name === talentData.name);
+                if (talentInfo && talentInfo.max) {
+                    limitType = talentInfo.max.replace(' Bonus', '').toUpperCase();
+                }
             }
+            
+            if (maxAllowedToAdd === 0) {
+                alert(`Cannot add ${talentData.name}: already at limit (${currentCount}/${currentLimit} based on ${limitType} Bonus)`);
+            } else {
+                alert(`Cannot add ${timesTaken} instances of ${talentData.name}. You can only add ${maxAllowedToAdd} more (currently ${currentCount}/${currentLimit} based on ${limitType} Bonus)`);
+            }
+            return;
         }
-        
-        alert(`Cannot add ${talentData.name}: already at limit (${currentCount}/${currentLimit} based on ${limitType} Bonus)`);
-        return;
     }
     
     // Check if XP cost should be overridden (free talent)
