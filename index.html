@@ -1001,7 +1001,10 @@
             <div class="info-grid">
                 <div class="info-box">
                     <div class="info-box-title">Experience Points</div>
-                    <button onclick="window.openXPEarnDialog()" style="width: 100%; padding: 5px; margin-bottom: 5px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer; font-size: 12px;">Add Session XP</button>
+                    <div style="display: flex; gap: 2px; margin-bottom: 5px;">
+                        <button onclick="window.openXPEarnDialog()" style="flex: 1; padding: 5px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer; font-size: 11px;">Add Session XP</button>
+                        <button onclick="window.openXPHistoryDialog()" style="flex: 1; padding: 5px; background: #5a4a3a; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer; font-size: 11px;">View History</button>
+                    </div>
                     <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;"><span>Total XP:</span><span id="xp-total-display">0</span></div>
                     <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;"><span>Current XP:</span><span id="xp-current-display">0</span></div>
                     <div style="display: flex; justify-content: space-between; font-size: 11px;"><span>Spent XP:</span><span id="xp-spent-display">0</span></div>
@@ -1753,6 +1756,45 @@
             
             <div style="text-align: right;">
                 <button onclick="closeSessionList()" class="control-btn" style="padding: 8px 16px; background: #8b0000; color: white;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- XP History Modal -->
+    <div id="xp-history-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 700px; max-width: 900px; max-height: 80vh; overflow-y: auto; border-radius: 10px;">
+            <h3 style="color: #3e2f1f; margin-bottom: 15px;">Experience Points History</h3>
+            
+            <!-- XP Summary -->
+            <div style="background: #f9f7f1; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 2px solid #e8dfd0;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center;">
+                    <div>
+                        <div style="font-size: 11px; color: #666; margin-bottom: 2px;">Total Earned</div>
+                        <div style="font-size: 16px; font-weight: bold; color: #3e2f1f;" id="xp-history-total">0</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 11px; color: #666; margin-bottom: 2px;">Total Spent</div>
+                        <div style="font-size: 16px; font-weight: bold; color: #8b0000;" id="xp-history-spent">0</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 11px; color: #666; margin-bottom: 2px;">Current Available</div>
+                        <div style="font-size: 16px; font-weight: bold; color: #28a745;" id="xp-history-current">0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- XP Log Entries -->
+            <div style="margin-bottom: 20px;">
+                <h4 style="color: #3e2f1f; margin-bottom: 10px;">XP Log</h4>
+                <div id="xp-log-content" style="max-height: 400px; overflow-y: auto;">
+                    <!-- XP log entries will be populated here -->
+                </div>
+            </div>
+            
+            <!-- Controls -->
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <button onclick="clearXPHistory()" class="control-btn" style="padding: 8px 16px; background: #d44; color: white;">Clear All History</button>
+                <button onclick="closeXPHistory()" class="control-btn" style="padding: 8px 16px; background: #8b0000; color: white;">Close</button>
             </div>
         </div>
     </div>
@@ -3213,12 +3255,172 @@
             
             const currentTotal = parseInt(xpTotal.value) || 0;
             xpTotal.value = currentTotal + amount;
+            
+            // Log the XP gain
+            logXPEntry('earned', amount, note || 'Session XP');
+            
             window.updateXPDisplay();
             
             if (amount > 0) {
                 alert(`Added ${amount} XP! Total XP: ${parseInt(xpTotal.value)}`);
             }
         }
+
+        // =============== XP LOG SYSTEM ===============
+
+        // XP Log Variables
+        let xpLog = JSON.parse(localStorage.getItem('wfrpXPLog')) || [];
+
+        // Log XP Entry
+        function logXPEntry(type, amount, description, source = '') {
+            const entry = {
+                id: 'xp_' + Date.now(),
+                type: type, // 'earned' or 'spent'
+                amount: amount,
+                description: description,
+                source: source,
+                timestamp: new Date().toISOString(),
+                date: new Date().toLocaleDateString()
+            };
+            
+            xpLog.push(entry);
+            saveXPLog();
+        }
+
+        // Save XP Log
+        function saveXPLog() {
+            localStorage.setItem('wfrpXPLog', JSON.stringify(xpLog));
+        }
+
+        // Open XP History Dialog
+        window.openXPHistoryDialog = function() {
+            updateXPHistoryDisplay();
+            document.getElementById('xp-history-modal').style.display = 'block';
+        }
+
+        // Close XP History Dialog
+        function closeXPHistory() {
+            document.getElementById('xp-history-modal').style.display = 'none';
+        }
+
+        // Update XP History Display
+        function updateXPHistoryDisplay() {
+            const totalEarned = calculateTotalEarned();
+            const totalSpent = parseInt(xpSpent.value) || 0;
+            const currentAvailable = totalEarned - totalSpent;
+
+            // Update summary
+            document.getElementById('xp-history-total').textContent = totalEarned;
+            document.getElementById('xp-history-spent').textContent = totalSpent;
+            document.getElementById('xp-history-current').textContent = currentAvailable;
+
+            // Update log content
+            const logContent = document.getElementById('xp-log-content');
+            
+            if (xpLog.length === 0) {
+                logContent.innerHTML = '<p style="text-align: center; color: #666; font-style: italic; padding: 20px;">No XP history found. Start earning XP to see entries here!</p>';
+                return;
+            }
+
+            // Sort by timestamp (newest first)
+            const sortedLog = [...xpLog].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            let logHTML = '<div style="display: flex; flex-direction: column; gap: 8px;">';
+
+            sortedLog.forEach(entry => {
+                const isEarned = entry.type === 'earned';
+                const bgColor = isEarned ? '#e8f5e8' : '#f5e8e8';
+                const textColor = isEarned ? '#28a745' : '#dc3545';
+                const sign = isEarned ? '+' : '-';
+
+                logHTML += `
+                    <div style="padding: 12px; border: 1px solid #e8dfd0; border-radius: 5px; background: ${bgColor};">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: bold; color: ${textColor}; margin-bottom: 2px;">
+                                    ${sign}${entry.amount} XP - ${entry.description}
+                                </div>
+                                <div style="font-size: 11px; color: #666;">
+                                    ${entry.date} ${entry.source ? `• ${entry.source}` : ''}
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 5px;">
+                                <button onclick="deleteXPEntry('${entry.id}')" 
+                                        class="control-btn" 
+                                        style="padding: 4px 8px; font-size: 10px; background: #d44; color: white;" 
+                                        title="Delete this entry">
+                                    ×
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            logHTML += '</div>';
+            logContent.innerHTML = logHTML;
+        }
+
+        // Calculate Total Earned from Log
+        function calculateTotalEarned() {
+            return xpLog
+                .filter(entry => entry.type === 'earned')
+                .reduce((total, entry) => total + entry.amount, 0);
+        }
+
+        // Delete XP Entry
+        function deleteXPEntry(entryId) {
+            const entry = xpLog.find(e => e.id === entryId);
+            if (!entry) return;
+
+            const confirmMessage = `Delete this XP entry?\n\n${entry.type === 'earned' ? '+' : '-'}${entry.amount} XP - ${entry.description}\n\nThis will recalculate your total XP.`;
+            
+            if (!confirm(confirmMessage)) return;
+
+            // Remove from log
+            const entryIndex = xpLog.findIndex(e => e.id === entryId);
+            if (entryIndex === -1) return;
+
+            xpLog.splice(entryIndex, 1);
+            saveXPLog();
+
+            // Recalculate totals
+            recalculateXPTotals();
+
+            // Refresh display
+            updateXPHistoryDisplay();
+            window.updateXPDisplay();
+
+            alert('XP entry deleted and totals recalculated.');
+        }
+
+        // Recalculate XP Totals
+        function recalculateXPTotals() {
+            const totalEarned = calculateTotalEarned();
+            xpTotal.value = totalEarned;
+        }
+
+        // Clear XP History
+        function clearXPHistory() {
+            if (!confirm('Are you sure you want to clear all XP history?\n\nThis will reset your total XP to 0 and cannot be undone.')) {
+                return;
+            }
+
+            xpLog = [];
+            saveXPLog();
+
+            // Reset XP totals
+            xpTotal.value = 0;
+            xpSpent.value = 0;
+
+            // Update displays
+            updateXPHistoryDisplay();
+            window.updateXPDisplay();
+
+            alert('XP history cleared and totals reset.');
+        }
+
+        // spendXP function will be updated below to include logging
         
         // XP Cost Calculation Functions
         window.getCharacteristicCost = function(advances) {
@@ -3299,6 +3501,10 @@
             
             const currentSpent = parseInt(xpSpent.value) || 0;
             xpSpent.value = currentSpent + amount;
+            
+            // Log the XP spending
+            logXPEntry('spent', amount, description || 'XP spent');
+            
             window.updateXPDisplay();
             return true;
         }
@@ -6965,7 +7171,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     gold: document.getElementById('money-gold').value,
                     silver: document.getElementById('money-silver').value,
                     brass: document.getElementById('money-brass').value
-                }
+                },
+                xpLog: xpLog
             };
             
             // Save characteristics
@@ -7150,6 +7357,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             if (typeof window.checkStatusInteractions === 'function') {
                 window.checkStatusInteractions();
+            }
+            
+            // Load XP log if it exists
+            if (characterData.xpLog) {
+                xpLog = characterData.xpLog;
+                saveXPLog(); // Save to localStorage for consistency
             }
             
             // Update encumbrance after everything is loaded
