@@ -2538,73 +2538,7 @@
             }
         }
 
-        // Backup character to Google Drive
-        async function backupCharacterToDrive() {
-            if (!isSignedIn) {
-                showNotification('Please connect to Google Drive first', 'error');
-                return;
-            }
-
-            const backupBtn = document.getElementById('backup-character-btn');
-            const originalContent = backupBtn.innerHTML;
-            
-            try {
-                // Show loading state
-                backupBtn.innerHTML = '<div class="loading-spinner"></div> Backing up...';
-                backupBtn.disabled = true;
-
-                // Ensure WFRP folder exists
-                await ensureWFRPFolder();
-
-                // Gather character data using existing save function logic
-                const characterData = gatherCharacterDataForBackup();
-                
-                // Create filename with character name and timestamp
-                const characterName = document.getElementById('character-name').value || 'Unknown_Character';
-                const sanitizedName = characterName.replace(/[^a-zA-Z0-9_-]/g, '_');
-                const timestamp = new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-');
-                const filename = `${sanitizedName}_backup_${timestamp}.json`;
-
-                // Create file metadata
-                const fileMetadata = {
-                    name: filename,
-                    parents: [wfrpFolderId],
-                    description: `WFRP Character backup for ${characterName} created on ${new Date().toLocaleDateString()}`
-                };
-
-                // Convert character data to JSON
-                const fileContent = JSON.stringify(characterData, null, 2);
-                
-                // Create form data for multipart upload
-                const form = new FormData();
-                form.append('metadata', new Blob([JSON.stringify(fileMetadata)], {type: 'application/json'}));
-                form.append('file', new Blob([fileContent], {type: 'application/json'}));
-
-                // Upload to Google Drive
-                const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer ' + gapi.client.getToken().access_token
-                    },
-                    body: form
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    showNotification(`Character backed up successfully as "${result.name}"`, 'success');
-                } else {
-                    throw new Error(`Upload failed: ${response.status} ${response.statusText}`);
-                }
-
-            } catch (error) {
-                console.error('Backup error:', error);
-                showNotification('Failed to backup character: ' + error.message, 'error');
-            } finally {
-                // Restore button state
-                backupBtn.innerHTML = originalContent;
-                backupBtn.disabled = false;
-            }
-        }
+        // OLD backup function removed to prevent infinite recursion
 
         // Gather character data for backup (using existing save logic)
         function gatherCharacterDataForBackup() {
@@ -2823,48 +2757,7 @@
             restoreBtn.disabled = !selectedBackupId;
         }
 
-        // Restore selected backup
-        async function restoreSelectedBackup() {
-            if (!selectedBackupId) {
-                showNotification('Please select a backup to restore', 'warning');
-                return;
-            }
-
-            const confirmed = confirm('This will overwrite your current character data. Are you sure you want to restore this backup?');
-            if (!confirmed) return;
-
-            const restoreBtn = document.getElementById('restore-selected-btn');
-            const originalContent = restoreBtn.innerHTML;
-
-            try {
-                // Show loading state
-                restoreBtn.innerHTML = '<div class="loading-spinner"></div> Restoring...';
-                restoreBtn.disabled = true;
-
-                // Download the backup file
-                const response = await gapi.client.drive.files.get({
-                    fileId: selectedBackupId,
-                    alt: 'media'
-                });
-
-                // Parse the character data
-                const characterData = JSON.parse(response.body);
-
-                // Restore the character data (using existing load logic)
-                await restoreCharacterData(characterData);
-
-                showNotification('Character restored successfully!', 'success');
-                closeBackupRestoreModal();
-
-            } catch (error) {
-                console.error('Restore error:', error);
-                showNotification('Failed to restore character: ' + error.message, 'error');
-            } finally {
-                // Restore button state
-                restoreBtn.innerHTML = originalContent;
-                updateRestoreButton();
-            }
-        }
+        // OLD restore function removed to prevent infinite recursion
 
         // Restore character data from backup
         async function restoreCharacterData(characterData) {
@@ -3037,88 +2930,7 @@
 
         // =============== GOOGLE DOCS EXPORT FUNCTIONALITY ===============
         
-        // Export current session notes to Google Docs
-        async function exportSessionToGoogleDocs() {
-            if (!isSignedIn) {
-                showNotification('Please connect to Google Drive first', 'error');
-                return;
-            }
-
-            if (!currentSessionId) {
-                showNotification('No session notes to export. Create a session first.', 'warning');
-                return;
-            }
-
-            const exportBtn = document.getElementById('export-session-notes-btn');
-            const originalContent = exportBtn.innerHTML;
-
-            try {
-                // Show loading state
-                exportBtn.innerHTML = '<div class="loading-spinner"></div> Exporting...';
-                exportBtn.disabled = true;
-
-                // Save current session first
-                if (typeof saveCurrentSession === 'function') {
-                    saveCurrentSession();
-                }
-
-                // Get current session data
-                const session = sessionNotes.find(s => s.id === currentSessionId);
-                if (!session) {
-                    throw new Error('Session not found');
-                }
-
-                // Ensure WFRP folder exists
-                await ensureWFRPFolder();
-
-                // Create the Google Doc
-                const characterName = document.getElementById('character-name').value || 'Unknown Character';
-                const docTitle = `${characterName} - Session ${session.number} Notes`;
-
-                // Create new Google Doc
-                const docResponse = await gapi.client.docs.documents.create({
-                    resource: {
-                        title: docTitle
-                    }
-                });
-
-                const documentId = docResponse.result.documentId;
-
-                // Prepare document content
-                const content = await formatSessionForGoogleDocs(session, characterName);
-
-                // Insert content into the document
-                await gapi.client.docs.documents.batchUpdate({
-                    documentId: documentId,
-                    resource: {
-                        requests: content
-                    }
-                });
-
-                // Move the document to WFRP folder
-                await gapi.client.drive.files.update({
-                    fileId: documentId,
-                    addParents: wfrpFolderId,
-                    fields: 'id, parents'
-                });
-
-                showNotification(`Session notes exported successfully as "${docTitle}"`, 'success');
-
-                // Optionally open the document
-                const openDoc = confirm('Session exported successfully! Would you like to open the Google Doc?');
-                if (openDoc) {
-                    window.open(`https://docs.google.com/document/d/${documentId}/edit`, '_blank');
-                }
-
-            } catch (error) {
-                console.error('Export error:', error);
-                showNotification('Failed to export session notes: ' + error.message, 'error');
-            } finally {
-                // Restore button state
-                exportBtn.innerHTML = originalContent;
-                exportBtn.disabled = false;
-            }
-        }
+        // OLD export function removed to prevent infinite recursion
 
         // Format session data for Google Docs
         async function formatSessionForGoogleDocs(session, characterName) {
@@ -3334,19 +3146,20 @@
             showNotification(userMessage, 'error');
         }
 
-        // Retry mechanism for failed operations
-        async function retryOperation(operation, maxRetries = 3, delay = 1000) {
+        // Safe retry mechanism - NO RECURSION
+        async function retryOperation(operation, maxRetries = 3) {
             for (let attempt = 1; attempt <= maxRetries; attempt++) {
                 try {
                     return await operation();
                 } catch (error) {
+                    console.log(`Attempt ${attempt} failed:`, error);
+                    
                     if (attempt === maxRetries) {
-                        throw error;
+                        throw new Error(`Operation failed after ${maxRetries} attempts: ${error.message}`);
                     }
                     
-                    console.warn(`Operation failed (attempt ${attempt}/${maxRetries}), retrying in ${delay}ms...`);
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                    delay *= 2; // Exponential backoff
+                    // Wait before retry (exponential backoff)
+                    await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
                 }
             }
         }
@@ -3417,45 +3230,227 @@
             }
         }
 
-        // Enhanced backup with retry logic
+        // Safe backup with retry logic - NO RECURSION
         async function backupCharacterToDriveWithRetry() {
             if (!isOnline()) {
                 showNotification('You are offline. Please connect to the internet to backup to Google Drive.', 'error');
                 return;
             }
 
+            if (!isSignedIn) {
+                showNotification('Please connect to Google Drive first', 'error');
+                return;
+            }
+
+            const backupBtn = document.getElementById('backup-character-btn');
+            const originalContent = backupBtn.innerHTML;
+            
             try {
-                await retryOperation(backupCharacterToDrive, 3);
+                // Show loading state
+                backupBtn.innerHTML = '<div class="loading-spinner"></div> Backing up...';
+                backupBtn.disabled = true;
+
+                // Retry the backup operation safely
+                await retryOperation(async () => {
+                    // Ensure WFRP folder exists
+                    await ensureWFRPFolder();
+
+                    // Gather character data
+                    const characterData = gatherCharacterDataForBackup();
+                    
+                    // Create filename with character name and timestamp
+                    const characterName = document.getElementById('character-name').value || 'Unknown_Character';
+                    const sanitizedName = characterName.replace(/[^a-zA-Z0-9_-]/g, '_');
+                    const timestamp = new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-');
+                    const filename = `${sanitizedName}_backup_${timestamp}.json`;
+
+                    // Create file metadata
+                    const fileMetadata = {
+                        name: filename,
+                        parents: [wfrpFolderId],
+                        description: `WFRP Character backup for ${characterName} created on ${new Date().toLocaleDateString()}`
+                    };
+
+                    // Convert character data to JSON
+                    const fileContent = JSON.stringify(characterData, null, 2);
+                    
+                    // Create form data for multipart upload
+                    const form = new FormData();
+                    form.append('metadata', new Blob([JSON.stringify(fileMetadata)], {type: 'application/json'}));
+                    form.append('file', new Blob([fileContent], {type: 'application/json'}));
+
+                    // Upload to Google Drive
+                    const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Bearer ' + gapi.client.getToken().access_token
+                        },
+                        body: form
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Upload failed: ${response.status} ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    return result;
+                }, 3);
+
+                showNotification('Character backed up successfully!', 'success');
+
             } catch (error) {
+                console.error('Backup error:', error);
                 handleGoogleAPIError(error, 'Character backup');
+            } finally {
+                // Restore button state
+                backupBtn.innerHTML = originalContent;
+                backupBtn.disabled = false;
             }
         }
 
-        // Enhanced restore with retry logic
+        // Safe restore with retry logic - NO RECURSION
         async function restoreSelectedBackupWithRetry() {
             if (!isOnline()) {
                 showNotification('You are offline. Please connect to the internet to restore from Google Drive.', 'error');
                 return;
             }
 
+            if (!selectedBackupId) {
+                showNotification('Please select a backup to restore', 'warning');
+                return;
+            }
+
+            const confirmed = confirm('This will overwrite your current character data. Are you sure you want to restore this backup?');
+            if (!confirmed) return;
+
+            const restoreBtn = document.getElementById('restore-selected-btn');
+            const originalContent = restoreBtn.innerHTML;
+
             try {
-                await retryOperation(restoreSelectedBackup, 3);
+                // Show loading state
+                restoreBtn.innerHTML = '<div class="loading-spinner"></div> Restoring...';
+                restoreBtn.disabled = true;
+
+                // Retry the restore operation safely
+                await retryOperation(async () => {
+                    // Download the backup file
+                    const response = await gapi.client.drive.files.get({
+                        fileId: selectedBackupId,
+                        alt: 'media'
+                    });
+
+                    // Parse the character data
+                    const characterData = JSON.parse(response.body);
+
+                    // Restore the character data
+                    await restoreCharacterData(characterData);
+
+                    return characterData;
+                }, 3);
+
+                showNotification('Character restored successfully!', 'success');
+                closeBackupRestoreModal();
+
             } catch (error) {
+                console.error('Restore error:', error);
                 handleGoogleAPIError(error, 'Character restore');
+            } finally {
+                // Restore button state
+                restoreBtn.innerHTML = originalContent;
+                updateRestoreButton();
             }
         }
 
-        // Enhanced export with retry logic
+        // Safe export with retry logic - NO RECURSION
         async function exportSessionToGoogleDocsWithRetry() {
             if (!isOnline()) {
                 showNotification('You are offline. Please connect to the internet to export to Google Docs.', 'error');
                 return;
             }
 
+            if (!isSignedIn) {
+                showNotification('Please connect to Google Drive first', 'error');
+                return;
+            }
+
+            if (!currentSessionId) {
+                showNotification('No session notes to export. Create a session first.', 'warning');
+                return;
+            }
+
+            const exportBtn = document.getElementById('export-session-notes-btn');
+            const originalContent = exportBtn.innerHTML;
+
             try {
-                await retryOperation(exportSessionToGoogleDocs, 3);
+                // Show loading state
+                exportBtn.innerHTML = '<div class="loading-spinner"></div> Exporting...';
+                exportBtn.disabled = true;
+
+                // Retry the export operation safely
+                const documentId = await retryOperation(async () => {
+                    // Save current session first
+                    if (typeof saveCurrentSession === 'function') {
+                        saveCurrentSession();
+                    }
+
+                    // Get current session data
+                    const session = sessionNotes.find(s => s.id === currentSessionId);
+                    if (!session) {
+                        throw new Error('Session not found');
+                    }
+
+                    // Ensure WFRP folder exists
+                    await ensureWFRPFolder();
+
+                    // Create the Google Doc
+                    const characterName = document.getElementById('character-name').value || 'Unknown Character';
+                    const docTitle = `${characterName} - Session ${session.number} Notes`;
+
+                    // Create new Google Doc
+                    const docResponse = await gapi.client.docs.documents.create({
+                        resource: {
+                            title: docTitle
+                        }
+                    });
+
+                    const documentId = docResponse.result.documentId;
+
+                    // Prepare document content
+                    const content = await formatSessionForGoogleDocs(session, characterName);
+
+                    // Insert content into the document
+                    await gapi.client.docs.documents.batchUpdate({
+                        documentId: documentId,
+                        resource: {
+                            requests: content
+                        }
+                    });
+
+                    // Move the document to WFRP folder
+                    await gapi.client.drive.files.update({
+                        fileId: documentId,
+                        addParents: wfrpFolderId,
+                        fields: 'id, parents'
+                    });
+
+                    return documentId;
+                }, 3);
+
+                showNotification('Session notes exported successfully!', 'success');
+
+                // Optionally open the document
+                const openDoc = confirm('Session exported successfully! Would you like to open the Google Doc?');
+                if (openDoc) {
+                    window.open(`https://docs.google.com/document/d/${documentId}/edit`, '_blank');
+                }
+
             } catch (error) {
+                console.error('Export error:', error);
                 handleGoogleAPIError(error, 'Session notes export');
+            } finally {
+                // Restore button state
+                exportBtn.innerHTML = originalContent;
+                exportBtn.disabled = false;
             }
         }
 
@@ -3472,7 +3467,7 @@
             updateGoogleDriveUI();
         });
 
-        // Override the original functions to use retry versions
+        // Set the safe functions as the main functions
         window.backupCharacterToDrive = backupCharacterToDriveWithRetry;
         window.restoreSelectedBackup = restoreSelectedBackupWithRetry;
         window.exportSessionToGoogleDocs = exportSessionToGoogleDocsWithRetry;
