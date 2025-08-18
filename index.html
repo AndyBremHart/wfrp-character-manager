@@ -2471,12 +2471,20 @@
                     if (window.spendXP(cost, `${talent.displayName} talent advance`)) {
                         talent.timesTaken = currentTimes + 1;
                         window.displayTalents(); // Refresh the display
+                        // Update max wounds if Hardy talent was advanced
+                        if (talent.name === "Hardy" && typeof window.updateMaxWounds === 'function') {
+                            window.updateMaxWounds();
+                        }
                         alert(`${talent.displayName} taken again! Spent ${cost} XP.`);
                     }
                 } else {
                     // Free addition (insufficient XP scenario)
                     talent.timesTaken = currentTimes + 1;
                     window.displayTalents(); // Refresh the display
+                    // Update max wounds if Hardy talent was advanced
+                    if (talent.name === "Hardy" && typeof window.updateMaxWounds === 'function') {
+                        window.updateMaxWounds();
+                    }
                     alert(`${talent.displayName} taken again for FREE!`);
                 }
             } else {
@@ -2485,6 +2493,10 @@
                     if (confirm(`Add ${talent.displayName} again for FREE? (mutation/story reward)`)) {
                         talent.timesTaken = currentTimes + 1;
                         window.displayTalents(); // Refresh the display
+                        // Update max wounds if Hardy talent was advanced
+                        if (talent.name === "Hardy" && typeof window.updateMaxWounds === 'function') {
+                            window.updateMaxWounds();
+                        }
                         alert(`${talent.displayName} taken again for FREE!`);
                     }
                 }
@@ -3293,7 +3305,7 @@ window.displayTalents = function() {
         
         // Check talent limitations
         const isLimited = talentLimitations[talent.name];
-        let limitInfo = "";
+        let timesDisplay = "";
         let canTakeMore = talent.max === "No Limit" || parseInt(talent.max) > currentTimes;
         let limitColor = "";
         
@@ -3311,15 +3323,19 @@ window.displayTalents = function() {
                 limitColor = "color: #0a7c0a;"; // Green - can take more
             }
             
-            limitInfo = `<span style="${limitColor}"> (${currentCount}/${currentLimit})</span>`;
+            // For limited talents, show Times Taken as currentCount/currentLimit
+            timesDisplay = `<span style="${limitColor}">${currentCount}/${currentLimit}</span>`;
             
             // Override talent max display for limited talents
             canTakeMore = canTakeMore && (currentCount < currentLimit);
+        } else {
+            // For non-limited talents, show the regular times taken display
+            timesDisplay = talent.max === "1" ? "1" : `${currentTimes}/${talent.max}`;
         }
         
         row.innerHTML = `
-            <td class="skill-name-cell">${talent.displayName}${limitInfo}</td>
-            <td style="text-align: center;">${talent.max === "1" ? "1" : `${currentTimes}/${talent.max}`}</td>
+            <td class="skill-name-cell">${talent.displayName}</td>
+            <td style="text-align: center;">${timesDisplay}</td>
             <td style="text-align: center;">
                 ${canTakeMore ? 
                     `<button onclick="window.advanceTalent(${talents.indexOf(talent)})" style="padding: 5px 8px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">+</button>
