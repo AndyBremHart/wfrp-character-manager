@@ -753,10 +753,11 @@
                 <table class="skills-table" id="talents-table">
                     <thead>
                         <tr>
-                            <th style="width: 20%;">Talent</th>
-                            <th style="width: 12%;">Times Taken</th>
-                            <th style="width: 15%;">Advance</th>
-                            <th style="width: 50%;">Description</th>
+                            <th style="width: 18%;">Talent</th>
+                            <th style="width: 10%;">Times Taken</th>
+                            <th style="width: 12%;">Advance</th>
+                            <th style="width: 35%;">Description</th>
+                            <th style="width: 22%;">Notes</th>
                             <th style="width: 3%;">Del</th>
                         </tr>
                     </thead>
@@ -3936,7 +3937,8 @@ window.confirmAddTalent = function() {
         tests: talentData.tests || '',
         description: talentData.description || '',
         timesTaken: 1,  // Always start at 1, not the input value
-        customisation: customisation
+        customisation: customisation,
+        notes: ''
     };
     
     // Check if this exact talent already exists
@@ -4288,10 +4290,23 @@ window.displayTalents = function() {
                 }
             </td>
             <td style="font-size: 11px; padding: 5px;">${talent.description}</td>
+            <td style="padding: 3px;">
+                <textarea 
+                    style="width: 100%; min-height: 30px; font-size: 11px; font-family: Georgia, serif; border: 1px solid #8b7355; padding: 3px; resize: vertical;"
+                    placeholder="Add notes..."
+                    onchange="window.updateTalentNotes(${talents.indexOf(talent)}, this.value)"
+                >${talent.notes || ''}</textarea>
+            </td>
             <td><button class="advance-btn" onclick="window.removeTalent(${talents.indexOf(talent)})" style="background: #d44; color: white;">×</button></td>
         `;
         tbody.appendChild(row);
     });
+}
+
+window.updateTalentNotes = function(index, notes) {
+    if (talents[index]) {
+        talents[index].notes = notes;
+    }
 }
 
 window.removeTalent = function(index) {
@@ -8884,7 +8899,8 @@ function loadSymptomsData() {
                 tests: baseTalent.tests || '',
                 description: baseTalent.description || '',
                 timesTaken: 1,
-                customisation: customisation
+                customisation: customisation,
+                notes: ''
             });
 
             // Refresh the talents display
