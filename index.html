@@ -1557,6 +1557,11 @@
                     <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Effect:</label>
                     <textarea id="spell-effect-input" style="width: 100%; padding: 5px; height: 100px; font-family: 'Georgia', serif;"></textarea>
                 </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Ingredients (optional):</label>
+                    <input type="text" id="spell-ingredients-input" style="width: 100%; padding: 5px;" placeholder="Any special ingredients or material components">
+                </div>
             </div>
             
             <!-- Memorised checkbox -->
@@ -5751,8 +5756,11 @@ window.removeSpell = function(index) {
 
 window.addSpell = function() {
     document.getElementById('add-spell-modal').style.display = 'block';
-    document.getElementById('spell-name-input').focus();
+    
+    // Initialize to SRD view (default)
+    document.getElementById('spell-source-input').value = 'srd';
     updateLoreOptions(); // Set initial lore options
+    window.toggleSpellSource(); // Apply the SRD view
 }
 
 window.updateLoreOptions = function() {
@@ -5914,21 +5922,36 @@ window.confirmAddSpell = function() {
 window.closeAddSpellModal = function() {
     document.getElementById('add-spell-modal').style.display = 'none';
     document.getElementById('spell-source-input').value = 'srd';
-    document.getElementById('spell-name-input').value = '';
-    document.getElementById('spell-lore-input').value = '';
-    document.getElementById('spell-cn-input').value = '';
-    document.getElementById('spell-range-input').value = '';
-    document.getElementById('spell-target-input').value = '';
-    document.getElementById('spell-duration-input').value = '';
-    document.getElementById('spell-effect-input').value = '';
-    document.getElementById('spell-ingredients-input').value = '';
-    document.getElementById('spell-memorised-input').checked = false;
+    
+    // Clear custom spell fields safely
+    const customFields = [
+        'spell-name-input', 'spell-lore-input', 'spell-cn-input', 
+        'spell-range-input', 'spell-target-input', 'spell-duration-input', 
+        'spell-effect-input', 'spell-ingredients-input'
+    ];
+    
+    customFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.value = '';
+        }
+    });
+    
+    // Clear memorised checkbox
+    const memorisedField = document.getElementById('spell-memorised-input');
+    if (memorisedField) {
+        memorisedField.checked = false;
+    }
+    
+    // Clear SRD fields
     document.getElementById('srd-spell-search').value = '';
     document.getElementById('srd-spell-select').value = '';
     document.getElementById('srd-spell-details').style.display = 'none';
+    
     // Reset filters
     document.getElementById('srd-category-filter').value = '';
     document.getElementById('srd-lore-filter').value = '';
+    
     toggleSpellSource(); // Reset to SRD view (default)
 }
 
