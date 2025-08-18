@@ -4904,12 +4904,12 @@ window.getSymptomPenalties = function() {
 }
 
 window.checkStatusInteractions = function() {
-    const activeConditions = activeConditions || [];
+    const currentActiveConditions = window.activeConditions || [];
     const activeSymptoms = character.diseaseTracking.activeSymptoms || [];
     const interactions = [];
     
     // Check for condition/symptom overlaps
-    activeConditions.forEach(condition => {
+    currentActiveConditions.forEach(condition => {
         activeSymptoms.forEach(symptomName => {
             const symptom = srdSymptoms.find(s => s.name === symptomName);
             if (symptom && symptom.interactsWith && symptom.interactsWith.includes(condition.name.toLowerCase())) {
@@ -4920,7 +4920,7 @@ window.checkStatusInteractions = function() {
     
     // Check for Fellowship penalties stacking
     let fellowshipPenalties = 0;
-    activeConditions.forEach(condition => {
+    currentActiveConditions.forEach(condition => {
         if (condition.effects && condition.effects.includes('Fellowship')) {
             fellowshipPenalties++;
         }
