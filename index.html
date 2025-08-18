@@ -1456,450 +1456,159 @@
         };
 
         // WFRP 4th Edition Official Critical Wounds Reference Data
+        const headCriticalWounds = {
+          "01-03": { name: "Dramatic Injury", wounds: "T", effects: "Gain 1 Bleeding Condition. Once healed, +1 SL to social Tests (once only)", conditions: ["Bleeding"], location: "Head", severity: "minor" },
+          "04-06": { name: "Rattling Blow", wounds: 1, effects: "Gain 1 Stunned Condition", conditions: ["Stunned"], location: "Head", severity: "minor" },
+          "07-09": { name: "Poked Eye", wounds: 1, effects: "Gain 1 Blinded Condition", conditions: ["Blinded"], location: "Head", severity: "minor" },
+          "10-15": { name: "Ear Bash", wounds: 1, effects: "Gain 1 Deafened Condition", conditions: ["Deafened"], location: "Head", severity: "minor" },
+          "16-20": { name: "Minor Cut", wounds: 1, effects: "Gain 1 Bleeding Condition", conditions: ["Bleeding"], location: "Head", severity: "minor" },
+          "21-25": { name: "Black Eye", wounds: 2, effects: "Gain 2 Blinded Conditions", conditions: ["Blinded", "Blinded"], location: "Head", severity: "minor" },
+          "26-30": { name: "Sliced Ear", wounds: 2, effects: "Gain 2 Deafened and 1 Bleeding Condition", conditions: ["Deafened", "Deafened", "Bleeding"], location: "Head", severity: "minor" },
+          "31-35": { name: "Struck Forehead", wounds: 2, effects: "Gain 2 Bleeding and 1 Blinded Condition (Blinded cannot be removed until Bleeding removed)", conditions: ["Bleeding", "Bleeding", "Blinded"], location: "Head", severity: "minor" },
+          "36-40": { name: "Fractured Jaw", wounds: 2, effects: "Gain 2 Stunned Conditions. Broken Bone (Minor) injury", conditions: ["Stunned", "Stunned"], injuries: ["Broken Bone (Minor)"], location: "Head", severity: "moderate" },
+          "41-45": { name: "Major Eye Wound", wounds: 3, effects: "Gain 1 Bleeding and 1 Blinded Condition (Blinded needs Medical Attention)", conditions: ["Bleeding", "Blinded"], location: "Head", severity: "moderate" },
+          "46-50": { name: "Major Ear Wound", wounds: 3, effects: "-20 penalty to hearing Tests. Permanent loss if suffered again", permanentEffects: ["-20 hearing Tests"], location: "Head", severity: "moderate" },
+          "51-55": { name: "Broken Nose", wounds: 3, effects: "Gain 2 Bleeding Conditions. Challenging (+0) Endurance Test or gain Stunned", conditions: ["Bleeding", "Bleeding"], location: "Head", severity: "moderate" },
+          "56-60": { name: "Broken Jaw", wounds: 3, effects: "Gain 3 Stunned Conditions. Challenging (+0) Endurance Test or gain Unconscious. Broken Bone (Major)", conditions: ["Stunned", "Stunned", "Stunned"], injuries: ["Broken Bone (Major)"], location: "Head", severity: "moderate" },
+          "61-65": { name: "Mangled Ear", wounds: 4, effects: "Gain 3 Deafened and 2 Bleeding Conditions. Lose ear - Amputation (Average)", conditions: ["Deafened", "Deafened", "Deafened", "Bleeding", "Bleeding"], amputations: ["Ear"], location: "Head", severity: "severe" },
+          "66-75": { name: "Smashed Mouth", wounds: 4, effects: "Gain 2 Bleeding Conditions. Lose 1d10 teeth - Amputation (Easy)", conditions: ["Bleeding", "Bleeding"], amputations: ["1d10 Teeth"], location: "Head", severity: "severe" },
+          "76-80": { name: "Concussive Blow", wounds: 4, effects: "Gain 1 Deafened, 2 Bleeding, 1d10 Stunned Conditions. Fatigued for 1d10 days", conditions: ["Deafened", "Bleeding", "Bleeding"], location: "Head", severity: "severe" },
+          "81-85": { name: "Devastated Eye", wounds: 5, effects: "Gain 3 Blinded, 2 Bleeding, 1 Stunned Condition. Lose eye - Amputation (Difficult)", conditions: ["Blinded", "Blinded", "Blinded", "Bleeding", "Bleeding", "Stunned"], amputations: ["Eye"], location: "Head", severity: "severe" },
+          "86-94": { name: "Disfiguring Blow", wounds: 5, effects: "Gain 3 Bleeding, 3 Blinded, 2 Stunned Conditions. Lose eye and nose - Amputation (Hard)", conditions: ["Bleeding", "Bleeding", "Bleeding", "Blinded", "Blinded", "Blinded", "Stunned", "Stunned"], amputations: ["Eye", "Nose"], location: "Head", severity: "severe" },
+          "95-99": { name: "Mangled Jaw", wounds: 5, effects: "Gain 4 Bleeding, 3 Stunned Conditions. Broken Bone (Major), lose tongue and 1d10 teeth - Amputation (Hard)", conditions: ["Bleeding", "Bleeding", "Bleeding", "Bleeding", "Stunned", "Stunned", "Stunned"], injuries: ["Broken Bone (Major)"], amputations: ["Tongue", "1d10 Teeth"], location: "Head", severity: "severe" },
+          "100+": { name: "Shattered Skull", wounds: "Death", effects: "Head caved in, instantly dead", fatal: true, location: "Head", severity: "fatal" }
+        };
+
+        const armCriticalWounds = {
+          "01-10": { name: "Jolted Wrist", wounds: "T", effects: "Drop any item held in hand", location: "Arm", severity: "minor" },
+          "11-20": { name: "Jarred Arm", wounds: "T", effects: "Drop items, hand useless for 1d10-TB Rounds (min 1). Treat as lost hand", location: "Arm", severity: "minor" },
+          "21-25": { name: "Minor Cut", wounds: 1, effects: "Gain 1 Bleeding Condition", conditions: ["Bleeding"], location: "Arm", severity: "minor" },
+          "26-40": { name: "Sprain", wounds: 1, effects: "Torn Muscle (Minor) injury", injuries: ["Torn Muscle (Minor)"], location: "Arm", severity: "minor" },
+          "41-45": { name: "Torn Muscles", wounds: 1, effects: "Gain 1 Bleeding Condition and Torn Muscle (Minor) injury", conditions: ["Bleeding"], injuries: ["Torn Muscle (Minor)"], location: "Arm", severity: "minor" },
+          "46-50": { name: "Bleeding Hand", wounds: 1, effects: "Gain 1 Bleeding Condition. Average (+20) Dexterity Test before using hand or drop item", conditions: ["Bleeding"], location: "Arm", severity: "minor" },
+          "51-55": { name: "Wrenched Arm", wounds: 2, effects: "Drop items. Arm useless for 1d10 Rounds", location: "Arm", severity: "minor" },
+          "56-60": { name: "Gaping Wound", wounds: 2, effects: "Gain 2 Bleeding Conditions. Until Surgery, arm damage causes extra Bleeding", conditions: ["Bleeding", "Bleeding"], location: "Arm", severity: "minor" },
+          "61-75": { name: "Clean Break", wounds: 2, effects: "Drop items, Broken Bone (Minor). Difficult (-10) Endurance Test or gain Stunned", injuries: ["Broken Bone (Minor)"], location: "Arm", severity: "moderate" },
+          "76-80": { name: "Ruptured Ligament", wounds: 2, effects: "Drop items. Torn Muscle (Major) injury", injuries: ["Torn Muscle (Major)"], location: "Arm", severity: "moderate" },
+          "81-85": { name: "Deep Cut", wounds: 3, effects: "Gain 2 Bleeding, 1 Stunned Condition, Torn Muscle (Minor). Hard (-20) Endurance Test or Unconscious", conditions: ["Bleeding", "Bleeding", "Stunned"], injuries: ["Torn Muscle (Minor)"], location: "Arm", severity: "moderate" },
+          "86-90": { name: "Crushed Elbow", wounds: 3, effects: "Drop items, Broken Bone (Major) injury", injuries: ["Broken Bone (Major)"], location: "Arm", severity: "moderate" },
+          "91-95": { name: "Damaged Artery", wounds: 3, effects: "Gain 4 Bleeding Conditions", conditions: ["Bleeding", "Bleeding", "Bleeding", "Bleeding"], location: "Arm", severity: "moderate" },
+          "96-109": { name: "Dislocated Shoulder", wounds: 4, effects: "Arm counts as lost. Gain 1 Stunned until Medical Attention. Extended Heal Test (6 SL) resets arm. -10 penalty 1d10 days after", conditions: ["Stunned"], location: "Arm", severity: "severe" },
+          "110-115": { name: "Severed Finger", wounds: 4, effects: "Lose 1 finger - Amputation (Average). Gain 1 Bleeding", conditions: ["Bleeding"], amputations: ["Finger"], location: "Arm", severity: "severe" },
+          "116-120": { name: "Cleft Hand", wounds: 4, effects: "Lose 1 finger - Amputation (Difficult). Gain 2 Bleeding, 1 Stunned. Lose more fingers without Medical Attention", conditions: ["Bleeding", "Bleeding", "Stunned"], amputations: ["Finger"], location: "Arm", severity: "severe" },
+          "121-125": { name: "Mauled Bicep", wounds: 5, effects: "Drop items, Torn Muscle (Major), 2 Bleeding, 1 Stunned", conditions: ["Bleeding", "Bleeding", "Stunned"], injuries: ["Torn Muscle (Major)"], location: "Arm", severity: "severe" },
+          "126-130": { name: "Mangled Hand", wounds: 5, effects: "Lose hand - Amputation (Hard). Gain 2 Bleeding. Hard (-20) Endurance Test or gain Stunned and Prone", conditions: ["Bleeding", "Bleeding"], amputations: ["Hand"], location: "Arm", severity: "severe" },
+          "131-135": { name: "Sliced Tendons", wounds: 5, effects: "Arm useless - Amputation (Very Hard). Gain 3 Bleeding, 1 Stunned. Hard (-20) Endurance Test or Unconscious", conditions: ["Bleeding", "Bleeding", "Bleeding", "Stunned"], location: "Arm", severity: "severe" },
+          "136+": { name: "Brutal Dismemberment", wounds: "Death", effects: "Arm severed. Die from shock and blood loss", fatal: true, location: "Arm", severity: "fatal" }
+        };
+
+        const bodyCriticalWounds = {
+          "01-10": { name: "Winded", wounds: "T", effects: "Gain 1 Stunned. Average (+20) Endurance Test or Prone. Movement halved 1d10 Rounds", conditions: ["Stunned"], location: "Body", severity: "minor" },
+          "11-20": { name: "'Tis But A Scratch!", wounds: 1, effects: "Gain 1 Bleeding Condition", conditions: ["Bleeding"], location: "Body", severity: "minor" },
+          "21-25": { name: "Gut Blow", wounds: 1, effects: "Gain 1 Stunned. Easy (+40) Endurance Test or vomit and gain Prone", conditions: ["Stunned"], location: "Body", severity: "minor" },
+          "26-30": { name: "Low Blow!", wounds: 1, effects: "Hard (-20) Endurance Test or gain 3 Stunned Conditions", location: "Body", severity: "minor" },
+          "31-35": { name: "Twisted Back", wounds: 1, effects: "Torn Muscle (Minor) injury", injuries: ["Torn Muscle (Minor)"], location: "Body", severity: "minor" },
+          "36-40": { name: "Bruised Ribs", wounds: 2, effects: "All Agility Tests -10 penalty for 1d10 days", temporaryEffects: ["-10 Agility Tests"], location: "Body", severity: "minor" },
+          "41-45": { name: "Wrenched Collar Bone", wounds: 2, effects: "Random arm useless for 1d10 Rounds", location: "Body", severity: "minor" },
+          "46-50": { name: "Ragged Wound", wounds: 2, effects: "Gain 2 Bleeding Conditions", conditions: ["Bleeding", "Bleeding"], location: "Body", severity: "minor" },
+          "51-55": { name: "Cracked Ribs", wounds: 2, effects: "Gain 1 Stunned, Broken Bone (Minor) injury", conditions: ["Stunned"], injuries: ["Broken Bone (Minor)"], location: "Body", severity: "moderate" },
+          "56-60": { name: "Gaping Wound", wounds: 3, effects: "Gain 3 Bleeding. Until Surgery, body damage causes extra Bleeding", conditions: ["Bleeding", "Bleeding", "Bleeding"], location: "Body", severity: "moderate" },
+          "61-65": { name: "Painful Cut", wounds: 3, effects: "Gain 2 Bleeding, 1 Stunned. Hard (-20) Endurance Test or Unconscious. Scream unless 4+ SL", conditions: ["Bleeding", "Bleeding", "Stunned"], location: "Body", severity: "moderate" },
+          "66-70": { name: "Arterial Damage", wounds: 3, effects: "Gain 4 Bleeding. Until Surgery, body damage causes 2 extra Bleeding", conditions: ["Bleeding", "Bleeding", "Bleeding", "Bleeding"], location: "Body", severity: "moderate" },
+          "71-75": { name: "Pulled Back", wounds: 3, effects: "Torn Muscle (Major) injury", injuries: ["Torn Muscle (Major)"], location: "Body", severity: "moderate" },
+          "76-80": { name: "Fractured Hip", wounds: 4, effects: "Gain 1 Stunned. Challenging (+0) Endurance Test or Prone. Broken Bone (Minor)", conditions: ["Stunned"], injuries: ["Broken Bone (Minor)"], location: "Body", severity: "severe" },
+          "81-85": { name: "Major Chest Wound", wounds: 4, effects: "Gain 4 Bleeding. Until Surgery, body damage causes 2 extra Bleeding", conditions: ["Bleeding", "Bleeding", "Bleeding", "Bleeding"], location: "Body", severity: "severe" },
+          "86-90": { name: "Gut Wound", wounds: 4, effects: "Contract Festering Wound disease, gain 2 Bleeding", conditions: ["Bleeding", "Bleeding"], diseases: ["Festering Wound"], location: "Body", severity: "severe" },
+          "91-95": { name: "Smashed Rib Cage", wounds: 5, effects: "Gain 1 Stunned (Medical Attention only). Broken Bone (Major)", conditions: ["Stunned"], injuries: ["Broken Bone (Major)"], location: "Body", severity: "severe" },
+          "96-110": { name: "Broken Collar Bone", wounds: 5, effects: "Gain Unconscious until Medical Attention. Broken Bone (Major)", conditions: ["Unconscious"], injuries: ["Broken Bone (Major)"], location: "Body", severity: "severe" },
+          "111-115": { name: "Internal Bleeding", wounds: 5, effects: "Gain 1 Bleeding (Surgery only). Contract Blood Rot disease", conditions: ["Bleeding"], diseases: ["Blood Rot"], location: "Body", severity: "severe" },
+          "116+": { name: "Torn Apart", wounds: "Death", effects: "Hacked in two. Top half lands randomly, blood showers nearby", fatal: true, location: "Body", severity: "fatal" }
+        };
+
+        const legCriticalWounds = {
+          "01-10": { name: "Stubbed Toe", wounds: "T", effects: "Average (+20) Endurance Test or -10 Agility Tests until end of next turn", location: "Leg", severity: "minor" },
+          "11-20": { name: "Lost Footing", wounds: "T", effects: "Challenging (+0) Athletics Test or gain Prone Condition", location: "Leg", severity: "minor" },
+          "21-25": { name: "Twisted Ankle", wounds: 1, effects: "Agility Tests -10 penalty for 1d10 rounds", temporaryEffects: ["-10 Agility Tests"], location: "Leg", severity: "minor" },
+          "26-40": { name: "Minor Cut", wounds: 1, effects: "Gain 1 Bleeding Condition", conditions: ["Bleeding"], location: "Leg", severity: "minor" },
+          "41-45": { name: "Thigh Strike", wounds: 1, effects: "Gain 1 Bleeding. Average (+20) Endurance Test or Prone", conditions: ["Bleeding"], location: "Leg", severity: "minor" },
+          "46-50": { name: "Sprained Ankle", wounds: 1, effects: "Torn Muscle (Minor) injury", injuries: ["Torn Muscle (Minor)"], location: "Leg", severity: "minor" },
+          "51-55": { name: "Twisted Knee", wounds: 2, effects: "Agility Tests -20 penalty for 1d10 Rounds", temporaryEffects: ["-20 Agility Tests"], location: "Leg", severity: "minor" },
+          "56-60": { name: "Badly Cut Toe", wounds: 2, effects: "Gain 1 Bleeding. After encounter, Challenging (+0) Endurance Test or lose 1 toe", conditions: ["Bleeding"], location: "Leg", severity: "minor" },
+          "61-65": { name: "Bad Cut", wounds: 2, effects: "Gain 2 Bleeding. Challenging (+0) Endurance Test or Prone", conditions: ["Bleeding", "Bleeding"], location: "Leg", severity: "minor" },
+          "66-70": { name: "Badly Twisted Knee", wounds: 2, effects: "Torn Muscle (Major) injury", injuries: ["Torn Muscle (Major)"], location: "Leg", severity: "moderate" },
+          "71-75": { name: "Hacked Leg", wounds: 3, effects: "Gain 1 Prone, 2 Bleeding, Broken Bone (Minor)", conditions: ["Prone", "Bleeding", "Bleeding"], injuries: ["Broken Bone (Minor)"], location: "Leg", severity: "moderate" },
+          "76-80": { name: "Torn Thigh", wounds: 3, effects: "Gain 3 Bleeding. Until Surgery, leg damage causes extra Bleeding", conditions: ["Bleeding", "Bleeding", "Bleeding"], location: "Leg", severity: "moderate" },
+          "81-85": { name: "Ruptured Tendon", wounds: 3, effects: "Gain 1 Prone, 1 Stunned. Hard (-20) Endurance Test or Unconscious. Leg useless, Torn Muscle (Major)", conditions: ["Prone", "Stunned"], injuries: ["Torn Muscle (Major)"], location: "Leg", severity: "moderate" },
+          "86-90": { name: "Cracked Shin", wounds: 4, effects: "Gain 1 Stunned, 1 Prone, Torn Muscle (Major), Broken Bone (Minor)", conditions: ["Stunned", "Prone"], injuries: ["Torn Muscle (Major)", "Broken Bone (Minor)"], location: "Leg", severity: "severe" },
+          "91-95": { name: "Broken Knee", wounds: 4, effects: "Gain 1 Bleeding, 1 Prone, 1 Stunned, Broken Bone (Major)", conditions: ["Bleeding", "Prone", "Stunned"], injuries: ["Broken Bone (Major)"], location: "Leg", severity: "severe" },
+          "96-105": { name: "Dislocated Knee", wounds: 4, effects: "Gain Prone. Hard (-20) Endurance Test or Stunned (Medical Attention only). Extended Heal Test (6 SL) resets knee. Movement halved, -10 penalty 1d10 days", conditions: ["Prone"], location: "Leg", severity: "severe" },
+          "106-115": { name: "Crushed Foot", wounds: 4, effects: "Average (+20) Endurance Test or Prone and lose toes (1 + SL below 0). Gain 2 Bleeding. Surgery within 1d10 days or lose foot", conditions: ["Bleeding", "Bleeding"], location: "Leg", severity: "severe" },
+          "116-120": { name: "Severed Foot", wounds: 5, effects: "Foot severed - Amputation (Hard). Gain 3 Bleeding, 2 Stunned, 1 Prone", conditions: ["Bleeding", "Bleeding", "Bleeding", "Stunned", "Stunned", "Prone"], amputations: ["Foot"], location: "Leg", severity: "severe" },
+          "121-125": { name: "Cut Tendon", wounds: 5, effects: "Leg collapses. Gain 2 Bleeding, 2 Stunned, 1 Prone. Leg never works again - Amputation (Very Hard)", conditions: ["Bleeding", "Bleeding", "Stunned", "Stunned", "Prone"], location: "Leg", severity: "severe" },
+          "126+": { name: "Shattered Pelvis", wounds: "Death", effects: "Pelvis shattered, leg severed. Die instantly from trauma", fatal: true, location: "Leg", severity: "fatal" }
+        };
+
+        // Combined critical wounds object for compatibility
         const wfrpCriticalWounds = {
-          // HEAD WOUNDS
-          "head_dramatic_injury": {
-            name: "Dramatic Injury",
-            wounds: "T",
-            effects: "Gain 1 Bleeding Condition. +1 SL to social Tests once healed (once only)",
-            conditions: ["Bleeding"],
-            location: "Head",
-            severity: "minor"
-          },
-          "head_earring": {
-            name: "Earring",
-            wounds: 1,
-            effects: "Gain 1 Bleeding Condition. Ear pierced by weapon. +1 SL to appropriate social Tests once healed (once only)",
-            conditions: ["Bleeding"],
-            location: "Head",
-            severity: "minor"
-          },
-          "head_black_eye": {
-            name: "Black Eye",
-            wounds: 1,
-            effects: "Gain 1 Bleeding Condition. -10 penalty to all Sight Tests for 1d10 days",
-            conditions: ["Bleeding"],
-            location: "Head",
-            severity: "minor"
-          },
-          "head_nose_bleed": {
-            name: "Nose Bleed",
-            wounds: 2,
-            effects: "Gain 1 Bleeding Condition. No additional effects",
-            conditions: ["Bleeding"],
-            location: "Head",
-            severity: "minor"
-          },
-          "head_fractured_jaw": {
-            name: "Fractured Jaw",
-            wounds: 2,
-            effects: "Gain 2 Stunned Conditions. Broken Bone (Minor) injury",
-            conditions: ["Stunned", "Stunned"],
-            injuries: ["Broken Bone (Minor)"],
-            location: "Head",
-            severity: "moderate"
-          },
-          "head_broken_nose": {
-            name: "Broken Nose",
-            wounds: 2,
-            effects: "Gain 1 Bleeding, 1 Stunned Condition. Broken Bone (Minor) injury",
-            conditions: ["Bleeding", "Stunned"],
-            injuries: ["Broken Bone (Minor)"],
-            location: "Head",
-            severity: "moderate"
-          },
-          "head_broken_teeth": {
-            name: "Broken Teeth",
-            wounds: 3,
-            effects: "Gain 1 Bleeding, 1 Stunned Condition. -10 to Language Tests permanently",
-            conditions: ["Bleeding", "Stunned"],
-            permanentEffects: ["-10 Language Tests"],
-            location: "Head",
-            severity: "moderate"
-          },
-          "head_mangled_jaw": {
-            name: "Mangled Jaw",
-            wounds: 3,
-            effects: "Gain 2 Bleeding, 1 Stunned Condition. -20 to Language Tests permanently",
-            conditions: ["Bleeding", "Bleeding", "Stunned"],
-            permanentEffects: ["-20 Language Tests"],
-            location: "Head",
-            severity: "severe"
-          },
-          "head_lost_eye": {
-            name: "Lost Eye",
-            wounds: 4,
-            effects: "Gain 2 Bleeding, 1 Stunned Condition. -20 to all Ranged Tests permanently. Amputation (Average)",
-            conditions: ["Bleeding", "Bleeding", "Stunned"],
-            permanentEffects: ["-20 Ranged Tests"],
-            amputation: "Eye",
-            location: "Head",
-            severity: "severe"
-          },
-          "head_mangled_ear": {
-            name: "Mangled Ear",
-            wounds: 4,
-            effects: "Gain 2 Bleeding, 1 Stunned Condition. -20 to all Hearing Tests permanently. Amputation (Average)",
-            conditions: ["Bleeding", "Bleeding", "Stunned"],
-            permanentEffects: ["-20 Hearing Tests"],
-            amputation: "Ear",
-            location: "Head",
-            severity: "severe"
-          },
-          "head_brain_damage": {
-            name: "Brain Damage",
-            wounds: 5,
-            effects: "Gain 3 Bleeding, 2 Stunned, 1 Unconscious Condition. -10 to Int, WP, Fel permanently",
-            conditions: ["Bleeding", "Bleeding", "Bleeding", "Stunned", "Stunned", "Unconscious"],
-            permanentEffects: ["-10 Intelligence", "-10 Willpower", "-10 Fellowship"],
-            location: "Head",
-            severity: "fatal"
-          },
-          "head_shattered_skull": {
-            name: "Shattered Skull",
-            wounds: "Death",
-            effects: "Head caved in, instantly dead",
-            fatal: true,
-            location: "Head",
-            severity: "fatal"
-          },
+          ...Object.fromEntries(Object.entries(headCriticalWounds).map(([key, wound]) => [`head_${key.replace(/[^a-z0-9]/gi, '_').toLowerCase()}`, wound])),
+          ...Object.fromEntries(Object.entries(armCriticalWounds).map(([key, wound]) => [`arm_${key.replace(/[^a-z0-9]/gi, '_').toLowerCase()}`, wound])),
+          ...Object.fromEntries(Object.entries(bodyCriticalWounds).map(([key, wound]) => [`body_${key.replace(/[^a-z0-9]/gi, '_').toLowerCase()}`, wound])),
+          ...Object.fromEntries(Object.entries(legCriticalWounds).map(([key, wound]) => [`leg_${key.replace(/[^a-z0-9]/gi, '_').toLowerCase()}`, wound]))
+        };
 
-          // ARM WOUNDS  
-          "arm_dramatic_injury": {
-            name: "Dramatic Injury",
-            wounds: "T",
-            effects: "Gain 1 Bleeding Condition. +1 SL to social Tests once healed (once only)",
-            conditions: ["Bleeding"],
-            location: "Arm",
-            severity: "minor"
+        const wfrpCriticalWoundsByLocation = {
+          "Head": headCriticalWounds,
+          "Arm": armCriticalWounds, 
+          "Body": bodyCriticalWounds,
+          "Leg": legCriticalWounds
+        };
+        // Official WFRP Injury Types and Healing Mechanics
+        const injuryTypes = {
+          "Broken Bone (Minor)": {
+            effects: { 
+              "Head": "-30 Language Tests", 
+              "Body": "-30 Str/Agi, half Move", 
+              "Arm": "Unusable as lost limb", 
+              "Leg": "Unusable as lost limb" 
+            },
+            healing: "30+1d10 days, Average (+20) Endurance Test or permanent -5 penalty"
           },
-          "arm_bloody_mess": {
-            name: "Bloody Mess",
-            wounds: 1,
-            effects: "Gain 1 Bleeding Condition. No additional effects",
-            conditions: ["Bleeding"],
-            location: "Arm",
-            severity: "minor"
+          "Broken Bone (Major)": {
+            effects: { 
+              "Head": "-30 Language Tests", 
+              "Body": "-30 Str/Agi, half Move", 
+              "Arm": "Unusable as lost limb", 
+              "Leg": "Unusable as lost limb" 
+            },
+            healing: "40+1d10 days, Challenging (+0) Endurance Test or permanent -10 penalty"
           },
-          "arm_torn_muscles": {
-            name: "Torn Muscles",
-            wounds: 2,
-            effects: "Gain 1 Bleeding Condition. Torn Muscle (Minor) injury",
-            conditions: ["Bleeding"],
-            injuries: ["Torn Muscle (Minor)"],
-            location: "Arm",
-            severity: "minor"
+          "Torn Muscle (Minor)": {
+            effects: { 
+              "general": "-10 Tests using location", 
+              "Leg": "-10 Tests, half Movement" 
+            },
+            healing: "30-TB days"
           },
-          "arm_pinned_arm": {
-            name: "Pinned Arm", 
-            wounds: 2,
-            effects: "Gain 1 Bleeding, 1 Entangled Condition. Arm trapped until opponent moved away",
-            conditions: ["Bleeding", "Entangled"],
-            location: "Arm",
-            severity: "moderate"
-          },
-          "arm_broken_collar_bone": {
-            name: "Broken Collar Bone",
-            wounds: 3,
-            effects: "Gain 1 Bleeding, 1 Stunned Condition. Broken Bone (Minor) injury. -10 to tests using arm",
-            conditions: ["Bleeding", "Stunned"],
-            injuries: ["Broken Bone (Minor)"],
-            location: "Arm",
-            severity: "moderate"
-          },
-          "arm_broken_elbow": {
-            name: "Broken Elbow",
-            wounds: 3,
-            effects: "Gain 1 Bleeding, 1 Stunned Condition. Broken Bone (Major) injury. Arm unusable",
-            conditions: ["Bleeding", "Stunned"],
-            injuries: ["Broken Bone (Major)"],
-            location: "Arm",
-            severity: "severe"
-          },
-          "arm_broken_arm": {
-            name: "Broken Arm",
-            wounds: 4,
-            effects: "Gain 1 Bleeding, 2 Stunned Conditions. Broken Bone (Major) injury. Arm unusable",
-            conditions: ["Bleeding", "Stunned", "Stunned"],
-            injuries: ["Broken Bone (Major)"],
-            location: "Arm",
-            severity: "severe"
-          },
-          "arm_dislocated_shoulder": {
-            name: "Dislocated Shoulder",
-            wounds: 4,
-            effects: "Arm counts as lost until Medical Attention. Extended Average (+20) Heal Test (6 SL) required. -10 penalty for 1d10 days after",
-            conditions: ["Stunned"],
-            healingRequirement: "Extended Heal Test",
-            location: "Arm",
-            severity: "severe"
-          },
-          "arm_severed_finger": {
-            name: "Severed Finger",
-            wounds: 4,
-            effects: "Lose 1 finger - Amputation (Average). Gain 1 Bleeding Condition",
-            conditions: ["Bleeding"],
-            amputation: "Finger",
-            location: "Arm",
-            severity: "severe"
-          },
-          "arm_mangled_hand": {
-            name: "Mangled Hand",
-            wounds: 5,
-            effects: "Gain 2 Bleeding, 2 Stunned Conditions. -20 to Dex Tests permanently. Amputation (Hard)",
-            conditions: ["Bleeding", "Bleeding", "Stunned", "Stunned"],
-            permanentEffects: ["-20 Dexterity Tests"],
-            amputation: "Hand",
-            location: "Arm",
-            severity: "fatal"
-          },
-          "arm_severed_arm": {
-            name: "Severed Arm",
-            wounds: "Death",
-            effects: "Arm chopped clean off. Gain Bleeding Condition. Make Challenging (+0) Endurance Test or die",
-            conditions: ["Bleeding"],
-            deathSave: "Challenging (+0) Endurance",
-            amputation: "Arm",
-            location: "Arm",
-            severity: "fatal"
-          },
-
-          // BODY WOUNDS
-          "body_dramatic_injury": {
-            name: "Dramatic Injury", 
-            wounds: "T",
-            effects: "Gain 1 Bleeding Condition. +1 SL to social Tests once healed (once only)",
-            conditions: ["Bleeding"],
-            location: "Body",
-            severity: "minor"
-          },
-          "body_barely_a_scratch": {
-            name: "Barely a Scratch",
-            wounds: 1,
-            effects: "Gain 1 Bleeding Condition. No additional effects",
-            conditions: ["Bleeding"],
-            location: "Body",
-            severity: "minor"
-          },
-          "body_flesh_wound": {
-            name: "Flesh Wound",
-            wounds: 2,
-            effects: "Gain 1 Bleeding Condition. -10 to Agility for 1d10 rounds",
-            conditions: ["Bleeding"],
-            temporaryEffects: ["-10 Agility for 1d10 rounds"],
-            location: "Body",
-            severity: "minor"
-          },
-          "body_gut_blow": {
-            name: "Gut Blow",
-            wounds: 2,
-            effects: "Gain 1 Bleeding, 1 Stunned Condition. Winded for 1d10 rounds",
-            conditions: ["Bleeding", "Stunned"],
-            temporaryEffects: ["Winded for 1d10 rounds"],
-            location: "Body",
-            severity: "moderate"
-          },
-          "body_cracked_ribs": {
-            name: "Cracked Ribs",
-            wounds: 3,
-            effects: "Gain 1 Bleeding, 1 Stunned Condition. Broken Bone (Minor) injury",
-            conditions: ["Bleeding", "Stunned"],
-            injuries: ["Broken Bone (Minor)"],
-            location: "Body",
-            severity: "moderate"
-          },
-          "body_winded": {
-            name: "Winded",
-            wounds: 3,
-            effects: "Gain 2 Stunned Conditions. Cannot run for 1d10 rounds",
-            conditions: ["Stunned", "Stunned"],
-            temporaryEffects: ["Cannot run for 1d10 rounds"],
-            location: "Body",
-            severity: "moderate"
-          },
-          "body_broken_ribs": {
-            name: "Broken Ribs",
-            wounds: 4,
-            effects: "Gain 2 Bleeding, 1 Stunned Condition. Broken Bone (Major) injury. -30 to Str, Ag Tests",
-            conditions: ["Bleeding", "Bleeding", "Stunned"],
-            injuries: ["Broken Bone (Major)"],
-            location: "Body",
-            severity: "severe"
-          },
-          "body_gut_wound": {
-            name: "Gut Wound",
-            wounds: 4,
-            effects: "Contract Festering Wound disease. Gain 2 Bleeding Conditions",
-            conditions: ["Bleeding", "Bleeding"],
-            diseases: ["Festering Wound"],
-            location: "Body",
-            severity: "severe"
-          },
-          "body_ruptured_spleen": {
-            name: "Ruptured Spleen",
-            wounds: 5,
-            effects: "Gain 3 Bleeding Conditions. Make Challenging (+0) Endurance Test each round or gain another Bleeding",
-            conditions: ["Bleeding", "Bleeding", "Bleeding"],
-            ongoingEffects: ["Endurance Test each round or gain Bleeding"],
-            location: "Body",
-            severity: "severe"
-          },
-          "body_pierced_heart": {
-            name: "Pierced Heart",
-            wounds: 5,
-            effects: "Gain 3 Bleeding, 1 Unconscious Condition. Make Hard (-20) Endurance Test each round or die",
-            conditions: ["Bleeding", "Bleeding", "Bleeding", "Unconscious"],
-            ongoingEffects: ["Hard (-20) Endurance Test each round or die"],
-            location: "Body",
-            severity: "fatal"
-          },
-          "body_disemboweled": {
-            name: "Disemboweled",
-            wounds: "Death",
-            effects: "Stomach split open, guts spill out. Make Very Hard (-30) Endurance Test or die instantly. Surgery required immediately",
-            deathSave: "Very Hard (-30) Endurance",
-            surgeryRequired: true,
-            location: "Body",
-            severity: "fatal"
-          },
-
-          // LEG WOUNDS
-          "leg_dramatic_injury": {
-            name: "Dramatic Injury",
-            wounds: "T", 
-            effects: "Gain 1 Bleeding Condition. +1 SL to social Tests once healed (once only)",
-            conditions: ["Bleeding"],
-            location: "Leg",
-            severity: "minor"
-          },
-          "leg_bloody_mess": {
-            name: "Bloody Mess",
-            wounds: 1,
-            effects: "Gain 1 Bleeding Condition. No additional effects",
-            conditions: ["Bleeding"],
-            location: "Leg",
-            severity: "minor"
-          },
-          "leg_torn_muscles": {
-            name: "Torn Muscles",
-            wounds: 2,
-            effects: "Gain 1 Bleeding Condition. Torn Muscle (Minor) injury. Half Move",
-            conditions: ["Bleeding"],
-            injuries: ["Torn Muscle (Minor)"],
-            location: "Leg",
-            severity: "minor"
-          },
-          "leg_bad_cut": {
-            name: "Bad Cut",
-            wounds: 2,
-            effects: "Gain 1 Bleeding, 1 Prone Condition. Knocked down",
-            conditions: ["Bleeding", "Prone"],
-            location: "Leg",
-            severity: "moderate"
-          },
-          "leg_torn_thigh": {
-            name: "Torn Thigh",
-            wounds: 3,
-            effects: "Gain 1 Bleeding, 1 Prone Condition. Torn Muscle (Major) injury. Half Move",
-            conditions: ["Bleeding", "Prone"],
-            injuries: ["Torn Muscle (Major)"],
-            location: "Leg",
-            severity: "moderate"
-          },
-          "leg_broken_knee": {
-            name: "Broken Knee",
-            wounds: 4,
-            effects: "Gain 1 Bleeding, 1 Prone, 1 Stunned Condition. Broken Bone (Major) injury",
-            conditions: ["Bleeding", "Prone", "Stunned"],
-            injuries: ["Broken Bone (Major)"],
-            location: "Leg",
-            severity: "severe"
-          },
-          "leg_broken_leg": {
-            name: "Broken Leg",
-            wounds: 4,
-            effects: "Gain 2 Bleeding, 1 Prone, 2 Stunned Conditions. Broken Bone (Major) injury. Cannot move",
-            conditions: ["Bleeding", "Bleeding", "Prone", "Stunned", "Stunned"],
-            injuries: ["Broken Bone (Major)"],
-            location: "Leg",
-            severity: "severe"
-          },
-          "leg_crushed_foot": {
-            name: "Crushed Foot",
-            wounds: 4,
-            effects: "Gain 1 Bleeding, 1 Prone, 1 Stunned Condition. -20 to Movement Tests permanently. Amputation (Hard)",
-            conditions: ["Bleeding", "Prone", "Stunned"],
-            permanentEffects: ["-20 Movement Tests"],
-            amputation: "Foot",
-            location: "Leg",
-            severity: "severe"
-          },
-          "leg_mangled_leg": {
-            name: "Mangled Leg",
-            wounds: 5,
-            effects: "Gain 2 Bleeding, 1 Prone, 2 Stunned Conditions. Leg unusable permanently. Amputation (Very Hard)",
-            conditions: ["Bleeding", "Bleeding", "Prone", "Stunned", "Stunned"],
-            permanentEffects: ["Leg unusable"],
-            amputation: "Leg",
-            location: "Leg",
-            severity: "fatal"
-          },
-          "leg_severed_leg": {
-            name: "Severed Leg",
-            wounds: "Death",
-            effects: "Leg chopped clean off. Gain 2 Bleeding Conditions. Make Challenging (+0) Endurance Test or die",
-            conditions: ["Bleeding", "Bleeding"],
-            deathSave: "Challenging (+0) Endurance",
-            amputation: "Leg",
-            location: "Leg",
-            severity: "fatal"
+          "Torn Muscle (Major)": {
+            effects: { 
+              "general": "-20 Tests using location", 
+              "Leg": "-20 Tests, half Movement" 
+            },
+            healing: "30-TB days (-20), then 30-TB days (-10)"
           }
         };
 
-        // Injury Types and Healing Mechanics
-        const injuryTypes = {
-          "Broken Bone (Minor)": {
-            description: "Fractured bone, unusable until healed. 30+1d10 days to heal",
-            effects: {
-              "Head": "-30 to Language Tests",
-              "Body": "-30 Strength and Agility, half Move",
-              "Arm": "Arm unusable (as lost limb)",
-              "Leg": "Leg unusable (as lost limb)"
-            },
-            healingTime: "30+1d10 days",
-            testRequired: "Average (+20) Endurance Test when healed"
-          },
-          "Broken Bone (Major)": {
-            description: "Badly broken bone at odd angle. 40+1d10 days to heal",
-            effects: {
-              "Head": "-30 to Language Tests",
-              "Body": "-30 Strength and Agility, half Move", 
-              "Arm": "Arm unusable (as lost limb)",
-              "Leg": "Leg unusable (as lost limb)"
-            },
-            healingTime: "40+1d10 days",
-            testRequired: "Challenging (+0) Endurance Test when healed. -10 penalty if failed"
-          },
-          "Torn Muscle (Minor)": {
-            description: "Sprained/torn muscle. -10 to Tests using location",
-            effects: {
-              "Head": "-10 to head-based Tests",
-              "Body": "-10 to body-based Tests",
-              "Arm": "-10 to Tests using arm",
-              "Leg": "-10 to Tests using leg, half Movement"
-            },
-            healingTime: "30 - Toughness Bonus days"
-          },
-          "Torn Muscle (Major)": {
-            description: "Severely damaged muscle. -20 to Tests using location",
-            effects: {
-              "Head": "-20 to head-based Tests", 
-              "Body": "-20 to body-based Tests",
-              "Arm": "-20 to Tests using arm",
-              "Leg": "-20 to Tests using leg, half Movement"
-            },
-            healingTime: "30 - TB days (-20), then 30 - TB days more (-10)"
-          }
+        const amputationEffects = {
+          "Finger": "-5 Tests per finger lost, fumble on 1s (cumulative)",
+          "Hand": "-20 two-handed Tests, cannot use two-handed weapons, -20 if primary hand",
+          "Arm": "As hand but cannot strap shield",
+          "Foot": "Half Move, -20 mobility Tests",
+          "Leg": "As foot but cannot Dodge",
+          "Eye": "-30 sight Tests if both lost, -5 Fellowship per socket visible",
+          "Ear": "-20 hearing Tests if both lost, -5 Fellowship per ear lost when visible",
+          "Nose": "-20 Fellowship, -30 smell Tests",
+          "Tongue": "Auto-fail spoken Language Tests",
+          "Teeth": "-1 Fellowship per 2 teeth lost"
         };
 
         // WFRP Talent Limitations - talents limited by characteristic bonuses
@@ -4439,13 +4148,12 @@ window.showWoundLocation = function(location) {
         }
     });
     
-    // Filter wounds by location
+    // Get wounds for the selected location
     const searchText = (document.getElementById('wound-reference-search')?.value || '').toLowerCase();
     const content = document.getElementById('wound-reference-content');
     
-    let filteredWounds = Object.entries(wfrpCriticalWounds).filter(([key, wound]) => 
-        wound.location === location
-    );
+    const locationWounds = wfrpCriticalWoundsByLocation[location] || {};
+    let filteredWounds = Object.entries(locationWounds);
     
     // Apply search filter
     if (searchText) {
@@ -4469,6 +4177,7 @@ window.showWoundLocation = function(location) {
     const thead = document.createElement('thead');
     thead.innerHTML = `
         <tr style="background: #e8dfd0; color: #3e2f1f; font-weight: bold;">
+            <th style="border: 1px solid #8b7355; padding: 8px; text-align: center; width: 80px;">Roll (d100)</th>
             <th style="border: 1px solid #8b7355; padding: 8px; text-align: left;">Wound Name</th>
             <th style="border: 1px solid #8b7355; padding: 8px; text-align: center;">Wounds</th>
             <th style="border: 1px solid #8b7355; padding: 8px; text-align: left;">Effects</th>
@@ -4479,12 +4188,15 @@ window.showWoundLocation = function(location) {
     
     const tbody = document.createElement('tbody');
     
-    filteredWounds.forEach(([key, wound]) => {
+    filteredWounds.forEach(([rollRange, wound]) => {
         const row = document.createElement('tr');
         const severityColor = window.getSeverityColorForWound(wound.wounds);
         
         row.style.borderLeft = `4px solid ${severityColor}`;
         row.innerHTML = `
+            <td style="border: 1px solid #8b7355; padding: 8px; text-align: center; vertical-align: middle; font-weight: bold; background: #f8f6f0;">
+                ${rollRange}
+            </td>
             <td style="border: 1px solid #8b7355; padding: 8px; vertical-align: top;">
                 <div style="font-weight: bold; color: ${severityColor};">${wound.name}</div>
                 <div style="font-size: 10px; color: #666; text-transform: uppercase;">${wound.severity}</div>
@@ -4496,7 +4208,7 @@ window.showWoundLocation = function(location) {
                 ${wound.effects}
             </td>
             <td style="border: 1px solid #8b7355; padding: 8px; text-align: center; vertical-align: middle;">
-                <button onclick="window.selectReferenceWound('${key}')" style="padding: 4px 8px; font-size: 10px; background: #4682b4; color: white; border: none; cursor: pointer; border-radius: 2px;">Add This</button>
+                <button onclick="window.selectReferenceWound('${location}', '${rollRange}')" style="padding: 4px 8px; font-size: 10px; background: #4682b4; color: white; border: none; cursor: pointer; border-radius: 2px;">Add This</button>
             </td>
         `;
         
@@ -4507,8 +4219,8 @@ window.showWoundLocation = function(location) {
     content.appendChild(table);
 }
 
-window.selectReferenceWound = function(woundKey) {
-    const wound = wfrpCriticalWounds[woundKey];
+window.selectReferenceWound = function(location, rollRange) {
+    const wound = wfrpCriticalWoundsByLocation[location] && wfrpCriticalWoundsByLocation[location][rollRange];
     if (!wound) return;
     
     // Close reference modal
