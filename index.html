@@ -6561,15 +6561,22 @@ function loadSpellsData() {
         })
         .catch(error => {
             console.error('Error loading spells:', error);
-            // Fallback data with common WFRP spells
+            console.warn('Loading spells may fail when opening HTML directly from file system due to CORS restrictions. Consider serving from a web server.');
+            
+            // Enhanced fallback data with examples from each category
             srdSpells = [
-                { name: "Dart", lore: "Petty", castingNumber: 3, range: "12 yards", target: "1", duration: "Instant" },
-                { name: "Light", lore: "Petty", castingNumber: 2, range: "Touch", target: "1", duration: "1 hour" },
-                { name: "Magic Lock", lore: "Petty", castingNumber: 3, range: "Touch", target: "1", duration: "24 hours" },
-                { name: "Fireball", lore: "Fire", castingNumber: 5, range: "24 yards", target: "1", duration: "Instant" },
-                { name: "Flaming Sword of Rhuin", lore: "Fire", castingNumber: 7, range: "6 yards", target: "1", duration: "Willpower Bonus rounds" },
-                { name: "Heal", lore: "Life", castingNumber: 4, range: "Touch", target: "1", duration: "Instant" },
-                { name: "Blessing", lore: "Sigmar", castingNumber: 3, range: "6 yards", target: "Willpower Bonus", duration: "Willpower Bonus rounds" }
+                { name: "Dart", lore: "Petty", castingNumber: 3, range: "12 yards", target: "1", duration: "Instant", folder: "4. SRD/Magic/Petty Magic" },
+                { name: "Light", lore: "Petty", castingNumber: 2, range: "Touch", target: "1", duration: "1 hour", folder: "4. SRD/Magic/Petty Magic" },
+                { name: "Magic Lock", lore: "Petty", castingNumber: 3, range: "Touch", target: "1", duration: "24 hours", folder: "4. SRD/Magic/Petty Magic" },
+                { name: "Aethyric Armour", lore: "Petty", castingNumber: 4, range: "Touch", target: "1", duration: "Willpower hours", folder: "4. SRD/Magic/Arcane Spells" },
+                { name: "Fireball", lore: "Fire", castingNumber: 5, range: "24 yards", target: "1", duration: "Instant", folder: "4. SRD/Magic/Lores/Colour Magic/Lore of Fire" },
+                { name: "Flaming Sword of Rhuin", lore: "Fire", castingNumber: 7, range: "6 yards", target: "1", duration: "Willpower Bonus rounds", folder: "4. SRD/Magic/Lores/Colour Magic/Lore of Fire" },
+                { name: "Heal", lore: "Life", castingNumber: 4, range: "Touch", target: "1", duration: "Instant", folder: "4. SRD/Magic/Lores/Colour Magic/Lore of Life" },
+                { name: "Beast Form", lore: "Beasts", castingNumber: 5, range: "You", target: "You", duration: "Willpower minutes", folder: "4. SRD/Magic/Lores/Colour Magic/Lore of Beasts" },
+                { name: "Blessing", lore: "Sigmar", castingNumber: 3, range: "6 yards", target: "Willpower Bonus", duration: "Willpower Bonus rounds", folder: "4. SRD/Magic/Lores/Divine Magic/Sigmar" },
+                { name: "Animate", lore: "Necromancy", castingNumber: 6, range: "12 yards", target: "1 corpse", duration: "Willpower hours", folder: "4. SRD/Magic/Lores/Dark Magic/Necromancy" },
+                { name: "Summon Lesser Daemon", lore: "Daemonology", castingNumber: 15, range: "12 yards", target: "Special", duration: "Willpower minutes", folder: "4. SRD/Magic/Lores/Dark Magic/Daemonology" },
+                { name: "Curse", lore: "Witchcraft", castingNumber: 4, range: "12 yards", target: "1", duration: "24 hours", folder: "4. SRD/Magic/Lores/Witch Magic/Witchcraft" }
             ];
             console.log('Using fallback spells data:', srdSpells.length, 'spells loaded');
             return srdSpells;
