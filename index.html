@@ -901,38 +901,50 @@
             <div class="characteristics-section">
                 <div class="section-title">Fate & Fortune / Resilience & Resolve</div>
                 <div class="secondary-grid">
-                    <table class="secondary-table">
-                        <tr>
-                            <th style="width: 40%;">Fate</th>
-                            <td style="width: 60%;"><input type="number" id="fate" placeholder="2" min="0" max="5"></td>
-                        </tr>
-                        <tr>
-                            <th>Fortune</th>
-                            <td>
-                                <div style="display: flex; gap: 5px; align-items: center;">
-                                    <button onclick="modifyValue('fortune', -1)" style="width: 30px; height: 25px; cursor: pointer;">−</button>
-                                    <input type="number" id="fortune" placeholder="2" min="0" style="flex: 1; text-align: center;">
-                                    <button onclick="modifyValue('fortune', 1)" style="width: 30px; height: 25px; cursor: pointer;">+</button>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                    <table class="secondary-table">
-                        <tr>
-                            <th style="width: 40%;">Resilience</th>
-                            <td style="width: 60%;"><input type="number" id="resilience" placeholder="1" min="0" max="5"></td>
-                        </tr>
-                        <tr>
-                            <th>Resolve</th>
-                            <td>
-                                <div style="display: flex; gap: 5px; align-items: center;">
-                                    <button onclick="modifyValue('resolve', -1)" style="width: 30px; height: 25px; cursor: pointer;">−</button>
-                                    <input type="number" id="resolve" placeholder="1" min="0" style="flex: 1; text-align: center;">
-                                    <button onclick="modifyValue('resolve', 1)" style="width: 30px; height: 25px; cursor: pointer;">+</button>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
+                    <div style="background: #f8f6f0; border: 2px solid #3e2f1f; padding: 15px; border-radius: 5px;">
+                        <h4 style="color: #3e2f1f; margin-top: 0; margin-bottom: 10px; font-size: 14px;">Fate & Fortune</h4>
+                        
+                        <!-- Fate Points -->
+                        <div style="display: flex; align-items: center; margin-bottom: 10px; gap: 10px;">
+                            <label style="width: 60px; color: #3e2f1f; font-weight: bold; font-size: 13px;">Fate:</label>
+                            <button onclick="window.updateFate(-1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">−</button>
+                            <input type="number" id="fate" placeholder="0" style="width: 50px; text-align: center; border: 1px solid #8b7355;">
+                            <button onclick="window.updateFate(1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">+</button>
+                        </div>
+                        
+                        <!-- Fortune Points -->
+                        <div style="display: flex; align-items: center; margin-bottom: 10px; gap: 10px;">
+                            <label style="width: 60px; color: #3e2f1f; font-weight: bold; font-size: 13px;">Fortune:</label>
+                            <button onclick="window.updateFortune(-1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">−</button>
+                            <input type="number" id="fortune-current" placeholder="0" style="width: 40px; text-align: center; border: 1px solid #8b7355;">
+                            <span style="color: #666; font-size: 13px;">/</span>
+                            <span id="fortune-max" style="color: #666; font-size: 13px; width: 20px;">0</span>
+                            <button onclick="window.updateFortune(1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">+</button>
+                            <button onclick="window.restoreFortune()" style="padding: 3px 8px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer; margin-left: 5px;">Restore</button>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f0f6f8; border: 2px solid #3e2f1f; padding: 15px; border-radius: 5px;">
+                        <h4 style="color: #3e2f1f; margin-top: 0; margin-bottom: 10px; font-size: 14px;">Resilience & Resolve</h4>
+                        
+                        <!-- Resilience Points -->
+                        <div style="display: flex; align-items: center; margin-bottom: 10px; gap: 10px;">
+                            <label style="width: 70px; color: #3e2f1f; font-weight: bold; font-size: 13px;">Resilience:</label>
+                            <button onclick="window.updateResilience(-1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">−</button>
+                            <input type="number" id="resilience" placeholder="0" style="width: 50px; text-align: center; border: 1px solid #8b7355;">
+                            <button onclick="window.updateResilience(1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">+</button>
+                        </div>
+                        
+                        <!-- Resolve Points -->
+                        <div style="display: flex; align-items: center; margin-bottom: 10px; gap: 10px;">
+                            <label style="width: 70px; color: #3e2f1f; font-weight: bold; font-size: 13px;">Resolve:</label>
+                            <button onclick="window.updateResolve(-1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">−</button>
+                            <input type="number" id="resolve-current" placeholder="0" style="width: 40px; text-align: center; border: 1px solid #8b7355;">
+                            <span style="color: #666; font-size: 13px;">/</span>
+                            <span id="resolve-max" style="color: #666; font-size: 13px; width: 20px;">0</span>
+                            <button onclick="window.updateResolve(1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">+</button>
+                        </div>
+                    </div>
                 </div>
                 <div style="margin-top: 15px;">
                     <table class="secondary-table" style="width: 100%;">
@@ -1339,21 +1351,30 @@
             current.updateFunction = updateCurrent;
         });
 
-        // Auto-set initial Fortune when Fate is set (during character creation)
+        // Auto-update max displays when fate/resilience change via direct input
         document.getElementById('fate').addEventListener('input', () => {
-            const fate = document.getElementById('fate').value;
-            const fortune = document.getElementById('fortune');
-            if (!fortune.value) {
-                fortune.value = fate;
+            window.updateFateFortuneResilienceResolveDisplay();
+            
+            // Check if current fortune exceeds new max
+            const fate = parseInt(document.getElementById('fate').value) || 0;
+            const fortuneCurrentField = document.getElementById('fortune-current');
+            const currentFortune = parseInt(fortuneCurrentField.value) || 0;
+            
+            if (currentFortune > fate) {
+                fortuneCurrentField.value = fate;
             }
         });
 
-        // Auto-set initial Resolve when Resilience is set (during character creation)
         document.getElementById('resilience').addEventListener('input', () => {
-            const resilience = document.getElementById('resilience').value;
-            const resolve = document.getElementById('resolve');
-            if (!resolve.value) {
-                resolve.value = resilience;
+            window.updateFateFortuneResilienceResolveDisplay();
+            
+            // Check if current resolve exceeds new max
+            const resilience = parseInt(document.getElementById('resilience').value) || 0;
+            const resolveCurrentField = document.getElementById('resolve-current');
+            const currentResolve = parseInt(resolveCurrentField.value) || 0;
+            
+            if (currentResolve > resilience) {
+                resolveCurrentField.value = resilience;
             }
         });
 
@@ -1708,6 +1729,89 @@
                 }
                 // If they can't afford and clicked cancel, just return
             }
+        }
+        
+        // Fate/Fortune/Resilience/Resolve System
+        window.updateFateFortuneResilienceResolveDisplay = function() {
+            // Update Fortune max display
+            const fate = parseInt(document.getElementById('fate').value) || 0;
+            const fortuneMax = document.getElementById('fortune-max');
+            fortuneMax.textContent = fate;
+            
+            // Update Resolve max display  
+            const resilience = parseInt(document.getElementById('resilience').value) || 0;
+            const resolveMax = document.getElementById('resolve-max');
+            resolveMax.textContent = resilience;
+        }
+        
+        window.updateFate = function(change) {
+            const fateField = document.getElementById('fate');
+            const currentFate = parseInt(fateField.value) || 0;
+            const newFate = Math.max(0, currentFate + change); // No max limit for fate
+            
+            fateField.value = newFate;
+            
+            // Update max fortune display
+            const fortuneMax = document.getElementById('fortune-max');
+            fortuneMax.textContent = newFate;
+            
+            // Check if current fortune exceeds new max
+            const fortuneCurrentField = document.getElementById('fortune-current');
+            const currentFortune = parseInt(fortuneCurrentField.value) || 0;
+            
+            if (currentFortune > newFate) {
+                fortuneCurrentField.value = newFate;
+            }
+            
+            window.updateFateFortuneResilienceResolveDisplay();
+        }
+        
+        window.updateFortune = function(change) {
+            const fortuneCurrentField = document.getElementById('fortune-current');
+            const currentFortune = parseInt(fortuneCurrentField.value) || 0;
+            const maxFortune = parseInt(document.getElementById('fate').value) || 0;
+            
+            const newFortune = Math.max(0, Math.min(maxFortune, currentFortune + change));
+            fortuneCurrentField.value = newFortune;
+        }
+        
+        window.restoreFortune = function() {
+            const maxFortune = parseInt(document.getElementById('fate').value) || 0;
+            
+            if (confirm(`Restore Fortune to ${maxFortune}? (usually done at session start)`)) {
+                document.getElementById('fortune-current').value = maxFortune;
+            }
+        }
+        
+        window.updateResilience = function(change) {
+            const resilienceField = document.getElementById('resilience');
+            const currentResilience = parseInt(resilienceField.value) || 0;
+            const newResilience = Math.max(0, currentResilience + change); // No max limit for resilience
+            
+            resilienceField.value = newResilience;
+            
+            // Update max resolve display
+            const resolveMax = document.getElementById('resolve-max');
+            resolveMax.textContent = newResilience;
+            
+            // Check if current resolve exceeds new max
+            const resolveCurrentField = document.getElementById('resolve-current');
+            const currentResolve = parseInt(resolveCurrentField.value) || 0;
+            
+            if (currentResolve > newResilience) {
+                resolveCurrentField.value = newResilience;
+            }
+            
+            window.updateFateFortuneResilienceResolveDisplay();
+        }
+        
+        window.updateResolve = function(change) {
+            const resolveCurrentField = document.getElementById('resolve-current');
+            const currentResolve = parseInt(resolveCurrentField.value) || 0;
+            const maxResolve = parseInt(document.getElementById('resilience').value) || 0;
+            
+            const newResolve = Math.max(0, Math.min(maxResolve, currentResolve + change));
+            resolveCurrentField.value = newResolve;
         }
         
         // XP display will be initialized in DOMContentLoaded
@@ -2858,9 +2962,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 movement: document.getElementById('movement').value,
                 fate: document.getElementById('fate').value,
-                fortune: document.getElementById('fortune').value,
+                fortune: document.getElementById('fortune-current').value,
                 resilience: document.getElementById('resilience').value,
-                resolve: document.getElementById('resolve').value,
+                resolve: document.getElementById('resolve-current').value,
                 motivation: document.getElementById('motivation').value,
                 experience: {
                     total: document.getElementById('xp-total').value,
@@ -2960,10 +3064,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             document.getElementById('fate').value = characterData.fate || '';
-            document.getElementById('fortune').value = characterData.fortune || '';
+            document.getElementById('fortune-current').value = characterData.fortune || '';
             document.getElementById('resilience').value = characterData.resilience || '';
-            document.getElementById('resolve').value = characterData.resolve || '';
+            document.getElementById('resolve-current').value = characterData.resolve || '';
             document.getElementById('motivation').value = characterData.motivation || '';
+            
+            // Update the max displays after loading data
+            window.updateFateFortuneResilienceResolveDisplay();
             
             if (characterData.status) {
                 document.getElementById('status-tier').value = characterData.status.tier || 'Brass';
@@ -3035,6 +3142,9 @@ document.addEventListener('DOMContentLoaded', function() {
             xpTotal = document.getElementById('xp-total');
             xpSpent = document.getElementById('xp-spent');
             window.updateXPDisplay();
+            
+            // Initialize Fate/Fortune/Resilience/Resolve system
+            window.updateFateFortuneResilienceResolveDisplay();
             
             // Load SRD data
             loadSRDData();
