@@ -5994,6 +5994,9 @@ window.populateSRDSpellSelect = function() {
     
     // Update count
     document.getElementById('srd-spell-count').textContent = `(${sortedSpells.length} spells)`;
+    
+    // Apply any existing filters
+    window.filterSRDSpells();
 }
 
 // Helper function to categorize spells
