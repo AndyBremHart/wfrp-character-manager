@@ -415,10 +415,11 @@
                 <table class="characteristics-table">
                     <thead>
                         <tr>
-                            <th style="width: 40%;">Characteristic</th>
-                            <th style="width: 20%;">Initial</th>
-                            <th style="width: 20%;">Advances</th>
-                            <th style="width: 20%;" class="current-cell">Current</th>
+                            <th style="width: 30%;">Characteristic</th>
+                            <th style="width: 15%;">Initial</th>
+                            <th style="width: 15%;">Advances</th>
+                            <th style="width: 15%;" class="current-cell">Current</th>
+                            <th style="width: 25%;">Advance</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -427,60 +428,100 @@
                             <td><input type="number" id="ws-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="ws-advances" placeholder="0" min="0"></td>
                             <td class="current-cell"><input type="number" id="ws-current" placeholder="20" readonly></td>
+                            <td style="text-align: center;">
+                                <button onclick="window.advanceCharacteristic('ws')" style="padding: 5px 10px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">+</button>
+                                <span id="ws-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
+                            </td>
                         </tr>
                         <tr>
                             <td class="char-name-cell">Ballistic Skill (BS)</td>
                             <td><input type="number" id="bs-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="bs-advances" placeholder="0" min="0"></td>
                             <td class="current-cell"><input type="number" id="bs-current" placeholder="20" readonly></td>
+                            <td style="text-align: center;">
+                                <button onclick="window.advanceCharacteristic('bs')" style="padding: 5px 10px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">+</button>
+                                <span id="bs-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
+                            </td>
                         </tr>
                         <tr>
                             <td class="char-name-cell">Strength (S)</td>
                             <td><input type="number" id="s-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="s-advances" placeholder="0" min="0"></td>
                             <td class="current-cell"><input type="number" id="s-current" placeholder="20" readonly></td>
+                            <td style="text-align: center;">
+                                <button onclick="window.advanceCharacteristic('s')" style="padding: 5px 10px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">+</button>
+                                <span id="s-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
+                            </td>
                         </tr>
                         <tr>
                             <td class="char-name-cell">Toughness (T)</td>
                             <td><input type="number" id="t-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="t-advances" placeholder="0" min="0"></td>
                             <td class="current-cell"><input type="number" id="t-current" placeholder="20" readonly></td>
+                            <td style="text-align: center;">
+                                <button onclick="window.advanceCharacteristic('t')" style="padding: 5px 10px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">+</button>
+                                <span id="t-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
+                            </td>
                         </tr>
                         <tr>
                             <td class="char-name-cell">Initiative (I)</td>
                             <td><input type="number" id="i-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="i-advances" placeholder="0" min="0"></td>
                             <td class="current-cell"><input type="number" id="i-current" placeholder="20" readonly></td>
+                            <td style="text-align: center;">
+                                <button onclick="window.advanceCharacteristic('i')" style="padding: 5px 10px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">+</button>
+                                <span id="i-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
+                            </td>
                         </tr>
                         <tr>
                             <td class="char-name-cell">Agility (Ag)</td>
                             <td><input type="number" id="ag-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="ag-advances" placeholder="0" min="0"></td>
                             <td class="current-cell"><input type="number" id="ag-current" placeholder="20" readonly></td>
+                            <td style="text-align: center;">
+                                <button onclick="window.advanceCharacteristic('ag')" style="padding: 5px 10px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">+</button>
+                                <span id="ag-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
+                            </td>
                         </tr>
                         <tr>
                             <td class="char-name-cell">Dexterity (Dex)</td>
                             <td><input type="number" id="dex-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="dex-advances" placeholder="0" min="0"></td>
                             <td class="current-cell"><input type="number" id="dex-current" placeholder="20" readonly></td>
+                            <td style="text-align: center;">
+                                <button onclick="window.advanceCharacteristic('dex')" style="padding: 5px 10px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">+</button>
+                                <span id="dex-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
+                            </td>
                         </tr>
                         <tr>
                             <td class="char-name-cell">Intelligence (Int)</td>
                             <td><input type="number" id="int-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="int-advances" placeholder="0" min="0"></td>
                             <td class="current-cell"><input type="number" id="int-current" placeholder="20" readonly></td>
+                            <td style="text-align: center;">
+                                <button onclick="window.advanceCharacteristic('int')" style="padding: 5px 10px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">+</button>
+                                <span id="int-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
+                            </td>
                         </tr>
                         <tr>
                             <td class="char-name-cell">Willpower (WP)</td>
                             <td><input type="number" id="wp-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="wp-advances" placeholder="0" min="0"></td>
                             <td class="current-cell"><input type="number" id="wp-current" placeholder="20" readonly></td>
+                            <td style="text-align: center;">
+                                <button onclick="window.advanceCharacteristic('wp')" style="padding: 5px 10px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">+</button>
+                                <span id="wp-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
+                            </td>
                         </tr>
                         <tr>
                             <td class="char-name-cell">Fellowship (Fel)</td>
                             <td><input type="number" id="fel-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="fel-advances" placeholder="0" min="0"></td>
                             <td class="current-cell"><input type="number" id="fel-current" placeholder="20" readonly></td>
+                            <td style="text-align: center;">
+                                <button onclick="window.advanceCharacteristic('fel')" style="padding: 5px 10px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">+</button>
+                                <span id="fel-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -503,13 +544,14 @@
                 <table class="skills-table" id="skills-table">
                     <thead>
                         <tr>
-                            <th style="width: 35%;">Skill</th>
+                            <th style="width: 25%;">Skill</th>
                             <th style="width: 8%;">Char</th>
-                            <th style="width: 10%;">Type</th>
-                            <th style="width: 10%;">Career</th>
-                            <th style="width: 10%;">Adv</th>
-                            <th style="width: 10%;">Total</th>
-                            <th style="width: 15%;">Notes</th>
+                            <th style="width: 8%;">Type</th>
+                            <th style="width: 8%;">Career</th>
+                            <th style="width: 8%;">Adv</th>
+                            <th style="width: 8%;">Total</th>
+                            <th style="width: 20%;">Advance</th>
+                            <th style="width: 13%;">Notes</th>
                             <th style="width: 2%;">Del</th>
                         </tr>
                     </thead>
@@ -549,10 +591,11 @@
                 <table class="skills-table" id="talents-table">
                     <thead>
                         <tr>
-                            <th style="width: 25%;">Talent</th>
-                            <th style="width: 15%;">Max/Times Taken</th>
-                            <th style="width: 58%;">Description</th>
-                            <th style="width: 2%;">Del</th>
+                            <th style="width: 20%;">Talent</th>
+                            <th style="width: 12%;">Times Taken</th>
+                            <th style="width: 15%;">Advance</th>
+                            <th style="width: 50%;">Description</th>
+                            <th style="width: 3%;">Del</th>
                         </tr>
                     </thead>
                     <tbody id="talents-tbody">
@@ -897,10 +940,13 @@
             <!-- Experience & Status -->
             <div class="info-grid">
                 <div class="info-box">
-                    <div class="info-box-title">Experience</div>
-                    <input type="number" id="xp-current" placeholder="Current">
-                    <input type="number" id="xp-spent" placeholder="Spent">
-                    <input type="number" id="xp-total" placeholder="Total" readonly>
+                    <div class="info-box-title">Experience Points</div>
+                    <button onclick="window.openXPEarnDialog()" style="width: 100%; padding: 5px; margin-bottom: 5px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer; font-size: 12px;">Add Session XP</button>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;"><span>Total XP:</span><span id="xp-total-display">0</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;"><span>Current XP:</span><span id="xp-current-display">0</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px;"><span>Spent XP:</span><span id="xp-spent-display">0</span></div>
+                    <input type="hidden" id="xp-total" value="0">
+                    <input type="hidden" id="xp-spent" value="0">
                 </div>
                 <div class="info-box">
                     <div class="info-box-title">Status</div>
@@ -1318,19 +1364,304 @@
             updateEncumbrance();
         });
 
-        // Calculate total XP
-        const xpCurrent = document.getElementById('xp-current');
-        const xpSpent = document.getElementById('xp-spent');
+        // XP System Management
         const xpTotal = document.getElementById('xp-total');
+        const xpSpent = document.getElementById('xp-spent');
         
-        function updateTotalXP() {
-            const current = parseInt(xpCurrent.value) || 0;
+        window.updateXPDisplay = function() {
+            const total = parseInt(xpTotal.value) || 0;
             const spent = parseInt(xpSpent.value) || 0;
-            xpTotal.value = current + spent;
+            const current = total - spent;
+            
+            document.getElementById('xp-total-display').textContent = total;
+            document.getElementById('xp-current-display').textContent = current;
+            document.getElementById('xp-spent-display').textContent = spent;
+            
+            // Update all advance cost displays
+            window.updateAdvanceCosts();
         }
         
-        xpCurrent.addEventListener('input', updateTotalXP);
-        xpSpent.addEventListener('input', updateTotalXP);
+        // XP Earning Dialog
+        window.openXPEarnDialog = function() {
+            const xpAmount = prompt('Enter XP earned this session:', '0');
+            if (xpAmount !== null && !isNaN(xpAmount) && parseInt(xpAmount) >= 0) {
+                const sessionNote = prompt('Session note (optional):', '');
+                window.addSessionXP(parseInt(xpAmount), sessionNote);
+            }
+        }
+        
+        window.addSessionXP = function(amount, note) {
+            const currentTotal = parseInt(xpTotal.value) || 0;
+            xpTotal.value = currentTotal + amount;
+            window.updateXPDisplay();
+            
+            if (amount > 0) {
+                alert(`Added ${amount} XP! Total XP: ${parseInt(xpTotal.value)}`);
+            }
+        }
+        
+        // XP Cost Calculation Functions
+        window.getCharacteristicCost = function(advances) {
+            const costs = [
+                {min: 0, max: 5, cost: 25},
+                {min: 6, max: 10, cost: 30},
+                {min: 11, max: 15, cost: 40},
+                {min: 16, max: 20, cost: 50},
+                {min: 21, max: 25, cost: 70},
+                {min: 26, max: 30, cost: 90},
+                {min: 31, max: 35, cost: 120},
+                {min: 36, max: 40, cost: 150},
+                {min: 41, max: 45, cost: 190},
+                {min: 46, max: 50, cost: 230},
+                {min: 51, max: 55, cost: 280},
+                {min: 56, max: 60, cost: 330},
+                {min: 61, max: 65, cost: 390},
+                {min: 66, max: 70, cost: 450}
+            ];
+            
+            for (const range of costs) {
+                if (advances >= range.min && advances <= range.max) {
+                    return range.cost;
+                }
+            }
+            return 520; // 70+ cost
+        }
+        
+        window.getSkillCost = function(advances) {
+            const costs = [
+                {min: 0, max: 5, cost: 10},
+                {min: 6, max: 10, cost: 15},
+                {min: 11, max: 15, cost: 20},
+                {min: 16, max: 20, cost: 30},
+                {min: 21, max: 25, cost: 40},
+                {min: 26, max: 30, cost: 60},
+                {min: 31, max: 35, cost: 80},
+                {min: 36, max: 40, cost: 110},
+                {min: 41, max: 45, cost: 140},
+                {min: 46, max: 50, cost: 180},
+                {min: 51, max: 55, cost: 220},
+                {min: 56, max: 60, cost: 270},
+                {min: 61, max: 65, cost: 320},
+                {min: 66, max: 70, cost: 380}
+            ];
+            
+            for (const range of costs) {
+                if (advances >= range.min && advances <= range.max) {
+                    return range.cost;
+                }
+            }
+            return 440; // 70+ cost
+        }
+        
+        window.getTalentCost = function(advances) {
+            return 100 + (100 * advances);
+        }
+        
+        window.canAffordAdvance = function(cost) {
+            const total = parseInt(xpTotal.value) || 0;
+            const spent = parseInt(xpSpent.value) || 0;
+            const current = total - spent;
+            return current >= cost;
+        }
+        
+        window.spendXP = function(amount, description) {
+            if (!window.canAffordAdvance(amount)) {
+                const total = parseInt(xpTotal.value) || 0;
+                const spent = parseInt(xpSpent.value) || 0;
+                const current = total - spent;
+                alert(`Insufficient XP! Need ${amount} XP, only have ${current} available.`);
+                return false;
+            }
+            
+            const currentSpent = parseInt(xpSpent.value) || 0;
+            xpSpent.value = currentSpent + amount;
+            window.updateXPDisplay();
+            return true;
+        }
+        
+        window.updateAdvanceCosts = function() {
+            // Update characteristic advance cost displays
+            characteristics.forEach(char => {
+                const advancesField = document.getElementById(`${char}-advances`);
+                if (advancesField) {
+                    const advances = parseInt(advancesField.value) || 0;
+                    const cost = window.getCharacteristicCost(advances);
+                    const costDisplay = document.getElementById(`${char}-cost-display`);
+                    if (costDisplay) {
+                        costDisplay.textContent = `(${cost} XP)`;
+                        const button = costDisplay.parentElement.querySelector('button');
+                        if (button) {
+                            if (window.canAffordAdvance(cost)) {
+                                button.style.opacity = '1';
+                                button.disabled = false;
+                            } else {
+                                button.style.opacity = '0.5';
+                                button.disabled = true;
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Update skill advance cost displays and button states
+            Object.keys(characterSkills).forEach(skillKey => {
+                const skillData = characterSkills[skillKey];
+                const cleanKey = skillKey.replace(/\s+/g, '-').replace(/[()]/g, '').toLowerCase();
+                const cost = window.getSkillCost(skillData.advances || 0);
+                const costDisplay = document.getElementById(`${cleanKey}-cost-display`);
+                if (costDisplay) {
+                    costDisplay.textContent = `(${cost} XP)`;
+                    const button = costDisplay.parentElement.querySelector('button');
+                    if (button) {
+                        const canAfford = window.canAffordAdvance(cost);
+                        const maxAdvances = (skillData.advances || 0) >= 5;
+                        
+                        if (canAfford && !maxAdvances) {
+                            button.style.opacity = '1';
+                            button.disabled = false;
+                        } else {
+                            button.style.opacity = '0.5';
+                            button.disabled = true;
+                        }
+                    }
+                }
+            });
+            
+            // Update talent cost displays and button states
+            talents.forEach((talent, index) => {
+                const currentTimes = talent.timesTaken || 1;
+                const cleanTalentKey = talent.displayName.replace(/\s+/g, '-').replace(/[()]/g, '').toLowerCase();
+                const cost = window.getTalentCost(currentTimes); // Cost for next advance
+                const costDisplay = document.getElementById(`${cleanTalentKey}-cost-display`);
+                
+                if (costDisplay) {
+                    costDisplay.textContent = `(${cost} XP)`;
+                    const button = costDisplay.parentElement.querySelector('button');
+                    if (button) {
+                        const canAfford = window.canAffordAdvance(cost);
+                        const maxAllowed = talent.max === "No Limit" ? 999 : parseInt(talent.max);
+                        const canTakeMore = currentTimes < maxAllowed;
+                        
+                        if (canAfford && canTakeMore) {
+                            button.style.opacity = '1';
+                            button.disabled = false;
+                        } else {
+                            button.style.opacity = '0.5';
+                            button.disabled = true;
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Characteristic Advancement with XP Integration
+        window.advanceCharacteristic = function(charCode) {
+            const advancesField = document.getElementById(`${charCode}-advances`);
+            const currentAdvances = parseInt(advancesField.value) || 0;
+            const cost = window.getCharacteristicCost(currentAdvances);
+            const total = parseInt(xpTotal.value) || 0;
+            const spent = parseInt(xpSpent.value) || 0;
+            const current = total - spent;
+            
+            const charNames = {
+                'ws': 'Weapon Skill',
+                'bs': 'Ballistic Skill', 
+                's': 'Strength',
+                't': 'Toughness',
+                'i': 'Initiative',
+                'ag': 'Agility',
+                'dex': 'Dexterity',
+                'int': 'Intelligence',
+                'wp': 'Willpower',
+                'fel': 'Fellowship'
+            };
+            
+            if (!window.canAffordAdvance(cost)) {
+                alert(`Insufficient XP! Need ${cost} XP to advance ${charNames[charCode]}, only have ${current} available.`);
+                return;
+            }
+            
+            if (confirm(`Advance ${charNames[charCode]} for ${cost} XP? (Current XP: ${current})`)) {
+                if (window.spendXP(cost, `${charNames[charCode]} advance`)) {
+                    advancesField.value = currentAdvances + 1;
+                    advancesField.dispatchEvent(new Event('input'));
+                    alert(`${charNames[charCode]} advanced! Spent ${cost} XP.`);
+                }
+            }
+        }
+        
+        // Skill Advancement with XP Integration
+        window.advanceSkill = function(skillKey) {
+            const skillData = characterSkills[skillKey] || { career: false, advances: 0, notes: '' };
+            const currentAdvances = skillData.advances || 0;
+            
+            if (currentAdvances >= 5) {
+                alert('Skills cannot exceed 5 advances!');
+                return;
+            }
+            
+            const cost = window.getSkillCost(currentAdvances);
+            const total = parseInt(xpTotal.value) || 0;
+            const spent = parseInt(xpSpent.value) || 0;
+            const current = total - spent;
+            
+            // Find skill display name
+            let skillDisplayName = skillKey;
+            const allSkills = [...getDefaultSkills(), ...addedSkills];
+            const skillInfo = allSkills.find(s => s.key === skillKey || s.name === skillKey);
+            if (skillInfo) {
+                skillDisplayName = skillInfo.displayName || skillInfo.name;
+            }
+            
+            if (!window.canAffordAdvance(cost)) {
+                alert(`Insufficient XP! Need ${cost} XP to advance ${skillDisplayName}, only have ${current} available.`);
+                return;
+            }
+            
+            if (confirm(`Advance ${skillDisplayName} for ${cost} XP? (Current XP: ${current})`)) {
+                if (window.spendXP(cost, `${skillDisplayName} skill advance`)) {
+                    window.updateSkillData(skillKey, 'advances', currentAdvances + 1);
+                    window.displaySkills(); // Refresh the display
+                    alert(`${skillDisplayName} advanced! Spent ${cost} XP.`);
+                }
+            }
+        }
+        
+        // Talent Advancement with XP Integration
+        window.advanceTalent = function(talentIndex) {
+            const talent = talents[talentIndex];
+            if (!talent) return;
+            
+            const currentTimes = talent.timesTaken || 1;
+            const maxAllowed = talent.max === "No Limit" ? 999 : parseInt(talent.max);
+            
+            if (currentTimes >= maxAllowed) {
+                alert(`${talent.displayName} is already at maximum!`);
+                return;
+            }
+            
+            // Cost for next advance: current times taken represents advances already made
+            const cost = window.getTalentCost(currentTimes);
+            const total = parseInt(xpTotal.value) || 0;
+            const spent = parseInt(xpSpent.value) || 0;
+            const current = total - spent;
+            
+            if (!window.canAffordAdvance(cost)) {
+                alert(`Insufficient XP! Need ${cost} XP to take ${talent.displayName} again, only have ${current} available.`);
+                return;
+            }
+            
+            if (confirm(`Take ${talent.displayName} again for ${cost} XP? (Current XP: ${current})`)) {
+                if (window.spendXP(cost, `${talent.displayName} talent advance`)) {
+                    talent.timesTaken = currentTimes + 1;
+                    window.displayTalents(); // Refresh the display
+                    alert(`${talent.displayName} taken again! Spent ${cost} XP.`);
+                }
+            }
+        }
+        
+        // Initialize XP display
+        window.updateXPDisplay();
 
         // Skills functionality
         window.displaySkills = function() {
@@ -1383,13 +1714,20 @@
                 const skillData = characterSkills[skill.key] || { career: false, advances: 0, notes: '' };
                 
                 const row = document.createElement('tr');
+                const cleanKey = skill.key.replace(/\s+/g, '-').replace(/[()]/g, '').toLowerCase();
+                const cost = window.getSkillCost(skillData.advances);
+                
                 row.innerHTML = `
                     <td class="skill-name-cell">${skill.displayName}</td>
                     <td>${skill.characteristic}</td>
                     <td>${skill.type}</td>
                     <td><input type="checkbox" ${skillData.career ? 'checked' : ''} onchange="updateSkillData('${skill.key}', 'career', this.checked)"></td>
-                    <td><input type="number" value="${skillData.advances}" min="0" max="5" onchange="updateSkillData('${skill.key}', 'advances', parseInt(this.value) || 0)" style="width: 50px;"></td>
-                    <td class="skill-total" id="skill-total-${skill.key.replace(/\s+/g, '-').replace(/[()]/g, '')}">${calculateSkillTotal(skill, skill.key)}</td>
+                    <td><input type="number" value="${skillData.advances}" min="0" readonly style="width: 50px; background: #f5f5f5;"></td>
+                    <td class="skill-total" id="skill-total-${cleanKey}">${calculateSkillTotal(skill, skill.key)}</td>
+                    <td style="text-align: center;">
+                        <button onclick="window.advanceSkill('${skill.key}')" style="padding: 5px 8px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">+</button>
+                        <span id="${cleanKey}-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(${cost} XP)</span>
+                    </td>
                     <td><input type="text" value="${skillData.notes}" placeholder="Notes..." onchange="updateSkillData('${skill.key}', 'notes', this.value)" style="width: 100%; border: none; font-size: 11px;"></td>
                     <td>${skill.canDelete ? `<button class="advance-btn" onclick="removeSkill('${skill.key}')" style="background: #d44; color: white; width: 20px;">×</button>` : ''}</td>
                 `;
@@ -1665,6 +2003,61 @@ window.confirmAddTalent = function() {
         return;
     }
     
+    // Calculate XP cost for the talent(s) being added
+    let totalCost = 0;
+    const displayName = customisation ? `${talentData.name} (${customisation})` : talentData.name;
+    
+    // Check if this exact talent already exists
+    const existingIndex = talents.findIndex(t => 
+        t.name === talentData.name && t.customisation === customisation
+    );
+    
+    if (existingIndex !== -1) {
+        // Adding to existing talent
+        const currentTimes = talents[existingIndex].timesTaken;
+        const maxAllowed = parseInt(talentData.max) || 10;
+        const actualTimesToAdd = Math.min(timesTaken, maxAllowed - currentTimes);
+        
+        if (actualTimesToAdd <= 0) {
+            alert(`You already have the maximum number of ${displayName}`);
+            return;
+        }
+        
+        // Calculate cost for each additional time
+        for (let i = 0; i < actualTimesToAdd; i++) {
+            totalCost += window.getTalentCost(currentTimes + i);
+        }
+    } else {
+        // New talent - calculate cost for all times
+        for (let i = 0; i < timesTaken; i++) {
+            totalCost += window.getTalentCost(i);
+        }
+    }
+    
+    // Check if player can afford it
+    const total = parseInt(document.getElementById('xp-total').value) || 0;
+    const spent = parseInt(document.getElementById('xp-spent').value) || 0;
+    const current = total - spent;
+    
+    if (!window.canAffordAdvance(totalCost)) {
+        alert(`Insufficient XP! Need ${totalCost} XP to add ${displayName}${timesTaken > 1 ? ` (${timesTaken} times)` : ''}, only have ${current} available.`);
+        return;
+    }
+    
+    // Confirm the purchase
+    const confirmMessage = timesTaken > 1 ? 
+        `Add ${displayName} ${timesTaken} times for ${totalCost} XP? (Current XP: ${current})` :
+        `Add ${displayName} for ${totalCost} XP? (Current XP: ${current})`;
+        
+    if (!confirm(confirmMessage)) {
+        return;
+    }
+    
+    // Spend the XP
+    if (!window.spendXP(totalCost, `${displayName} talent${timesTaken > 1 ? ` (${timesTaken} times)` : ''}`)) {
+        return;
+    }
+    
     // Create talent object
     const talent = {
         name: talentData.name,
@@ -1739,13 +2132,21 @@ window.displayTalents = function() {
     
     displayedTalents.forEach((talent) => {
         const row = document.createElement('tr');
-        const maxText = (talent.max === "1") ? "—" : 
-                (talent.timesTaken > 1) ? `${talent.timesTaken}/${talent.max}` : 
-                `1/${talent.max}`;
+        const currentTimes = talent.timesTaken || 1;
+        const cleanTalentKey = talent.displayName.replace(/\s+/g, '-').replace(/[()]/g, '').toLowerCase();
+        const cost = window.getTalentCost(currentTimes - 1); // Cost for next advance
+        const canTakeMore = talent.max === "No Limit" || parseInt(talent.max) > currentTimes;
         
         row.innerHTML = `
             <td class="skill-name-cell">${talent.displayName}</td>
-            <td style="text-align: center;">${maxText}</td>
+            <td style="text-align: center;">${talent.max === "1" ? "1" : `${currentTimes}/${talent.max}`}</td>
+            <td style="text-align: center;">
+                ${canTakeMore ? 
+                    `<button onclick="window.advanceTalent(${talents.indexOf(talent)})" style="padding: 5px 8px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">+</button>
+                     <span id="${cleanTalentKey}-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(${cost} XP)</span>` 
+                    : '<span style="color: #999;">Max</span>'
+                }
+            </td>
             <td style="font-size: 11px; padding: 5px;">${talent.description}</td>
             <td><button class="advance-btn" onclick="window.removeTalent(${talents.indexOf(talent)})" style="background: #d44; color: white;">×</button></td>
         `;
@@ -2380,7 +2781,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 resolve: document.getElementById('resolve').value,
                 motivation: document.getElementById('motivation').value,
                 experience: {
-                    current: document.getElementById('xp-current').value,
+                    total: document.getElementById('xp-total').value,
                     spent: document.getElementById('xp-spent').value
                 },
                 status: {
@@ -2462,9 +2863,18 @@ document.addEventListener('DOMContentLoaded', function() {
             movement.dispatchEvent(new Event('input'));
             
             if (characterData.experience) {
-                document.getElementById('xp-current').value = characterData.experience.current || '';
-                document.getElementById('xp-spent').value = characterData.experience.spent || '';
-                updateTotalXP();
+                // Handle legacy data format (current + spent = total)
+                if (characterData.experience.current !== undefined && characterData.experience.total === undefined) {
+                    const current = parseInt(characterData.experience.current) || 0;
+                    const spent = parseInt(characterData.experience.spent) || 0;
+                    document.getElementById('xp-total').value = current + spent;
+                    document.getElementById('xp-spent').value = spent;
+                } else {
+                    // New format (total - spent = current)
+                    document.getElementById('xp-total').value = characterData.experience.total || '0';
+                    document.getElementById('xp-spent').value = characterData.experience.spent || '0';
+                }
+                window.updateXPDisplay();
             }
             
             document.getElementById('fate').value = characterData.fate || '';
