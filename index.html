@@ -480,6 +480,44 @@
             margin-top: 5px;
         }
 
+        /* Session Notes Specific Styles */
+        #session-editor {
+            font-family: Georgia, serif;
+            line-height: 1.6;
+        }
+
+        #session-editor h1, #session-editor h2, #session-editor h3 {
+            color: #3e2f1f;
+            margin: 15px 0 10px 0;
+        }
+
+        #session-editor h1 { font-size: 20px; }
+        #session-editor h2 { font-size: 18px; }
+        #session-editor h3 { font-size: 16px; }
+
+        #session-editor ul, #session-editor ol {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+
+        #session-editor li {
+            margin-bottom: 5px;
+        }
+
+        #session-editor p {
+            margin: 8px 0;
+        }
+
+        #session-editor strong {
+            color: #3e2f1f;
+        }
+
+        /* Editor toolbar styles */
+        #editor-toolbar button:hover,
+        #editor-toolbar select:hover {
+            background: #f0f0f0;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .header-grid {
@@ -509,6 +547,59 @@
             .skills-controls {
                 flex-direction: column;
                 align-items: stretch;
+            }
+
+            /* Session Notes Mobile Styles */
+            .tab-navigation {
+                flex-wrap: wrap;
+            }
+
+            .tab-button {
+                min-width: 80px;
+                font-size: 11px;
+                padding: 12px 8px;
+            }
+
+            #session-metadata {
+                padding: 10px;
+            }
+
+            #session-metadata > div:first-child {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            #editor-toolbar {
+                padding: 5px;
+                gap: 3px;
+                flex-wrap: wrap;
+            }
+
+            #editor-toolbar button,
+            #editor-toolbar select {
+                padding: 4px 6px;
+                font-size: 11px;
+            }
+
+            #session-editor {
+                min-height: 300px;
+                font-size: 13px;
+                padding: 10px;
+            }
+
+            /* Session list modal mobile */
+            #session-list-modal > div {
+                min-width: 90%;
+                max-width: 95%;
+                margin: 20px;
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tab-button {
+                font-size: 10px;
+                padding: 10px 6px;
             }
         }
     </style>
@@ -567,6 +658,7 @@
                 <button class="tab-button active" onclick="showTab('character-tab')">Character</button>
                 <button class="tab-button" onclick="showTab('combat-equipment-tab')">Combat & Equipment</button>
                 <button class="tab-button" onclick="showTab('magic-afflictions-tab')">Magic & Afflictions</button>
+                <button class="tab-button" onclick="showTab('session-notes-tab')">Session Notes</button>
             </div>
 
             <!-- Tab 1: Character Basics -->
@@ -1551,6 +1643,117 @@
 
 
             </div> <!-- End Tab 3 -->
+
+            <!-- Tab 4: Session Notes -->
+            <div id="session-notes-tab" class="tab-content">
+                
+                <!-- Session Notes Header -->
+                <div class="section" style="margin-bottom: 20px;">
+                    <div class="section-title">Session Notes</div>
+                    
+                    <!-- Session Management Controls -->
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                        <button class="control-btn" onclick="createNewSession()" style="padding: 8px 16px; font-size: 12px;">📝 New Session</button>
+                        <button class="control-btn" onclick="showSessionList()" style="padding: 8px 16px; font-size: 12px;">📋 View All Sessions</button>
+                        <button class="control-btn" onclick="exportCurrentSession()" style="padding: 8px 16px; font-size: 12px;">📄 Export Current</button>
+                        <button class="control-btn" onclick="exportAllSessions()" style="padding: 8px 16px; font-size: 12px;">📚 Export All</button>
+                    </div>
+                    
+                    <!-- Session Metadata -->
+                    <div id="session-metadata" style="background: #f9f7f1; padding: 15px; border-radius: 5px; margin-bottom: 15px; border: 2px solid #e8dfd0;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <label style="font-size: 11px; color: #3e2f1f; font-weight: bold; display: block; margin-bottom: 3px;">Session Number</label>
+                                <input type="number" id="session-number" style="width: 100%; padding: 5px; border: 1px solid #8b7355; font-family: Georgia, serif;" min="1">
+                            </div>
+                            <div>
+                                <label style="font-size: 11px; color: #3e2f1f; font-weight: bold; display: block; margin-bottom: 3px;">Session Date</label>
+                                <input type="date" id="session-date" style="width: 100%; padding: 5px; border: 1px solid #8b7355; font-family: Georgia, serif;">
+                            </div>
+                            <div>
+                                <label style="font-size: 11px; color: #3e2f1f; font-weight: bold; display: block; margin-bottom: 3px;">GM Name</label>
+                                <input type="text" id="gm-name" style="width: 100%; padding: 5px; border: 1px solid #8b7355; font-family: Georgia, serif;" placeholder="Game Master">
+                            </div>
+                            <div>
+                                <label style="font-size: 11px; color: #3e2f1f; font-weight: bold; display: block; margin-bottom: 3px;">Campaign Name</label>
+                                <input type="text" id="campaign-name" style="width: 100%; padding: 5px; border: 1px solid #8b7355; font-family: Georgia, serif;" placeholder="Campaign">
+                            </div>
+                        </div>
+                        <div>
+                            <label style="font-size: 11px; color: #3e2f1f; font-weight: bold; display: block; margin-bottom: 3px;">Location/Setting</label>
+                            <input type="text" id="session-location" style="width: 100%; padding: 5px; border: 1px solid #8b7355; font-family: Georgia, serif;" placeholder="Current location in the campaign">
+                        </div>
+                    </div>
+                    
+                    <!-- Current Session Info -->
+                    <div id="current-session-info" style="background: #e8f4fd; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 2px solid #b8d4ea;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: bold; color: #3e2f1f;">Current Session: <span id="current-session-title">No session selected</span></span>
+                            <div>
+                                <span style="font-size: 11px; color: #666;">Auto-save: </span>
+                                <span id="auto-save-status" style="font-size: 11px; color: #28a745;">✓ Saved</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Rich Text Editor Toolbar -->
+                    <div id="editor-toolbar" style="background: #f5f5f0; padding: 8px; border: 1px solid #8b7355; border-bottom: none; display: flex; gap: 5px; flex-wrap: wrap;">
+                        <button type="button" onclick="formatText('bold')" style="padding: 5px 8px; border: 1px solid #8b7355; background: white; cursor: pointer; font-weight: bold;" title="Bold">B</button>
+                        <button type="button" onclick="formatText('italic')" style="padding: 5px 8px; border: 1px solid #8b7355; background: white; cursor: pointer; font-style: italic;" title="Italic">I</button>
+                        <button type="button" onclick="formatText('underline')" style="padding: 5px 8px; border: 1px solid #8b7355; background: white; cursor: pointer; text-decoration: underline;" title="Underline">U</button>
+                        <span style="border-left: 1px solid #8b7355; margin: 0 5px;"></span>
+                        <button type="button" onclick="formatText('insertUnorderedList')" style="padding: 5px 8px; border: 1px solid #8b7355; background: white; cursor: pointer;" title="Bullet List">• List</button>
+                        <button type="button" onclick="formatText('insertOrderedList')" style="padding: 5px 8px; border: 1px solid #8b7355; background: white; cursor: pointer;" title="Numbered List">1. List</button>
+                        <span style="border-left: 1px solid #8b7355; margin: 0 5px;"></span>
+                        <select onchange="formatHeading(this.value)" style="padding: 4px; border: 1px solid #8b7355; background: white; font-family: Georgia, serif;">
+                            <option value="">Normal</option>
+                            <option value="h1">Heading 1</option>
+                            <option value="h2">Heading 2</option>
+                            <option value="h3">Heading 3</option>
+                        </select>
+                        <span style="border-left: 1px solid #8b7355; margin: 0 5px;"></span>
+                        <!-- WFRP Templates -->
+                        <select onchange="insertTemplate(this.value)" style="padding: 4px; border: 1px solid #8b7355; background: white; font-family: Georgia, serif;">
+                            <option value="">Insert Template</option>
+                            <option value="combat">Combat Encounter</option>
+                            <option value="npc">NPC Interaction</option>
+                            <option value="skill-test">Skill Test</option>
+                            <option value="treasure">Treasure/Reward</option>
+                            <option value="session-start">Session Start</option>
+                            <option value="session-end">Session End</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Rich Text Editor -->
+                    <div id="session-editor" 
+                         contenteditable="true" 
+                         style="min-height: 400px; padding: 15px; border: 1px solid #8b7355; background: white; font-family: Georgia, serif; font-size: 14px; line-height: 1.6; overflow-y: auto;"
+                         oninput="onEditorInput()"
+                         placeholder="Start writing your session notes here...">
+                    </div>
+                    
+                    <!-- Word Count -->
+                    <div style="text-align: right; margin-top: 5px; font-size: 11px; color: #666;">
+                        Word count: <span id="word-count">0</span> words
+                    </div>
+                </div>
+                
+            </div> <!-- End Tab 4 -->
+        </div>
+    </div>
+
+    <!-- Session List Modal -->
+    <div id="session-list-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 600px; max-width: 800px; max-height: 80vh; overflow-y: auto; border-radius: 10px;">
+            <h3 style="color: #3e2f1f; margin-bottom: 15px;">Session List</h3>
+            
+            <div id="session-list-content" style="margin-bottom: 20px;">
+                <!-- Session list will be populated here -->
+            </div>
+            
+            <div style="text-align: right;">
+                <button onclick="closeSessionList()" class="control-btn" style="padding: 8px 16px; background: #8b0000; color: white;">Close</button>
+            </div>
         </div>
     </div>
 
@@ -9574,6 +9777,456 @@ function loadSymptomsData() {
                 finalEquipment: []
             };
         }
+
+        // =============== SESSION NOTES SYSTEM ===============
+
+        // Session Notes Variables
+        let sessionNotes = JSON.parse(localStorage.getItem('wfrpSessionNotes')) || [];
+        let currentSessionId = null;
+        let autoSaveTimer = null;
+        let lastSavedContent = '';
+
+        // Session Notes Templates
+        const sessionTemplates = {
+            'combat': `<h3>Combat Encounter</h3>
+<p><strong>Enemy:</strong> </p>
+<p><strong>Location:</strong> </p>
+<p><strong>Initiative Order:</strong></p>
+<ul>
+<li></li>
+</ul>
+<p><strong>Key Events:</strong></p>
+<ul>
+<li></li>
+</ul>
+<p><strong>Outcome:</strong> </p>
+<p><strong>Rewards/Consequences:</strong> </p>`,
+
+            'npc': `<h3>NPC Interaction</h3>
+<p><strong>NPC Name:</strong> </p>
+<p><strong>Location:</strong> </p>
+<p><strong>Disposition:</strong> </p>
+<p><strong>Conversation Topics:</strong></p>
+<ul>
+<li></li>
+</ul>
+<p><strong>Information Gained:</strong></p>
+<ul>
+<li></li>
+</ul>
+<p><strong>Outcome:</strong> </p>`,
+
+            'skill-test': `<h3>Skill Test</h3>
+<p><strong>Test Type:</strong> </p>
+<p><strong>Difficulty:</strong> </p>
+<p><strong>Character(s):</strong> </p>
+<p><strong>Modifiers:</strong> </p>
+<p><strong>Roll Results:</strong> </p>
+<p><strong>Outcome:</strong> </p>
+<p><strong>Consequences:</strong> </p>`,
+
+            'treasure': `<h3>Treasure & Rewards</h3>
+<p><strong>Location Found:</strong> </p>
+<p><strong>Items Discovered:</strong></p>
+<ul>
+<li></li>
+</ul>
+<p><strong>Money:</strong> </p>
+<p><strong>XP Awarded:</strong> </p>
+<p><strong>Special Notes:</strong> </p>`,
+
+            'session-start': `<h2>Session Start</h2>
+<p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+<p><strong>Present Characters:</strong></p>
+<ul>
+<li></li>
+</ul>
+<p><strong>Previous Session Recap:</strong> </p>
+<p><strong>Starting Location:</strong> </p>
+<p><strong>Session Goals:</strong></p>
+<ul>
+<li></li>
+</ul>`,
+
+            'session-end': `<h2>Session End</h2>
+<p><strong>Key Accomplishments:</strong></p>
+<ul>
+<li></li>
+</ul>
+<p><strong>Unresolved Threads:</strong></p>
+<ul>
+<li></li>
+</ul>
+<p><strong>Next Session Hooks:</strong></p>
+<ul>
+<li></li>
+</ul>
+<p><strong>XP Awarded:</strong> </p>
+<p><strong>Notes for GM:</strong> </p>`
+        };
+
+        // Initialize Session Notes on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default date to today
+            document.getElementById('session-date').value = new Date().toISOString().split('T')[0];
+            
+            // Load last session or create first session
+            if (sessionNotes.length > 0) {
+                loadSession(sessionNotes[sessionNotes.length - 1].id);
+            } else {
+                // Auto-create first session
+                createNewSession();
+            }
+        });
+
+        // Create New Session
+        function createNewSession() {
+            const newSessionId = 'session_' + Date.now();
+            const sessionNumber = sessionNotes.length + 1;
+            
+            const newSession = {
+                id: newSessionId,
+                number: sessionNumber,
+                date: new Date().toISOString().split('T')[0],
+                gmName: '',
+                campaignName: '',
+                location: '',
+                content: '',
+                wordCount: 0,
+                created: new Date().toISOString(),
+                lastModified: new Date().toISOString()
+            };
+            
+            sessionNotes.push(newSession);
+            saveSessionNotes();
+            loadSession(newSessionId);
+            
+            // Focus on the editor
+            document.getElementById('session-editor').focus();
+        }
+
+        // Load Session
+        function loadSession(sessionId) {
+            const session = sessionNotes.find(s => s.id === sessionId);
+            if (!session) return;
+            
+            currentSessionId = sessionId;
+            
+            // Update UI with session data
+            document.getElementById('session-number').value = session.number;
+            document.getElementById('session-date').value = session.date;
+            document.getElementById('gm-name').value = session.gmName || '';
+            document.getElementById('campaign-name').value = session.campaignName || '';
+            document.getElementById('session-location').value = session.location || '';
+            document.getElementById('session-editor').innerHTML = session.content || '';
+            
+            // Update current session display
+            const sessionTitle = `Session ${session.number} - ${new Date(session.date).toLocaleDateString()}`;
+            document.getElementById('current-session-title').textContent = sessionTitle;
+            
+            // Update word count
+            updateWordCount();
+            
+            // Store current content for comparison
+            lastSavedContent = session.content || '';
+            
+            // Start auto-save timer
+            startAutoSave();
+        }
+
+        // Save Session Notes to localStorage
+        function saveSessionNotes() {
+            localStorage.setItem('wfrpSessionNotes', JSON.stringify(sessionNotes));
+        }
+
+        // Auto-save functionality
+        function startAutoSave() {
+            // Clear any existing timer
+            if (autoSaveTimer) {
+                clearInterval(autoSaveTimer);
+            }
+            
+            // Set up new timer for every 30 seconds
+            autoSaveTimer = setInterval(autoSaveSession, 30000);
+        }
+
+        function autoSaveSession() {
+            if (!currentSessionId) return;
+            
+            const currentContent = document.getElementById('session-editor').innerHTML;
+            
+            // Only save if content has changed
+            if (currentContent !== lastSavedContent) {
+                saveCurrentSession();
+                updateAutoSaveStatus('✓ Auto-saved', '#28a745');
+                lastSavedContent = currentContent;
+            }
+        }
+
+        function saveCurrentSession() {
+            if (!currentSessionId) return;
+            
+            const session = sessionNotes.find(s => s.id === currentSessionId);
+            if (!session) return;
+            
+            // Update session with current values
+            session.number = parseInt(document.getElementById('session-number').value) || session.number;
+            session.date = document.getElementById('session-date').value;
+            session.gmName = document.getElementById('gm-name').value;
+            session.campaignName = document.getElementById('campaign-name').value;
+            session.location = document.getElementById('session-location').value;
+            session.content = document.getElementById('session-editor').innerHTML;
+            session.wordCount = countWords(session.content);
+            session.lastModified = new Date().toISOString();
+            
+            saveSessionNotes();
+        }
+
+        function updateAutoSaveStatus(message, color) {
+            const statusElement = document.getElementById('auto-save-status');
+            statusElement.textContent = message;
+            statusElement.style.color = color;
+            
+            // Reset to saved status after 3 seconds
+            setTimeout(() => {
+                statusElement.textContent = '✓ Saved';
+                statusElement.style.color = '#28a745';
+            }, 3000);
+        }
+
+        // Editor Input Handler
+        function onEditorInput() {
+            updateWordCount();
+            updateAutoSaveStatus('● Unsaved', '#ffc107');
+        }
+
+        // Rich Text Formatting
+        function formatText(command) {
+            document.execCommand(command, false, null);
+            document.getElementById('session-editor').focus();
+            onEditorInput();
+        }
+
+        function formatHeading(tag) {
+            if (tag) {
+                document.execCommand('formatBlock', false, tag);
+                document.getElementById('session-editor').focus();
+                onEditorInput();
+            }
+        }
+
+        // Insert WFRP Templates
+        function insertTemplate(templateKey) {
+            if (!templateKey || !sessionTemplates[templateKey]) return;
+            
+            const editor = document.getElementById('session-editor');
+            const template = sessionTemplates[templateKey];
+            
+            // Insert template at cursor position
+            document.execCommand('insertHTML', false, template);
+            
+            // Reset dropdown
+            event.target.value = '';
+            
+            editor.focus();
+            onEditorInput();
+        }
+
+        // Word Count
+        function updateWordCount() {
+            const content = document.getElementById('session-editor').innerText || '';
+            const wordCount = countWords(content);
+            document.getElementById('word-count').textContent = wordCount;
+        }
+
+        function countWords(text) {
+            return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+        }
+
+        // Session List Management
+        function showSessionList() {
+            const modal = document.getElementById('session-list-modal');
+            const content = document.getElementById('session-list-content');
+            
+            if (sessionNotes.length === 0) {
+                content.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">No sessions found. Create your first session to get started!</p>';
+            } else {
+                // Sort sessions by number (descending)
+                const sortedSessions = [...sessionNotes].sort((a, b) => b.number - a.number);
+                
+                let listHTML = '<div style="display: grid; gap: 10px;">';
+                
+                sortedSessions.forEach(session => {
+                    const isActive = session.id === currentSessionId;
+                    const date = new Date(session.date).toLocaleDateString();
+                    const lastModified = new Date(session.lastModified).toLocaleDateString();
+                    
+                    listHTML += `
+                        <div style="padding: 15px; border: 2px solid ${isActive ? '#3e2f1f' : '#e8dfd0'}; border-radius: 5px; background: ${isActive ? '#f0f7ff' : '#faf8f3'};">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <h4 style="color: #3e2f1f; margin: 0;">Session ${session.number}</h4>
+                                <div style="display: flex; gap: 5px;">
+                                    <button onclick="loadSession('${session.id}'); closeSessionList();" class="control-btn" style="padding: 5px 10px; font-size: 11px;">${isActive ? 'Current' : 'Load'}</button>
+                                    <button onclick="deleteSession('${session.id}')" class="control-btn" style="padding: 5px 10px; font-size: 11px; background: #d44; color: white;">Delete</button>
+                                </div>
+                            </div>
+                            <div style="font-size: 12px; color: #666; margin-bottom: 8px;">
+                                <strong>Date:</strong> ${date} | <strong>Last Modified:</strong> ${lastModified} | <strong>Words:</strong> ${session.wordCount || 0}
+                            </div>
+                            ${session.campaignName ? `<div style="font-size: 12px; color: #666; margin-bottom: 5px;"><strong>Campaign:</strong> ${session.campaignName}</div>` : ''}
+                            ${session.location ? `<div style="font-size: 12px; color: #666; margin-bottom: 5px;"><strong>Location:</strong> ${session.location}</div>` : ''}
+                            ${session.gmName ? `<div style="font-size: 12px; color: #666;"><strong>GM:</strong> ${session.gmName}</div>` : ''}
+                        </div>
+                    `;
+                });
+                
+                listHTML += '</div>';
+                content.innerHTML = listHTML;
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function closeSessionList() {
+            document.getElementById('session-list-modal').style.display = 'none';
+        }
+
+        function deleteSession(sessionId) {
+            if (!confirm('Are you sure you want to delete this session? This cannot be undone.')) {
+                return;
+            }
+            
+            const sessionIndex = sessionNotes.findIndex(s => s.id === sessionId);
+            if (sessionIndex === -1) return;
+            
+            sessionNotes.splice(sessionIndex, 1);
+            saveSessionNotes();
+            
+            // If we deleted the current session, load another one or create new
+            if (sessionId === currentSessionId) {
+                if (sessionNotes.length > 0) {
+                    loadSession(sessionNotes[sessionNotes.length - 1].id);
+                } else {
+                    createNewSession();
+                }
+            }
+            
+            // Refresh the session list if it's open
+            const modal = document.getElementById('session-list-modal');
+            if (modal.style.display === 'block') {
+                showSessionList();
+            }
+        }
+
+        // Export Functionality
+        function exportCurrentSession() {
+            if (!currentSessionId) {
+                alert('No session to export.');
+                return;
+            }
+            
+            saveCurrentSession(); // Save current state first
+            
+            const session = sessionNotes.find(s => s.id === currentSessionId);
+            if (!session) return;
+            
+            const characterName = document.getElementById('character-name').value || 'Unknown Character';
+            const exportContent = generateSessionExport(session, characterName);
+            
+            downloadTextFile(`Session_${session.number}_${session.date}.txt`, exportContent);
+        }
+
+        function exportAllSessions() {
+            if (sessionNotes.length === 0) {
+                alert('No sessions to export.');
+                return;
+            }
+            
+            saveCurrentSession(); // Save current state first
+            
+            const characterName = document.getElementById('character-name').value || 'Unknown Character';
+            const campaignName = sessionNotes.find(s => s.campaignName)?.campaignName || 'WFRP Campaign';
+            
+            let exportContent = `${campaignName} - Complete Session Log\n`;
+            exportContent += `Character: ${characterName}\n`;
+            exportContent += `Generated: ${new Date().toLocaleDateString()}\n`;
+            exportContent += `Total Sessions: ${sessionNotes.length}\n`;
+            exportContent += '='.repeat(60) + '\n\n';
+            
+            // Sort by session number
+            const sortedSessions = [...sessionNotes].sort((a, b) => a.number - b.number);
+            
+            sortedSessions.forEach((session, index) => {
+                if (index > 0) exportContent += '\n' + '='.repeat(60) + '\n\n';
+                exportContent += generateSessionExport(session, characterName, false);
+            });
+            
+            downloadTextFile(`${campaignName.replace(/\s+/g, '_')}_Complete_Log.txt`, exportContent);
+        }
+
+        function generateSessionExport(session, characterName, includeHeader = true) {
+            let content = '';
+            
+            if (includeHeader) {
+                content += `WFRP Session Notes Export\n`;
+                content += `Character: ${characterName}\n`;
+                content += `Generated: ${new Date().toLocaleDateString()}\n`;
+                content += '='.repeat(40) + '\n\n';
+            }
+            
+            content += `Session ${session.number}\n`;
+            content += `Date: ${new Date(session.date).toLocaleDateString()}\n`;
+            if (session.campaignName) content += `Campaign: ${session.campaignName}\n`;
+            if (session.gmName) content += `GM: ${session.gmName}\n`;
+            if (session.location) content += `Location: ${session.location}\n`;
+            content += `Word Count: ${session.wordCount || 0}\n`;
+            content += '-'.repeat(30) + '\n\n';
+            
+            // Convert HTML content to plain text
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = session.content || 'No content recorded.';
+            content += tempDiv.textContent || tempDiv.innerText || 'No content recorded.';
+            
+            return content;
+        }
+
+        function downloadTextFile(filename, content) {
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Save session when metadata fields change
+        document.addEventListener('DOMContentLoaded', function() {
+            const metadataFields = ['session-number', 'session-date', 'gm-name', 'campaign-name', 'session-location'];
+            metadataFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', function() {
+                        updateAutoSaveStatus('● Unsaved', '#ffc107');
+                    });
+                    field.addEventListener('change', function() {
+                        saveCurrentSession();
+                        updateAutoSaveStatus('✓ Saved', '#28a745');
+                    });
+                }
+            });
+        });
+
+        // Clean up auto-save timer when page unloads
+        window.addEventListener('beforeunload', function() {
+            if (autoSaveTimer) {
+                clearInterval(autoSaveTimer);
+            }
+            // Save current session one last time
+            saveCurrentSession();
+        });
 
     </script>
 </body>
