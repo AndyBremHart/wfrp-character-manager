@@ -8545,18 +8545,29 @@ function loadSymptomsData() {
 
         // Helper function to directly add a skill to the character
         function addSkillDirectly(skillName, advances = 0) {
-            // Find the skill in allSkills
-            const baseSkill = allSkills.find(s => s.name === skillName);
+            // Parse skill name and specialization
+            let baseName, specialization = '';
+            const match = skillName.match(/^(.+?)\s*\((.+)\)$/);
+            
+            if (match) {
+                baseName = match[1].trim();
+                specialization = match[2].trim();
+            } else {
+                baseName = skillName;
+            }
+
+            // Find the base skill in allSkills
+            const baseSkill = allSkills.find(s => s.name === baseName);
             if (!baseSkill) {
-                console.warn(`Skill "${skillName}" not found in allSkills`);
+                console.warn(`Base skill "${baseName}" not found in allSkills`);
                 return;
             }
 
             // Create skill key and display name
-            const skillKey = skillName;
+            const skillKey = skillName; // Use full name as key (e.g., "Melee (Basic)")
             const displayName = skillName;
 
-            // Check if this skill already exists
+            // Check if this exact skill already exists
             if (addedSkills.find(s => s.key === skillKey)) {
                 // If it exists, just add advances
                 if (characterSkills[skillKey]) {
@@ -8568,11 +8579,11 @@ function loadSymptomsData() {
             // Add the skill to addedSkills
             addedSkills.push({
                 key: skillKey,
-                name: skillName,
+                name: baseName,
                 displayName: displayName,
                 characteristic: baseSkill.characteristic,
                 type: baseSkill.type,
-                specialisation: ''
+                specialisation: specialization
             });
 
             // Initialize skill data with advances
