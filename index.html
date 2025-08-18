@@ -1468,17 +1468,41 @@
             <div style="margin-bottom: 15px;">
                 <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Source:</label>
                 <select id="spell-source-input" style="width: 100%; padding: 5px;" onchange="window.toggleSpellSource()">
-                    <option value="custom">Custom Spell/Prayer</option>
                     <option value="srd">Select from SRD</option>
+                    <option value="custom">Custom Spell/Prayer</option>
                 </select>
             </div>
             
             <!-- SRD Spell Selection -->
             <div id="srd-spell-section" style="display: none; margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Search SRD Spells:</label>
-                <input type="text" id="srd-spell-search" placeholder="Type to search..." style="width: 100%; padding: 5px; margin-bottom: 10px;" oninput="window.filterSRDSpells()">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Filter by Category:</label>
+                        <select id="srd-category-filter" style="width: 100%; padding: 5px;" onchange="window.filterSRDSpells()">
+                            <option value="">All Categories</option>
+                            <option value="petty">Petty Magic</option>
+                            <option value="arcane">Arcane Spells</option>
+                            <option value="winds">8 Winds of Magic</option>
+                            <option value="blessings">Blessings (Divine Petty)</option>
+                            <option value="divine">Miracles (Divine)</option>
+                            <option value="witch">Witch Magic (Witchcraft & Hedge Craft)</option>
+                            <option value="dark">Dark Magic</option>
+                            <option value="chaos">Chaos Magic</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Filter by Lore:</label>
+                        <select id="srd-lore-filter" style="width: 100%; padding: 5px;" onchange="window.filterSRDSpells()">
+                            <option value="">All Lores</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Search:</label>
+                    <input type="text" id="srd-spell-search" placeholder="Type to search by name..." style="width: 100%; padding: 5px;" oninput="window.filterSRDSpells()">
+                </div>
                 
-                <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Select Spell:</label>
+                <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Select Spell: <span id="srd-spell-count" style="font-weight: normal; color: #666;"></span></label>
                 <select id="srd-spell-select" size="8" style="width: 100%; padding: 5px;" onchange="window.showSRDSpellDetails()">
                 </select>
                 
@@ -5732,52 +5756,63 @@ window.addSpell = function() {
 }
 
 window.updateLoreOptions = function() {
-    const type = document.getElementById('spell-type-input').value;
     const loreSelect = document.getElementById('spell-lore-input');
     
     loreSelect.innerHTML = '';
     
-    if (type === 'arcane') {
-        const arcaneOptions = [
-            { value: '', text: 'Select Lore...' },
-            { value: 'Petty Magic', text: 'Petty Magic' },
-            { value: 'Fire', text: 'Fire' },
-            { value: 'Metal', text: 'Metal' },
-            { value: 'Life', text: 'Life' },
-            { value: 'Light', text: 'Light' },
-            { value: 'Heavens', text: 'Heavens' },
-            { value: 'Shadow', text: 'Shadow' },
-            { value: 'Death', text: 'Death' },
-            { value: 'Beasts', text: 'Beasts' },
-            { value: 'Daemonology', text: 'Daemonology' }
-        ];
-        arcaneOptions.forEach(opt => {
-            const option = document.createElement('option');
-            option.value = opt.value;
-            option.textContent = opt.text;
-            loreSelect.appendChild(option);
-        });
-    } else {
-        const divineOptions = [
-            { value: '', text: 'Select Deity...' },
-            { value: 'Sigmar', text: 'Sigmar' },
-            { value: 'Ulric', text: 'Ulric' },
-            { value: 'Morr', text: 'Morr' },
-            { value: 'Verena', text: 'Verena' },
-            { value: 'Shallya', text: 'Shallya' },
-            { value: 'Myrmidia', text: 'Myrmidia' },
-            { value: 'Ranald', text: 'Ranald' },
-            { value: 'Taal', text: 'Taal' },
-            { value: 'Rhya', text: 'Rhya' },
-            { value: 'Manann', text: 'Manann' }
-        ];
-        divineOptions.forEach(opt => {
-            const option = document.createElement('option');
-            option.value = opt.value;
-            option.textContent = opt.text;
-            loreSelect.appendChild(option);
-        });
-    }
+    // Comprehensive lore options matching our categorization system
+    const allLoreOptions = [
+        { value: '', text: 'Select Lore/Type...' },
+        
+        // Petty Magic
+        { value: 'Petty', text: 'Petty Magic' },
+        
+        // Arcane Spells (handled by folder structure in SRD)
+        { value: 'Arcane', text: 'Arcane Spells' },
+        
+        // 8 Winds of Magic
+        { value: 'Beasts', text: 'Beasts (Wind of Magic)' },
+        { value: 'Death', text: 'Death (Wind of Magic)' },
+        { value: 'Fire', text: 'Fire (Wind of Magic)' },
+        { value: 'Heavens', text: 'Heavens (Wind of Magic)' },
+        { value: 'Life', text: 'Life (Wind of Magic)' },
+        { value: 'Light', text: 'Light (Wind of Magic)' },
+        { value: 'Metal', text: 'Metal (Wind of Magic)' },
+        { value: 'Shadows', text: 'Shadows (Wind of Magic)' },
+        
+        // Blessings & Divine
+        { value: 'Blessings', text: 'Blessings (Divine Petty)' },
+        { value: 'Sigmar', text: 'Sigmar (Divine)' },
+        { value: 'Ulric', text: 'Ulric (Divine)' },
+        { value: 'Taal', text: 'Taal (Divine)' },
+        { value: 'Rhya', text: 'Rhya (Divine)' },
+        { value: 'Manann', text: 'Manann (Divine)' },
+        { value: 'Morr', text: 'Morr (Divine)' },
+        { value: 'Shallya', text: 'Shallya (Divine)' },
+        { value: 'Ranald', text: 'Ranald (Divine)' },
+        { value: 'Verena', text: 'Verena (Divine)' },
+        { value: 'Myrmidia', text: 'Myrmidia (Divine)' },
+        
+        // Witch Magic
+        { value: 'Witchcraft', text: 'Witchcraft (Witch Magic)' },
+        { value: 'Hedge Craft', text: 'Hedge Craft (Witch Magic)' },
+        
+        // Dark Magic
+        { value: 'Daemonology', text: 'Daemonology (Dark Magic)' },
+        { value: 'Necromancy', text: 'Necromancy (Dark Magic)' },
+        
+        // Chaos Magic
+        { value: 'Nurgle', text: 'Nurgle (Chaos)' },
+        { value: 'Slaanesh', text: 'Slaanesh (Chaos)' },
+        { value: 'Tzeentch', text: 'Tzeentch (Chaos)' }
+    ];
+    
+    allLoreOptions.forEach(opt => {
+        const option = document.createElement('option');
+        option.value = opt.value;
+        option.textContent = opt.text;
+        loreSelect.appendChild(option);
+    });
 }
 
 window.confirmAddSpell = function() {
@@ -5823,7 +5858,6 @@ window.confirmAddSpell = function() {
     } else {
         // Handle custom spell entry
         const name = document.getElementById('spell-name-input').value.trim();
-        const type = document.getElementById('spell-type-input').value;
         const lore = document.getElementById('spell-lore-input').value;
         const cn = document.getElementById('spell-cn-input').value;
         const range = document.getElementById('spell-range-input').value.trim();
@@ -5861,7 +5895,6 @@ window.confirmAddSpell = function() {
         
         spell = {
             name: name,
-            type: type,
             lore: lore,
             cn: parseInt(cn),
             range: range || 'Touch',
@@ -5880,9 +5913,8 @@ window.confirmAddSpell = function() {
 
 window.closeAddSpellModal = function() {
     document.getElementById('add-spell-modal').style.display = 'none';
-    document.getElementById('spell-source-input').value = 'custom';
+    document.getElementById('spell-source-input').value = 'srd';
     document.getElementById('spell-name-input').value = '';
-    document.getElementById('spell-type-input').value = 'arcane';
     document.getElementById('spell-lore-input').value = '';
     document.getElementById('spell-cn-input').value = '';
     document.getElementById('spell-range-input').value = '';
@@ -5894,7 +5926,10 @@ window.closeAddSpellModal = function() {
     document.getElementById('srd-spell-search').value = '';
     document.getElementById('srd-spell-select').value = '';
     document.getElementById('srd-spell-details').style.display = 'none';
-    toggleSpellSource(); // Reset to custom view
+    // Reset filters
+    document.getElementById('srd-category-filter').value = '';
+    document.getElementById('srd-lore-filter').value = '';
+    toggleSpellSource(); // Reset to SRD view (default)
 }
 
 // SRD Spell Selection Functions
@@ -5915,7 +5950,19 @@ window.toggleSpellSource = function() {
 
 window.populateSRDSpellSelect = function() {
     const select = document.getElementById('srd-spell-select');
+    const loreFilter = document.getElementById('srd-lore-filter');
     select.innerHTML = '';
+    
+    // Populate lore filter if it's empty
+    if (loreFilter && loreFilter.options.length <= 1) {
+        const lores = [...new Set(srdSpells.map(s => s.lore))].sort();
+        lores.forEach(lore => {
+            const option = document.createElement('option');
+            option.value = lore;
+            option.textContent = lore;
+            loreFilter.appendChild(option);
+        });
+    }
     
     const sortedSpells = [...srdSpells].sort((a, b) => a.name.localeCompare(b.name));
     
@@ -5926,10 +5973,54 @@ window.populateSRDSpellSelect = function() {
         option.dataset.spell = JSON.stringify(spell);
         select.appendChild(option);
     });
+    
+    // Update count
+    document.getElementById('srd-spell-count').textContent = `(${sortedSpells.length} spells)`;
+}
+
+// Helper function to categorize spells
+function getSpellCategory(spell) {
+    const lore = spell.lore;
+    const folder = spell.folder || '';
+    
+    const windLores = ['Beasts', 'Death', 'Fire', 'Heavens', 'Life', 'Light', 'Metal', 'Shadows'];
+    const witchLores = ['Witchcraft', 'Hedge Craft']; // Witch Magic encompasses both
+    const darkLores = ['Daemonology', 'Necromancy']; // Dark Magic only
+    const chaosLores = ['Nurgle', 'Slaanesh', 'Tzeentch']; // Khorne has no spells
+    const divineLores = ['Sigmar', 'Ulric', 'Taal', 'Rhya', 'Manann', 'Morr', 'Shallya', 'Ranald', 'Verena', 'Myrmidia'];
+    const blessingLores = ['Blessings']; // Divine equivalent of petty magic
+    
+    // Check for Arcane spells (based on folder structure)
+    if (folder.includes('Arcane Spells')) return 'arcane';
+    
+    // Petty magic (excluding arcane spells)
+    if (lore === 'Petty') return 'petty';
+    
+    // Blessings (divine petty magic)
+    if (blessingLores.includes(lore)) return 'blessings';
+    
+    // 8 Winds of Magic
+    if (windLores.includes(lore)) return 'winds';
+    
+    // Witch Magic (Hedge Craft)
+    if (witchLores.includes(lore)) return 'witch';
+    
+    // Dark Magic (Daemonology & Necromancy only)
+    if (darkLores.includes(lore)) return 'dark';
+    
+    // Chaos Magic (Nurgle, Slaanesh, Tzeentch - no Khorne)
+    if (chaosLores.includes(lore)) return 'chaos';
+    
+    // Divine Miracles
+    if (divineLores.includes(lore)) return 'divine';
+    
+    return 'other';
 }
 
 window.filterSRDSpells = function() {
     const searchText = document.getElementById('srd-spell-search').value.toLowerCase();
+    const loreFilter = document.getElementById('srd-lore-filter').value;
+    const categoryFilter = document.getElementById('srd-category-filter').value;
     const select = document.getElementById('srd-spell-select');
     const options = select.options;
     
@@ -5939,9 +6030,11 @@ window.filterSRDSpells = function() {
     for (let i = 0; i < options.length; i++) {
         try {
             const spell = JSON.parse(options[i].dataset.spell);
-            const matches = searchText === '' || 
-                           (spell.name && spell.name.toLowerCase().includes(searchText)) ||
-                           (spell.lore && spell.lore.toLowerCase().includes(searchText));
+            const matchesSearch = searchText === '' || 
+                           (spell.name && spell.name.toLowerCase().includes(searchText));
+            const matchesLore = loreFilter === '' || spell.lore === loreFilter;
+            const matchesCategory = categoryFilter === '' || getSpellCategory(spell) === categoryFilter;
+            const matches = matchesSearch && matchesLore && matchesCategory;
             
             options[i].style.display = matches ? '' : 'none';
             
@@ -5956,6 +6049,10 @@ window.filterSRDSpells = function() {
             options[i].style.display = 'none';
         }
     }
+    
+    // Update count
+    document.getElementById('srd-spell-count').textContent = `(${matchCount} spells found)`;
+    
     
     // Select first match if any
     if (firstMatch && matchCount > 0) {
