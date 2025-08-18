@@ -70,7 +70,61 @@
 
         /* Main Content */
         .sheet-content {
+            padding: 0;
+        }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            display: flex;
+            background: #3e2f1f;
+            border-bottom: 3px solid #2a1f14;
+            margin: 0;
+            padding: 0;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
+            background: #3e2f1f;
+            color: #c4b5a0;
+            border: none;
+            font-family: 'Georgia', serif;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-right: 1px solid #2a1f14;
+        }
+
+        .tab-button:last-child {
+            border-right: none;
+        }
+
+        .tab-button:hover {
+            background: #4a3828;
+            color: #faf8f3;
+        }
+
+        .tab-button.active {
+            background: #faf8f3;
+            color: #3e2f1f;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
             padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         /* Characteristics Table */
@@ -415,6 +469,15 @@
 
         <!-- Main Content -->
         <div class="sheet-content">
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button class="tab-button active" onclick="showTab('character-tab')">Character</button>
+                <button class="tab-button" onclick="showTab('combat-equipment-tab')">Combat & Equipment</button>
+                <button class="tab-button" onclick="showTab('magic-afflictions-tab')">Magic & Afflictions</button>
+            </div>
+
+            <!-- Tab 1: Character Basics -->
+            <div id="character-tab" class="tab-content active">
             <!-- Primary Characteristics Table -->
             <div class="characteristics-section">
                 <div class="section-title">Characteristics</div>
@@ -657,6 +720,132 @@
                     </div>
                 </div>
             </div>
+            <!-- Secondary Characteristics -->
+            <div class="characteristics-section">
+                <div class="section-title">Secondary Characteristics</div>
+                <div class="secondary-grid">
+                    <table class="secondary-table">
+                        <tr>
+                            <th>Wounds</th>
+                            <td style="width: 40%;"><input type="number" id="wounds-current" placeholder="12"></td>
+                            <td style="width: 10%; text-align: center;">/</td>
+                            <td style="width: 40%;"><input type="number" id="wounds-max" placeholder="12" readonly style="background: #f5f5f0; color: #666;" title="Auto-calculated based on species and characteristics"></td>
+                        </tr>
+                    </table>
+
+                    <table class="secondary-table">
+                        <tr>
+                            <th>Movement</th>
+                            <td><input type="number" id="movement" placeholder="4"></td>
+                        </tr>
+                        <tr>
+                            <th>Walk</th>
+                            <td><input type="number" id="walk" placeholder="8" readonly></td>
+                        </tr>
+                        <tr>
+                            <th>Run</th>
+                            <td><input type="number" id="run" placeholder="16" readonly></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+
+            <!-- Fate, Fortune, Resilience & Resolve -->
+            <div class="characteristics-section">
+                <div class="section-title">Fate & Fortune / Resilience & Resolve</div>
+                <div class="secondary-grid">
+                    <div style="background: #f8f6f0; border: 2px solid #3e2f1f; padding: 15px; border-radius: 5px;">
+                        <h4 style="color: #3e2f1f; margin-top: 0; margin-bottom: 10px; font-size: 14px;">Fate & Fortune</h4>
+                        
+                        <!-- Fate Points -->
+                        <div style="display: flex; align-items: center; margin-bottom: 10px; gap: 10px;">
+                            <label style="width: 60px; color: #3e2f1f; font-weight: bold; font-size: 13px;">Fate:</label>
+                            <button onclick="window.updateFate(-1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">−</button>
+                            <input type="number" id="fate" placeholder="0" style="width: 50px; text-align: center; border: 1px solid #8b7355;">
+                            <button onclick="window.updateFate(1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">+</button>
+                        </div>
+                        
+                        <!-- Fortune Points -->
+                        <div style="display: flex; align-items: center; margin-bottom: 10px; gap: 10px;">
+                            <label style="width: 60px; color: #3e2f1f; font-weight: bold; font-size: 13px;">Fortune:</label>
+                            <button onclick="window.updateFortune(-1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">−</button>
+                            <input type="number" id="fortune-current" placeholder="0" style="width: 40px; text-align: center; border: 1px solid #8b7355;">
+                            <span style="color: #666; font-size: 13px;">/</span>
+                            <span id="fortune-max" style="color: #666; font-size: 13px; width: 20px;">0</span>
+                            <button onclick="window.updateFortune(1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">+</button>
+                            <button onclick="window.restoreFortune()" style="padding: 3px 8px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer; margin-left: 5px;">Restore</button>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f0f6f8; border: 2px solid #3e2f1f; padding: 15px; border-radius: 5px;">
+                        <h4 style="color: #3e2f1f; margin-top: 0; margin-bottom: 10px; font-size: 14px;">Resilience & Resolve</h4>
+                        
+                        <!-- Resilience Points -->
+                        <div style="display: flex; align-items: center; margin-bottom: 10px; gap: 10px;">
+                            <label style="width: 70px; color: #3e2f1f; font-weight: bold; font-size: 13px;">Resilience:</label>
+                            <button onclick="window.updateResilience(-1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">−</button>
+                            <input type="number" id="resilience" placeholder="0" style="width: 50px; text-align: center; border: 1px solid #8b7355;">
+                            <button onclick="window.updateResilience(1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">+</button>
+                        </div>
+                        
+                        <!-- Resolve Points -->
+                        <div style="display: flex; align-items: center; margin-bottom: 10px; gap: 10px;">
+                            <label style="width: 70px; color: #3e2f1f; font-weight: bold; font-size: 13px;">Resolve:</label>
+                            <button onclick="window.updateResolve(-1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">−</button>
+                            <input type="number" id="resolve-current" placeholder="0" style="width: 40px; text-align: center; border: 1px solid #8b7355;">
+                            <span style="color: #666; font-size: 13px;">/</span>
+                            <span id="resolve-max" style="color: #666; font-size: 13px; width: 20px;">0</span>
+                            <button onclick="window.updateResolve(1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">+</button>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <table class="secondary-table" style="width: 100%;">
+                        <tr>
+                            <th style="width: 20%;">Motivation</th>
+                            <td><input type="text" id="motivation" placeholder="What drives your character forward?" style="width: 100%; border: none;"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+
+            <!-- Experience & Status -->
+            <div class="info-grid">
+                <div class="info-box">
+                    <div class="info-box-title">Experience Points</div>
+                    <button onclick="window.openXPEarnDialog()" style="width: 100%; padding: 5px; margin-bottom: 5px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer; font-size: 12px;">Add Session XP</button>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;"><span>Total XP:</span><span id="xp-total-display">0</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;"><span>Current XP:</span><span id="xp-current-display">0</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px;"><span>Spent XP:</span><span id="xp-spent-display">0</span></div>
+                    <input type="hidden" id="xp-total" value="0">
+                    <input type="hidden" id="xp-spent" value="0">
+                </div>
+                <div class="info-box">
+                    <div class="info-box-title">Status</div>
+                    <select id="status-tier" style="width: 100%; padding: 5px; text-align: center; font-size: 14px; margin-top: 5px; border: 1px solid #8b7355;">
+                        <option value="Brass">Brass</option>
+                        <option value="Silver">Silver</option>
+                        <option value="Gold">Gold</option>
+                    </select>
+                    <input type="number" id="status-standing" placeholder="Standing">
+                </div>
+                <div class="info-box">
+                    <div class="info-box-title">Sin Points</div>
+                    <input type="number" id="sin-points" placeholder="0" min="0">
+                </div>
+                <div class="info-box">
+                    <div class="info-box-title">Notes</div>
+                    <textarea id="quick-notes" style="width: 100%; height: 60px; margin-top: 5px; border: 1px solid #8b7355; padding: 5px;" placeholder="Quick notes..."></textarea>
+                </div>
+            </div>
+
+
+            </div> <!-- End Tab 1 -->
+
+            <!-- Tab 2: Combat & Equipment -->
+            <div id="combat-equipment-tab" class="tab-content">
 
             <!-- Conditions & Status Effects -->
             <div class="section">
@@ -726,190 +915,183 @@
                 </div>
             </div>
 
-            <!-- Diseases & Ailments -->
-            <div class="section">
-                <div class="section-title">Diseases & Ailments</div>
+            <!-- Combat Section -->
+            <div class="characteristics-section">
+                <div class="section-title">Combat</div>
                 
-                <!-- Disease Controls -->
-                <div class="disease-controls" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;">
-                    <button class="control-btn" onclick="window.openAddDiseaseModal()" style="padding: 5px 10px; font-size: 12px;">+ Add Disease</button>
-                    <button class="control-btn" onclick="window.removeAllDiseases()" style="padding: 5px 10px; font-size: 12px; background: #c41e3a; color: white;">Clear All</button>
-                    <input type="text" id="diseases-search" placeholder="Search active diseases..." style="padding: 5px 10px; border: 1px solid #8b7355; font-family: 'Georgia', serif; background: white; flex: 1; min-width: 200px;">
-                </div>
-                
-                <!-- Active Diseases Display -->
-                <div id="active-diseases-display" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; margin-bottom: 15px;">
-                    <!-- Diseases will be dynamically populated here -->
-                </div>
-                
-                <!-- No Diseases Message -->
-                <div id="no-diseases-message" style="text-align: center; padding: 20px; color: #666; font-style: italic; display: none;">
-                    No diseases currently affecting this character.
-                </div>
-                
-                <!-- Active Symptoms Summary -->
-                <div class="symptom-effects-summary" id="symptom-effects-summary" style="display: none; padding: 15px; background: #fff4e0; border: 2px solid #ff8c00; border-radius: 5px; margin-bottom: 15px;">
-                    <h4 style="color: #8b4513; margin: 0 0 8px 0; font-size: 14px;">📊 Active Symptom Effects</h4>
-                    <div id="symptom-effects-text" style="color: #8b4513; font-size: 13px; font-weight: bold;"></div>
-                </div>
-                
-                <!-- Test Reminders -->
-                <div class="disease-reminders" style="margin-bottom: 20px;">
-                    <h4 style="color: #3e2f1f; margin: 0 0 10px 0; font-size: 14px;">Upcoming Tests & Reminders</h4>
-                    <textarea id="test-reminders" rows="3" placeholder="Endurance tests needed, treatment schedules, recovery milestones..." style="width: 100%; padding: 10px; border: 1px solid #8b7355; font-family: 'Georgia', serif; resize: vertical; background: white;"></textarea>
-                </div>
-                
-                <!-- Cross-Reference Warnings -->
-                <div class="status-interactions" id="status-interactions" style="display:none; padding: 15px; background: #ffe4e6; border: 2px solid #c41e3a; border-radius: 5px;">
-                    <h5 style="color: #8b0000; margin: 0 0 8px 0; font-size: 14px;">⚠️ Status Effect Interactions</h5>
-                    <div class="interaction-warnings" id="interaction-warnings" style="color: #8b0000; font-size: 13px;"></div>
+                <!-- Weapons Table -->
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Weapons</h4>
+                        <button class="control-btn" onclick="window.addWeapon()" style="padding: 5px 10px; font-size: 12px;">+ Add Weapon</button>
+                    </div>
+                    <table class="skills-table" id="weapons-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">Weapon</th>
+                                <th style="width: 10%;">Group</th>
+                                <th style="width: 8%;">Enc</th>
+                                <th style="width: 10%;">Range</th>
+                                <th style="width: 12%;">Damage</th>
+                                <th style="width: 25%;">Qualities</th>
+                                <th style="width: 8%;">Equipped</th>
+                                <th style="width: 2%;">Del</th>
+                            </tr>
+                        </thead>
+                        <tbody id="weapons-tbody">
+                        </tbody>
+                    </table>
                 </div>
 
-                <!-- Add Disease Modal -->
-                <div id="add-disease-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
-                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;">
-                        <h3 style="margin-top: 0; color: #3e2f1f; text-align: center;">Add Disease</h3>
-                        
-                        <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Select Disease:</label>
-                            <select id="disease-select" style="width: 100%; padding: 8px; font-size: 14px;" onchange="window.showDiseaseDetails()">
-                                <option value="">-- Choose a disease --</option>
-                            </select>
+                <!-- Armour Table -->
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Armour</h4>
+                        <button class="control-btn" onclick="window.addArmour()" style="padding: 5px 10px; font-size: 12px;">+ Add Armour</button>
+                    </div>
+                    <table class="skills-table" id="armour-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">Armour</th>
+                                <th style="width: 10%;">Type</th>
+                                <th style="width: 8%;">Enc</th>
+                                <th style="width: 8%;">Head</th>
+                                <th style="width: 8%;">Arms</th>
+                                <th style="width: 8%;">Body</th>
+                                <th style="width: 8%;">Legs</th>
+                                <th style="width: 15%;">Qualities</th>
+                                <th style="width: 8%;">Worn</th>
+                                <th style="width: 2%;">Del</th>
+                            </tr>
+                        </thead>
+                        <tbody id="armour-tbody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Armour Points Summary -->
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Total Armour Points</h4>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Head</div>
+                            <input type="number" id="total-ap-head" value="0" readonly style="text-align: center; font-weight: bold;">
                         </div>
-                        
-                        <div id="disease-details" style="margin-bottom: 20px; display: none; padding: 15px; background: #f8f6f0; border-radius: 5px;">
-                            <div id="disease-info"></div>
-                            <div id="disease-symptoms" style="margin-top: 10px;"></div>
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Arms</div>
+                            <input type="number" id="total-ap-arms" value="0" readonly style="text-align: center; font-weight: bold;">
                         </div>
-                        
-                        <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Contract Date:</label>
-                            <input type="date" id="disease-contract-date" style="width: 100%; padding: 5px;">
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Body</div>
+                            <input type="number" id="total-ap-body" value="0" readonly style="text-align: center; font-weight: bold;">
                         </div>
-                        
-                        <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Notes:</label>
-                            <textarea id="disease-notes-input" rows="3" placeholder="Additional notes about contraction, symptoms, treatment..." style="width: 100%; padding: 8px; resize: vertical;"></textarea>
-                        </div>
-                        
-                        <div style="text-align: center;">
-                            <button class="control-btn" onclick="window.confirmAddDisease()" style="margin-right: 10px; padding: 8px 16px;">Add Disease</button>
-                            <button class="control-btn" onclick="window.closeAddDiseaseModal()" style="padding: 8px 16px;">Cancel</button>
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Legs</div>
+                            <input type="number" id="total-ap-legs" value="0" readonly style="text-align: center; font-weight: bold;">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Corruption & Mutations -->
-            <div class="section">
-                <div class="section-title">Corruption & Mutations</div>
+
+            <!-- Equipment & Inventory Section -->
+            <div class="characteristics-section">
+                <div class="section-title">Equipment & Inventory</div>
                 
-                <!-- Corruption Tracking -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; padding: 15px; background: #f8f6f0; border: 2px solid #8b7355; border-radius: 5px;">
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Corruption Points:</label>
-                        <input type="number" id="corruption-points" value="0" min="0" style="width: 80px; padding: 5px; text-align: center; font-weight: bold;" onchange="window.updateCorruptionStatus()">
-                    </div>
-                    
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Threshold:</label>
-                        <div id="corruption-threshold" style="padding: 5px; text-align: center; font-weight: bold; color: #666; background: #e8dfd0; border-radius: 3px;">0</div>
-                        <div style="font-size: 10px; color: #666; text-align: center; margin-top: 2px;">(WP Bonus + T Bonus)</div>
-                    </div>
-                    
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Physical Mutations:</label>
-                        <div id="physical-mutation-counter" style="padding: 5px; text-align: center; font-weight: bold; color: #666; background: #e8dfd0; border-radius: 3px;">0/0</div>
-                        <div style="font-size: 10px; color: #666; text-align: center; margin-top: 2px;">(Current/T Bonus)</div>
-                    </div>
-                    
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Mental Corruptions:</label>
-                        <div id="mental-corruption-counter" style="padding: 5px; text-align: center; font-weight: bold; color: #666; background: #e8dfd0; border-radius: 3px;">0/0</div>
-                        <div style="font-size: 10px; color: #666; text-align: center; margin-top: 2px;">(Current/WP Bonus)</div>
-                    </div>
-                </div>
-                
-                <!-- Corruption Status Warnings -->
-                <div id="corruption-test-warning" style="background: #fff2dc; border: 2px solid #ff8c00; padding: 10px; margin-bottom: 15px; border-radius: 5px; display: none;">
-                    <h4 style="color: #cc7000; margin: 0 0 8px 0; font-size: 14px;">⚠️ Corruption Test Required</h4>
-                    <div style="color: #cc7000; font-size: 13px;">Corruption exceeds threshold! Make a Challenging (+0) Endurance Test or gain a mutation.</div>
-                </div>
-                
-                <div id="character-destruction-warning" style="background: #ffe4e6; border: 2px solid #c41e3a; padding: 10px; margin-bottom: 15px; border-radius: 5px; display: none;">
-                    <h4 style="color: #8b0000; margin: 0 0 8px 0; font-size: 14px;">💀 CHARACTER AT RISK</h4>
-                    <div id="destruction-warning-text" style="color: #8b0000; font-size: 13px; font-weight: bold;"></div>
-                </div>
-                
-                <div id="character-lost-warning" style="background: #2d1b1b; border: 2px solid #000; padding: 15px; margin-bottom: 15px; border-radius: 5px; display: none;">
-                    <h4 style="color: #c41e3a; margin: 0 0 8px 0; font-size: 16px; text-align: center;">💀 CHARACTER LOST TO CHAOS 💀</h4>
-                    <div style="color: #c41e3a; font-size: 14px; text-align: center; font-weight: bold;">This character has been consumed by mutation and is no longer playable.</div>
-                </div>
-                
-                <!-- Fellowship Warning -->
-                <div id="fellowship-warning" style="background: #fff8dc; border: 2px solid #d4a574; padding: 10px; margin-bottom: 15px; border-radius: 5px; display: none;">
-                    <h4 style="color: #8b4513; margin: 0 0 8px 0; font-size: 14px;">👥 Fellowship Penalties</h4>
-                    <div id="fellowship-warning-text" style="color: #8b4513; font-size: 13px;"></div>
-                    <div style="color: #8b4513; font-size: 11px; margin-top: 8px; font-style: italic;">GM guidance: Apply circumstantial penalties based on situation and NPCs' reactions.</div>
-                </div>
-                
-                <!-- Add Mutation Controls -->
-                <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;">
-                    <button class="control-btn" onclick="window.openAddMutationModal()" style="padding: 5px 10px; font-size: 12px;">+ Add Mutation</button>
-                    <input type="text" id="mutations-search" placeholder="Search mutations..." style="padding: 5px 10px; border: 1px solid #8b7355; font-family: 'Georgia', serif; background: white; flex: 1; min-width: 200px;" oninput="window.displayMutations()">
-                </div>
-                
-                <!-- Active Mutations Display -->
-                <div id="active-mutations-display" style="margin-bottom: 15px;">
-                    <!-- Mutations will be dynamically populated here -->
-                </div>
-                
-                <!-- No Mutations Message -->
-                <div id="no-mutations-message" style="text-align: center; padding: 20px; color: #666; font-style: italic;">
-                    No mutations or corruptions currently affecting this character.
-                </div>
-                
-                <!-- Add Mutation Modal -->
-                <div id="add-mutation-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
-                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 600px; max-width: 700px; max-height: 80vh; overflow-y: auto;">
-                        <h3 style="color: #3e2f1f; margin-bottom: 15px;">Add Mutation or Corruption</h3>
-                        
-                        <!-- Species Mutation Guidance -->
-                        <div id="species-guidance" style="background: #e8dfd0; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
-                            <div style="font-size: 12px; color: #3e2f1f;"><strong>Species Mutation Distribution:</strong></div>
-                            <div id="species-guidance-text" style="font-size: 11px; color: #666; margin-top: 3px;"></div>
+                <!-- Money Tracker -->
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Wealth</h4>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Gold Crowns</div>
+                            <input type="number" id="money-gold" value="0" min="0" onchange="window.updateEncumbrance()" style="text-align: center;">
                         </div>
-                        
-                        <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Mutation Type:</label>
-                            <select id="mutation-type-select" style="width: 100%; padding: 8px; font-size: 14px;" onchange="window.updateMutationOptions()">
-                                <option value="">-- Choose Type --</option>
-                                <option value="physical">Physical Mutation</option>
-                                <option value="mental">Mental Corruption</option>
-                            </select>
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Silver Shillings</div>
+                            <input type="number" id="money-silver" value="0" min="0" onchange="window.updateEncumbrance()" style="text-align: center;">
                         </div>
-                        
-                        <div id="mutation-selection" style="margin-bottom: 15px; display: none;">
-                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Specific Mutation:</label>
-                            <select id="mutation-select" style="width: 100%; padding: 8px; font-size: 14px;" onchange="window.showMutationDetails()">
-                                <option value="">-- Choose Mutation --</option>
-                            </select>
-                        </div>
-                        
-                        <!-- Mutation Details Display -->
-                        <div id="mutation-details" style="display: none; background: #f8f6f0; padding: 15px; border: 1px solid #8b7355; border-radius: 5px; margin-bottom: 15px;">
-                            <h4 id="detail-mutation-name" style="color: #3e2f1f; margin: 0 0 8px 0;"></h4>
-                            <div id="detail-mutation-description" style="margin-bottom: 8px; font-style: italic;"></div>
-                            <div><strong>Effects:</strong> <span id="detail-mutation-effects"></span></div>
-                            <div id="detail-mutation-obvious" style="margin-top: 8px; font-size: 12px;"></div>
-                            <div id="detail-mutation-fellowship" style="margin-top: 8px; font-size: 12px; color: #8b4513;"></div>
-                        </div>
-                        
-                        <div style="text-align: right; margin-top: 20px;">
-                            <button onclick="window.closeAddMutationModal()" style="padding: 8px 16px; margin-right: 10px; background: #ccc; border: none; cursor: pointer;">Cancel</button>
-                            <button id="confirm-add-mutation-btn" onclick="window.confirmAddMutation()" style="padding: 8px 16px; background: #4682b4; color: white; border: none; cursor: pointer;" disabled>Add Mutation</button>
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Brass Pennies</div>
+                            <input type="number" id="money-brass" value="0" min="0" onchange="window.updateEncumbrance()" style="text-align: center;">
                         </div>
                     </div>
+                </div>
+
+                <!-- Encumbrance Tracker -->
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Encumbrance</h4>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px;">
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Current Enc</div>
+                            <input type="number" id="current-enc" value="0" readonly style="text-align: center; font-weight: bold;">
+                        </div>
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Max Enc (SB+TB)</div>
+                            <input type="number" id="max-enc" value="0" readonly style="text-align: center;">
+                        </div>
+                        <div class="info-box" style="padding: 8px;">
+                            <div class="info-box-title" style="font-size: 10px;">Status</div>
+                            <input type="text" id="enc-status" value="Unencumbered" readonly style="text-align: center; font-size: 12px;">
+                        </div>
+                    </div>
+                    <div style="font-size: 11px; color: #8b7355; line-height: 1.4;">
+                        <div id="enc-details" style="padding: 5px; background: #f5f0e8; border: 1px solid #d4c5a0;">
+                            <strong>Encumbrance Breakdown:</strong>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 5px;">
+                                <div>• Weapons (equipped): <span id="enc-weapons">0</span></div>
+                                <div>• Armour (worn -1 Enc): <span id="enc-armour">0</span></div>
+                                <div>• Trappings: <span id="enc-trappings">0</span></div>
+                                <div>• Money (200 coins = 1 Enc): <span id="enc-money">0</span></div>
+                            </div>
+                            <div style="margin-top: 5px; padding-top: 5px; border-top: 1px solid #d4c5a0;">
+                                <strong>Current Penalties:</strong> <span id="enc-penalties" style="color: green;">None</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trappings/Inventory -->
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Trappings & Equipment</h4>
+                        <button class="control-btn" onclick="window.addTrapping()" style="padding: 5px 10px; font-size: 12px;">+ Add Item</button>
+                    </div>
+                    <table class="skills-table" id="trappings-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 30%;">Item</th>
+                                <th style="width: 10%;">Quantity</th>
+                                <th style="width: 10%;">Enc (each)</th>
+                                <th style="width: 10%;">Total Enc</th>
+                                <th style="width: 15%;">Location</th>
+                                <th style="width: 23%;">Notes</th>
+                                <th style="width: 2%;">Del</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trappings-tbody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Ammunition & Consumables -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Ammunition & Consumables</h4>
+                        <button class="control-btn" onclick="window.addConsumable()" style="padding: 5px 10px; font-size: 12px;">+ Add Consumable</button>
+                    </div>
+                    <table class="skills-table" id="consumables-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 30%;">Item</th>
+                                <th style="width: 15%;">Current</th>
+                                <th style="width: 15%;">Maximum</th>
+                                <th style="width: 38%;">Notes</th>
+                                <th style="width: 2%;">Del</th>
+                            </tr>
+                        </thead>
+                        <tbody id="consumables-tbody">
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -1048,6 +1230,10 @@
                     </div>
                 </div>
             </div>
+            </div> <!-- End Tab 2 -->
+
+            <!-- Tab 3: Magic & Afflictions -->
+            <div id="magic-afflictions-tab" class="tab-content">
 
             <!-- Spells & Prayers -->
             <div class="section">
@@ -1196,303 +1382,196 @@
                 </div>
             </div>
 
-            <!-- Secondary Characteristics -->
-            <div class="characteristics-section">
-                <div class="section-title">Secondary Characteristics</div>
-                <div class="secondary-grid">
-                    <table class="secondary-table">
-                        <tr>
-                            <th>Wounds</th>
-                            <td style="width: 40%;"><input type="number" id="wounds-current" placeholder="12"></td>
-                            <td style="width: 10%; text-align: center;">/</td>
-                            <td style="width: 40%;"><input type="number" id="wounds-max" placeholder="12" readonly style="background: #f5f5f0; color: #666;" title="Auto-calculated based on species and characteristics"></td>
-                        </tr>
-                    </table>
-
-                    <table class="secondary-table">
-                        <tr>
-                            <th>Movement</th>
-                            <td><input type="number" id="movement" placeholder="4"></td>
-                        </tr>
-                        <tr>
-                            <th>Walk</th>
-                            <td><input type="number" id="walk" placeholder="8" readonly></td>
-                        </tr>
-                        <tr>
-                            <th>Run</th>
-                            <td><input type="number" id="run" placeholder="16" readonly></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Fate, Fortune, Resilience & Resolve -->
-            <div class="characteristics-section">
-                <div class="section-title">Fate & Fortune / Resilience & Resolve</div>
-                <div class="secondary-grid">
-                    <div style="background: #f8f6f0; border: 2px solid #3e2f1f; padding: 15px; border-radius: 5px;">
-                        <h4 style="color: #3e2f1f; margin-top: 0; margin-bottom: 10px; font-size: 14px;">Fate & Fortune</h4>
-                        
-                        <!-- Fate Points -->
-                        <div style="display: flex; align-items: center; margin-bottom: 10px; gap: 10px;">
-                            <label style="width: 60px; color: #3e2f1f; font-weight: bold; font-size: 13px;">Fate:</label>
-                            <button onclick="window.updateFate(-1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">−</button>
-                            <input type="number" id="fate" placeholder="0" style="width: 50px; text-align: center; border: 1px solid #8b7355;">
-                            <button onclick="window.updateFate(1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">+</button>
-                        </div>
-                        
-                        <!-- Fortune Points -->
-                        <div style="display: flex; align-items: center; margin-bottom: 10px; gap: 10px;">
-                            <label style="width: 60px; color: #3e2f1f; font-weight: bold; font-size: 13px;">Fortune:</label>
-                            <button onclick="window.updateFortune(-1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">−</button>
-                            <input type="number" id="fortune-current" placeholder="0" style="width: 40px; text-align: center; border: 1px solid #8b7355;">
-                            <span style="color: #666; font-size: 13px;">/</span>
-                            <span id="fortune-max" style="color: #666; font-size: 13px; width: 20px;">0</span>
-                            <button onclick="window.updateFortune(1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">+</button>
-                            <button onclick="window.restoreFortune()" style="padding: 3px 8px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer; margin-left: 5px;">Restore</button>
-                        </div>
+            <!-- Corruption & Mutations -->
+            <div class="section">
+                <div class="section-title">Corruption & Mutations</div>
+                
+                <!-- Corruption Tracking -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; padding: 15px; background: #f8f6f0; border: 2px solid #8b7355; border-radius: 5px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Corruption Points:</label>
+                        <input type="number" id="corruption-points" value="0" min="0" style="width: 80px; padding: 5px; text-align: center; font-weight: bold;" onchange="window.updateCorruptionStatus()">
                     </div>
                     
-                    <div style="background: #f0f6f8; border: 2px solid #3e2f1f; padding: 15px; border-radius: 5px;">
-                        <h4 style="color: #3e2f1f; margin-top: 0; margin-bottom: 10px; font-size: 14px;">Resilience & Resolve</h4>
-                        
-                        <!-- Resilience Points -->
-                        <div style="display: flex; align-items: center; margin-bottom: 10px; gap: 10px;">
-                            <label style="width: 70px; color: #3e2f1f; font-weight: bold; font-size: 13px;">Resilience:</label>
-                            <button onclick="window.updateResilience(-1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">−</button>
-                            <input type="number" id="resilience" placeholder="0" style="width: 50px; text-align: center; border: 1px solid #8b7355;">
-                            <button onclick="window.updateResilience(1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">+</button>
-                        </div>
-                        
-                        <!-- Resolve Points -->
-                        <div style="display: flex; align-items: center; margin-bottom: 10px; gap: 10px;">
-                            <label style="width: 70px; color: #3e2f1f; font-weight: bold; font-size: 13px;">Resolve:</label>
-                            <button onclick="window.updateResolve(-1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">−</button>
-                            <input type="number" id="resolve-current" placeholder="0" style="width: 40px; text-align: center; border: 1px solid #8b7355;">
-                            <span style="color: #666; font-size: 13px;">/</span>
-                            <span id="resolve-max" style="color: #666; font-size: 13px; width: 20px;">0</span>
-                            <button onclick="window.updateResolve(1)" style="width: 25px; height: 25px; cursor: pointer; background: #e8dfd0; border: 1px solid #8b7355;">+</button>
-                        </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Threshold:</label>
+                        <div id="corruption-threshold" style="padding: 5px; text-align: center; font-weight: bold; color: #666; background: #e8dfd0; border-radius: 3px;">0</div>
+                        <div style="font-size: 10px; color: #666; text-align: center; margin-top: 2px;">(WP Bonus + T Bonus)</div>
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Physical Mutations:</label>
+                        <div id="physical-mutation-counter" style="padding: 5px; text-align: center; font-weight: bold; color: #666; background: #e8dfd0; border-radius: 3px;">0/0</div>
+                        <div style="font-size: 10px; color: #666; text-align: center; margin-top: 2px;">(Current/T Bonus)</div>
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Mental Corruptions:</label>
+                        <div id="mental-corruption-counter" style="padding: 5px; text-align: center; font-weight: bold; color: #666; background: #e8dfd0; border-radius: 3px;">0/0</div>
+                        <div style="font-size: 10px; color: #666; text-align: center; margin-top: 2px;">(Current/WP Bonus)</div>
                     </div>
                 </div>
-                <div style="margin-top: 15px;">
-                    <table class="secondary-table" style="width: 100%;">
-                        <tr>
-                            <th style="width: 20%;">Motivation</th>
-                            <td><input type="text" id="motivation" placeholder="What drives your character forward?" style="width: 100%; border: none;"></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Experience & Status -->
-            <div class="info-grid">
-                <div class="info-box">
-                    <div class="info-box-title">Experience Points</div>
-                    <button onclick="window.openXPEarnDialog()" style="width: 100%; padding: 5px; margin-bottom: 5px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer; font-size: 12px;">Add Session XP</button>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;"><span>Total XP:</span><span id="xp-total-display">0</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;"><span>Current XP:</span><span id="xp-current-display">0</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px;"><span>Spent XP:</span><span id="xp-spent-display">0</span></div>
-                    <input type="hidden" id="xp-total" value="0">
-                    <input type="hidden" id="xp-spent" value="0">
-                </div>
-                <div class="info-box">
-                    <div class="info-box-title">Status</div>
-                    <select id="status-tier" style="width: 100%; padding: 5px; text-align: center; font-size: 14px; margin-top: 5px; border: 1px solid #8b7355;">
-                        <option value="Brass">Brass</option>
-                        <option value="Silver">Silver</option>
-                        <option value="Gold">Gold</option>
-                    </select>
-                    <input type="number" id="status-standing" placeholder="Standing">
-                </div>
-                <div class="info-box">
-                    <div class="info-box-title">Sin Points</div>
-                    <input type="number" id="sin-points" placeholder="0" min="0">
-                </div>
-                <div class="info-box">
-                    <div class="info-box-title">Notes</div>
-                    <textarea id="quick-notes" style="width: 100%; height: 60px; margin-top: 5px; border: 1px solid #8b7355; padding: 5px;" placeholder="Quick notes..."></textarea>
-                </div>
-            </div>
-
-            <!-- Combat Section -->
-            <div class="characteristics-section">
-                <div class="section-title">Combat</div>
                 
-                <!-- Weapons Table -->
-                <div style="margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Weapons</h4>
-                        <button class="control-btn" onclick="window.addWeapon()" style="padding: 5px 10px; font-size: 12px;">+ Add Weapon</button>
-                    </div>
-                    <table class="skills-table" id="weapons-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 25%;">Weapon</th>
-                                <th style="width: 10%;">Group</th>
-                                <th style="width: 8%;">Enc</th>
-                                <th style="width: 10%;">Range</th>
-                                <th style="width: 12%;">Damage</th>
-                                <th style="width: 25%;">Qualities</th>
-                                <th style="width: 8%;">Equipped</th>
-                                <th style="width: 2%;">Del</th>
-                            </tr>
-                        </thead>
-                        <tbody id="weapons-tbody">
-                        </tbody>
-                    </table>
+                <!-- Corruption Status Warnings -->
+                <div id="corruption-test-warning" style="background: #fff2dc; border: 2px solid #ff8c00; padding: 10px; margin-bottom: 15px; border-radius: 5px; display: none;">
+                    <h4 style="color: #cc7000; margin: 0 0 8px 0; font-size: 14px;">⚠️ Corruption Test Required</h4>
+                    <div style="color: #cc7000; font-size: 13px;">Corruption exceeds threshold! Make a Challenging (+0) Endurance Test or gain a mutation.</div>
                 </div>
-
-                <!-- Armour Table -->
-                <div style="margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Armour</h4>
-                        <button class="control-btn" onclick="window.addArmour()" style="padding: 5px 10px; font-size: 12px;">+ Add Armour</button>
-                    </div>
-                    <table class="skills-table" id="armour-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 25%;">Armour</th>
-                                <th style="width: 10%;">Type</th>
-                                <th style="width: 8%;">Enc</th>
-                                <th style="width: 8%;">Head</th>
-                                <th style="width: 8%;">Arms</th>
-                                <th style="width: 8%;">Body</th>
-                                <th style="width: 8%;">Legs</th>
-                                <th style="width: 15%;">Qualities</th>
-                                <th style="width: 8%;">Worn</th>
-                                <th style="width: 2%;">Del</th>
-                            </tr>
-                        </thead>
-                        <tbody id="armour-tbody">
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Armour Points Summary -->
-                <div style="margin-bottom: 20px;">
-                    <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Total Armour Points</h4>
-                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
-                        <div class="info-box" style="padding: 8px;">
-                            <div class="info-box-title" style="font-size: 10px;">Head</div>
-                            <input type="number" id="total-ap-head" value="0" readonly style="text-align: center; font-weight: bold;">
-                        </div>
-                        <div class="info-box" style="padding: 8px;">
-                            <div class="info-box-title" style="font-size: 10px;">Arms</div>
-                            <input type="number" id="total-ap-arms" value="0" readonly style="text-align: center; font-weight: bold;">
-                        </div>
-                        <div class="info-box" style="padding: 8px;">
-                            <div class="info-box-title" style="font-size: 10px;">Body</div>
-                            <input type="number" id="total-ap-body" value="0" readonly style="text-align: center; font-weight: bold;">
-                        </div>
-                        <div class="info-box" style="padding: 8px;">
-                            <div class="info-box-title" style="font-size: 10px;">Legs</div>
-                            <input type="number" id="total-ap-legs" value="0" readonly style="text-align: center; font-weight: bold;">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Equipment & Inventory Section -->
-            <div class="characteristics-section">
-                <div class="section-title">Equipment & Inventory</div>
                 
-                <!-- Money Tracker -->
-                <div style="margin-bottom: 20px;">
-                    <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Wealth</h4>
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                        <div class="info-box" style="padding: 8px;">
-                            <div class="info-box-title" style="font-size: 10px;">Gold Crowns</div>
-                            <input type="number" id="money-gold" value="0" min="0" onchange="window.updateEncumbrance()" style="text-align: center;">
-                        </div>
-                        <div class="info-box" style="padding: 8px;">
-                            <div class="info-box-title" style="font-size: 10px;">Silver Shillings</div>
-                            <input type="number" id="money-silver" value="0" min="0" onchange="window.updateEncumbrance()" style="text-align: center;">
-                        </div>
-                        <div class="info-box" style="padding: 8px;">
-                            <div class="info-box-title" style="font-size: 10px;">Brass Pennies</div>
-                            <input type="number" id="money-brass" value="0" min="0" onchange="window.updateEncumbrance()" style="text-align: center;">
-                        </div>
-                    </div>
+                <div id="character-destruction-warning" style="background: #ffe4e6; border: 2px solid #c41e3a; padding: 10px; margin-bottom: 15px; border-radius: 5px; display: none;">
+                    <h4 style="color: #8b0000; margin: 0 0 8px 0; font-size: 14px;">💀 CHARACTER AT RISK</h4>
+                    <div id="destruction-warning-text" style="color: #8b0000; font-size: 13px; font-weight: bold;"></div>
                 </div>
-
-                <!-- Encumbrance Tracker -->
-                <div style="margin-bottom: 20px;">
-                    <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Encumbrance</h4>
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px;">
-                        <div class="info-box" style="padding: 8px;">
-                            <div class="info-box-title" style="font-size: 10px;">Current Enc</div>
-                            <input type="number" id="current-enc" value="0" readonly style="text-align: center; font-weight: bold;">
-                        </div>
-                        <div class="info-box" style="padding: 8px;">
-                            <div class="info-box-title" style="font-size: 10px;">Max Enc (SB+TB)</div>
-                            <input type="number" id="max-enc" value="0" readonly style="text-align: center;">
-                        </div>
-                        <div class="info-box" style="padding: 8px;">
-                            <div class="info-box-title" style="font-size: 10px;">Status</div>
-                            <input type="text" id="enc-status" value="Unencumbered" readonly style="text-align: center; font-size: 12px;">
-                        </div>
-                    </div>
-                    <div style="font-size: 11px; color: #8b7355; line-height: 1.4;">
-                        <div id="enc-details" style="padding: 5px; background: #f5f0e8; border: 1px solid #d4c5a0;">
-                            <strong>Encumbrance Breakdown:</strong>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 5px;">
-                                <div>• Weapons (equipped): <span id="enc-weapons">0</span></div>
-                                <div>• Armour (worn -1 Enc): <span id="enc-armour">0</span></div>
-                                <div>• Trappings: <span id="enc-trappings">0</span></div>
-                                <div>• Money (200 coins = 1 Enc): <span id="enc-money">0</span></div>
-                            </div>
-                            <div style="margin-top: 5px; padding-top: 5px; border-top: 1px solid #d4c5a0;">
-                                <strong>Current Penalties:</strong> <span id="enc-penalties" style="color: green;">None</span>
-                            </div>
-                        </div>
-                    </div>
+                
+                <div id="character-lost-warning" style="background: #2d1b1b; border: 2px solid #000; padding: 15px; margin-bottom: 15px; border-radius: 5px; display: none;">
+                    <h4 style="color: #c41e3a; margin: 0 0 8px 0; font-size: 16px; text-align: center;">💀 CHARACTER LOST TO CHAOS 💀</h4>
+                    <div style="color: #c41e3a; font-size: 14px; text-align: center; font-weight: bold;">This character has been consumed by mutation and is no longer playable.</div>
                 </div>
-
-                <!-- Trappings/Inventory -->
-                <div style="margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Trappings & Equipment</h4>
-                        <button class="control-btn" onclick="window.addTrapping()" style="padding: 5px 10px; font-size: 12px;">+ Add Item</button>
-                    </div>
-                    <table class="skills-table" id="trappings-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 30%;">Item</th>
-                                <th style="width: 10%;">Quantity</th>
-                                <th style="width: 10%;">Enc (each)</th>
-                                <th style="width: 10%;">Total Enc</th>
-                                <th style="width: 15%;">Location</th>
-                                <th style="width: 23%;">Notes</th>
-                                <th style="width: 2%;">Del</th>
-                            </tr>
-                        </thead>
-                        <tbody id="trappings-tbody">
-                        </tbody>
-                    </table>
+                
+                <!-- Fellowship Warning -->
+                <div id="fellowship-warning" style="background: #fff8dc; border: 2px solid #d4a574; padding: 10px; margin-bottom: 15px; border-radius: 5px; display: none;">
+                    <h4 style="color: #8b4513; margin: 0 0 8px 0; font-size: 14px;">👥 Fellowship Penalties</h4>
+                    <div id="fellowship-warning-text" style="color: #8b4513; font-size: 13px;"></div>
+                    <div style="color: #8b4513; font-size: 11px; margin-top: 8px; font-style: italic;">GM guidance: Apply circumstantial penalties based on situation and NPCs' reactions.</div>
                 </div>
-
-                <!-- Ammunition & Consumables -->
-                <div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <h4 style="color: #3e2f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Ammunition & Consumables</h4>
-                        <button class="control-btn" onclick="window.addConsumable()" style="padding: 5px 10px; font-size: 12px;">+ Add Consumable</button>
+                
+                <!-- Add Mutation Controls -->
+                <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;">
+                    <button class="control-btn" onclick="window.openAddMutationModal()" style="padding: 5px 10px; font-size: 12px;">+ Add Mutation</button>
+                    <input type="text" id="mutations-search" placeholder="Search mutations..." style="padding: 5px 10px; border: 1px solid #8b7355; font-family: 'Georgia', serif; background: white; flex: 1; min-width: 200px;" oninput="window.displayMutations()">
+                </div>
+                
+                <!-- Active Mutations Display -->
+                <div id="active-mutations-display" style="margin-bottom: 15px;">
+                    <!-- Mutations will be dynamically populated here -->
+                </div>
+                
+                <!-- No Mutations Message -->
+                <div id="no-mutations-message" style="text-align: center; padding: 20px; color: #666; font-style: italic;">
+                    No mutations or corruptions currently affecting this character.
+                </div>
+                
+                <!-- Add Mutation Modal -->
+                <div id="add-mutation-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 600px; max-width: 700px; max-height: 80vh; overflow-y: auto;">
+                        <h3 style="color: #3e2f1f; margin-bottom: 15px;">Add Mutation or Corruption</h3>
+                        
+                        <!-- Species Mutation Guidance -->
+                        <div id="species-guidance" style="background: #e8dfd0; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
+                            <div style="font-size: 12px; color: #3e2f1f;"><strong>Species Mutation Distribution:</strong></div>
+                            <div id="species-guidance-text" style="font-size: 11px; color: #666; margin-top: 3px;"></div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Mutation Type:</label>
+                            <select id="mutation-type-select" style="width: 100%; padding: 8px; font-size: 14px;" onchange="window.updateMutationOptions()">
+                                <option value="">-- Choose Type --</option>
+                                <option value="physical">Physical Mutation</option>
+                                <option value="mental">Mental Corruption</option>
+                            </select>
+                        </div>
+                        
+                        <div id="mutation-selection" style="margin-bottom: 15px; display: none;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Specific Mutation:</label>
+                            <select id="mutation-select" style="width: 100%; padding: 8px; font-size: 14px;" onchange="window.showMutationDetails()">
+                                <option value="">-- Choose Mutation --</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Mutation Details Display -->
+                        <div id="mutation-details" style="display: none; background: #f8f6f0; padding: 15px; border: 1px solid #8b7355; border-radius: 5px; margin-bottom: 15px;">
+                            <h4 id="detail-mutation-name" style="color: #3e2f1f; margin: 0 0 8px 0;"></h4>
+                            <div id="detail-mutation-description" style="margin-bottom: 8px; font-style: italic;"></div>
+                            <div><strong>Effects:</strong> <span id="detail-mutation-effects"></span></div>
+                            <div id="detail-mutation-obvious" style="margin-top: 8px; font-size: 12px;"></div>
+                            <div id="detail-mutation-fellowship" style="margin-top: 8px; font-size: 12px; color: #8b4513;"></div>
+                        </div>
+                        
+                        <div style="text-align: right; margin-top: 20px;">
+                            <button onclick="window.closeAddMutationModal()" style="padding: 8px 16px; margin-right: 10px; background: #ccc; border: none; cursor: pointer;">Cancel</button>
+                            <button id="confirm-add-mutation-btn" onclick="window.confirmAddMutation()" style="padding: 8px 16px; background: #4682b4; color: white; border: none; cursor: pointer;" disabled>Add Mutation</button>
+                        </div>
                     </div>
-                    <table class="skills-table" id="consumables-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 30%;">Item</th>
-                                <th style="width: 15%;">Current</th>
-                                <th style="width: 15%;">Maximum</th>
-                                <th style="width: 38%;">Notes</th>
-                                <th style="width: 2%;">Del</th>
-                            </tr>
-                        </thead>
-                        <tbody id="consumables-tbody">
-                        </tbody>
-                    </table>
                 </div>
             </div>
+
+
+            <!-- Diseases & Ailments -->
+            <div class="section">
+                <div class="section-title">Diseases & Ailments</div>
+                
+                <!-- Disease Controls -->
+                <div class="disease-controls" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;">
+                    <button class="control-btn" onclick="window.openAddDiseaseModal()" style="padding: 5px 10px; font-size: 12px;">+ Add Disease</button>
+                    <button class="control-btn" onclick="window.removeAllDiseases()" style="padding: 5px 10px; font-size: 12px; background: #c41e3a; color: white;">Clear All</button>
+                    <input type="text" id="diseases-search" placeholder="Search active diseases..." style="padding: 5px 10px; border: 1px solid #8b7355; font-family: 'Georgia', serif; background: white; flex: 1; min-width: 200px;">
+                </div>
+                
+                <!-- Active Diseases Display -->
+                <div id="active-diseases-display" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                    <!-- Diseases will be dynamically populated here -->
+                </div>
+                
+                <!-- No Diseases Message -->
+                <div id="no-diseases-message" style="text-align: center; padding: 20px; color: #666; font-style: italic; display: none;">
+                    No diseases currently affecting this character.
+                </div>
+                
+                <!-- Active Symptoms Summary -->
+                <div class="symptom-effects-summary" id="symptom-effects-summary" style="display: none; padding: 15px; background: #fff4e0; border: 2px solid #ff8c00; border-radius: 5px; margin-bottom: 15px;">
+                    <h4 style="color: #8b4513; margin: 0 0 8px 0; font-size: 14px;">📊 Active Symptom Effects</h4>
+                    <div id="symptom-effects-text" style="color: #8b4513; font-size: 13px; font-weight: bold;"></div>
+                </div>
+                
+                <!-- Test Reminders -->
+                <div class="disease-reminders" style="margin-bottom: 20px;">
+                    <h4 style="color: #3e2f1f; margin: 0 0 10px 0; font-size: 14px;">Upcoming Tests & Reminders</h4>
+                    <textarea id="test-reminders" rows="3" placeholder="Endurance tests needed, treatment schedules, recovery milestones..." style="width: 100%; padding: 10px; border: 1px solid #8b7355; font-family: 'Georgia', serif; resize: vertical; background: white;"></textarea>
+                </div>
+                
+                <!-- Cross-Reference Warnings -->
+                <div class="status-interactions" id="status-interactions" style="display:none; padding: 15px; background: #ffe4e6; border: 2px solid #c41e3a; border-radius: 5px;">
+                    <h5 style="color: #8b0000; margin: 0 0 8px 0; font-size: 14px;">⚠️ Status Effect Interactions</h5>
+                    <div class="interaction-warnings" id="interaction-warnings" style="color: #8b0000; font-size: 13px;"></div>
+                </div>
+
+                <!-- Add Disease Modal -->
+                <div id="add-disease-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;">
+                        <h3 style="margin-top: 0; color: #3e2f1f; text-align: center;">Add Disease</h3>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Select Disease:</label>
+                            <select id="disease-select" style="width: 100%; padding: 8px; font-size: 14px;" onchange="window.showDiseaseDetails()">
+                                <option value="">-- Choose a disease --</option>
+                            </select>
+                        </div>
+                        
+                        <div id="disease-details" style="margin-bottom: 20px; display: none; padding: 15px; background: #f8f6f0; border-radius: 5px;">
+                            <div id="disease-info"></div>
+                            <div id="disease-symptoms" style="margin-top: 10px;"></div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Contract Date:</label>
+                            <input type="date" id="disease-contract-date" style="width: 100%; padding: 5px;">
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Notes:</label>
+                            <textarea id="disease-notes-input" rows="3" placeholder="Additional notes about contraction, symptoms, treatment..." style="width: 100%; padding: 8px; resize: vertical;"></textarea>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <button class="control-btn" onclick="window.confirmAddDisease()" style="margin-right: 10px; padding: 8px 16px;">Add Disease</button>
+                            <button class="control-btn" onclick="window.closeAddDiseaseModal()" style="padding: 8px 16px;">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            </div> <!-- End Tab 3 -->
         </div>
     </div>
 
@@ -1503,6 +1582,27 @@
     </div>
 
     <script>
+        // Tab switching functionality
+        function showTab(tabId) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
         // Initialize character data
         let character = {
             name: '',
