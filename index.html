@@ -8261,11 +8261,33 @@ function loadSymptomsData() {
                                     alert(`Please select exactly ${choice.count} talents for choice ${i + 1}.`);
                                     return false;
                                 }
+                                
+                                // Validate customizations for talents that need them
+                                for (const talentChoice of selection) {
+                                    const talent = typeof talentChoice === 'string' ? talentChoice : talentChoice.talent;
+                                    if (talent.includes('(any one)') || talent.includes('(choose one)')) {
+                                        const customization = typeof talentChoice === 'object' ? talentChoice.customization : '';
+                                        if (!customization || customization.trim() === '') {
+                                            alert(`Please specify the customization for "${talent}".`);
+                                            return false;
+                                        }
+                                    }
+                                }
                             } else {
                                 // Single selection validation
                                 if (!selection) {
                                     alert(`Please make a selection for talent choice ${i + 1}.`);
                                     return false;
+                                }
+                                
+                                // Validate customization for talent that needs it
+                                const talent = typeof selection === 'string' ? selection : selection.talent;
+                                if (talent.includes('(any one)') || talent.includes('(choose one)')) {
+                                    const customization = typeof selection === 'object' ? selection.customization : '';
+                                    if (!customization || customization.trim() === '') {
+                                        alert(`Please specify the customization for "${talent}".`);
+                                        return false;
+                                    }
                                 }
                             }
                         }
@@ -8375,20 +8397,38 @@ function loadSymptomsData() {
                     
                     let choiceHTML = `<h5 style="color: #3e2f1f; margin-bottom: 10px;">${choice.description}</h5>`;
                     
-                    choice.options.forEach(talent => {
+                    choice.options.forEach((talent, talentIndex) => {
+                        const needsCustomization = talent.includes('(any one)') || talent.includes('(choose one)');
+                        const baseTalentName = needsCustomization ? talent.replace(/\s*\(.+\)/, '') : talent;
+                        const inputId = `talent-${choiceIndex}-${talentIndex}-custom`;
+                        
                         if (choice.multiple) {
                             choiceHTML += `
-                                <label style="display: block; margin-bottom: 5px; cursor: pointer;">
-                                    <input type="checkbox" name="talent-choice-${choiceIndex}" value="${talent}" onchange="updateMultipleTalentChoiceSelection(${choiceIndex}, this)" style="margin-right: 8px;">
-                                    ${talent}
-                                </label>
+                                <div style="margin-bottom: 8px;">
+                                    <label style="display: block; cursor: pointer;">
+                                        <input type="checkbox" name="talent-choice-${choiceIndex}" value="${talent}" onchange="updateMultipleTalentChoiceSelection(${choiceIndex}, this)" style="margin-right: 8px;">
+                                        ${talent}
+                                    </label>
+                                    ${needsCustomization ? `
+                                        <div style="margin-left: 24px; margin-top: 5px;">
+                                            <input type="text" id="${inputId}" placeholder="Specify ${baseTalentName}..." style="padding: 4px 8px; border: 1px solid #ccc; border-radius: 3px; font-size: 12px; width: 200px;" disabled>
+                                        </div>
+                                    ` : ''}
+                                </div>
                             `;
                         } else {
                             choiceHTML += `
-                                <label style="display: block; margin-bottom: 5px; cursor: pointer;">
-                                    <input type="radio" name="talent-choice-${choiceIndex}" value="${talent}" onchange="updateTalentChoiceSelection(${choiceIndex}, this)" style="margin-right: 8px;">
-                                    ${talent}
-                                </label>
+                                <div style="margin-bottom: 8px;">
+                                    <label style="display: block; cursor: pointer;">
+                                        <input type="radio" name="talent-choice-${choiceIndex}" value="${talent}" onchange="updateTalentChoiceSelection(${choiceIndex}, this)" style="margin-right: 8px;">
+                                        ${talent}
+                                    </label>
+                                    ${needsCustomization ? `
+                                        <div style="margin-left: 24px; margin-top: 5px;">
+                                            <input type="text" id="${inputId}" placeholder="Specify ${baseTalentName}..." style="padding: 4px 8px; border: 1px solid #ccc; border-radius: 3px; font-size: 12px; width: 200px;" disabled>
+                                        </div>
+                                    ` : ''}
+                                </div>
                             `;
                         }
                     });
@@ -8425,7 +8465,31 @@ function loadSymptomsData() {
 
         function updateTalentChoiceSelection(choiceIndex, radio) {
             if (radio.checked) {
-                wizardData.talents.choices[choiceIndex] = radio.value;
+                // Find the talent index to get the customization input
+                const choiceGroup = document.querySelectorAll(`input[name="talent-choice-${choiceIndex}"]`);
+                let talentIndex = -1;
+                choiceGroup.forEach((input, index) => {
+                    if (input === radio) talentIndex = index;
+                });
+                
+                // Enable/disable customization inputs
+                choiceGroup.forEach((input, index) => {
+                    const customInput = document.getElementById(`talent-${choiceIndex}-${index}-custom`);
+                    if (customInput) {
+                        if (index === talentIndex) {
+                            customInput.disabled = false;
+                            customInput.focus();
+                        } else {
+                            customInput.disabled = true;
+                            customInput.value = '';
+                        }
+                    }
+                });
+                
+                wizardData.talents.choices[choiceIndex] = {
+                    talent: radio.value,
+                    customization: ''
+                };
             }
         }
 
@@ -8434,12 +8498,43 @@ function loadSymptomsData() {
                 wizardData.talents.choices[choiceIndex] = [];
             }
             
+            // Find the talent index to get the customization input
+            const choiceGroup = document.querySelectorAll(`input[name="talent-choice-${choiceIndex}"]`);
+            let talentIndex = -1;
+            choiceGroup.forEach((input, index) => {
+                if (input === checkbox) talentIndex = index;
+            });
+            
+            const customInput = document.getElementById(`talent-${choiceIndex}-${talentIndex}-custom`);
+            
             if (checkbox.checked) {
-                if (!wizardData.talents.choices[choiceIndex].includes(checkbox.value)) {
-                    wizardData.talents.choices[choiceIndex].push(checkbox.value);
+                // Enable customization input if needed
+                if (customInput) {
+                    customInput.disabled = false;
+                }
+                
+                // Add talent object with customization support
+                const existingIndex = wizardData.talents.choices[choiceIndex].findIndex(t => 
+                    (typeof t === 'string' ? t : t.talent) === checkbox.value
+                );
+                
+                if (existingIndex === -1) {
+                    wizardData.talents.choices[choiceIndex].push({
+                        talent: checkbox.value,
+                        customization: ''
+                    });
                 }
             } else {
-                const index = wizardData.talents.choices[choiceIndex].indexOf(checkbox.value);
+                // Disable and clear customization input
+                if (customInput) {
+                    customInput.disabled = true;
+                    customInput.value = '';
+                }
+                
+                // Remove talent
+                const index = wizardData.talents.choices[choiceIndex].findIndex(t => 
+                    (typeof t === 'string' ? t : t.talent) === checkbox.value
+                );
                 if (index > -1) {
                     wizardData.talents.choices[choiceIndex].splice(index, 1);
                 }
@@ -8716,11 +8811,67 @@ function loadSymptomsData() {
 
                 // Apply talents
                 const allTalents = [...wizardData.talents.fixed];
-                wizardData.talents.choices.forEach(choice => {
+                wizardData.talents.choices.forEach((choice, choiceIndex) => {
                     if (Array.isArray(choice)) {
-                        allTalents.push(...choice);
+                        choice.forEach((talentChoice, talentIndex) => {
+                            let talentName, customization = '';
+                            
+                            if (typeof talentChoice === 'string') {
+                                talentName = talentChoice;
+                            } else {
+                                talentName = talentChoice.talent;
+                                customization = talentChoice.customization;
+                            }
+                            
+                            // Get customization from input field if needed
+                            if (!customization && (talentName.includes('(any one)') || talentName.includes('(choose one)'))) {
+                                const choiceGroup = document.querySelectorAll(`input[name="talent-choice-${choiceIndex}"]`);
+                                let inputIndex = -1;
+                                choiceGroup.forEach((input, index) => {
+                                    if (input.value === talentName && input.checked) {
+                                        inputIndex = index;
+                                    }
+                                });
+                                
+                                if (inputIndex >= 0) {
+                                    const customInput = document.getElementById(`talent-${choiceIndex}-${inputIndex}-custom`);
+                                    if (customInput) {
+                                        customization = customInput.value.trim();
+                                    }
+                                }
+                            }
+                            
+                            allTalents.push(customization ? `${talentName.replace(/\s*\(.+\)/, '')} (${customization})` : talentName);
+                        });
                     } else if (choice) {
-                        allTalents.push(choice);
+                        let talentName, customization = '';
+                        
+                        if (typeof choice === 'string') {
+                            talentName = choice;
+                        } else {
+                            talentName = choice.talent;
+                            customization = choice.customization;
+                        }
+                        
+                        // Get customization from input field if needed
+                        if (!customization && (talentName.includes('(any one)') || talentName.includes('(choose one)'))) {
+                            const choiceGroup = document.querySelectorAll(`input[name="talent-choice-${choiceIndex}"]`);
+                            let inputIndex = -1;
+                            choiceGroup.forEach((input, index) => {
+                                if (input.value === talentName && input.checked) {
+                                    inputIndex = index;
+                                }
+                            });
+                            
+                            if (inputIndex >= 0) {
+                                const customInput = document.getElementById(`talent-${choiceIndex}-${inputIndex}-custom`);
+                                if (customInput) {
+                                    customization = customInput.value.trim();
+                                }
+                            }
+                        }
+                        
+                        allTalents.push(customization ? `${talentName.replace(/\s*\(.+\)/, '')} (${customization})` : talentName);
                     }
                 });
                 
