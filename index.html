@@ -8543,6 +8543,78 @@ function loadSymptomsData() {
             applyBtn.style.display = currentWizardStep === 6 ? 'inline-block' : 'none';
         }
 
+        // Helper function to directly add a skill to the character
+        function addSkillDirectly(skillName, advances = 0) {
+            // Find the skill in allSkills
+            const baseSkill = allSkills.find(s => s.name === skillName);
+            if (!baseSkill) {
+                console.warn(`Skill "${skillName}" not found in allSkills`);
+                return;
+            }
+
+            // Create skill key and display name
+            const skillKey = skillName;
+            const displayName = skillName;
+
+            // Check if this skill already exists
+            if (addedSkills.find(s => s.key === skillKey)) {
+                // If it exists, just add advances
+                if (characterSkills[skillKey]) {
+                    characterSkills[skillKey].advances += advances;
+                }
+                return;
+            }
+
+            // Add the skill to addedSkills
+            addedSkills.push({
+                key: skillKey,
+                name: skillName,
+                displayName: displayName,
+                characteristic: baseSkill.characteristic,
+                type: baseSkill.type,
+                specialisation: ''
+            });
+
+            // Initialize skill data with advances
+            characterSkills[skillKey] = { career: false, advances: advances, notes: '' };
+
+            // Refresh the skills display
+            displaySkills();
+        }
+
+        // Helper function to directly add a talent to the character
+        function addTalentDirectly(talentName) {
+            // Find the talent in srdTalents
+            const baseTalent = srdTalents.find(t => t.name === talentName);
+            if (!baseTalent) {
+                console.warn(`Talent "${talentName}" not found in srdTalents`);
+                return;
+            }
+
+            // Check if talent already exists
+            const existingTalent = talents.find(t => t.name === talentName);
+            if (existingTalent) {
+                // If it's a multiple talent, increase the times taken
+                if (baseTalent.max && baseTalent.max !== "1") {
+                    existingTalent.timesTaken = Math.min((existingTalent.timesTaken || 1) + 1, parseInt(baseTalent.max) || 1);
+                }
+                return;
+            }
+
+            // Add the talent
+            talents.push({
+                name: talentName,
+                description: baseTalent.description || '',
+                tests: baseTalent.tests || '',
+                timesTaken: 1,
+                customisation: '',
+                notes: ''
+            });
+
+            // Refresh the talents display
+            displayTalents();
+        }
+
         function applySpeciesCreation() {
             const speciesInfo = speciesData[selectedSpecies];
             
@@ -8584,7 +8656,7 @@ function loadSymptomsData() {
                 const allSelectedSkills = [...wizardData.skills.step3, ...wizardData.skills.step4];
                 allSelectedSkills.forEach(skillName => {
                     const advances = wizardData.skills.step3.includes(skillName) ? 5 : 3;
-                    window.addSkill(skillName, advances);
+                    addSkillDirectly(skillName, advances);
                 });
 
                 // Apply talents
@@ -8598,7 +8670,7 @@ function loadSymptomsData() {
                 });
                 
                 allTalents.forEach(talentName => {
-                    window.addTalent(talentName);
+                    addTalentDirectly(talentName);
                 });
 
                 // Close wizard and show success message
