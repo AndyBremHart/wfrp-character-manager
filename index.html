@@ -720,6 +720,142 @@
                 </div>
             </div>
 
+            <!-- Critical Wounds & Injuries -->
+            <div class="section">
+                <div class="section-title">Critical Wounds & Injuries</div>
+                
+                <!-- Wound Penalties Summary -->
+                <div id="wound-penalties-summary" style="background: #ffe4e6; border: 2px solid #c41e3a; padding: 10px; margin-bottom: 15px; border-radius: 5px; display: none;">
+                    <h4 style="color: #8b0000; margin: 0 0 8px 0; font-size: 14px;">🩸 Active Wound Penalties</h4>
+                    <div id="wound-penalty-text" style="color: #8b0000; font-size: 13px; font-weight: bold;"></div>
+                </div>
+                
+                <!-- Wounds Controls -->
+                <div class="wounds-controls" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;">
+                    <button class="control-btn" onclick="window.openAddWoundModal()" style="padding: 5px 10px; font-size: 12px;">+ Add Critical Wound</button>
+                    <button class="control-btn" onclick="window.openWoundReferenceModal()" style="padding: 5px 10px; font-size: 12px; background: #4682b4; color: white;">📖 WFRP Reference</button>
+                    <button class="control-btn" onclick="window.removeAllWounds()" style="padding: 5px 10px; font-size: 12px; background: #c41e3a; color: white;">Clear All</button>
+                    <input type="text" id="wounds-search" placeholder="Search active wounds..." style="padding: 5px 10px; border: 1px solid #8b7355; font-family: 'Georgia', serif; background: white; flex: 1; min-width: 200px;">
+                </div>
+                
+                <!-- Active Wounds Display -->
+                <div id="active-wounds-display" style="margin-bottom: 15px;">
+                    <table style="width: 100%; border-collapse: collapse; background: #faf8f3; border: 2px solid #8b7355;">
+                        <thead>
+                            <tr style="background: #e8dfd0; color: #3e2f1f; font-weight: bold;">
+                                <th style="border: 1px solid #8b7355; padding: 8px; text-align: left;">Name</th>
+                                <th style="border: 1px solid #8b7355; padding: 8px; text-align: center;">Location</th>
+                                <th style="border: 1px solid #8b7355; padding: 8px; text-align: center;">Healing Progress</th>
+                                <th style="border: 1px solid #8b7355; padding: 8px; text-align: left;">Effects</th>
+                                <th style="border: 1px solid #8b7355; padding: 8px; text-align: center;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="wounds-tbody">
+                            <!-- Wounds will be dynamically populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- No Wounds Message -->
+                <div id="no-wounds-message" style="text-align: center; padding: 20px; color: #666; font-style: italic; display: none;">
+                    No critical wounds currently affecting this character.
+                </div>
+
+                <!-- Add Critical Wound Modal -->
+                <div id="add-wound-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 600px; max-width: 700px; max-height: 80vh; overflow-y: auto;">
+                        <h3 style="color: #3e2f1f; margin-bottom: 15px;">Add Critical Wound</h3>
+                        
+                        <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Wound Name:</label>
+                                <input type="text" id="wound-name-input" style="width: 100%; padding: 8px; font-family: Georgia, serif;" placeholder="Enter wound name...">
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Location:</label>
+                                <select id="wound-location-select" style="width: 100%; padding: 8px; font-family: Georgia, serif;">
+                                    <option value="">-- Select Location --</option>
+                                    <option value="Head">Head</option>
+                                    <option value="Right Arm">Right Arm</option>
+                                    <option value="Left Arm">Left Arm</option>
+                                    <option value="Body">Body</option>
+                                    <option value="Right Leg">Right Leg</option>
+                                    <option value="Left Leg">Left Leg</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Wounds Value:</label>
+                                <input type="number" id="wound-wounds-input" style="width: 100%; padding: 8px; font-family: Georgia, serif;" min="0" placeholder="Wounds dealt...">
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Healing Time (Days):</label>
+                                <input type="number" id="wound-healing-time-input" style="width: 100%; padding: 8px; font-family: Georgia, serif;" min="0" placeholder="Days to heal...">
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Effects Description:</label>
+                            <textarea id="wound-effects-input" style="width: 100%; padding: 8px; font-family: Georgia, serif; height: 80px; resize: vertical;" placeholder="Describe the wound effects, penalties, and conditions..."></textarea>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Notes:</label>
+                            <textarea id="wound-notes-input" style="width: 100%; padding: 8px; font-family: Georgia, serif; height: 60px; resize: vertical;" placeholder="Additional notes, medical attention required, etc..."></textarea>
+                        </div>
+                        
+                        <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                            <div>
+                                <input type="checkbox" id="wound-permanent-checkbox" style="margin-right: 5px;">
+                                <label for="wound-permanent-checkbox" style="color: #3e2f1f; font-weight: bold;">Permanent Injury</label>
+                                <div style="font-size: 12px; color: #666; margin-top: 2px;">This wound never fully heals</div>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="wound-surgery-checkbox" style="margin-right: 5px;">
+                                <label for="wound-surgery-checkbox" style="color: #3e2f1f; font-weight: bold;">Surgery Required</label>
+                                <div style="font-size: 12px; color: #666; margin-top: 2px;">Needs surgical intervention</div>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <button class="control-btn" onclick="window.confirmAddWound()" style="margin-right: 10px; padding: 8px 16px;">Add Wound</button>
+                            <button class="control-btn" onclick="window.closeAddWoundModal()" style="padding: 8px 16px;">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WFRP Reference Modal -->
+                <div id="wound-reference-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; width: 90%; max-width: 900px; height: 80vh; overflow-y: auto;">
+                        <h3 style="color: #3e2f1f; margin-bottom: 15px;">WFRP 4th Edition Critical Wounds Reference</h3>
+                        
+                        <!-- Location Tabs -->
+                        <div style="display: flex; gap: 5px; margin-bottom: 15px; border-bottom: 2px solid #8b7355;">
+                            <button onclick="window.showWoundLocation('Head')" id="wound-tab-Head" style="padding: 8px 16px; background: #e8dfd0; border: none; color: #3e2f1f; font-weight: bold; cursor: pointer; border-top: 2px solid #8b7355; border-left: 2px solid #8b7355; border-right: 2px solid #8b7355;">Head</button>
+                            <button onclick="window.showWoundLocation('Arm')" id="wound-tab-Arm" style="padding: 8px 16px; background: #f5f5f0; border: none; color: #666; cursor: pointer; border-top: 2px solid #8b7355; border-left: 2px solid #8b7355; border-right: 2px solid #8b7355;">Arms</button>
+                            <button onclick="window.showWoundLocation('Body')" id="wound-tab-Body" style="padding: 8px 16px; background: #f5f5f0; border: none; color: #666; cursor: pointer; border-top: 2px solid #8b7355; border-left: 2px solid #8b7355; border-right: 2px solid #8b7355;">Body</button>
+                            <button onclick="window.showWoundLocation('Leg')" id="wound-tab-Leg" style="padding: 8px 16px; background: #f5f5f0; border: none; color: #666; cursor: pointer; border-top: 2px solid #8b7355; border-left: 2px solid #8b7355; border-right: 2px solid #8b7355;">Legs</button>
+                        </div>
+                        
+                        <!-- Search Box -->
+                        <div style="margin-bottom: 15px;">
+                            <input type="text" id="wound-reference-search" placeholder="Search wounds by name or effects..." style="width: 100%; padding: 8px; font-family: Georgia, serif; border: 2px solid #8b7355;">
+                        </div>
+                        
+                        <!-- Wound Tables -->
+                        <div id="wound-reference-content" style="max-height: 500px; overflow-y: auto;">
+                            <!-- Content will be populated by showWoundLocation() -->
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 15px;">
+                            <button class="control-btn" onclick="window.closeWoundReferenceModal()" style="padding: 8px 16px;">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Spells & Prayers -->
             <div class="section">
                 <div class="section-title">Spells & Prayers</div>
@@ -1312,10 +1448,459 @@
             description: "Knocked out. Cannot act, attackers auto-hit with killing blows."
           }
         };
+
+        // WFRP 4th Edition Official Critical Wounds Reference Data
+        const wfrpCriticalWounds = {
+          // HEAD WOUNDS
+          "head_dramatic_injury": {
+            name: "Dramatic Injury",
+            wounds: "T",
+            effects: "Gain 1 Bleeding Condition. +1 SL to social Tests once healed (once only)",
+            conditions: ["Bleeding"],
+            location: "Head",
+            severity: "minor"
+          },
+          "head_earring": {
+            name: "Earring",
+            wounds: 1,
+            effects: "Gain 1 Bleeding Condition. Ear pierced by weapon. +1 SL to appropriate social Tests once healed (once only)",
+            conditions: ["Bleeding"],
+            location: "Head",
+            severity: "minor"
+          },
+          "head_black_eye": {
+            name: "Black Eye",
+            wounds: 1,
+            effects: "Gain 1 Bleeding Condition. -10 penalty to all Sight Tests for 1d10 days",
+            conditions: ["Bleeding"],
+            location: "Head",
+            severity: "minor"
+          },
+          "head_nose_bleed": {
+            name: "Nose Bleed",
+            wounds: 2,
+            effects: "Gain 1 Bleeding Condition. No additional effects",
+            conditions: ["Bleeding"],
+            location: "Head",
+            severity: "minor"
+          },
+          "head_fractured_jaw": {
+            name: "Fractured Jaw",
+            wounds: 2,
+            effects: "Gain 2 Stunned Conditions. Broken Bone (Minor) injury",
+            conditions: ["Stunned", "Stunned"],
+            injuries: ["Broken Bone (Minor)"],
+            location: "Head",
+            severity: "moderate"
+          },
+          "head_broken_nose": {
+            name: "Broken Nose",
+            wounds: 2,
+            effects: "Gain 1 Bleeding, 1 Stunned Condition. Broken Bone (Minor) injury",
+            conditions: ["Bleeding", "Stunned"],
+            injuries: ["Broken Bone (Minor)"],
+            location: "Head",
+            severity: "moderate"
+          },
+          "head_broken_teeth": {
+            name: "Broken Teeth",
+            wounds: 3,
+            effects: "Gain 1 Bleeding, 1 Stunned Condition. -10 to Language Tests permanently",
+            conditions: ["Bleeding", "Stunned"],
+            permanentEffects: ["-10 Language Tests"],
+            location: "Head",
+            severity: "moderate"
+          },
+          "head_mangled_jaw": {
+            name: "Mangled Jaw",
+            wounds: 3,
+            effects: "Gain 2 Bleeding, 1 Stunned Condition. -20 to Language Tests permanently",
+            conditions: ["Bleeding", "Bleeding", "Stunned"],
+            permanentEffects: ["-20 Language Tests"],
+            location: "Head",
+            severity: "severe"
+          },
+          "head_lost_eye": {
+            name: "Lost Eye",
+            wounds: 4,
+            effects: "Gain 2 Bleeding, 1 Stunned Condition. -20 to all Ranged Tests permanently. Amputation (Average)",
+            conditions: ["Bleeding", "Bleeding", "Stunned"],
+            permanentEffects: ["-20 Ranged Tests"],
+            amputation: "Eye",
+            location: "Head",
+            severity: "severe"
+          },
+          "head_mangled_ear": {
+            name: "Mangled Ear",
+            wounds: 4,
+            effects: "Gain 2 Bleeding, 1 Stunned Condition. -20 to all Hearing Tests permanently. Amputation (Average)",
+            conditions: ["Bleeding", "Bleeding", "Stunned"],
+            permanentEffects: ["-20 Hearing Tests"],
+            amputation: "Ear",
+            location: "Head",
+            severity: "severe"
+          },
+          "head_brain_damage": {
+            name: "Brain Damage",
+            wounds: 5,
+            effects: "Gain 3 Bleeding, 2 Stunned, 1 Unconscious Condition. -10 to Int, WP, Fel permanently",
+            conditions: ["Bleeding", "Bleeding", "Bleeding", "Stunned", "Stunned", "Unconscious"],
+            permanentEffects: ["-10 Intelligence", "-10 Willpower", "-10 Fellowship"],
+            location: "Head",
+            severity: "fatal"
+          },
+          "head_shattered_skull": {
+            name: "Shattered Skull",
+            wounds: "Death",
+            effects: "Head caved in, instantly dead",
+            fatal: true,
+            location: "Head",
+            severity: "fatal"
+          },
+
+          // ARM WOUNDS  
+          "arm_dramatic_injury": {
+            name: "Dramatic Injury",
+            wounds: "T",
+            effects: "Gain 1 Bleeding Condition. +1 SL to social Tests once healed (once only)",
+            conditions: ["Bleeding"],
+            location: "Arm",
+            severity: "minor"
+          },
+          "arm_bloody_mess": {
+            name: "Bloody Mess",
+            wounds: 1,
+            effects: "Gain 1 Bleeding Condition. No additional effects",
+            conditions: ["Bleeding"],
+            location: "Arm",
+            severity: "minor"
+          },
+          "arm_torn_muscles": {
+            name: "Torn Muscles",
+            wounds: 2,
+            effects: "Gain 1 Bleeding Condition. Torn Muscle (Minor) injury",
+            conditions: ["Bleeding"],
+            injuries: ["Torn Muscle (Minor)"],
+            location: "Arm",
+            severity: "minor"
+          },
+          "arm_pinned_arm": {
+            name: "Pinned Arm", 
+            wounds: 2,
+            effects: "Gain 1 Bleeding, 1 Entangled Condition. Arm trapped until opponent moved away",
+            conditions: ["Bleeding", "Entangled"],
+            location: "Arm",
+            severity: "moderate"
+          },
+          "arm_broken_collar_bone": {
+            name: "Broken Collar Bone",
+            wounds: 3,
+            effects: "Gain 1 Bleeding, 1 Stunned Condition. Broken Bone (Minor) injury. -10 to tests using arm",
+            conditions: ["Bleeding", "Stunned"],
+            injuries: ["Broken Bone (Minor)"],
+            location: "Arm",
+            severity: "moderate"
+          },
+          "arm_broken_elbow": {
+            name: "Broken Elbow",
+            wounds: 3,
+            effects: "Gain 1 Bleeding, 1 Stunned Condition. Broken Bone (Major) injury. Arm unusable",
+            conditions: ["Bleeding", "Stunned"],
+            injuries: ["Broken Bone (Major)"],
+            location: "Arm",
+            severity: "severe"
+          },
+          "arm_broken_arm": {
+            name: "Broken Arm",
+            wounds: 4,
+            effects: "Gain 1 Bleeding, 2 Stunned Conditions. Broken Bone (Major) injury. Arm unusable",
+            conditions: ["Bleeding", "Stunned", "Stunned"],
+            injuries: ["Broken Bone (Major)"],
+            location: "Arm",
+            severity: "severe"
+          },
+          "arm_dislocated_shoulder": {
+            name: "Dislocated Shoulder",
+            wounds: 4,
+            effects: "Arm counts as lost until Medical Attention. Extended Average (+20) Heal Test (6 SL) required. -10 penalty for 1d10 days after",
+            conditions: ["Stunned"],
+            healingRequirement: "Extended Heal Test",
+            location: "Arm",
+            severity: "severe"
+          },
+          "arm_severed_finger": {
+            name: "Severed Finger",
+            wounds: 4,
+            effects: "Lose 1 finger - Amputation (Average). Gain 1 Bleeding Condition",
+            conditions: ["Bleeding"],
+            amputation: "Finger",
+            location: "Arm",
+            severity: "severe"
+          },
+          "arm_mangled_hand": {
+            name: "Mangled Hand",
+            wounds: 5,
+            effects: "Gain 2 Bleeding, 2 Stunned Conditions. -20 to Dex Tests permanently. Amputation (Hard)",
+            conditions: ["Bleeding", "Bleeding", "Stunned", "Stunned"],
+            permanentEffects: ["-20 Dexterity Tests"],
+            amputation: "Hand",
+            location: "Arm",
+            severity: "fatal"
+          },
+          "arm_severed_arm": {
+            name: "Severed Arm",
+            wounds: "Death",
+            effects: "Arm chopped clean off. Gain Bleeding Condition. Make Challenging (+0) Endurance Test or die",
+            conditions: ["Bleeding"],
+            deathSave: "Challenging (+0) Endurance",
+            amputation: "Arm",
+            location: "Arm",
+            severity: "fatal"
+          },
+
+          // BODY WOUNDS
+          "body_dramatic_injury": {
+            name: "Dramatic Injury", 
+            wounds: "T",
+            effects: "Gain 1 Bleeding Condition. +1 SL to social Tests once healed (once only)",
+            conditions: ["Bleeding"],
+            location: "Body",
+            severity: "minor"
+          },
+          "body_barely_a_scratch": {
+            name: "Barely a Scratch",
+            wounds: 1,
+            effects: "Gain 1 Bleeding Condition. No additional effects",
+            conditions: ["Bleeding"],
+            location: "Body",
+            severity: "minor"
+          },
+          "body_flesh_wound": {
+            name: "Flesh Wound",
+            wounds: 2,
+            effects: "Gain 1 Bleeding Condition. -10 to Agility for 1d10 rounds",
+            conditions: ["Bleeding"],
+            temporaryEffects: ["-10 Agility for 1d10 rounds"],
+            location: "Body",
+            severity: "minor"
+          },
+          "body_gut_blow": {
+            name: "Gut Blow",
+            wounds: 2,
+            effects: "Gain 1 Bleeding, 1 Stunned Condition. Winded for 1d10 rounds",
+            conditions: ["Bleeding", "Stunned"],
+            temporaryEffects: ["Winded for 1d10 rounds"],
+            location: "Body",
+            severity: "moderate"
+          },
+          "body_cracked_ribs": {
+            name: "Cracked Ribs",
+            wounds: 3,
+            effects: "Gain 1 Bleeding, 1 Stunned Condition. Broken Bone (Minor) injury",
+            conditions: ["Bleeding", "Stunned"],
+            injuries: ["Broken Bone (Minor)"],
+            location: "Body",
+            severity: "moderate"
+          },
+          "body_winded": {
+            name: "Winded",
+            wounds: 3,
+            effects: "Gain 2 Stunned Conditions. Cannot run for 1d10 rounds",
+            conditions: ["Stunned", "Stunned"],
+            temporaryEffects: ["Cannot run for 1d10 rounds"],
+            location: "Body",
+            severity: "moderate"
+          },
+          "body_broken_ribs": {
+            name: "Broken Ribs",
+            wounds: 4,
+            effects: "Gain 2 Bleeding, 1 Stunned Condition. Broken Bone (Major) injury. -30 to Str, Ag Tests",
+            conditions: ["Bleeding", "Bleeding", "Stunned"],
+            injuries: ["Broken Bone (Major)"],
+            location: "Body",
+            severity: "severe"
+          },
+          "body_gut_wound": {
+            name: "Gut Wound",
+            wounds: 4,
+            effects: "Contract Festering Wound disease. Gain 2 Bleeding Conditions",
+            conditions: ["Bleeding", "Bleeding"],
+            diseases: ["Festering Wound"],
+            location: "Body",
+            severity: "severe"
+          },
+          "body_ruptured_spleen": {
+            name: "Ruptured Spleen",
+            wounds: 5,
+            effects: "Gain 3 Bleeding Conditions. Make Challenging (+0) Endurance Test each round or gain another Bleeding",
+            conditions: ["Bleeding", "Bleeding", "Bleeding"],
+            ongoingEffects: ["Endurance Test each round or gain Bleeding"],
+            location: "Body",
+            severity: "severe"
+          },
+          "body_pierced_heart": {
+            name: "Pierced Heart",
+            wounds: 5,
+            effects: "Gain 3 Bleeding, 1 Unconscious Condition. Make Hard (-20) Endurance Test each round or die",
+            conditions: ["Bleeding", "Bleeding", "Bleeding", "Unconscious"],
+            ongoingEffects: ["Hard (-20) Endurance Test each round or die"],
+            location: "Body",
+            severity: "fatal"
+          },
+          "body_disemboweled": {
+            name: "Disemboweled",
+            wounds: "Death",
+            effects: "Stomach split open, guts spill out. Make Very Hard (-30) Endurance Test or die instantly. Surgery required immediately",
+            deathSave: "Very Hard (-30) Endurance",
+            surgeryRequired: true,
+            location: "Body",
+            severity: "fatal"
+          },
+
+          // LEG WOUNDS
+          "leg_dramatic_injury": {
+            name: "Dramatic Injury",
+            wounds: "T", 
+            effects: "Gain 1 Bleeding Condition. +1 SL to social Tests once healed (once only)",
+            conditions: ["Bleeding"],
+            location: "Leg",
+            severity: "minor"
+          },
+          "leg_bloody_mess": {
+            name: "Bloody Mess",
+            wounds: 1,
+            effects: "Gain 1 Bleeding Condition. No additional effects",
+            conditions: ["Bleeding"],
+            location: "Leg",
+            severity: "minor"
+          },
+          "leg_torn_muscles": {
+            name: "Torn Muscles",
+            wounds: 2,
+            effects: "Gain 1 Bleeding Condition. Torn Muscle (Minor) injury. Half Move",
+            conditions: ["Bleeding"],
+            injuries: ["Torn Muscle (Minor)"],
+            location: "Leg",
+            severity: "minor"
+          },
+          "leg_bad_cut": {
+            name: "Bad Cut",
+            wounds: 2,
+            effects: "Gain 1 Bleeding, 1 Prone Condition. Knocked down",
+            conditions: ["Bleeding", "Prone"],
+            location: "Leg",
+            severity: "moderate"
+          },
+          "leg_torn_thigh": {
+            name: "Torn Thigh",
+            wounds: 3,
+            effects: "Gain 1 Bleeding, 1 Prone Condition. Torn Muscle (Major) injury. Half Move",
+            conditions: ["Bleeding", "Prone"],
+            injuries: ["Torn Muscle (Major)"],
+            location: "Leg",
+            severity: "moderate"
+          },
+          "leg_broken_knee": {
+            name: "Broken Knee",
+            wounds: 4,
+            effects: "Gain 1 Bleeding, 1 Prone, 1 Stunned Condition. Broken Bone (Major) injury",
+            conditions: ["Bleeding", "Prone", "Stunned"],
+            injuries: ["Broken Bone (Major)"],
+            location: "Leg",
+            severity: "severe"
+          },
+          "leg_broken_leg": {
+            name: "Broken Leg",
+            wounds: 4,
+            effects: "Gain 2 Bleeding, 1 Prone, 2 Stunned Conditions. Broken Bone (Major) injury. Cannot move",
+            conditions: ["Bleeding", "Bleeding", "Prone", "Stunned", "Stunned"],
+            injuries: ["Broken Bone (Major)"],
+            location: "Leg",
+            severity: "severe"
+          },
+          "leg_crushed_foot": {
+            name: "Crushed Foot",
+            wounds: 4,
+            effects: "Gain 1 Bleeding, 1 Prone, 1 Stunned Condition. -20 to Movement Tests permanently. Amputation (Hard)",
+            conditions: ["Bleeding", "Prone", "Stunned"],
+            permanentEffects: ["-20 Movement Tests"],
+            amputation: "Foot",
+            location: "Leg",
+            severity: "severe"
+          },
+          "leg_mangled_leg": {
+            name: "Mangled Leg",
+            wounds: 5,
+            effects: "Gain 2 Bleeding, 1 Prone, 2 Stunned Conditions. Leg unusable permanently. Amputation (Very Hard)",
+            conditions: ["Bleeding", "Bleeding", "Prone", "Stunned", "Stunned"],
+            permanentEffects: ["Leg unusable"],
+            amputation: "Leg",
+            location: "Leg",
+            severity: "fatal"
+          },
+          "leg_severed_leg": {
+            name: "Severed Leg",
+            wounds: "Death",
+            effects: "Leg chopped clean off. Gain 2 Bleeding Conditions. Make Challenging (+0) Endurance Test or die",
+            conditions: ["Bleeding", "Bleeding"],
+            deathSave: "Challenging (+0) Endurance",
+            amputation: "Leg",
+            location: "Leg",
+            severity: "fatal"
+          }
+        };
+
+        // Injury Types and Healing Mechanics
+        const injuryTypes = {
+          "Broken Bone (Minor)": {
+            description: "Fractured bone, unusable until healed. 30+1d10 days to heal",
+            effects: {
+              "Head": "-30 to Language Tests",
+              "Body": "-30 Strength and Agility, half Move",
+              "Arm": "Arm unusable (as lost limb)",
+              "Leg": "Leg unusable (as lost limb)"
+            },
+            healingTime: "30+1d10 days",
+            testRequired: "Average (+20) Endurance Test when healed"
+          },
+          "Broken Bone (Major)": {
+            description: "Badly broken bone at odd angle. 40+1d10 days to heal",
+            effects: {
+              "Head": "-30 to Language Tests",
+              "Body": "-30 Strength and Agility, half Move", 
+              "Arm": "Arm unusable (as lost limb)",
+              "Leg": "Leg unusable (as lost limb)"
+            },
+            healingTime: "40+1d10 days",
+            testRequired: "Challenging (+0) Endurance Test when healed. -10 penalty if failed"
+          },
+          "Torn Muscle (Minor)": {
+            description: "Sprained/torn muscle. -10 to Tests using location",
+            effects: {
+              "Head": "-10 to head-based Tests",
+              "Body": "-10 to body-based Tests",
+              "Arm": "-10 to Tests using arm",
+              "Leg": "-10 to Tests using leg, half Movement"
+            },
+            healingTime: "30 - Toughness Bonus days"
+          },
+          "Torn Muscle (Major)": {
+            description: "Severely damaged muscle. -20 to Tests using location",
+            effects: {
+              "Head": "-20 to head-based Tests", 
+              "Body": "-20 to body-based Tests",
+              "Arm": "-20 to Tests using arm",
+              "Leg": "-20 to Tests using leg, half Movement"
+            },
+            healingTime: "30 - TB days (-20), then 30 - TB days more (-10)"
+          }
+        };
+
         let talents = [];
         let srdTalents = [];
         let activeConditions = [];
         let srdConditions = [];
+        let criticalWounds = []; // Active character critical wounds
         let spells = [];
         let srdSpells = [];
 
@@ -2790,6 +3375,553 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Critical Wounds Management System
+let woundIdCounter = 1;
+
+window.getSeverityColorForWound = function(wounds) {
+    if (wounds === "Death" || wounds >= 5) return '#000000'; // Fatal
+    if (wounds >= 4) return '#c41e3a'; // Severe (red)
+    if (wounds >= 2) return '#ff8c00'; // Moderate (orange)
+    return '#ffd700'; // Minor (yellow)
+}
+
+window.addCriticalWound = function(woundData) {
+    const wound = {
+        id: woundIdCounter++,
+        name: woundData.name || "Unknown Wound",
+        location: woundData.location || "Unknown",
+        wounds: woundData.wounds || 0,
+        effects: woundData.effects || "",
+        healingTime: woundData.healingTime || 0,
+        daysHealed: woundData.daysHealed || 0,
+        permanent: woundData.permanent || false,
+        surgeryRequired: woundData.surgeryRequired || false,
+        notes: woundData.notes || "",
+        conditions: woundData.conditions || [],
+        injuries: woundData.injuries || [],
+        permanentEffects: woundData.permanentEffects || [],
+        amputation: woundData.amputation || null,
+        dateAdded: new Date().toLocaleDateString()
+    };
+    
+    criticalWounds.push(wound);
+    
+    // Auto-add conditions if specified
+    if (wound.conditions && wound.conditions.length > 0) {
+        wound.conditions.forEach(condition => {
+            window.addCondition(condition, 1);
+        });
+    }
+    
+    window.displayCriticalWounds();
+    window.updateWoundPenalties();
+    return wound.id;
+}
+
+window.removeCriticalWound = function(woundId) {
+    const woundIndex = criticalWounds.findIndex(w => w.id === parseInt(woundId));
+    if (woundIndex === -1) {
+        console.warn('Wound not found:', woundId);
+        return false;
+    }
+    
+    const wound = criticalWounds[woundIndex];
+    if (confirm(`Remove critical wound "${wound.name}" from ${wound.location}?`)) {
+        criticalWounds.splice(woundIndex, 1);
+        window.displayCriticalWounds();
+        window.updateWoundPenalties();
+        return true;
+    }
+    return false;
+}
+
+window.updateWoundHealing = function(woundId, daysChange) {
+    const wound = criticalWounds.find(w => w.id === parseInt(woundId));
+    if (!wound) {
+        console.warn('Wound not found:', woundId);
+        return;
+    }
+    
+    if (wound.permanent) {
+        alert('This is a permanent injury and cannot be healed through time.');
+        return;
+    }
+    
+    wound.daysHealed = Math.max(0, wound.daysHealed + daysChange);
+    
+    // Check if fully healed
+    if (wound.daysHealed >= wound.healingTime && wound.healingTime > 0) {
+        if (confirm(`"${wound.name}" appears to be fully healed (${wound.daysHealed}/${wound.healingTime} days). Remove this wound?`)) {
+            window.removeCriticalWound(woundId);
+            return;
+        }
+    }
+    
+    window.displayCriticalWounds();
+}
+
+window.displayCriticalWounds = function() {
+    const tbody = document.getElementById('wounds-tbody');
+    const noWoundsMsg = document.getElementById('no-wounds-message');
+    const searchText = (document.getElementById('wounds-search')?.value || '').toLowerCase();
+    
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    let displayedWounds = criticalWounds;
+    
+    // Apply search filter
+    if (searchText) {
+        displayedWounds = displayedWounds.filter(w => 
+            w.name.toLowerCase().includes(searchText) ||
+            w.location.toLowerCase().includes(searchText) ||
+            w.effects.toLowerCase().includes(searchText) ||
+            w.notes.toLowerCase().includes(searchText)
+        );
+    }
+    
+    if (displayedWounds.length === 0) {
+        noWoundsMsg.style.display = 'block';
+        document.getElementById('active-wounds-display').style.display = 'none';
+    } else {
+        noWoundsMsg.style.display = 'none';
+        document.getElementById('active-wounds-display').style.display = 'block';
+        
+        displayedWounds.forEach(wound => {
+            const row = document.createElement('tr');
+            const severityColor = window.getSeverityColorForWound(wound.wounds);
+            
+            // Determine healing display
+            let healingDisplay = '';
+            if (wound.permanent) {
+                healingDisplay = '<span style="color: #8b0000; font-weight: bold;">Permanent</span>';
+            } else if (wound.healingTime > 0) {
+                const percentage = Math.min(100, (wound.daysHealed / wound.healingTime) * 100);
+                healingDisplay = `
+                    <div style="text-align: center;">
+                        <div style="font-size: 12px; margin-bottom: 3px;">Day ${wound.daysHealed} of ${wound.healingTime}</div>
+                        <div style="width: 100%; background: #e0e0e0; height: 8px; border-radius: 4px; margin-bottom: 5px;">
+                            <div style="width: ${percentage}%; background: #4CAF50; height: 100%; border-radius: 4px;"></div>
+                        </div>
+                        <div style="display: flex; gap: 2px; justify-content: center;">
+                            <button onclick="window.updateWoundHealing(${wound.id}, -1)" style="width: 20px; height: 20px; background: #e8dfd0; border: 1px solid #8b7355; cursor: pointer; font-size: 12px;">−</button>
+                            <button onclick="window.updateWoundHealing(${wound.id}, 1)" style="width: 20px; height: 20px; background: #e8dfd0; border: 1px solid #8b7355; cursor: pointer; font-size: 12px;">+</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                healingDisplay = '<span style="color: #666; font-style: italic;">No healing time set</span>';
+            }
+            
+            // Effects display with truncation
+            let effectsDisplay = wound.effects;
+            if (effectsDisplay.length > 100) {
+                effectsDisplay = effectsDisplay.substring(0, 97) + '...';
+            }
+            
+            row.style.borderLeft = `4px solid ${severityColor}`;
+            row.innerHTML = `
+                <td style="border: 1px solid #8b7355; padding: 8px; vertical-align: top;">
+                    <div style="font-weight: bold; color: ${severityColor}; margin-bottom: 3px;">${wound.name}</div>
+                    ${wound.surgeryRequired ? '<div style="font-size: 10px; color: #c41e3a; font-weight: bold;">⚕️ Surgery Required</div>' : ''}
+                    ${wound.wounds === "Death" ? '<div style="font-size: 10px; color: #000; font-weight: bold;">💀 Fatal</div>' : `<div style="font-size: 10px; color: #666;">Wounds: ${wound.wounds}</div>`}
+                </td>
+                <td style="border: 1px solid #8b7355; padding: 8px; text-align: center; vertical-align: middle;">
+                    <span style="font-weight: bold;">${wound.location}</span>
+                </td>
+                <td style="border: 1px solid #8b7355; padding: 8px; text-align: center; vertical-align: middle; min-width: 120px;">
+                    ${healingDisplay}
+                </td>
+                <td style="border: 1px solid #8b7355; padding: 8px; vertical-align: top; max-width: 200px;">
+                    <div style="font-size: 12px; line-height: 1.3;">${effectsDisplay}</div>
+                    ${wound.notes ? `<div style="font-size: 11px; color: #666; margin-top: 5px; font-style: italic;">${wound.notes}</div>` : ''}
+                </td>
+                <td style="border: 1px solid #8b7355; padding: 8px; text-align: center; vertical-align: middle;">
+                    <div style="display: flex; flex-direction: column; gap: 3px;">
+                        <button onclick="window.editCriticalWound(${wound.id})" style="padding: 3px 6px; font-size: 10px; background: #4682b4; color: white; border: none; cursor: pointer; border-radius: 2px;">Edit</button>
+                        ${!wound.permanent && wound.healingTime > 0 ? `<button onclick="window.markWoundHealed(${wound.id})" style="padding: 3px 6px; font-size: 10px; background: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 2px;">Healed</button>` : ''}
+                        <button onclick="window.removeCriticalWound(${wound.id})" style="padding: 3px 6px; font-size: 10px; background: #c41e3a; color: white; border: none; cursor: pointer; border-radius: 2px;">Remove</button>
+                    </div>
+                </td>
+            `;
+            
+            tbody.appendChild(row);
+        });
+    }
+}
+
+window.markWoundHealed = function(woundId) {
+    const wound = criticalWounds.find(w => w.id === parseInt(woundId));
+    if (!wound) return;
+    
+    if (confirm(`Mark "${wound.name}" as fully healed and remove from wounds list?`)) {
+        window.removeCriticalWound(woundId);
+    }
+}
+
+window.editCriticalWound = function(woundId) {
+    const wound = criticalWounds.find(w => w.id === parseInt(woundId));
+    if (!wound) return;
+    
+    // Populate edit modal with current wound data
+    document.getElementById('wound-name-input').value = wound.name;
+    document.getElementById('wound-location-select').value = wound.location;
+    document.getElementById('wound-wounds-input').value = wound.wounds === "Death" ? "" : wound.wounds;
+    document.getElementById('wound-healing-time-input').value = wound.healingTime;
+    document.getElementById('wound-effects-input').value = wound.effects;
+    document.getElementById('wound-notes-input').value = wound.notes;
+    document.getElementById('wound-permanent-checkbox').checked = wound.permanent;
+    document.getElementById('wound-surgery-checkbox').checked = wound.surgeryRequired;
+    
+    // Store the wound ID for editing
+    window.editingWoundId = woundId;
+    
+    // Change modal title and button text
+    document.querySelector('#add-wound-modal h3').textContent = 'Edit Critical Wound';
+    document.querySelector('#add-wound-modal .control-btn').textContent = 'Save Changes';
+    
+    window.openAddWoundModal();
+}
+
+window.getCriticalWoundPenalties = function() {
+    const penalties = {
+        characteristics: {},
+        tests: {},
+        movement: 0,
+        specialEffects: []
+    };
+    
+    criticalWounds.forEach(wound => {
+        // Parse permanent effects
+        if (wound.permanentEffects) {
+            wound.permanentEffects.forEach(effect => {
+                if (effect.includes('Intelligence')) {
+                    penalties.characteristics.Int = (penalties.characteristics.Int || 0) - 10;
+                } else if (effect.includes('Willpower')) {
+                    penalties.characteristics.WP = (penalties.characteristics.WP || 0) - 10;
+                } else if (effect.includes('Fellowship')) {
+                    penalties.characteristics.Fel = (penalties.characteristics.Fel || 0) - 10;
+                } else if (effect.includes('Strength')) {
+                    penalties.characteristics.S = (penalties.characteristics.S || 0) - 30;
+                } else if (effect.includes('Agility')) {
+                    penalties.characteristics.Ag = (penalties.characteristics.Ag || 0) - 30;
+                } else if (effect.includes('Dexterity Tests')) {
+                    penalties.tests.Dex = (penalties.tests.Dex || 0) - 20;
+                } else if (effect.includes('Ranged Tests')) {
+                    penalties.tests.Ranged = (penalties.tests.Ranged || 0) - 20;
+                } else if (effect.includes('Language Tests')) {
+                    penalties.tests.Language = (penalties.tests.Language || 0) - 10;
+                } else if (effect.includes('Movement Tests')) {
+                    penalties.tests.Movement = (penalties.tests.Movement || 0) - 20;
+                } else if (effect.includes('half Movement') || effect.includes('half Move')) {
+                    penalties.movement = Math.max(penalties.movement, 0.5);
+                } else if (effect.includes('unusable') || effect.includes('lost')) {
+                    penalties.specialEffects.push(effect);
+                }
+            });
+        }
+        
+        // Apply injury effects
+        if (wound.injuries) {
+            wound.injuries.forEach(injuryName => {
+                const injury = injuryTypes[injuryName];
+                if (injury && injury.effects[wound.location.replace(/^(Left |Right )/, '')]) {
+                    const effect = injury.effects[wound.location.replace(/^(Left |Right )/, '')];
+                    if (effect.includes('-30 Strength')) {
+                        penalties.characteristics.S = (penalties.characteristics.S || 0) - 30;
+                    }
+                    if (effect.includes('-30 Agility')) {
+                        penalties.characteristics.Ag = (penalties.characteristics.Ag || 0) - 30;
+                    }
+                    if (effect.includes('half Move')) {
+                        penalties.movement = Math.max(penalties.movement, 0.5);
+                    }
+                    if (effect.includes('unusable')) {
+                        penalties.specialEffects.push(`${wound.location} unusable (${injuryName})`);
+                    }
+                }
+            });
+        }
+        
+        // Special wound effects
+        if (wound.amputation) {
+            penalties.specialEffects.push(`${wound.amputation} amputated`);
+        }
+    });
+    
+    return penalties;
+}
+
+window.updateWoundPenalties = function() {
+    const penalties = window.getCriticalWoundPenalties();
+    const summaryDiv = document.getElementById('wound-penalties-summary');
+    const penaltyText = document.getElementById('wound-penalty-text');
+    
+    const penaltyStrings = [];
+    
+    // Characteristic penalties
+    Object.keys(penalties.characteristics).forEach(char => {
+        const penalty = penalties.characteristics[char];
+        if (penalty !== 0) {
+            penaltyStrings.push(`${char} ${penalty >= 0 ? '+' : ''}${penalty}`);
+        }
+    });
+    
+    // Test penalties
+    Object.keys(penalties.tests).forEach(testType => {
+        const penalty = penalties.tests[testType];
+        if (penalty !== 0) {
+            penaltyStrings.push(`${testType} Tests ${penalty >= 0 ? '+' : ''}${penalty}`);
+        }
+    });
+    
+    // Movement penalties
+    if (penalties.movement > 0) {
+        if (penalties.movement === 0.5) {
+            penaltyStrings.push('Movement halved');
+        } else {
+            penaltyStrings.push(`Movement -${penalties.movement}`);
+        }
+    }
+    
+    // Special effects
+    penalties.specialEffects.forEach(effect => penaltyStrings.push(effect));
+    
+    if (penaltyStrings.length > 0) {
+        penaltyText.textContent = penaltyStrings.join(' • ');
+        summaryDiv.style.display = 'block';
+    } else {
+        summaryDiv.style.display = 'none';
+    }
+}
+
+window.removeAllWounds = function() {
+    if (criticalWounds.length === 0) {
+        alert('No critical wounds to remove!');
+        return;
+    }
+    
+    if (confirm(`Remove all ${criticalWounds.length} critical wounds?`)) {
+        criticalWounds.length = 0;
+        window.displayCriticalWounds();
+        window.updateWoundPenalties();
+    }
+}
+
+window.openAddWoundModal = function() {
+    // Reset form if not editing
+    if (!window.editingWoundId) {
+        document.getElementById('wound-name-input').value = '';
+        document.getElementById('wound-location-select').value = '';
+        document.getElementById('wound-wounds-input').value = '';
+        document.getElementById('wound-healing-time-input').value = '';
+        document.getElementById('wound-effects-input').value = '';
+        document.getElementById('wound-notes-input').value = '';
+        document.getElementById('wound-permanent-checkbox').checked = false;
+        document.getElementById('wound-surgery-checkbox').checked = false;
+        
+        // Reset modal title and button
+        document.querySelector('#add-wound-modal h3').textContent = 'Add Critical Wound';
+        document.querySelector('#add-wound-modal .control-btn').textContent = 'Add Wound';
+    }
+    
+    document.getElementById('add-wound-modal').style.display = 'block';
+}
+
+window.closeAddWoundModal = function() {
+    document.getElementById('add-wound-modal').style.display = 'none';
+    window.editingWoundId = null;
+}
+
+window.confirmAddWound = function() {
+    const name = document.getElementById('wound-name-input').value.trim();
+    const location = document.getElementById('wound-location-select').value;
+    const wounds = document.getElementById('wound-wounds-input').value;
+    const healingTime = parseInt(document.getElementById('wound-healing-time-input').value) || 0;
+    const effects = document.getElementById('wound-effects-input').value.trim();
+    const notes = document.getElementById('wound-notes-input').value.trim();
+    const permanent = document.getElementById('wound-permanent-checkbox').checked;
+    const surgeryRequired = document.getElementById('wound-surgery-checkbox').checked;
+    
+    if (!name) {
+        alert('Please enter a wound name');
+        return;
+    }
+    
+    if (!location) {
+        alert('Please select a location');
+        return;
+    }
+    
+    const woundData = {
+        name: name,
+        location: location,
+        wounds: wounds || 0,
+        healingTime: permanent ? 0 : healingTime,
+        effects: effects,
+        notes: notes,
+        permanent: permanent,
+        surgeryRequired: surgeryRequired,
+        daysHealed: 0
+    };
+    
+    if (window.editingWoundId) {
+        // Edit existing wound
+        const wound = criticalWounds.find(w => w.id === parseInt(window.editingWoundId));
+        if (wound) {
+            Object.assign(wound, woundData);
+            window.displayCriticalWounds();
+            window.updateWoundPenalties();
+        }
+        window.editingWoundId = null;
+    } else {
+        // Add new wound
+        window.addCriticalWound(woundData);
+    }
+    
+    window.closeAddWoundModal();
+}
+
+// Reference Modal Functions
+window.openWoundReferenceModal = function() {
+    document.getElementById('wound-reference-modal').style.display = 'block';
+    window.showWoundLocation('Head'); // Default to Head tab
+}
+
+window.closeWoundReferenceModal = function() {
+    document.getElementById('wound-reference-modal').style.display = 'none';
+}
+
+window.showWoundLocation = function(location) {
+    // Update tab appearance
+    ['Head', 'Arm', 'Body', 'Leg'].forEach(loc => {
+        const tab = document.getElementById(`wound-tab-${loc}`);
+        if (loc === location) {
+            tab.style.background = '#e8dfd0';
+            tab.style.color = '#3e2f1f';
+            tab.style.fontWeight = 'bold';
+        } else {
+            tab.style.background = '#f5f5f0';
+            tab.style.color = '#666';
+            tab.style.fontWeight = 'normal';
+        }
+    });
+    
+    // Filter wounds by location
+    const searchText = (document.getElementById('wound-reference-search')?.value || '').toLowerCase();
+    const content = document.getElementById('wound-reference-content');
+    
+    let filteredWounds = Object.entries(wfrpCriticalWounds).filter(([key, wound]) => 
+        wound.location === location
+    );
+    
+    // Apply search filter
+    if (searchText) {
+        filteredWounds = filteredWounds.filter(([key, wound]) =>
+            wound.name.toLowerCase().includes(searchText) ||
+            wound.effects.toLowerCase().includes(searchText)
+        );
+    }
+    
+    content.innerHTML = '';
+    
+    if (filteredWounds.length === 0) {
+        content.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">No wounds found matching your search.</div>';
+        return;
+    }
+    
+    // Create wounds table
+    const table = document.createElement('table');
+    table.style.cssText = 'width: 100%; border-collapse: collapse; background: #faf8f3; border: 2px solid #8b7355;';
+    
+    const thead = document.createElement('thead');
+    thead.innerHTML = `
+        <tr style="background: #e8dfd0; color: #3e2f1f; font-weight: bold;">
+            <th style="border: 1px solid #8b7355; padding: 8px; text-align: left;">Wound Name</th>
+            <th style="border: 1px solid #8b7355; padding: 8px; text-align: center;">Wounds</th>
+            <th style="border: 1px solid #8b7355; padding: 8px; text-align: left;">Effects</th>
+            <th style="border: 1px solid #8b7355; padding: 8px; text-align: center;">Add</th>
+        </tr>
+    `;
+    table.appendChild(thead);
+    
+    const tbody = document.createElement('tbody');
+    
+    filteredWounds.forEach(([key, wound]) => {
+        const row = document.createElement('tr');
+        const severityColor = window.getSeverityColorForWound(wound.wounds);
+        
+        row.style.borderLeft = `4px solid ${severityColor}`;
+        row.innerHTML = `
+            <td style="border: 1px solid #8b7355; padding: 8px; vertical-align: top;">
+                <div style="font-weight: bold; color: ${severityColor};">${wound.name}</div>
+                <div style="font-size: 10px; color: #666; text-transform: uppercase;">${wound.severity}</div>
+            </td>
+            <td style="border: 1px solid #8b7355; padding: 8px; text-align: center; vertical-align: middle; font-weight: bold;">
+                ${wound.wounds}
+            </td>
+            <td style="border: 1px solid #8b7355; padding: 8px; vertical-align: top; font-size: 12px; line-height: 1.3;">
+                ${wound.effects}
+            </td>
+            <td style="border: 1px solid #8b7355; padding: 8px; text-align: center; vertical-align: middle;">
+                <button onclick="window.selectReferenceWound('${key}')" style="padding: 4px 8px; font-size: 10px; background: #4682b4; color: white; border: none; cursor: pointer; border-radius: 2px;">Add This</button>
+            </td>
+        `;
+        
+        tbody.appendChild(row);
+    });
+    
+    table.appendChild(tbody);
+    content.appendChild(table);
+}
+
+window.selectReferenceWound = function(woundKey) {
+    const wound = wfrpCriticalWounds[woundKey];
+    if (!wound) return;
+    
+    // Close reference modal
+    window.closeWoundReferenceModal();
+    
+    // Create wound data with defaults
+    const woundData = {
+        name: wound.name,
+        location: wound.location === 'Arm' ? 'Right Arm' : wound.location === 'Leg' ? 'Right Leg' : wound.location,
+        wounds: wound.wounds,
+        effects: wound.effects,
+        healingTime: wound.wounds === "Death" ? 0 : (wound.wounds >= 4 ? 30 : wound.wounds >= 2 ? 14 : 7),
+        permanent: wound.severity === 'fatal' && wound.wounds !== "Death",
+        surgeryRequired: wound.surgeryRequired || false,
+        conditions: wound.conditions || [],
+        injuries: wound.injuries || [],
+        permanentEffects: wound.permanentEffects || [],
+        amputation: wound.amputation || null,
+        notes: `From WFRP reference (${wound.severity})`
+    };
+    
+    // Add the wound
+    const woundId = window.addCriticalWound(woundData);
+    
+    // Show success message
+    alert(`Added "${wound.name}" to ${woundData.location}. ${wound.conditions ? `Applied ${wound.conditions.length} condition(s).` : ''}`);
+}
+
+// Add search listener for wounds
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('wounds-search')?.addEventListener('input', function() {
+        window.displayCriticalWounds();
+    });
+    
+    document.getElementById('wound-reference-search')?.addEventListener('input', function() {
+        // Re-show current location with new search
+        const activeTab = document.querySelector('[id^="wound-tab-"][style*="background: rgb(232, 223, 208)"]');
+        if (activeTab) {
+            const location = activeTab.id.replace('wound-tab-', '');
+            window.showWoundLocation(location);
+        }
+    });
+});
+
 // Spells & Prayers Management Functions
 window.displaySpells = function() {
     const tbody = document.getElementById('spells-tbody');
@@ -3226,6 +4358,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 consumables: consumables,
                 talents: talents,
                 activeConditions: activeConditions,
+                criticalWounds: criticalWounds,
                 spells: spells,
                 money: {
                     gold: document.getElementById('money-gold').value,
@@ -3339,6 +4472,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 activeConditions = characterData.activeConditions;
             }
             
+            // Load critical wounds
+            if (characterData.criticalWounds) {
+                criticalWounds = characterData.criticalWounds;
+                // Update wound counter to prevent ID conflicts
+                if (criticalWounds.length > 0) {
+                    woundIdCounter = Math.max(...criticalWounds.map(w => w.id)) + 1;
+                }
+            }
+            
             // Load spells
             if (characterData.spells) {
                 spells = characterData.spells;
@@ -3360,6 +4502,8 @@ document.addEventListener('DOMContentLoaded', function() {
             displaySkills();
             displayTalents();
             window.updateConditionDisplay();
+            window.displayCriticalWounds();
+            window.updateWoundPenalties();
             displaySpells();
             displayWeapons();
             displayArmour();
@@ -3399,6 +4543,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 displaySkills(); // Show basic skills immediately
                 displayTalents();
                 window.updateConditionDisplay();
+                window.displayCriticalWounds();
                 displaySpells();
                 displayWeapons();
                 displayArmour();
