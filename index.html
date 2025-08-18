@@ -3886,6 +3886,16 @@
                     return;
                 }
 
+                // Pre-restore the saved tab immediately to prevent UI flashing
+                const savedTab = localStorage.getItem(AUTO_SAVE_CONFIG.SAVE_KEYS.CURRENT_TAB);
+                if (savedTab) {
+                    try {
+                        showTab(savedTab);
+                    } catch (error) {
+                        console.warn('Could not pre-restore tab:', error);
+                    }
+                }
+
                 // Show restore dialog
                 showAutoRestoreDialog(saveDate, savedData);
 
@@ -3936,21 +3946,10 @@
                 // Restore all character data using existing restore logic
                 restoreCharacterDataFromAutoSave(characterData);
                 
-                // Restore the last active tab with additional safety
+                // Tab was already restored in checkForAutoRestore, just update the tracking
                 const savedTab = localStorage.getItem(AUTO_SAVE_CONFIG.SAVE_KEYS.CURRENT_TAB);
                 if (savedTab) {
-                    // Use setTimeout to ensure DOM is fully ready for tab switching
-                    setTimeout(() => {
-                        try {
-                            currentActiveTab = savedTab;
-                            showTab(savedTab);
-                        } catch (tabError) {
-                            console.warn('Failed to restore tab, using default:', tabError);
-                            // Fallback to overview tab
-                            currentActiveTab = 'overview';
-                            showTab('overview');
-                        }
-                    }, 100);
+                    currentActiveTab = savedTab;
                 }
 
                 // Close the dialog
