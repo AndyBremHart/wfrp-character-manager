@@ -1364,11 +1364,12 @@
             updateEncumbrance();
         });
 
-        // XP System Management
-        const xpTotal = document.getElementById('xp-total');
-        const xpSpent = document.getElementById('xp-spent');
+        // XP System Management - will be initialized in DOMContentLoaded
+        let xpTotal, xpSpent;
         
         window.updateXPDisplay = function() {
+            if (!xpTotal || !xpSpent) return; // Guard against early calls
+            
             const total = parseInt(xpTotal.value) || 0;
             const spent = parseInt(xpSpent.value) || 0;
             const current = total - spent;
@@ -1391,6 +1392,8 @@
         }
         
         window.addSessionXP = function(amount, note) {
+            if (!xpTotal) return; // Guard against early calls
+            
             const currentTotal = parseInt(xpTotal.value) || 0;
             xpTotal.value = currentTotal + amount;
             window.updateXPDisplay();
@@ -1458,6 +1461,8 @@
         }
         
         window.canAffordAdvance = function(cost) {
+            if (!xpTotal || !xpSpent) return false; // Guard against early calls
+            
             const total = parseInt(xpTotal.value) || 0;
             const spent = parseInt(xpSpent.value) || 0;
             const current = total - spent;
@@ -1465,6 +1470,8 @@
         }
         
         window.spendXP = function(amount, description) {
+            if (!xpTotal || !xpSpent) return false; // Guard against early calls
+            
             if (!window.canAffordAdvance(amount)) {
                 const total = parseInt(xpTotal.value) || 0;
                 const spent = parseInt(xpSpent.value) || 0;
@@ -1556,6 +1563,8 @@
         
         // Characteristic Advancement with XP Integration
         window.advanceCharacteristic = function(charCode) {
+            if (!xpTotal || !xpSpent) return; // Guard against early calls
+            
             const advancesField = document.getElementById(`${charCode}-advances`);
             const currentAdvances = parseInt(advancesField.value) || 0;
             const cost = window.getCharacteristicCost(currentAdvances);
@@ -1592,6 +1601,8 @@
         
         // Skill Advancement with XP Integration
         window.advanceSkill = function(skillKey) {
+            if (!xpTotal || !xpSpent) return; // Guard against early calls
+            
             const skillData = characterSkills[skillKey] || { career: false, advances: 0, notes: '' };
             const currentAdvances = skillData.advances || 0;
             
@@ -1629,6 +1640,8 @@
         
         // Talent Advancement with XP Integration
         window.advanceTalent = function(talentIndex) {
+            if (!xpTotal || !xpSpent) return; // Guard against early calls
+            
             const talent = talents[talentIndex];
             if (!talent) return;
             
@@ -1660,8 +1673,7 @@
             }
         }
         
-        // Initialize XP display
-        window.updateXPDisplay();
+        // XP display will be initialized in DOMContentLoaded
 
         // Skills functionality
         window.displaySkills = function() {
@@ -2070,15 +2082,15 @@ window.confirmAddTalent = function() {
     };
     
     // Check if this exact talent already exists
-    const existingIndex = talents.findIndex(t => 
+    const existingTalentIndex = talents.findIndex(t => 
         t.name === talent.name && t.customisation === talent.customisation
     );
     
-    if (existingIndex !== -1) {
+    if (existingTalentIndex !== -1) {
         // If it can be taken multiple times and we're adding more
         if (talentData.max !== "1") {
             const maxAllowed = parseInt(talentData.max) || 10;
-            const currentTimes = talents[existingIndex].timesTaken;
+            const currentTimes = talents[existingTalentIndex].timesTaken;
             const newTotal = Math.min(currentTimes + timesTaken, maxAllowed);
             
             if (currentTimes >= maxAllowed) {
@@ -2086,7 +2098,7 @@ window.confirmAddTalent = function() {
                 return;
             }
             
-            talents[existingIndex].timesTaken = newTotal;
+            talents[existingTalentIndex].timesTaken = newTotal;
         } else {
             alert('You already have this talent');
             return;
@@ -2948,6 +2960,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded, initializing...');
+            
+            // Initialize XP system variables
+            xpTotal = document.getElementById('xp-total');
+            xpSpent = document.getElementById('xp-spent');
+            window.updateXPDisplay();
             
             // Load SRD data
             loadSRDData();
