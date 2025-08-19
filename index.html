@@ -6249,13 +6249,9 @@
                         costDisplay.textContent = `(${cost} XP)`;
                         const button = costDisplay.parentElement.querySelector('button');
                         if (button) {
-                            if (window.canAffordAdvance(cost)) {
-                                button.style.opacity = '1';
-                                button.disabled = false;
-                            } else {
-                                button.style.opacity = '0.5';
-                                button.disabled = true;
-                            }
+                            // Always enable the button - XP check happens when clicked
+                            button.style.opacity = '1';
+                            button.disabled = false;
                         }
                     }
                 }
@@ -6271,16 +6267,9 @@
                     costDisplay.textContent = `(${cost} XP)`;
                     const button = costDisplay.parentElement.querySelector('button');
                     if (button) {
-                        const canAfford = window.canAffordAdvance(cost);
-                        // Remove hard limit on skill advances - skills can be advanced beyond 5
-                        
-                        if (canAfford) {
-                            button.style.opacity = '1';
-                            button.disabled = false;
-                        } else {
-                            button.style.opacity = '0.5';
-                            button.disabled = true;
-                        }
+                        // Always enable the button - XP check happens when clicked
+                        button.style.opacity = '1';
+                        button.disabled = false;
                     }
                 }
             });
@@ -6296,14 +6285,15 @@
                     costDisplay.textContent = `(${cost} XP)`;
                     const button = costDisplay.parentElement.querySelector('button');
                     if (button) {
-                        const canAfford = window.canAffordAdvance(cost);
                         const maxAllowed = talent.max === "No Limit" ? 999 : parseInt(talent.max);
                         const canTakeMore = currentTimes < maxAllowed;
                         
-                        if (canAfford && canTakeMore) {
+                        if (canTakeMore) {
+                            // Always enable the button if talent can be taken more - XP check happens when clicked
                             button.style.opacity = '1';
                             button.disabled = false;
                         } else {
+                            // Only disable if talent is at max limit
                             button.style.opacity = '0.5';
                             button.disabled = true;
                         }
@@ -15119,6 +15109,11 @@ function loadSymptomsData() {
                     console.log('Career not found in careersData. Available careers:', careersData?.careers?.map(c => c.name));
                 }
             }
+            
+            // Set initial XP for new character (0 starting XP - player earns XP through play)
+            document.getElementById('xp-total').value = '0';
+            document.getElementById('xp-spent').value = '0';
+            window.updateXPDisplay();
             
             // Close wizard
             closeSetupWizard();
