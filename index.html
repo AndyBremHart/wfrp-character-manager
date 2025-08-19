@@ -2664,8 +2664,45 @@
 
             <!-- New Career Selection (shown when changing careers) -->
             <div id="new-career-selection" style="display: none; margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">New Career:</label>
-                <input type="text" id="new-career-name" style="width: 100%; padding: 8px; border: 1px solid #8b7355; background: #faf8f3;" placeholder="Enter new career name">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Filter by Class:</label>
+                    <select id="career-class-filter" style="width: 100%; padding: 8px; border: 1px solid #8b7355; background: #faf8f3;" onchange="filterCareersByClass()">
+                        <option value="">All Classes</option>
+                        <option value="academics">Academics</option>
+                        <option value="burghers">Burghers</option>
+                        <option value="courtiers">Courtiers</option>
+                        <option value="peasants">Peasants</option>
+                        <option value="rangers">Rangers</option>
+                        <option value="riverfolk">Riverfolk</option>
+                        <option value="rogues">Rogues</option>
+                        <option value="warriors">Warriors</option>
+                    </select>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Search Careers:</label>
+                    <input type="text" id="career-search-input" style="width: 100%; padding: 8px; border: 1px solid #8b7355; background: #faf8f3;" placeholder="Type to search careers..." oninput="filterCareersBySearch()">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Select Career:</label>
+                    <select id="career-selection-dropdown" size="8" style="width: 100%; border: 1px solid #8b7355; background: #faf8f3;" onchange="selectCareerFromDropdown()">
+                        <option value="">Loading careers...</option>
+                    </select>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Selected Career:</label>
+                    <input type="text" id="new-career-name" style="width: 100%; padding: 8px; border: 1px solid #8b7355; background: #faf8f3;" placeholder="Career will appear here when selected" readonly>
+                </div>
+                
+                <!-- Career Details Preview -->
+                <div id="career-details-preview" style="display: none; margin-top: 15px; padding: 15px; background: #f8f6f0; border: 1px solid #8b7355; border-radius: 5px;">
+                    <h5 style="color: #3e2f1f; margin: 0 0 10px 0;">Career Details</h5>
+                    <div id="career-preview-content">
+                        <!-- Career details will be populated here -->
+                    </div>
+                </div>
             </div>
 
             <!-- Action Buttons -->
@@ -13392,6 +13429,9 @@ function loadSymptomsData() {
         
         // =============== CAREER ADVANCEMENT FUNCTIONS ===============
         
+        let availableCareers = []; // Store loaded careers for filtering
+        let filteredCareers = []; // Store currently filtered careers
+        
         // Open career advancement modal
         function openCareerAdvancementModal() {
             const modal = document.getElementById('career-advancement-modal');
@@ -13409,9 +13449,144 @@ function loadSymptomsData() {
             advancementRadios.forEach(radio => radio.checked = false);
             document.getElementById('advancement-xp-cost').value = '0';
             document.getElementById('new-career-name').value = '';
+            document.getElementById('career-search-input').value = '';
+            document.getElementById('career-class-filter').value = '';
             document.getElementById('new-career-selection').style.display = 'none';
+            document.getElementById('career-details-preview').style.display = 'none';
+            
+            // Load careers data if not already loaded
+            loadCareersForAdvancement();
             
             modal.style.display = 'block';
+        }
+        
+        // Load careers data for advancement modal
+        async function loadCareersForAdvancement() {
+            if (availableCareers.length === 0) {
+                try {
+                    if (typeof careersData !== 'undefined' && careersData && careersData.careers) {
+                        availableCareers = careersData.careers;
+                    } else {
+                        // Load careers data if not available
+                        const response = await fetch('careers.json');
+                        const data = await response.json();
+                        availableCareers = data.careers;
+                    }
+                    
+                    // Initial population of dropdown
+                    filteredCareers = [...availableCareers];
+                    populateCareerDropdown();
+                    
+                } catch (error) {
+                    console.error('Error loading careers:', error);
+                    document.getElementById('career-selection-dropdown').innerHTML = '<option value="">Error loading careers</option>';
+                }
+            } else {
+                // Careers already loaded, just repopulate dropdown
+                filteredCareers = [...availableCareers];
+                populateCareerDropdown();
+            }
+        }
+        
+        // Populate career dropdown with filtered results
+        function populateCareerDropdown() {
+            const dropdown = document.getElementById('career-selection-dropdown');
+            dropdown.innerHTML = '';
+            
+            if (filteredCareers.length === 0) {
+                dropdown.innerHTML = '<option value="">No careers found</option>';
+                return;
+            }
+            
+            // Add default option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Select a career...';
+            dropdown.appendChild(defaultOption);
+            
+            // Add filtered careers
+            filteredCareers.forEach(career => {
+                const option = document.createElement('option');
+                option.value = career.name;
+                option.textContent = `${career.name} (${career.class})`;
+                option.dataset.careerData = JSON.stringify(career);
+                dropdown.appendChild(option);
+            });
+        }
+        
+        // Filter careers by class
+        function filterCareersByClass() {
+            const selectedClass = document.getElementById('career-class-filter').value;
+            const searchTerm = document.getElementById('career-search-input').value.toLowerCase();
+            
+            applyFilters(selectedClass, searchTerm);
+        }
+        
+        // Filter careers by search term
+        function filterCareersBySearch() {
+            const selectedClass = document.getElementById('career-class-filter').value;
+            const searchTerm = document.getElementById('career-search-input').value.toLowerCase();
+            
+            applyFilters(selectedClass, searchTerm);
+        }
+        
+        // Apply both class and search filters
+        function applyFilters(selectedClass, searchTerm) {
+            filteredCareers = availableCareers.filter(career => {
+                const matchesClass = !selectedClass || career.class === selectedClass;
+                const matchesSearch = !searchTerm || career.name.toLowerCase().includes(searchTerm);
+                return matchesClass && matchesSearch;
+            });
+            
+            populateCareerDropdown();
+        }
+        
+        // Select career from dropdown
+        function selectCareerFromDropdown() {
+            const dropdown = document.getElementById('career-selection-dropdown');
+            const selectedOption = dropdown.options[dropdown.selectedIndex];
+            
+            if (selectedOption && selectedOption.value) {
+                const careerName = selectedOption.value;
+                const careerData = JSON.parse(selectedOption.dataset.careerData);
+                
+                // Set selected career name
+                document.getElementById('new-career-name').value = careerName;
+                
+                // Show career details preview
+                showCareerPreview(careerData);
+            } else {
+                // Clear selection
+                document.getElementById('new-career-name').value = '';
+                document.getElementById('career-details-preview').style.display = 'none';
+            }
+        }
+        
+        // Show career preview details
+        function showCareerPreview(career) {
+            const previewDiv = document.getElementById('career-details-preview');
+            const contentDiv = document.getElementById('career-preview-content');
+            
+            let previewHTML = `
+                <div style="margin-bottom: 10px;"><strong>Class:</strong> ${career.class.charAt(0).toUpperCase() + career.class.slice(1)}</div>
+                <div style="margin-bottom: 10px;"><strong>Description:</strong> ${career.description || 'No description available'}</div>
+            `;
+            
+            if (career.species && career.species.length > 0) {
+                previewHTML += `<div style="margin-bottom: 10px;"><strong>Available to:</strong> ${career.species.join(', ')}</div>`;
+            }
+            
+            if (career.tiers && career.tiers.length > 0) {
+                previewHTML += `<div style="margin-bottom: 10px;"><strong>Career Tiers:</strong></div>`;
+                career.tiers.forEach(tier => {
+                    previewHTML += `<div style="margin-left: 15px; margin-bottom: 5px; font-size: 12px;">
+                        <strong>Tier ${tier.tier}:</strong> ${tier.name} (${tier.status})
+                    </div>`;
+                });
+            }
+            
+            contentDiv.innerHTML = previewHTML;
+            previewDiv.style.display = 'block';
         }
         
         // Close career advancement modal
@@ -13460,7 +13635,7 @@ function loadSymptomsData() {
             if (selectedType.value === 'change') {
                 const newCareerName = document.getElementById('new-career-name').value.trim();
                 if (!newCareerName) {
-                    alert('Please enter a new career name.');
+                    alert('Please select a new career from the dropdown.');
                     return;
                 }
                 
