@@ -1208,10 +1208,10 @@
     </div>
 
     <div class="character-sheet">
-        <!-- Character Setup Button -->
+        <!-- Character Generator Button -->
         <div style="text-align: center; margin: 10px 0;">
             <button onclick="startCharacterSetup()" style="padding: 12px 24px; background: #8b0000; color: white; border: 2px solid #660000; cursor: pointer; font-size: 14px; font-weight: bold; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);" title="Begin guided character creation process">
-                🎭 Character Setup Wizard
+                🎭 Character Generator
             </button>
         </div>
 
@@ -1233,7 +1233,6 @@
                             <option value="High Elf">High Elf</option>
                             <option value="Wood Elf">Wood Elf</option>
                         </select>
-                        <button onclick="manualOpenSpeciesWizard()" style="padding: 8px 12px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer; font-size: 11px; border-radius: 3px;" title="Open Species Creation Wizard">Wizard</button>
                     </div>
                 </div>
                 <div class="header-field">
@@ -2507,12 +2506,12 @@
         </div>
     </div>
 
-    <!-- Character Setup Wizard Modal -->
+    <!-- Character Generator Modal -->
     <div id="character-setup-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 700px; max-width: 900px; max-height: 90vh; overflow-y: auto;">
             <!-- Close button -->
             <button onclick="closeSetupWizard()" style="position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; border: 2px solid #8b0000; background: white; color: #8b0000; font-size: 20px; font-weight: bold; cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center; line-height: 1;" title="Close wizard">×</button>
-            <h2 style="color: #3e2f1f; margin-bottom: 20px; text-align: center;">Character Creation Wizard</h2>
+            <h2 style="color: #3e2f1f; margin-bottom: 20px; text-align: center;">Character Generator</h2>
             
             <!-- Warning Section -->
             <div id="setup-warning" style="background: #ffe6e6; border: 2px solid #cc0000; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
@@ -2789,8 +2788,8 @@
         </div>
     </div>
 
-    <!-- Species Creation Wizard Modal -->
-    <div id="species-wizard-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <!-- REMOVED: Species Creation Wizard Modal (redundant with Character Generator) -->
+    <!-- <div id="species-wizard-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 700px; max-width: 900px; max-height: 90vh; overflow-y: auto;">
             <h2 style="color: #3e2f1f; margin-bottom: 20px; text-align: center;">Species Creation Wizard</h2>
             
@@ -2926,10 +2925,9 @@
                 <button id="wizard-cancel-btn" class="control-btn" onclick="closeSpeciesWizard()" style="padding: 10px 20px; background: #8b0000; color: white;">Cancel</button>
             </div>
         </div>
-    </div>
+    </div> -->
 
-    <!-- Class Trappings Wizard -->
-    <div id="class-wizard-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <!-- <div id="class-wizard-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 700px; max-width: 900px; max-height: 80vh; overflow-y: auto; border-radius: 10px;">
             <h2 style="color: #3e2f1f; margin-bottom: 20px; text-align: center;">Class Trappings Wizard</h2>
             
@@ -2972,7 +2970,7 @@
                 <button id="class-wizard-cancel-btn" class="control-btn" onclick="closeClassWizard()" style="padding: 10px 20px; background: #8b0000; color: white;">Cancel</button>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- Control Panel -->
     <div class="control-panel">
@@ -10693,16 +10691,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             
-            // Call original class wizard logic if it exists
-            const classSelect = document.getElementById('class');
-            const selectedValue = classSelect.value;
-            
-            if (selectedValue && classTrappings[selectedValue]) {
-                const currentClass = selectedClass;
-                if (!currentClass || currentClass !== selectedValue) {
-                    openClassWizard(selectedValue);
-                }
-            }
+            // Removed auto-trigger class wizard - now only use Character Generator
         }
 
         // SRD Data Loading
