@@ -1238,6 +1238,7 @@
                     <label>Career</label>
                     <div style="display: flex; gap: 5px; align-items: center;">
                         <span id="career-display" style="flex: 1; padding: 5px; font-family: Georgia, serif; border: 1px solid #8b7355; background: #f8f6f0; color: #3e2f1f; min-height: 20px; display: flex; align-items: center;">—</span>
+                        <button onclick="openCareerAdvancementModal()" style="padding: 6px 10px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer; font-size: 11px; border-radius: 3px; white-space: nowrap;" title="Advance Career or Change Career">Advance</button>
                     </div>
                 </div>
                 <div class="header-field">
@@ -2618,6 +2619,63 @@
                     <button id="setup-wizard-prev-btn" class="control-btn" onclick="previousSetupStep()" style="padding: 10px 20px;" disabled>← Previous</button>
                     <button id="setup-wizard-next-btn" class="control-btn" onclick="nextSetupStep()" style="padding: 10px 20px;">Next →</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Career Advancement Modal -->
+    <div id="career-advancement-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 500px; max-width: 600px; max-height: 80vh; overflow-y: auto;">
+            <h3 style="color: #3e2f1f; margin-bottom: 15px;">Career Advancement</h3>
+            
+            <!-- Current Career Status -->
+            <div style="margin-bottom: 20px; padding: 15px; background: #f8f6f0; border: 1px solid #8b7355; border-radius: 5px;">
+                <h4 style="color: #3e2f1f; margin: 0 0 10px 0;">Current Career</h4>
+                <div id="current-career-info">
+                    <div style="margin-bottom: 5px;"><strong>Career:</strong> <span id="current-career-name">—</span></div>
+                    <div style="margin-bottom: 5px;"><strong>Tier:</strong> <span id="current-career-tier">—</span></div>
+                    <div><strong>Total XP:</strong> <span id="current-total-xp">0</span></div>
+                </div>
+            </div>
+
+            <!-- Advancement Type Selection -->
+            <div style="margin-bottom: 20px;">
+                <h4 style="color: #3e2f1f; margin: 0 0 10px 0;">Advancement Type</h4>
+                <div style="margin-bottom: 10px;">
+                    <label style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <input type="radio" name="advancement-type" value="tier" style="margin-right: 8px;" onchange="updateAdvancementOptions()">
+                        <span>Advance to next career tier</span>
+                    </label>
+                    <label style="display: flex; align-items: center;">
+                        <input type="radio" name="advancement-type" value="change" style="margin-right: 8px;" onchange="updateAdvancementOptions()">
+                        <span>Change to a different career</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- XP Cost Input -->
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">XP Cost:</label>
+                <input type="number" id="advancement-xp-cost" min="0" value="0" style="width: 100%; padding: 8px; border: 1px solid #8b7355; background: #faf8f3;" placeholder="Enter XP cost (0 is acceptable)">
+                <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                    Enter the XP cost for this advancement. 0 is acceptable for free advances.
+                </div>
+            </div>
+
+            <!-- New Career Selection (shown when changing careers) -->
+            <div id="new-career-selection" style="display: none; margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">New Career:</label>
+                <input type="text" id="new-career-name" style="width: 100%; padding: 8px; border: 1px solid #8b7355; background: #faf8f3;" placeholder="Enter new career name">
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display: flex; justify-content: space-between; gap: 10px;">
+                <button onclick="closeCareerAdvancementModal()" style="padding: 10px 20px; background: #8b0000; color: white; border: 1px solid #660000; cursor: pointer; border-radius: 3px;">
+                    Cancel
+                </button>
+                <button onclick="confirmCareerAdvancement()" style="padding: 10px 20px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer; border-radius: 3px;">
+                    Confirm Advancement
+                </button>
             </div>
         </div>
     </div>
@@ -13332,6 +13390,129 @@ function loadSymptomsData() {
 
         */ // End of disabled species wizard functions
         
+        // =============== CAREER ADVANCEMENT FUNCTIONS ===============
+        
+        // Open career advancement modal
+        function openCareerAdvancementModal() {
+            const modal = document.getElementById('career-advancement-modal');
+            
+            // Populate current career information
+            const careerDisplay = document.getElementById('career-display').textContent || '—';
+            const currentTotalXP = parseInt(document.getElementById('current-xp').value || '0');
+            
+            document.getElementById('current-career-name').textContent = careerDisplay;
+            document.getElementById('current-career-tier').textContent = 'Tier I'; // Default tier for now
+            document.getElementById('current-total-xp').textContent = currentTotalXP.toString();
+            
+            // Reset form
+            const advancementRadios = document.querySelectorAll('input[name="advancement-type"]');
+            advancementRadios.forEach(radio => radio.checked = false);
+            document.getElementById('advancement-xp-cost').value = '0';
+            document.getElementById('new-career-name').value = '';
+            document.getElementById('new-career-selection').style.display = 'none';
+            
+            modal.style.display = 'block';
+        }
+        
+        // Close career advancement modal
+        function closeCareerAdvancementModal() {
+            const modal = document.getElementById('career-advancement-modal');
+            modal.style.display = 'none';
+        }
+        
+        // Update advancement options based on selection
+        function updateAdvancementOptions() {
+            const selectedType = document.querySelector('input[name="advancement-type"]:checked');
+            const newCareerSelection = document.getElementById('new-career-selection');
+            
+            if (selectedType && selectedType.value === 'change') {
+                newCareerSelection.style.display = 'block';
+            } else {
+                newCareerSelection.style.display = 'none';
+                document.getElementById('new-career-name').value = '';
+            }
+        }
+        
+        // Confirm career advancement
+        function confirmCareerAdvancement() {
+            const selectedType = document.querySelector('input[name="advancement-type"]:checked');
+            const xpCost = parseInt(document.getElementById('advancement-xp-cost').value || '0');
+            const currentTotalXP = parseInt(document.getElementById('current-xp').value || '0');
+            
+            // Validate selection
+            if (!selectedType) {
+                alert('Please select an advancement type.');
+                return;
+            }
+            
+            // Validate XP cost
+            if (xpCost < 0) {
+                alert('XP cost cannot be negative.');
+                return;
+            }
+            
+            if (xpCost > currentTotalXP) {
+                alert('Insufficient XP. You have ' + currentTotalXP + ' XP but need ' + xpCost + ' XP.');
+                return;
+            }
+            
+            // Handle career change
+            if (selectedType.value === 'change') {
+                const newCareerName = document.getElementById('new-career-name').value.trim();
+                if (!newCareerName) {
+                    alert('Please enter a new career name.');
+                    return;
+                }
+                
+                // Update career display
+                document.getElementById('career-display').textContent = newCareerName;
+                
+                // Log the career change
+                if (typeof logXPEntry === 'function') {
+                    logXPEntry(
+                        'spent',
+                        xpCost,
+                        `Changed career to ${newCareerName}`,
+                        'Career Change'
+                    );
+                }
+            } else if (selectedType.value === 'tier') {
+                // Handle tier advancement
+                const currentCareer = document.getElementById('career-display').textContent;
+                
+                // Log the tier advancement
+                if (typeof logXPEntry === 'function') {
+                    logXPEntry(
+                        'spent',
+                        xpCost,
+                        `Advanced to next tier in ${currentCareer}`,
+                        'Career Advancement'
+                    );
+                }
+            }
+            
+            // Subtract XP cost from total
+            if (xpCost > 0) {
+                const newTotalXP = currentTotalXP - xpCost;
+                document.getElementById('current-xp').value = newTotalXP.toString();
+                
+                // Update XP displays if they exist
+                const totalXPDisplay = document.getElementById('total-xp-display');
+                if (totalXPDisplay) {
+                    totalXPDisplay.textContent = newTotalXP.toString();
+                }
+            }
+            
+            // Close modal and show success message
+            closeCareerAdvancementModal();
+            alert('Career advancement completed successfully!');
+            
+            // Save character data
+            if (typeof saveCharacterData === 'function') {
+                saveCharacterData();
+            }
+        }
+
         // =============== ESSENTIAL HELPER FUNCTIONS ===============
         // These functions are needed by the Character Generator
         // Note: addSkillDirectly function is already defined above and working properly
