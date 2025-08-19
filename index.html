@@ -10046,6 +10046,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Populate career dropdown based on current class selection
                     updateCareerDropdown();
                     
+                    // Populate career reference dropdown with all careers
+                    populateCareerReferenceDropdown();
+                    
                     // Restore career selection if saved
                     restoreCareerSelection();
                 })
@@ -10078,6 +10081,41 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 careerSelect.disabled = true;
             }
+        }
+
+        // Populate career reference dropdown with all careers (for informational purposes)
+        function populateCareerReferenceDropdown() {
+            const careerSelect = document.getElementById('career-select');
+            if (!careerSelect || !careersData) return;
+            
+            // Clear existing options
+            careerSelect.innerHTML = '<option value="">Choose a career to view details...</option>';
+            
+            // Group careers by class for better organization
+            const careersByClass = {};
+            careersData.careers.forEach(career => {
+                const className = career.class.charAt(0).toUpperCase() + career.class.slice(1);
+                if (!careersByClass[className]) {
+                    careersByClass[className] = [];
+                }
+                careersByClass[className].push(career);
+            });
+            
+            // Add careers organized by class
+            Object.keys(careersByClass).sort().forEach(className => {
+                // Add class header
+                const classHeader = document.createElement('optgroup');
+                classHeader.label = className + ' Careers';
+                careerSelect.appendChild(classHeader);
+                
+                // Add careers in this class
+                careersByClass[className].sort((a, b) => a.name.localeCompare(b.name)).forEach(career => {
+                    const option = document.createElement('option');
+                    option.value = career.name;
+                    option.textContent = career.name;
+                    classHeader.appendChild(option);
+                });
+            });
         }
         
         // Handle career selection - show reference
@@ -12777,7 +12815,7 @@ function loadSymptomsData() {
         }
 
         // Helper function to directly add a skill to the character
-        function addSkillDirectly(skillName, advances = 0) {
+        window.addSkillDirectly = function(skillName, advances = 0) {
             // Parse skill name and specialization
             let baseName, specialization = '';
             const match = skillName.match(/^(.+?)\s*\((.+)\)$/);
@@ -12840,7 +12878,7 @@ function loadSymptomsData() {
         }
 
         // Helper function to directly add a talent to the character
-        function addTalentDirectly(talentName) {
+        window.addTalentDirectly = function(talentName) {
             // Parse talent name and customization
             let baseName, customisation = '';
             const match = talentName.match(/^(.+?)\s*\((.+)\)$/);
@@ -13129,7 +13167,7 @@ function loadSymptomsData() {
         // Note: addSkillDirectly function is already defined above and working properly
 
         // Helper function to directly add a talent to the character
-        function addTalentDirectly(talentName) {
+        window.addTalentDirectly = function(talentName) {
             // Parse talent name and customization
             let baseName, customisation = '';
             const match = talentName.match(/^(.+?)\s*\((.+)\)$/);
@@ -14552,9 +14590,18 @@ function loadSymptomsData() {
                 return;
             }
             
-            // Determine career status tier and standing
-            const statusTier = career.status || 'Brass'; // Default to Brass if not specified
-            const statusStanding = tier1.standing || '1'; // Default to 1 if not specified
+            // Determine career status tier and standing from JSON data
+            let statusTier = 'Brass';
+            let statusStanding = '1';
+            
+            if (tier1.status) {
+                // Parse status string like "Brass 1", "Silver 2", etc.
+                const statusMatch = tier1.status.match(/^(Brass|Silver|Gold)\s*(\d+)?$/i);
+                if (statusMatch) {
+                    statusTier = statusMatch[1];
+                    statusStanding = statusMatch[2] || '1';
+                }
+            }
             
             // Initialize career allocation data
             if (!setupWizardData.careerAllocation) {
@@ -15003,8 +15050,8 @@ function loadSymptomsData() {
                     }
                     
                     // Use the proven addSkillDirectly function from species wizard
-                    if (typeof addSkillDirectly === 'function') {
-                        addSkillDirectly(skillName, skillData.advances);
+                    if (typeof window.addSkillDirectly === 'function') {
+                        window.addSkillDirectly(skillName, skillData.advances);
                         console.log(`Added ${skillData.advances} advances to ${skillName} using addSkillDirectly`);
                     } else {
                         console.error('addSkillDirectly function not available');
@@ -15050,8 +15097,8 @@ function loadSymptomsData() {
                 
                 // Add talents to character sheet using proven addTalentDirectly function
                 allSelectedTalents.forEach(talentName => {
-                    if (typeof addTalentDirectly === 'function') {
-                        addTalentDirectly(talentName);
+                    if (typeof window.addTalentDirectly === 'function') {
+                        window.addTalentDirectly(talentName);
                         console.log(`Added talent: ${talentName} using addTalentDirectly`);
                     } else {
                         console.error('addTalentDirectly function not available');
@@ -15068,8 +15115,8 @@ function loadSymptomsData() {
                     Object.keys(setupWizardData.careerAllocation.skills).forEach(skillName => {
                         const advances = setupWizardData.careerAllocation.skills[skillName];
                         if (advances > 0) {
-                            if (typeof addSkillDirectly === 'function') {
-                                addSkillDirectly(skillName, advances);
+                            if (typeof window.addSkillDirectly === 'function') {
+                                window.addSkillDirectly(skillName, advances);
                                 console.log(`Added ${advances} career advances to ${skillName} using addSkillDirectly`);
                             } else {
                                 console.error('addSkillDirectly function not available for career skills');
@@ -15086,8 +15133,8 @@ function loadSymptomsData() {
                 // Apply selected career talent
                 if (setupWizardData.careerAllocation.selectedTalent) {
                     const talentName = setupWizardData.careerAllocation.selectedTalent;
-                    if (typeof addTalentDirectly === 'function') {
-                        addTalentDirectly(talentName);
+                    if (typeof window.addTalentDirectly === 'function') {
+                        window.addTalentDirectly(talentName);
                         console.log(`Added career talent: ${talentName} using addTalentDirectly`);
                     } else {
                         console.error('addTalentDirectly function not available for career talents');
