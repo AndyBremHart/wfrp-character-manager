@@ -6272,9 +6272,9 @@
                     const button = costDisplay.parentElement.querySelector('button');
                     if (button) {
                         const canAfford = window.canAffordAdvance(cost);
-                        const maxAdvances = (skillData.advances || 0) >= 5;
+                        // Remove hard limit on skill advances - skills can be advanced beyond 5
                         
-                        if (canAfford && !maxAdvances) {
+                        if (canAfford) {
                             button.style.opacity = '1';
                             button.disabled = false;
                         } else {
@@ -7425,18 +7425,17 @@ window.displayTalents = function() {
             // Determine color based on limit status
             if (currentCount > currentLimit) {
                 limitColor = "color: #c41e3a; font-weight: bold;"; // Red - over limit
+                canTakeMore = false; // Can't take more when over limit
             } else if (currentCount >= currentLimit) {
                 limitColor = "color: #ff8c00; font-weight: bold;"; // Orange - at limit
                 canTakeMore = false; // Can't take more when at limit
             } else {
                 limitColor = "color: #0a7c0a;"; // Green - can take more
+                canTakeMore = true; // Can take more when under limit
             }
             
             // For limited talents, show Times Taken as currentCount/currentLimit
             timesDisplay = `<span style="${limitColor}">${currentCount}/${currentLimit}</span>`;
-            
-            // Override talent max display for limited talents
-            canTakeMore = canTakeMore && (currentCount < currentLimit);
         } else {
             // For non-limited talents, show the regular times taken display
             timesDisplay = talent.max === "1" ? "1" : `${currentTimes}/${talent.max}`;
@@ -14096,11 +14095,22 @@ function loadSymptomsData() {
                         const inputName = choice.count === 1 ? `setup-talent-group-${choiceIndex}` : '';
                         const nameAttribute = inputType === 'radio' ? `name="${inputName}"` : '';
                         
+                        // Check if this is an (any) talent that needs customization
+                        const needsCustomization = talent.includes('(any)') || talent.includes('(Any)');
+                        const cleanTalentId = talent.replace(/[()]/g, '').replace(/\s+/g, '-').toLowerCase();
+                        
                         talentsHTML += `
                             <div>
                                 <input type="${inputType}" id="setup-talent-${choiceIndex}-${talent}" value="${talent}" 
                                        ${nameAttribute} onchange="updateSetupTalentSelection(${choiceIndex}, ${choice.count}, this)">
                                 <label for="setup-talent-${choiceIndex}-${talent}">${talent}</label>
+                                ${needsCustomization ? `
+                                    <div id="setup-talent-custom-${choiceIndex}-${cleanTalentId}" style="display: none; margin-top: 5px;">
+                                        <input type="text" placeholder="Enter type (e.g., Hearing, Sight)" 
+                                               style="width: 150px; padding: 3px; font-size: 11px; border: 1px solid #8b7355;"
+                                               onchange="updateSetupTalentCustomization('${talent}', this.value)">
+                                    </div>
+                                ` : ''}
                             </div>
                         `;
                     });
@@ -14130,10 +14140,19 @@ function loadSymptomsData() {
             const currentSelections = setupWizardData.talents.choices[choiceIndex];
             const remainingSpan = document.getElementById(`setup-talent-remaining-${choiceIndex}`);
 
+            // Check if this talent needs customization
+            const needsCustomization = input.value.includes('(any)') || input.value.includes('(Any)');
+            const cleanTalentId = input.value.replace(/[()]/g, '').replace(/\s+/g, '-').toLowerCase();
+            const customDiv = document.getElementById(`setup-talent-custom-${choiceIndex}-${cleanTalentId}`);
+
             if (input.type === 'radio') {
                 // For radio buttons, clear existing selection and set new one
                 if (input.checked) {
                     setupWizardData.talents.choices[choiceIndex] = [input.value];
+                    // Show customization div if needed
+                    if (needsCustomization && customDiv) {
+                        customDiv.style.display = 'block';
+                    }
                 }
             } else {
                 // For checkboxes, handle multiple selections
@@ -14144,10 +14163,19 @@ function loadSymptomsData() {
                         return;
                     }
                     currentSelections.push(input.value);
+                    // Show customization div if needed
+                    if (needsCustomization && customDiv) {
+                        customDiv.style.display = 'block';
+                    }
                 } else {
                     const index = currentSelections.indexOf(input.value);
                     if (index > -1) {
                         currentSelections.splice(index, 1);
+                    }
+                    // Hide customization div
+                    if (needsCustomization && customDiv) {
+                        customDiv.style.display = 'none';
+                        customDiv.querySelector('input').value = '';
                     }
                 }
             }
@@ -14156,6 +14184,14 @@ function loadSymptomsData() {
             const newCount = setupWizardData.talents.choices[choiceIndex] ? 
                 setupWizardData.talents.choices[choiceIndex].length : 0;
             remainingSpan.textContent = maxCount - newCount;
+        }
+        
+        // Update talent customization for setup wizard
+        function updateSetupTalentCustomization(talentName, customization) {
+            if (!setupWizardData.talentSpecializations) {
+                setupWizardData.talentSpecializations = {};
+            }
+            setupWizardData.talentSpecializations[talentName] = customization;
         }
         
         function initializeSetupClass() {
@@ -14962,8 +14998,8 @@ function loadSymptomsData() {
                 }
                 
                 // Separate equipment by type
-                const weapons = [];
-                const armor = [];
+                const weaponItems = [];
+                const armorItems = [];
                 const generalEquipment = [];
                 
                 // Define weapon and armor keywords
@@ -14976,18 +15012,18 @@ function loadSymptomsData() {
                     let isArmor = armorKeywords.some(keyword => itemLower.includes(keyword));
                     
                     if (isWeapon) {
-                        weapons.push(item);
+                        weaponItems.push(item);
                     } else if (isArmor) {
-                        armor.push(item);
+                        armorItems.push(item);
                     } else {
                         generalEquipment.push(item);
                     }
                 });
                 
-                // Add weapons to weapons array
-                if (weapons.length > 0 && typeof window.weapons !== 'undefined') {
-                    weapons.forEach(weaponName => {
-                        window.weapons.push({
+                // Add weapons to weapons array (using locally scoped variable names to avoid conflicts)
+                if (weaponItems.length > 0) {
+                    weaponItems.forEach(weaponName => {
+                        weapons.push({
                             name: weaponName,
                             group: 'Basic',
                             encumbrance: 1,
@@ -15005,9 +15041,9 @@ function loadSymptomsData() {
                 }
                 
                 // Add armor to armour array
-                if (armor.length > 0 && typeof window.armour !== 'undefined') {
-                    armor.forEach(armorName => {
-                        window.armour.push({
+                if (armorItems.length > 0) {
+                    armorItems.forEach(armorName => {
+                        armour.push({
                             name: armorName,
                             locations: ['Body'],
                             encumbrance: 1,
@@ -15024,9 +15060,9 @@ function loadSymptomsData() {
                 }
                 
                 // Add general equipment to trappings array
-                if (generalEquipment.length > 0 && typeof window.trappings !== 'undefined') {
+                if (generalEquipment.length > 0) {
                     generalEquipment.forEach(itemName => {
-                        window.trappings.push({
+                        trappings.push({
                             name: itemName,
                             quantity: 1,
                             encumbrance: 0.5,
@@ -15039,7 +15075,7 @@ function loadSymptomsData() {
                     }
                 }
                 
-                console.log('Equipment applied:', { weapons, armor, generalEquipment });
+                console.log('Equipment applied:', { weaponItems, armorItems, generalEquipment });
             }
             
             // Set career and tier
