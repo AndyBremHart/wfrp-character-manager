@@ -13204,6 +13204,131 @@ function loadSymptomsData() {
 
         */ // End of disabled species wizard functions
         
+        // =============== ESSENTIAL HELPER FUNCTIONS ===============
+        // These functions are needed by the Character Generator
+        
+        // Helper function to directly add a skill to the character
+        function addSkillDirectly(skillName, advances = 0) {
+            // Parse skill name and specialization
+            let baseName, specialization = '';
+            const match = skillName.match(/^(.+?)\s*\((.+)\)$/);
+            
+            if (match) {
+                baseName = match[1].trim();
+                const customPart = match[2].trim();
+                
+                // Handle specific customizations
+                if (customPart.toLowerCase().includes('any one') || customPart.toLowerCase().includes('choose one')) {
+                    // For "any one" talents, use a default or prompt for specification
+                    if (baseName === 'Acute Sense') {
+                        customisation = 'Sight'; // Default to sight for character creation
+                    } else if (baseName === 'Craftsman') {
+                        customisation = 'Metalworking'; // Default craft
+                    } else if (baseName === 'Resistance') {
+                        customisation = 'Disease'; // Default resistance
+                    } else {
+                        customisation = customPart; // Use as-is if not recognized
+                    }
+                    specialization = customisation;
+                } else {
+                    specialization = customPart;
+                }
+            } else {
+                baseName = skillName.trim();
+            }
+
+            // Find the skill in the character's skills
+            const skillKey = baseName.toLowerCase().replace(/\s+/g, '_');
+            let found = false;
+            
+            // Check if skill already exists
+            if (characterSkills[skillKey] || characterSkills[skillName]) {
+                const existingKey = characterSkills[skillKey] ? skillKey : skillName;
+                characterSkills[existingKey].advances = (characterSkills[existingKey].advances || 0) + advances;
+                found = true;
+            } else {
+                // Check for skill with specialization
+                const skillWithSpec = specialization ? `${baseName} (${specialization})` : baseName;
+                const specKey = skillWithSpec.toLowerCase().replace(/\s+/g, '_').replace(/[()]/g, '');
+                
+                if (characterSkills[specKey]) {
+                    characterSkills[specKey].advances = (characterSkills[specKey].advances || 0) + advances;
+                    found = true;
+                } else {
+                    // Add as new skill
+                    const newKey = specialization ? specKey : skillKey;
+                    characterSkills[newKey] = {
+                        career: false,
+                        advances: advances,
+                        notes: specialization ? `Specialization: ${specialization}` : ''
+                    };
+                    found = true;
+                }
+            }
+            
+            // Refresh the skills display
+            displaySkills();
+        }
+
+        // Helper function to directly add a talent to the character
+        function addTalentDirectly(talentName) {
+            // Parse talent name and customization
+            let baseName, customisation = '';
+            const match = talentName.match(/^(.+?)\s*\((.+)\)$/);
+            
+            if (match) {
+                baseName = match[1].trim();
+                const customPart = match[2].trim();
+                
+                // Handle specific customizations
+                if (customPart.toLowerCase().includes('any one') || customPart.toLowerCase().includes('choose one')) {
+                    // For "any one" talents, use a default or prompt for specification
+                    if (baseName === 'Acute Sense') {
+                        customisation = 'Sight'; // Default to sight for character creation
+                    } else if (baseName === 'Craftsman') {
+                        customisation = 'Metalworking'; // Default craft
+                    } else if (baseName === 'Resistance') {
+                        customisation = 'Disease'; // Default resistance
+                    } else {
+                        customisation = customPart; // Use as-is if not recognized
+                    }
+                } else {
+                    customisation = customPart;
+                }
+            } else {
+                baseName = talentName.trim();
+            }
+
+            // Create the talent object
+            const talentToAdd = {
+                name: baseName,
+                displayName: customisation ? `${baseName} (${customisation})` : baseName,
+                timesTaken: 1,
+                notes: '',
+                description: '', // Will be filled from SRD data if available
+                max: "1" // Default, will be updated from SRD data if available
+            };
+
+            // Try to find talent info from SRD data
+            if (typeof srdTalents !== 'undefined' && srdTalents.length > 0) {
+                const srdTalent = srdTalents.find(t => 
+                    t.name.toLowerCase() === baseName.toLowerCase() || 
+                    t.name.toLowerCase().includes(baseName.toLowerCase())
+                );
+                
+                if (srdTalent) {
+                    talentToAdd.description = srdTalent.description || srdTalent.tests || '';
+                    talentToAdd.max = srdTalent.max || "1";
+                }
+            }
+
+            // Add to talents array
+            talents.push(talentToAdd);
+            
+            // Refresh the talents display
+            displayTalents();
+        }
+        
         // =============== CHARACTER SETUP WIZARD FUNCTIONS ===============
         
         let setupCurrentStep = 0;
