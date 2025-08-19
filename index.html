@@ -6638,7 +6638,8 @@
 
         window.calculateSkillTotal = function(skill, skillKey) {
             const skillData = characterSkills[skillKey] || { advances: 0 };
-            const charValue = parseInt(document.getElementById(`${skill.characteristic.toLowerCase()}-current`).value) || 0;
+            const charElement = document.getElementById(`${skill.characteristic.toLowerCase()}-current`);
+            const charValue = charElement ? parseInt(charElement.value) || 0 : 0;
             const advances = skillData.advances || 0;
             let baseTotal = charValue + advances;
             
@@ -13204,6 +13205,7 @@ function loadSymptomsData() {
             
             // Start with first step
             setupCurrentStep = 0;
+            initializeSetupStep(0);
             updateSetupWizardDisplay();
         }
         
@@ -13242,6 +13244,13 @@ function loadSymptomsData() {
             window.updateXPDisplay();
             
             console.log('Character data cleared for setup wizard');
+        }
+        
+        // Show specific setup step
+        function showSetupStep(stepIndex) {
+            setupCurrentStep = stepIndex;
+            updateSetupWizardDisplay();
+            initializeSetupStep(stepIndex);
         }
         
         // Update the wizard display - following species wizard pattern
