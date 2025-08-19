@@ -1508,12 +1508,12 @@
                     <table class="skills-table" id="weapons-table">
                         <thead>
                             <tr>
-                                <th style="width: 25%;">Weapon</th>
+                                <th style="width: 22%;">Weapon</th>
                                 <th style="width: 10%;">Group</th>
                                 <th style="width: 8%;">Enc</th>
                                 <th style="width: 10%;">Range</th>
                                 <th style="width: 12%;">Damage</th>
-                                <th style="width: 25%;">Qualities</th>
+                                <th style="width: 28%;">Qualities & Flaws</th>
                                 <th style="width: 8%;">Equipped</th>
                                 <th style="width: 2%;">Del</th>
                             </tr>
@@ -1532,14 +1532,14 @@
                     <table class="skills-table" id="armour-table">
                         <thead>
                             <tr>
-                                <th style="width: 25%;">Armour</th>
+                                <th style="width: 22%;">Armour</th>
                                 <th style="width: 10%;">Type</th>
                                 <th style="width: 8%;">Enc</th>
                                 <th style="width: 8%;">Head</th>
                                 <th style="width: 8%;">Arms</th>
                                 <th style="width: 8%;">Body</th>
                                 <th style="width: 8%;">Legs</th>
-                                <th style="width: 15%;">Qualities</th>
+                                <th style="width: 18%;">Qualities & Flaws</th>
                                 <th style="width: 8%;">Worn</th>
                                 <th style="width: 2%;">Del</th>
                             </tr>
@@ -1662,10 +1662,11 @@
                     <table class="skills-table" id="consumables-table">
                         <thead>
                             <tr>
-                                <th style="width: 30%;">Item</th>
+                                <th style="width: 20%;">Item</th>
                                 <th style="width: 15%;">Current</th>
-                                <th style="width: 15%;">Maximum</th>
-                                <th style="width: 38%;">Notes</th>
+                                <th style="width: 10%;">Maximum</th>
+                                <th style="width: 25%;">Qualities & Flaws</th>
+                                <th style="width: 28%;">Notes</th>
                                 <th style="width: 2%;">Del</th>
                             </tr>
                         </thead>
@@ -9989,13 +9990,15 @@ function loadSymptomsData() {
             
             let weapon;
             if (selectedName === 'custom') {
+                const customQualities = document.getElementById('custom-qualities').value;
                 weapon = {
                     name: document.getElementById('custom-name').value,
                     group: document.getElementById('custom-group').value,
                     encumbrance: parseInt(document.getElementById('custom-enc').value) || 0,
                     range: document.getElementById('custom-range').value,
                     damage: document.getElementById('custom-damage').value,
-                    qualities: document.getElementById('custom-qualities').value,
+                    qualities: customQualities.split(',').map(q => q.trim()).filter(q => q),
+                    flaws: [],  // Custom weapons don't have separate flaws
                     equipped: false
                 };
                 
@@ -10011,7 +10014,8 @@ function loadSymptomsData() {
                     encumbrance: srdWeapon.encumbrance,
                     range: srdWeapon.reach,
                     damage: srdWeapon.damage,
-                    qualities: [...(srdWeapon.qualities || []), ...(srdWeapon.flaws || [])].join(', '),
+                    qualities: srdWeapon.qualities || [],
+                    flaws: srdWeapon.flaws || [],
                     equipped: false
                 };
             }
@@ -10029,6 +10033,26 @@ function loadSymptomsData() {
             tbody.innerHTML = '';
             
             weapons.forEach((weapon, index) => {
+                // Combine qualities and flaws into a single string
+                let qualitiesAndFlaws = [];
+                
+                // Handle qualities - could be array or string
+                if (weapon.qualities) {
+                    if (Array.isArray(weapon.qualities)) {
+                        qualitiesAndFlaws = qualitiesAndFlaws.concat(weapon.qualities);
+                    } else if (typeof weapon.qualities === 'string' && weapon.qualities.trim()) {
+                        // If it's a string, split by comma and trim
+                        qualitiesAndFlaws = qualitiesAndFlaws.concat(weapon.qualities.split(',').map(q => q.trim()).filter(q => q));
+                    }
+                }
+                
+                // Handle flaws if they exist as separate property
+                if (weapon.flaws && Array.isArray(weapon.flaws)) {
+                    qualitiesAndFlaws = qualitiesAndFlaws.concat(weapon.flaws);
+                }
+                
+                const qualitiesText = qualitiesAndFlaws.length > 0 ? qualitiesAndFlaws.join(', ') : '-';
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td class="skill-name-cell">${weapon.name}</td>
@@ -10036,7 +10060,7 @@ function loadSymptomsData() {
                     <td>${weapon.encumbrance}</td>
                     <td>${weapon.range}</td>
                     <td>${weapon.damage}</td>
-                    <td style="font-size: 11px;">${weapon.qualities}</td>
+                    <td style="font-size: 11px;">${qualitiesText}</td>
                     <td><input type="checkbox" ${weapon.equipped ? 'checked' : ''} onchange="window.toggleWeaponEquipped(${index})"></td>
                     <td>
                         <button class="advance-btn" onclick="window.editWeapon(${index})" style="background: #8b7355; color: white; margin-right: 2px;">✎</button>
@@ -10092,8 +10116,8 @@ function loadSymptomsData() {
                     <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Damage:</label>
                     <input type="text" id="edit-weapon-damage" value="${weapon.damage}" style="width: 100%; margin-bottom: 10px; padding: 5px;">
                     
-                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Qualities:</label>
-                    <input type="text" id="edit-weapon-qualities" value="${weapon.qualities}" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Qualities & Flaws (comma-separated):</label>
+                    <input type="text" id="edit-weapon-qualities" value="${Array.isArray(weapon.qualities) ? [...(weapon.qualities || []), ...(weapon.flaws || [])].join(', ') : weapon.qualities}" style="width: 100%; margin-bottom: 10px; padding: 5px;">
                 </div>
                 <div style="text-align: center; margin-top: 15px;">
                     <button onclick="window.confirmEditWeapon(${index})" style="margin-right: 10px; padding: 8px 16px; background: #3e2f1f; color: #faf8f3; border: none; cursor: pointer;">Save Changes</button>
@@ -10113,6 +10137,9 @@ function loadSymptomsData() {
         }
 
         window.confirmEditWeapon = function(index) {
+            const qualitiesInput = document.getElementById('edit-weapon-qualities').value;
+            const allQualities = qualitiesInput.split(',').map(q => q.trim()).filter(q => q);
+            
             // Update weapon with new values
             weapons[index] = {
                 ...weapons[index],
@@ -10121,7 +10148,8 @@ function loadSymptomsData() {
                 encumbrance: parseFloat(document.getElementById('edit-weapon-enc').value) || 0,
                 range: document.getElementById('edit-weapon-range').value,
                 damage: document.getElementById('edit-weapon-damage').value,
-                qualities: document.getElementById('edit-weapon-qualities').value
+                qualities: allQualities,  // Store as array for consistency
+                flaws: []  // Flaws are now part of qualities array
             };
             
             displayWeapons();
@@ -10215,6 +10243,7 @@ function loadSymptomsData() {
             
             let armourPiece;
             if (selectedName === 'custom') {
+                const customQualities = document.getElementById('custom-qualities').value || '';
                 armourPiece = {
                     name: document.getElementById('custom-name').value,
                     type: document.getElementById('custom-type').value,
@@ -10223,7 +10252,8 @@ function loadSymptomsData() {
                     arms: parseInt(document.getElementById('custom-arms').value) || 0,
                     body: parseInt(document.getElementById('custom-body').value) || 0,
                     legs: parseInt(document.getElementById('custom-legs').value) || 0,
-                    qualities: document.getElementById('custom-qualities').value || '',
+                    qualities: customQualities.split(',').map(q => q.trim()).filter(q => q),
+                    flaws: [],
                     worn: false
                 };
                 
@@ -10241,7 +10271,8 @@ function loadSymptomsData() {
                     arms: srdArmourPiece.locations.includes('Arms') ? srdArmourPiece.ap : 0,
                     body: srdArmourPiece.locations.includes('Body') ? srdArmourPiece.ap : 0,
                     legs: srdArmourPiece.locations.includes('Legs') ? srdArmourPiece.ap : 0,
-                    qualities: '',
+                    qualities: srdArmourPiece.qualities || [],
+                    flaws: srdArmourPiece.flaws || [],
                     worn: false
                 };
             }
@@ -10260,6 +10291,25 @@ function loadSymptomsData() {
             tbody.innerHTML = '';
             
             armour.forEach((piece, index) => {
+                // Combine qualities and flaws into a single string
+                let qualitiesAndFlaws = [];
+                
+                // Handle qualities - could be array or string
+                if (piece.qualities) {
+                    if (Array.isArray(piece.qualities)) {
+                        qualitiesAndFlaws = qualitiesAndFlaws.concat(piece.qualities);
+                    } else if (typeof piece.qualities === 'string' && piece.qualities.trim()) {
+                        qualitiesAndFlaws = qualitiesAndFlaws.concat(piece.qualities.split(',').map(q => q.trim()).filter(q => q));
+                    }
+                }
+                
+                // Handle flaws if they exist
+                if (piece.flaws && Array.isArray(piece.flaws)) {
+                    qualitiesAndFlaws = qualitiesAndFlaws.concat(piece.flaws);
+                }
+                
+                const qualitiesText = qualitiesAndFlaws.length > 0 ? qualitiesAndFlaws.join(', ') : '-';
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td class="skill-name-cell">${piece.name}</td>
@@ -10269,7 +10319,7 @@ function loadSymptomsData() {
                     <td>${piece.arms || '-'}</td>
                     <td>${piece.body || '-'}</td>
                     <td>${piece.legs || '-'}</td>
-                    <td style="font-size: 11px;">${piece.qualities}</td>
+                    <td style="font-size: 11px;">${qualitiesText}</td>
                     <td><input type="checkbox" ${piece.worn ? 'checked' : ''} onchange="window.toggleArmourWorn(${index})"></td>
                     <td>
                         <button class="advance-btn" onclick="window.editArmour(${index})" style="background: #8b7355; color: white; margin-right: 2px;">✎</button>
@@ -10337,8 +10387,8 @@ function loadSymptomsData() {
                         </div>
                     </div>
                     
-                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Qualities:</label>
-                    <input type="text" id="edit-armour-qualities" value="${piece.qualities}" style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Qualities & Flaws (comma-separated):</label>
+                    <input type="text" id="edit-armour-qualities" value="${Array.isArray(piece.qualities) ? [...(piece.qualities || []), ...(piece.flaws || [])].join(', ') : piece.qualities || ''}" style="width: 100%; margin-bottom: 10px; padding: 5px;">
                 </div>
                 <div style="text-align: center; margin-top: 15px;">
                     <button onclick="window.confirmEditArmour(${index})" style="margin-right: 10px; padding: 8px 16px; background: #3e2f1f; color: #faf8f3; border: none; cursor: pointer;">Save Changes</button>
@@ -10351,6 +10401,9 @@ function loadSymptomsData() {
         }
 
         window.confirmEditArmour = function(index) {
+            const qualitiesInput = document.getElementById('edit-armour-qualities').value;
+            const allQualities = qualitiesInput.split(',').map(q => q.trim()).filter(q => q);
+            
             // Update armour with new values
             armour[index] = {
                 ...armour[index],
@@ -10361,7 +10414,8 @@ function loadSymptomsData() {
                 arms: parseInt(document.getElementById('edit-armour-arms').value) || 0,
                 body: parseInt(document.getElementById('edit-armour-body').value) || 0,
                 legs: parseInt(document.getElementById('edit-armour-legs').value) || 0,
-                qualities: document.getElementById('edit-armour-qualities').value
+                qualities: allQualities,  // Store as array
+                flaws: []  // Flaws are now part of qualities array
             };
             
             displayArmour();
@@ -10689,6 +10743,8 @@ function loadSymptomsData() {
                     name: document.getElementById('custom-name').value,
                     current: current,
                     maximum: maximum,
+                    qualities: [],
+                    flaws: [],
                     notes: document.getElementById('custom-notes').value || ''
                 };
                 
@@ -10703,6 +10759,8 @@ function loadSymptomsData() {
                         name: item.name,
                         current: current,
                         maximum: maximum,
+                        qualities: item.qualities || [],
+                        flaws: item.flaws || [],
                         notes: item.notes || ''
                     };
                 } else {
@@ -10711,6 +10769,8 @@ function loadSymptomsData() {
                         name: selectedName,
                         current: current,
                         maximum: maximum,
+                        qualities: [],
+                        flaws: [],
                         notes: ''
                     };
                 }
@@ -10736,18 +10796,38 @@ function loadSymptomsData() {
             tbody.innerHTML = '';
             
             consumables.forEach((item, index) => {
+                // Combine qualities and flaws into a single string
+                let qualitiesAndFlaws = [];
+                
+                // Handle qualities - could be array or string
+                if (item.qualities) {
+                    if (Array.isArray(item.qualities)) {
+                        qualitiesAndFlaws = qualitiesAndFlaws.concat(item.qualities);
+                    } else if (typeof item.qualities === 'string' && item.qualities.trim()) {
+                        qualitiesAndFlaws = qualitiesAndFlaws.concat(item.qualities.split(',').map(q => q.trim()).filter(q => q));
+                    }
+                }
+                
+                // Handle flaws if they exist
+                if (item.flaws && Array.isArray(item.flaws)) {
+                    qualitiesAndFlaws = qualitiesAndFlaws.concat(item.flaws);
+                }
+                
+                const qualitiesText = qualitiesAndFlaws.length > 0 ? qualitiesAndFlaws.join(', ') : '-';
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td class="skill-name-cell">${item.name}</td>
                     <td>
                         <div style="display: flex; gap: 5px; align-items: center;">
                             <button onclick="window.adjustConsumable(${index}, -1)" style="width: 25px; height: 22px; cursor: pointer;">-</button>
-                            <input type="number" value="${item.current}" min="0" max="${item.maximum}" onchange="window.setConsumableCurrent(${index}, this.value)" style="width: 50px; text-align: center;">
+                            <input type="number" value="${item.current}" min="0" max="${item.maximum}" onchange="window.setConsumableCurrent(${index}, this.value)" style="width: 40px; text-align: center;">
                             <button onclick="window.adjustConsumable(${index}, 1)" style="width: 25px; height: 22px; cursor: pointer;">+</button>
                         </div>
                     </td>
-                    <td><input type="number" value="${item.maximum}" min="0" onchange="window.setConsumableMax(${index}, this.value)" style="width: 60px;"></td>
-                    <td><input type="text" value="${item.notes}" onchange="window.updateConsumableNotes(${index}, this.value)" style="width: 100%; border: none; font-size: 11px;"></td>
+                    <td><input type="number" value="${item.maximum}" min="0" onchange="window.setConsumableMax(${index}, this.value)" style="width: 50px;"></td>
+                    <td style="font-size: 11px;">${qualitiesText}</td>
+                    <td><input type="text" value="${item.notes || ''}" onchange="window.updateConsumableNotes(${index}, this.value)" style="width: 100%; border: none; font-size: 11px;"></td>
                     <td>
                         <button class="advance-btn" onclick="window.editConsumable(${index})" style="background: #8b7355; color: white; margin-right: 2px;">✎</button>
                         <button class="advance-btn" onclick="window.removeConsumable(${index})" style="background: #d44; color: white;">×</button>
