@@ -15109,12 +15109,12 @@ function loadSymptomsData() {
                 if (career) {
                     console.log('Career name:', career.name);
                     console.log('Career has characteristicAdvances:', career.characteristicAdvances ? 'yes' : 'no');
-                    currentCareer = career;
-                    console.log('About to call updateCharacteristicLimits with currentTier:', currentTier);
-                    updateCharacteristicLimits();
-                    updateTierDisplay();
-                    highlightCareerSkills();
-                    highlightCareerTalents();
+                    
+                    // Use the same method as the dropdown system - set previewCareer and call confirmCareerSelection
+                    previewCareer = career;
+                    document.getElementById('tier-select').value = '1';
+                    console.log('About to call confirmCareerSelection() like the dropdown system');
+                    confirmCareerSelection();
                 } else {
                     console.log('Career not found in careersData. Available careers:', careersData?.careers?.map(c => c.name));
                 }
