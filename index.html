@@ -9968,10 +9968,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     careersData = data;
                     console.log('Loaded', data.careers.length, 'careers');
                     
+                    // Map careers.json class names to dropdown class names
+                    const classNameMapping = {
+                        'academics': 'Academic',
+                        'burghers': 'Burgher',
+                        'courtiers': 'Courtier',
+                        'peasants': 'Peasant',
+                        'rangers': 'Ranger',
+                        'riverfolk': 'Riverfolk',
+                        'rogues': 'Rogue',
+                        'warriors': 'Warrior'
+                    };
+                    
                     // Organize careers by class for dropdown filtering
                     careersByClass = {};
                     data.careers.forEach(career => {
-                        const className = career.class.charAt(0).toUpperCase() + career.class.slice(1);
+                        const className = classNameMapping[career.class] || career.class.charAt(0).toUpperCase() + career.class.slice(1);
                         if (!careersByClass[className]) {
                             careersByClass[className] = [];
                         }
