@@ -2510,6 +2510,8 @@
     <!-- Character Setup Wizard Modal -->
     <div id="character-setup-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 700px; max-width: 900px; max-height: 90vh; overflow-y: auto;">
+            <!-- Close button -->
+            <button onclick="closeSetupWizard()" style="position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; border: 2px solid #8b0000; background: white; color: #8b0000; font-size: 20px; font-weight: bold; cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center; line-height: 1;" title="Close wizard">×</button>
             <h2 style="color: #3e2f1f; margin-bottom: 20px; text-align: center;">Character Creation Wizard</h2>
             
             <!-- Warning Section -->
@@ -2533,6 +2535,8 @@
                     <div class="wizard-step" id="setup-step-indicator-4">4</div>
                     <div class="wizard-step" id="setup-step-indicator-5">5</div>
                     <div class="wizard-step" id="setup-step-indicator-6">6</div>
+                    <div class="wizard-step" id="setup-step-indicator-7">7</div>
+                    <div class="wizard-step" id="setup-step-indicator-8">8</div>
                 </div>
                 
                 <!-- Step 0: Species Selection -->
@@ -2576,7 +2580,7 @@
                 
                 <!-- Step 3: Skills Selection -->
                 <div id="setup-wizard-step-3" class="wizard-content" style="display: none;">
-                    <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 3: Skills Selection</h3>
+                    <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 3: Species Skill Selection</h3>
                     <div id="setup-skills-content">
                         <!-- Skills content will be populated dynamically -->
                     </div>
@@ -2584,7 +2588,7 @@
                 
                 <!-- Step 4: Talents Selection -->
                 <div id="setup-wizard-step-4" class="wizard-content" style="display: none;">
-                    <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 4: Talents Selection</h3>
+                    <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 4: Species Talents Selection</h3>
                     <div id="setup-talents-content">
                         <!-- Talents content will be populated dynamically -->
                     </div>
@@ -13624,6 +13628,21 @@ function loadSymptomsData() {
         function initializeSetupFateResilience(speciesInfo) {
             const fateResilienceContent = document.getElementById('setup-fate-resilience-content');
             
+            // Calculate wounds based on characteristics
+            const tbCharData = setupWizardData.characteristics?.TB || setupWizardData.characteristics?.T || {};
+            const wpCharData = setupWizardData.characteristics?.WPB || setupWizardData.characteristics?.WP || {};
+            const sbCharData = setupWizardData.characteristics?.SB || setupWizardData.characteristics?.S || {};
+            
+            const tbValue = tbCharData.total ? Math.floor(tbCharData.total / 10) : 0;
+            const wpbValue = wpCharData.total ? Math.floor(wpCharData.total / 10) : 0;
+            const sbValue = sbCharData.total ? Math.floor(sbCharData.total / 10) : 0;
+            
+            // Wounds calculation: (SB × 2) + (TB × 2) + WPB
+            const wounds = (sbValue * 2) + (tbValue * 2) + wpbValue;
+            
+            // Movement is based on species
+            const movement = speciesInfo.movement || 4;
+            
             fateResilienceContent.innerHTML = `
                 <div style="background: #f5f2e8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
                     <h4 style="color: #3e2f1f; margin: 0 0 10px 0;">${setupWizardData.species} - Fate & Resilience</h4>
@@ -13669,6 +13688,29 @@ function loadSymptomsData() {
                             <strong id="setup-resilience-total" style="font-size: 20px; color: #2e7d32;">${setupWizardData.resilience.total}</strong>
                         </div>
                         <p style="margin: 0; font-size: 12px; color: #666;">Resolve and mental fortitude points</p>
+                    </div>
+                </div>
+                
+                <!-- Wounds and Movement Display -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div style="padding: 15px; background: #f9f7f1; border: 1px solid #d0c5a0; border-radius: 8px;">
+                        <label style="display: block; font-weight: bold; margin-bottom: 10px; color: #3e2f1f;">Wounds</label>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="color: #666; font-size: 14px;">Calculation: (SB×2) + (TB×2) + WPB</span>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <span style="color: #666; font-size: 14px;">(${sbValue}×2) + (${tbValue}×2) + ${wpbValue} = </span>
+                            <strong style="font-size: 24px; color: #3e2f1f;">${wounds}</strong>
+                        </div>
+                    </div>
+                    
+                    <div style="padding: 15px; background: #f9f7f1; border: 1px solid #d0c5a0; border-radius: 8px;">
+                        <label style="display: block; font-weight: bold; margin-bottom: 10px; color: #3e2f1f;">Movement</label>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="color: #666; font-size: 14px;">Base Movement Rate:</span>
+                            <strong style="font-size: 24px; color: #3e2f1f;">${movement}</strong>
+                        </div>
+                        <p style="margin: 10px 0 0 0; font-size: 12px; color: #666;">Squares per turn in combat</p>
                     </div>
                 </div>
                 
@@ -14430,7 +14472,7 @@ function loadSymptomsData() {
                 allocationHTML += `
                     <div style="padding: 10px; background: white; border: 1px solid #d0c5a0; border-radius: 5px;">
                         <label style="display: block; font-weight: bold; margin-bottom: 5px;">${skill}</label>
-                        <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
                             <button type="button" onclick="adjustSkillAdvances('${skill}', -1)" 
                                     style="width: 30px; height: 30px; border: 1px solid #8b7355; background: white; cursor: pointer;">-</button>
                             <input type="number" id="setup-skill-${index}" min="0" max="10" value="${currentAllocation}" 
@@ -14438,6 +14480,8 @@ function loadSymptomsData() {
                                    onchange="updateSkillAdvances('${skill}', this.value)">
                             <button type="button" onclick="adjustSkillAdvances('${skill}', 1)" 
                                     style="width: 30px; height: 30px; border: 1px solid #8b7355; background: white; cursor: pointer;">+</button>
+                            <button type="button" onclick="adjustSkillAdvances('${skill}', 5)" 
+                                    style="width: 35px; height: 30px; border: 1px solid #8b7355; background: #f0f7ff; cursor: pointer; font-weight: bold;">+5</button>
                             <span style="font-size: 12px; color: #666;">(max 10)</span>
                         </div>
                     </div>
