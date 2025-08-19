@@ -883,8 +883,24 @@
             background: #e8f5e8 !important;
             border: 2px solid #4a9b4a !important;
         }
+        .career-tier-1 td:last-child {
+            background: #e8f5e8 !important;
+            border: 2px solid #4a9b4a !important;
+        }
+        .career-tier-2 td:last-child {
+            background: #f5e8e0 !important;
+            border: 2px solid #b87333 !important;
+        }
+        .career-tier-3 td:last-child {
+            background: #f0f0f5 !important;
+            border: 2px solid #8b8b94 !important;
+        }
+        .career-tier-4 td:last-child {
+            background: #fdf5e6 !important;
+            border: 2px solid #d4af37 !important;
+        }
 
-        .career-future {
+        .career-future td:last-child {
             background: #f5f5e8 !important;
             border: 2px solid #ccb366 !important;
         }
@@ -10013,6 +10029,35 @@ document.addEventListener('DOMContentLoaded', function() {
                     careersData = data;
                     console.log('Loaded', data.careers.length, 'careers');
                     
+                    // Convert characteristic advances from cumulative arrays to tier availability
+                    data.careers.forEach(career => {
+                        if (career.characteristicAdvances) {
+                            Object.keys(career.characteristicAdvances).forEach(charCode => {
+                                const advances = career.characteristicAdvances[charCode];
+                                if (advances && advances.length > 0) {
+                                    // Convert [1,2,3,4] to [4] (available starting at tier 4)
+                                    // Convert [1,2,3] to [3,4] (available starting at tier 3)
+                                    // Convert [1,2] to [2,3,4] (available starting at tier 2)  
+                                    // Convert [1] to [1,2,3,4] (available starting at tier 1)
+                                    const highestTier = Math.max(...advances);
+                                    const availableTiers = [];
+                                    for (let tier = highestTier; tier <= 4; tier++) {
+                                        availableTiers.push(tier);
+                                    }
+                                    
+                                    // Debug logging for first few careers
+                                    if (data.careers.indexOf(career) < 3) {
+                                        console.log(`${career.name} ${charCode}: ${advances} -> ${availableTiers}`);
+                                    }
+                                    
+                                    career.characteristicAdvances[charCode] = availableTiers;
+                                }
+                            });
+                        }
+                    });
+                    
+                    console.log('Converted characteristic advances to tier availability format');
+                    
                     // Map careers.json class names to dropdown class names
                     const classNameMapping = {
                         'academics': 'Academic',
@@ -10228,15 +10273,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 // Clear existing highlighting
-                row.classList.remove('career-available', 'career-future');
+                row.classList.remove('career-available', 'career-future', 'career-tier-1', 'career-tier-2', 'career-tier-3', 'career-tier-4');
                 
                 // Check if this characteristic can be advanced at the current tier
                 const availableAtCurrentTier = advanceData.includes(currentTier);
                 const futureAdvances = advanceData.filter(tier => tier > currentTier);
                 
                 if (availableAtCurrentTier) {
-                    // Characteristic is available at current tier - unlimited advances
-                    row.classList.add('career-available');
+                    // Characteristic is available at current tier - use tier-specific color
+                    row.classList.add(`career-tier-${currentTier}`);
                     
                     const indicator = document.createElement('div');
                     indicator.className = 'advance-limit-indicator';
@@ -10316,8 +10361,8 @@ document.addEventListener('DOMContentLoaded', function() {
         function clearCharacteristicLimits() {
             document.querySelectorAll('.advance-limit-indicator').forEach(indicator => indicator.remove());
             document.querySelectorAll('.advance-disabled').forEach(cell => cell.classList.remove('advance-disabled'));
-            document.querySelectorAll('.career-available, .career-future').forEach(row => {
-                row.classList.remove('career-available', 'career-future');
+            document.querySelectorAll('.career-available, .career-future, .career-tier-1, .career-tier-2, .career-tier-3, .career-tier-4').forEach(row => {
+                row.classList.remove('career-available', 'career-future', 'career-tier-1', 'career-tier-2', 'career-tier-3', 'career-tier-4');
             });
             
             // Re-enable all advance buttons
