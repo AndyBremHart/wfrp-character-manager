@@ -10018,9 +10018,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Generate unique talent ID
                 const talentId = Date.now() + Math.random();
                 
-                // Add talent to characterTalents array
-                if (!characterTalents.find(talent => talent.name === baseName && talent.customisation === customisation)) {
-                    characterTalents.push({
+                // Add talent to talents array
+                if (!talents.find(talent => talent.name === baseName && talent.customisation === customisation)) {
+                    talents.push({
                         id: talentId,
                         name: baseName,
                         advances: 1,
