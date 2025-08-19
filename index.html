@@ -14552,6 +14552,10 @@ function loadSymptomsData() {
                 return;
             }
             
+            // Determine career status tier and standing
+            const statusTier = career.status || 'Brass'; // Default to Brass if not specified
+            const statusStanding = tier1.standing || '1'; // Default to 1 if not specified
+            
             // Initialize career allocation data
             if (!setupWizardData.careerAllocation) {
                 setupWizardData.careerAllocation = {
@@ -14573,10 +14577,6 @@ function loadSymptomsData() {
                     setupWizardData.careerAllocation.skills[skill] = 0;
                 }
             });
-            
-            // Determine career status tier and standing
-            const statusTier = career.status || 'Brass'; // Default to Brass if not specified
-            const statusStanding = tier1.standing || '1'; // Default to 1 if not specified
             
             // Build the allocation interface
             let allocationHTML = `
