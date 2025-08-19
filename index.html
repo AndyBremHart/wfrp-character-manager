@@ -2509,6 +2509,7 @@
                     <div class="wizard-step" id="setup-step-indicator-6">6</div>
                     <div class="wizard-step" id="setup-step-indicator-7">7</div>
                     <div class="wizard-step" id="setup-step-indicator-8">8</div>
+                    <div class="wizard-step" id="setup-step-indicator-9">9</div>
                 </div>
                 
                 <!-- Step 0: Species Selection -->
@@ -2595,6 +2596,14 @@
                     <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 8: Career Skills & Talents</h3>
                     <div id="setup-career-allocation-content">
                         <!-- Career allocation content will be populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Step 9: XP Allocation -->
+                <div id="setup-wizard-step-9" class="wizard-content" style="display: none;">
+                    <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 9: Experience Points</h3>
+                    <div id="setup-xp-content">
+                        <!-- XP allocation content will be populated dynamically -->
                     </div>
                 </div>
                 
@@ -13382,7 +13391,7 @@ function loadSymptomsData() {
         // =============== CHARACTER SETUP WIZARD FUNCTIONS ===============
         
         let setupCurrentStep = 0;
-        const setupSteps = ['species-selection', 'characteristics', 'skills', 'talents', 'class', 'trappings', 'career'];
+        const setupSteps = ['species-selection', 'characteristics', 'skills', 'talents', 'class', 'trappings', 'career', 'career-allocation', 'xp-allocation'];
         let setupWizardData = {};
         let selectedSpeciesForSetup = '';
         
@@ -13497,14 +13506,14 @@ function loadSymptomsData() {
             }
             
             if (nextBtn) {
-                nextBtn.textContent = setupCurrentStep === 8 ? 'Finish Character' : 'Next →';
+                nextBtn.textContent = setupCurrentStep === 9 ? 'Finish Character' : 'Next →';
             }
         }
         
         // Navigation functions
         function nextSetupStep() {
             if (validateCurrentSetupStep()) {
-                if (setupCurrentStep < 8) {
+                if (setupCurrentStep < 9) {
                     setupCurrentStep++;
                     initializeSetupStep(setupCurrentStep);
                     updateSetupWizardDisplay();
@@ -13601,6 +13610,9 @@ function loadSymptomsData() {
                 case 8: // Career Skills & Talents Allocation
                     initializeSetupCareerAllocation();
                     break;
+                case 9: // XP Allocation
+                    initializeSetupXPAllocation();
+                    break;
             }
         }
         
@@ -13625,6 +13637,8 @@ function loadSymptomsData() {
                     return validateSetupCareerStep();
                 case 8: // Career Skills & Talents Allocation
                     return validateSetupCareerAllocationStep();
+                case 9: // XP Allocation
+                    return validateSetupXPAllocationStep();
                 default:
                     return true;
             }
@@ -15007,6 +15021,87 @@ function loadSymptomsData() {
             
             return true;
         }
+
+        // =============== XP ALLOCATION STEP ===============
+        
+        // Initialize XP allocation step
+        function initializeSetupXPAllocation() {
+            const xpContent = document.getElementById('setup-xp-content');
+            
+            let xpHTML = `
+                <div style="background: #f5f2e8; padding: 20px; border-radius: 5px; margin-bottom: 20px;">
+                    <h4 style="color: #3e2f1f; margin: 0 0 15px 0;">Character Creation Experience</h4>
+                    <p style="margin: 0 0 15px 0; color: #666; line-height: 1.5;">
+                        During character creation, you may have earned experience points through your background choices, 
+                        starting profession, or other character development decisions. Enter the total XP earned below.
+                    </p>
+                    <p style="margin: 0; color: #8b7355; font-size: 14px; font-style: italic;">
+                        Note: 0 XP is perfectly acceptable for a new character.
+                    </p>
+                </div>
+                
+                <div style="background: #fff8dc; padding: 20px; border: 2px solid #d4a574; border-radius: 5px; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                        <label style="color: #8b4513; font-weight: bold; font-size: 16px;">Experience Points Earned:</label>
+                        <input type="number" id="setup-xp-earned" min="0" max="1000" value="0" 
+                               style="padding: 10px; font-size: 16px; text-align: center; width: 100px; border: 2px solid #d4a574; border-radius: 3px;"
+                               oninput="updateSetupXPDisplay()">
+                        <span style="color: #8b4513; font-weight: bold;">XP</span>
+                    </div>
+                    
+                    <div id="setup-xp-summary" style="background: white; padding: 15px; border-radius: 3px; border: 1px solid #d4a574;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: center;">
+                            <div>
+                                <div style="color: #8b4513; font-weight: bold; margin-bottom: 5px;">Current XP</div>
+                                <div id="setup-current-xp" style="font-size: 20px; color: #3e2f1f; font-weight: bold;">0</div>
+                            </div>
+                            <div>
+                                <div style="color: #8b4513; font-weight: bold; margin-bottom: 5px;">Total XP</div>
+                                <div id="setup-total-xp" style="font-size: 20px; color: #3e2f1f; font-weight: bold;">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: #e8f4fd; padding: 15px; border-radius: 5px; border: 1px solid #b3d9f7;">
+                    <h4 style="color: #2c5aa0; margin: 0 0 10px 0;">📝 Session Note</h4>
+                    <p style="margin: 0; color: #2c5aa0; font-size: 14px;">
+                        A session note "Character Generation" will be automatically added to track this character creation process.
+                    </p>
+                </div>
+            `;
+            
+            xpContent.innerHTML = xpHTML;
+            
+            // Initialize XP display
+            updateSetupXPDisplay();
+        }
+        
+        // Update XP display in setup
+        function updateSetupXPDisplay() {
+            const xpEarned = parseInt(document.getElementById('setup-xp-earned')?.value) || 0;
+            
+            document.getElementById('setup-current-xp').textContent = xpEarned;
+            document.getElementById('setup-total-xp').textContent = xpEarned;
+            
+            // Store in wizard data
+            setupWizardData.xpEarned = xpEarned;
+        }
+        
+        // Validate XP allocation step
+        function validateSetupXPAllocationStep() {
+            const xpInput = document.getElementById('setup-xp-earned');
+            if (!xpInput) return false;
+            
+            const xpValue = parseInt(xpInput.value);
+            if (isNaN(xpValue) || xpValue < 0) {
+                alert('Please enter a valid XP amount (0 or greater).');
+                return false;
+            }
+            
+            setupWizardData.xpEarned = xpValue;
+            return true;
+        }
         
         // =============== OLD VALIDATION FUNCTIONS (TO BE REPLACED) ===============
         
@@ -15447,10 +15542,37 @@ function loadSymptomsData() {
                 document.getElementById('status-standing').value = setupWizardData.careerStatus.standing;
             }
             
-            // Set initial XP for new character (0 starting XP - player earns XP through play)
-            document.getElementById('xp-total').value = '0';
+            // Set XP from character creation
+            const xpEarned = setupWizardData.xpEarned || 0;
+            document.getElementById('xp-total').value = xpEarned.toString();
             document.getElementById('xp-spent').value = '0';
             window.updateXPDisplay();
+            
+            // Add Character Generation session note
+            if (typeof sessionNotes !== 'undefined') {
+                const characterName = document.getElementById('character-name').value || 'New Character';
+                const today = new Date().toISOString().split('T')[0];
+                
+                const newSessionId = Date.now();
+                const characterGenSession = {
+                    id: newSessionId,
+                    number: 1,
+                    date: today,
+                    gmName: '',
+                    campaignName: '',
+                    location: '',
+                    content: `# Character Generation\n\nCharacter created: ${characterName}\n\n## Character Details:\n- **Species:** ${setupWizardData.species}\n- **Class:** ${setupWizardData.class}\n- **Career:** ${setupWizardData.career}\n- **Status:** ${setupWizardData.careerStatus?.tier || 'Brass'} ${setupWizardData.careerStatus?.standing || '1'}\n- **Starting XP:** ${xpEarned}\n\nCharacter generation completed successfully!`,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Add to session notes if none exist, or if this would be session 1
+                if (sessionNotes.length === 0 || !sessionNotes.find(s => s.number === 1)) {
+                    sessionNotes.push(characterGenSession);
+                    if (typeof saveSessionNotes === 'function') {
+                        saveSessionNotes();
+                    }
+                }
+            }
             
             // Close wizard
             closeSetupWizard();
@@ -15464,6 +15586,8 @@ function loadSymptomsData() {
             if (setupWizardData.careerStatus) {
                 summaryMessage += `Status: ${setupWizardData.careerStatus.tier} ${setupWizardData.careerStatus.standing}\n`;
             }
+            
+            summaryMessage += `Starting XP: ${xpEarned}\n`;
             
             if (setupWizardData.fate) {
                 summaryMessage += `Fate: ${setupWizardData.fate.total || setupWizardData.fate.base}\n`;
