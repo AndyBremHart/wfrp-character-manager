@@ -2605,6 +2605,14 @@
                         <!-- Career content will be populated dynamically -->
                     </div>
                 </div>
+
+                <!-- Step 7: Career Skills and Talents Allocation -->
+                <div id="setup-wizard-step-7" class="wizard-content" style="display: none;">
+                    <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 7: Career Skills & Talents</h3>
+                    <div id="setup-career-allocation-content">
+                        <!-- Career allocation content will be populated dynamically -->
+                    </div>
+                </div>
                 
                 <!-- Navigation buttons -->
                 <div style="display: flex; justify-content: space-between; margin-top: 30px;">
@@ -13256,7 +13264,7 @@ function loadSymptomsData() {
         // Update the wizard display - following species wizard pattern
         function updateSetupWizardDisplay() {
             // Hide all step contents
-            for (let i = 0; i <= 6; i++) {
+            for (let i = 0; i <= 7; i++) {
                 const stepElement = document.getElementById(`setup-wizard-step-${i}`);
                 if (stepElement) {
                     stepElement.style.display = 'none';
@@ -13270,7 +13278,7 @@ function loadSymptomsData() {
             }
             
             // Update step indicators
-            for (let i = 0; i <= 6; i++) {
+            for (let i = 0; i <= 7; i++) {
                 const indicator = document.getElementById(`setup-step-indicator-${i}`);
                 if (indicator) {
                     indicator.classList.remove('active', 'completed');
@@ -13291,14 +13299,14 @@ function loadSymptomsData() {
             }
             
             if (nextBtn) {
-                nextBtn.textContent = setupCurrentStep === 6 ? 'Finish Character' : 'Next →';
+                nextBtn.textContent = setupCurrentStep === 7 ? 'Finish Character' : 'Next →';
             }
         }
         
         // Navigation functions
         function nextSetupStep() {
             if (validateCurrentSetupStep()) {
-                if (setupCurrentStep < 6) {
+                if (setupCurrentStep < 7) {
                     setupCurrentStep++;
                     initializeSetupStep(setupCurrentStep);
                     updateSetupWizardDisplay();
@@ -13387,6 +13395,9 @@ function loadSymptomsData() {
                 case 6: // Career
                     initializeSetupCareer();
                     break;
+                case 7: // Career Skills & Talents Allocation
+                    initializeSetupCareerAllocation();
+                    break;
             }
         }
         
@@ -13407,6 +13418,8 @@ function loadSymptomsData() {
                     return true; // Trappings are optional
                 case 6: // Career
                     return validateSetupCareerStep();
+                case 7: // Career Skills & Talents Allocation
+                    return validateSetupCareerAllocationStep();
                 default:
                     return true;
             }
@@ -13428,6 +13441,19 @@ function loadSymptomsData() {
                 alert('Please enter all characteristic values before proceeding.');
                 return false;
             }
+            
+            // Validate Fate/Resilience allocation if species is selected
+            if (setupWizardData.species) {
+                const speciesInfo = speciesData[setupWizardData.species];
+                if (speciesInfo) {
+                    const usedPoints = setupWizardData.usedExtraPoints || 0;
+                    if (usedPoints > speciesInfo.extraPoints) {
+                        alert(`You have allocated ${usedPoints} extra points but can only allocate ${speciesInfo.extraPoints}. Please adjust your Fate/Resilience allocation.`);
+                        return false;
+                    }
+                }
+            }
+            
             return true;
         }
         
@@ -13505,6 +13531,82 @@ function loadSymptomsData() {
                     max: charData.max
                 };
             });
+            
+            // Add Fate and Resilience allocation section
+            const fateResilienceSection = document.createElement('div');
+            fateResilienceSection.style.cssText = 'margin-top: 30px; padding: 20px; background: #f9f7f1; border: 1px solid #d0c5a0; border-radius: 5px;';
+            fateResilienceSection.innerHTML = `
+                <h4 style="color: #3e2f1f; margin: 0 0 15px 0;">Fate & Resilience Allocation</h4>
+                <p style="margin: 0 0 15px 0; color: #666; font-size: 14px;">
+                    Distribute your ${speciesInfo.extraPoints} extra point(s) between Fate and Resilience.
+                </p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div style="padding: 15px; background: white; border: 1px solid #d0c5a0; border-radius: 3px;">
+                        <label style="display: block; font-weight: bold; margin-bottom: 10px;">Fate</label>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                            <span style="color: #666;">Base:</span>
+                            <strong>${speciesInfo.baseFate}</strong>
+                            <span style="color: #666;">+</span>
+                            <button type="button" onclick="adjustFateResilience('fate', -1)" 
+                                    style="width: 30px; height: 30px; border: 1px solid #8b7355; background: white; cursor: pointer;">-</button>
+                            <input type="number" id="setup-fate-extra" min="0" max="${speciesInfo.extraPoints}" value="0" 
+                                   style="width: 50px; padding: 5px; text-align: center; border: 1px solid #8b7355;" 
+                                   onchange="updateFateResilience('fate', this.value)">
+                            <button type="button" onclick="adjustFateResilience('fate', 1)" 
+                                    style="width: 30px; height: 30px; border: 1px solid #8b7355; background: white; cursor: pointer;">+</button>
+                            <span style="color: #666;">=</span>
+                            <strong id="setup-fate-total">${speciesInfo.baseFate}</strong>
+                        </div>
+                        <p style="margin: 0; font-size: 12px; color: #666;">Fortune points for rerolls and luck</p>
+                    </div>
+                    
+                    <div style="padding: 15px; background: white; border: 1px solid #d0c5a0; border-radius: 3px;">
+                        <label style="display: block; font-weight: bold; margin-bottom: 10px;">Resilience</label>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                            <span style="color: #666;">Base:</span>
+                            <strong>${speciesInfo.baseResilience}</strong>
+                            <span style="color: #666;">+</span>
+                            <button type="button" onclick="adjustFateResilience('resilience', -1)" 
+                                    style="width: 30px; height: 30px; border: 1px solid #8b7355; background: white; cursor: pointer;">-</button>
+                            <input type="number" id="setup-resilience-extra" min="0" max="${speciesInfo.extraPoints}" value="0" 
+                                   style="width: 50px; padding: 5px; text-align: center; border: 1px solid #8b7355;" 
+                                   onchange="updateFateResilience('resilience', this.value)">
+                            <button type="button" onclick="adjustFateResilience('resilience', 1)" 
+                                    style="width: 30px; height: 30px; border: 1px solid #8b7355; background: white; cursor: pointer;">+</button>
+                            <span style="color: #666;">=</span>
+                            <strong id="setup-resilience-total">${speciesInfo.baseResilience}</strong>
+                        </div>
+                        <p style="margin: 0; font-size: 12px; color: #666;">Resolve and mental fortitude points</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px; text-align: center;">
+                    <span style="font-size: 14px; color: #666;">Points Used: </span>
+                    <strong id="setup-points-used">0</strong>
+                    <span style="font-size: 14px; color: #666;"> / ${speciesInfo.extraPoints}</span>
+                </div>
+            `;
+            
+            characteristicsGrid.parentNode.appendChild(fateResilienceSection);
+            
+            // Initialize fate/resilience data
+            if (!setupWizardData.fate) {
+                setupWizardData.fate = {
+                    base: speciesInfo.baseFate,
+                    extra: 0,
+                    total: speciesInfo.baseFate
+                };
+            }
+            if (!setupWizardData.resilience) {
+                setupWizardData.resilience = {
+                    base: speciesInfo.baseResilience,
+                    extra: 0,
+                    total: speciesInfo.baseResilience
+                };
+            }
+            setupWizardData.extraPoints = speciesInfo.extraPoints;
+            setupWizardData.usedExtraPoints = 0;
         }
 
         // Update characteristic total in setup wizard
@@ -13544,6 +13646,57 @@ function loadSymptomsData() {
                     rollInput.style.backgroundColor = 'white';
                 }
             }
+        }
+        
+        function updateFateResilience() {
+            const speciesInfo = speciesData[setupWizardData.species];
+            if (!speciesInfo) return;
+            
+            const fateExtra = parseInt(document.getElementById('setup-fate-extra').value) || 0;
+            const resilienceExtra = parseInt(document.getElementById('setup-resilience-extra').value) || 0;
+            const totalUsed = fateExtra + resilienceExtra;
+            
+            // Update totals
+            const fateTotal = speciesInfo.baseFate + fateExtra;
+            const resilienceTotal = speciesInfo.baseResilience + resilienceExtra;
+            
+            document.getElementById('setup-fate-total').textContent = fateTotal;
+            document.getElementById('setup-resilience-total').textContent = resilienceTotal;
+            document.getElementById('setup-fate-resilience-used').textContent = totalUsed;
+            document.getElementById('setup-fate-resilience-remaining').textContent = speciesInfo.extraPoints - totalUsed;
+            
+            // Update wizard data
+            setupWizardData.fate = {
+                base: speciesInfo.baseFate,
+                extra: fateExtra,
+                total: fateTotal
+            };
+            setupWizardData.resilience = {
+                base: speciesInfo.baseResilience,
+                extra: resilienceExtra,
+                total: resilienceTotal
+            };
+            setupWizardData.usedExtraPoints = totalUsed;
+            
+            // Validation styling
+            const remaining = speciesInfo.extraPoints - totalUsed;
+            const container = document.querySelector('.fate-resilience-allocation');
+            if (remaining < 0) {
+                container.style.borderColor = '#cc0000';
+                container.style.backgroundColor = '#ffe6e6';
+            } else {
+                container.style.borderColor = '#d0c5a0';
+                container.style.backgroundColor = '#f9f7f1';
+            }
+        }
+        
+        function adjustFateResilience(type, change) {
+            const input = document.getElementById(`setup-${type}-extra`);
+            const currentValue = parseInt(input.value) || 0;
+            const newValue = Math.max(0, currentValue + change);
+            
+            input.value = newValue;
+            updateFateResilience();
         }
         
         function initializeSetupSkills(speciesInfo) {
@@ -14028,6 +14181,202 @@ function loadSymptomsData() {
             setupWizardData.career = career;
         }
         
+        // =============== CAREER SKILLS & TALENTS ALLOCATION ===============
+        
+        // Initialize career skills and talents allocation step
+        function initializeSetupCareerAllocation() {
+            const allocationContent = document.getElementById('setup-career-allocation-content');
+            const careerName = setupWizardData.career;
+            
+            if (!careerName) {
+                allocationContent.innerHTML = `
+                    <div style="background: #ffe6e6; padding: 15px; border: 2px solid #cc0000; border-radius: 5px;">
+                        <p style="color: #cc0000; margin: 0;">Please select a career in the previous step first.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Find the career in the JSON data
+            const career = careersData?.careers?.find(c => c.name === careerName);
+            if (!career) {
+                allocationContent.innerHTML = `
+                    <div style="background: #ffe6e6; padding: 15px; border: 2px solid #cc0000; border-radius: 5px;">
+                        <p style="color: #cc0000; margin: 0;">Career "${careerName}" not found in data.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Get tier 1 data
+            const tier1 = career.tiers?.find(t => t.tier === 1);
+            if (!tier1) {
+                allocationContent.innerHTML = `
+                    <div style="background: #ffe6e6; padding: 15px; border: 2px solid #cc0000; border-radius: 5px;">
+                        <p style="color: #cc0000; margin: 0;">Tier 1 data not found for career "${careerName}".</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Initialize career allocation data
+            if (!setupWizardData.careerAllocation) {
+                setupWizardData.careerAllocation = {
+                    skills: {},
+                    selectedTalent: '',
+                    totalAdvancesAllocated: 0
+                };
+            }
+            
+            // Initialize skill allocations to 0
+            tier1.skills.forEach(skill => {
+                if (!setupWizardData.careerAllocation.skills[skill]) {
+                    setupWizardData.careerAllocation.skills[skill] = 0;
+                }
+            });
+            
+            // Build the allocation interface
+            let allocationHTML = `
+                <div style="background: #f5f2e8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    <h4 style="color: #3e2f1f; margin: 0 0 10px 0;">${careerName} - ${tier1.name}</h4>
+                    <p style="margin: 0; color: #666; font-size: 14px;">Allocate 40 Advances across your career skills (maximum 10 per skill).</p>
+                </div>
+                
+                <div style="background: #f0f7ff; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h4 style="color: #3e2f1f; margin: 0;">Career Skills (${tier1.skills.length} skills)</h4>
+                        <div>
+                            <span style="font-size: 14px; color: #666;">Advances Used: </span>
+                            <strong id="setup-advances-used">0</strong>
+                            <span style="font-size: 14px; color: #666;"> / 40</span>
+                        </div>
+                    </div>
+                    
+                    <div id="setup-career-skills-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+            `;
+            
+            // Add skill allocation inputs
+            tier1.skills.forEach((skill, index) => {
+                const currentAllocation = setupWizardData.careerAllocation.skills[skill] || 0;
+                allocationHTML += `
+                    <div style="padding: 10px; background: white; border: 1px solid #d0c5a0; border-radius: 5px;">
+                        <label style="display: block; font-weight: bold; margin-bottom: 5px;">${skill}</label>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <button type="button" onclick="adjustSkillAdvances('${skill}', -1)" 
+                                    style="width: 30px; height: 30px; border: 1px solid #8b7355; background: white; cursor: pointer;">-</button>
+                            <input type="number" id="setup-skill-${index}" min="0" max="10" value="${currentAllocation}" 
+                                   style="width: 60px; padding: 5px; text-align: center; border: 1px solid #8b7355;" 
+                                   onchange="updateSkillAdvances('${skill}', this.value)">
+                            <button type="button" onclick="adjustSkillAdvances('${skill}', 1)" 
+                                    style="width: 30px; height: 30px; border: 1px solid #8b7355; background: white; cursor: pointer;">+</button>
+                            <span style="font-size: 12px; color: #666;">(max 10)</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            allocationHTML += `
+                    </div>
+                </div>
+                
+                <div style="background: #f9f7f1; padding: 15px; border-radius: 5px;">
+                    <h4 style="color: #3e2f1f; margin: 0 0 15px 0;">Starting Career Talent</h4>
+                    <p style="margin-bottom: 15px; color: #666;">Choose 1 talent from your career's starting talents:</p>
+                    
+                    <div id="setup-career-talents-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+            `;
+            
+            // Add talent selection radio buttons
+            tier1.talents.forEach(talent => {
+                const isSelected = setupWizardData.careerAllocation.selectedTalent === talent;
+                allocationHTML += `
+                    <div style="padding: 8px; background: white; border: 1px solid #d0c5a0; border-radius: 3px;">
+                        <input type="radio" id="setup-talent-${talent}" name="setup-career-talent" value="${talent}" 
+                               ${isSelected ? 'checked' : ''} onchange="updateSelectedTalent('${talent}')">
+                        <label for="setup-talent-${talent}" style="margin-left: 8px; cursor: pointer;">${talent}</label>
+                    </div>
+                `;
+            });
+            
+            allocationHTML += `
+                    </div>
+                </div>
+            `;
+            
+            allocationContent.innerHTML = allocationHTML;
+            updateAdvancesDisplay();
+        }
+        
+        // Update skill advances allocation
+        function updateSkillAdvances(skillName, value) {
+            const numValue = parseInt(value) || 0;
+            const clampedValue = Math.max(0, Math.min(10, numValue));
+            
+            setupWizardData.careerAllocation.skills[skillName] = clampedValue;
+            updateAdvancesDisplay();
+        }
+        
+        // Adjust skill advances with +/- buttons
+        function adjustSkillAdvances(skillName, delta) {
+            const currentValue = setupWizardData.careerAllocation.skills[skillName] || 0;
+            const newValue = Math.max(0, Math.min(10, currentValue + delta));
+            
+            setupWizardData.careerAllocation.skills[skillName] = newValue;
+            
+            // Update the input field
+            const career = careersData?.careers?.find(c => c.name === setupWizardData.career);
+            const tier1 = career?.tiers?.find(t => t.tier === 1);
+            if (tier1) {
+                const skillIndex = tier1.skills.indexOf(skillName);
+                if (skillIndex >= 0) {
+                    const inputElement = document.getElementById(`setup-skill-${skillIndex}`);
+                    if (inputElement) {
+                        inputElement.value = newValue;
+                    }
+                }
+            }
+            
+            updateAdvancesDisplay();
+        }
+        
+        // Update selected talent
+        function updateSelectedTalent(talentName) {
+            setupWizardData.careerAllocation.selectedTalent = talentName;
+        }
+        
+        // Update the advances display
+        function updateAdvancesDisplay() {
+            const totalUsed = Object.values(setupWizardData.careerAllocation.skills || {}).reduce((sum, val) => sum + val, 0);
+            setupWizardData.careerAllocation.totalAdvancesAllocated = totalUsed;
+            
+            const usedSpan = document.getElementById('setup-advances-used');
+            if (usedSpan) {
+                usedSpan.textContent = totalUsed;
+                usedSpan.style.color = totalUsed === 40 ? '#2e7d32' : (totalUsed > 40 ? '#cc0000' : '#666');
+            }
+        }
+        
+        // Validate career allocation step
+        function validateSetupCareerAllocationStep() {
+            if (!setupWizardData.careerAllocation) {
+                alert('Please allocate your career advances first.');
+                return false;
+            }
+            
+            const totalAdvances = setupWizardData.careerAllocation.totalAdvancesAllocated || 0;
+            if (totalAdvances !== 40) {
+                alert(`You must allocate exactly 40 advances. Currently allocated: ${totalAdvances}`);
+                return false;
+            }
+            
+            if (!setupWizardData.careerAllocation.selectedTalent) {
+                alert('Please select a starting career talent.');
+                return false;
+            }
+            
+            return true;
+        }
+        
         // =============== OLD VALIDATION FUNCTIONS (TO BE REPLACED) ===============
         
         function validateSpeciesStep() {
@@ -14260,6 +14609,56 @@ function loadSymptomsData() {
                 console.log('Talents applied:', allSelectedTalents);
             }
             
+            // Apply career skills and talents from allocation step
+            if (setupWizardData.careerAllocation) {
+                // Apply career skill advances
+                if (setupWizardData.careerAllocation.skills) {
+                    Object.keys(setupWizardData.careerAllocation.skills).forEach(skillName => {
+                        const advances = setupWizardData.careerAllocation.skills[skillName];
+                        if (advances > 0) {
+                            if (typeof addSkillAdvances === 'function') {
+                                addSkillAdvances(skillName, advances);
+                            } else {
+                                // Fallback: directly update characterSkills object
+                                if (typeof characterSkills === 'object') {
+                                    const skillKey = skillName.toLowerCase().replace(/\s+/g, '');
+                                    if (!characterSkills[skillKey]) {
+                                        characterSkills[skillKey] = { advances: 0 };
+                                    }
+                                    characterSkills[skillKey].advances = (characterSkills[skillKey].advances || 0) + advances;
+                                    characterSkills[skillKey].isCareerSkill = true; // Mark as career skill
+                                }
+                            }
+                        }
+                    });
+                    
+                    // Refresh skills display
+                    if (typeof window.updateSkillsDisplay === 'function') {
+                        window.updateSkillsDisplay();
+                    }
+                }
+                
+                // Apply selected career talent
+                if (setupWizardData.careerAllocation.selectedTalent) {
+                    const talentName = setupWizardData.careerAllocation.selectedTalent;
+                    if (typeof addTalentToCharacter === 'function') {
+                        addTalentToCharacter(talentName);
+                    } else {
+                        // Fallback: directly update characterTalents object
+                        if (typeof characterTalents === 'object') {
+                            const talentKey = talentName.toLowerCase().replace(/\s+/g, '');
+                            characterTalents[talentKey] = {
+                                name: talentName,
+                                times: 1,
+                                source: 'Career'
+                            };
+                        }
+                    }
+                }
+                
+                console.log('Career allocation applied:', setupWizardData.careerAllocation);
+            }
+            
             // Apply trappings/equipment from wizard
             if (setupWizardData.trappings) {
                 const allTrappings = [];
@@ -14395,6 +14794,23 @@ function loadSymptomsData() {
                 }
                 if (allTalents.length > 0) {
                     summaryMessage += `Talents: ${allTalents.join(', ')}\n`;
+                }
+            }
+            
+            if (setupWizardData.careerAllocation) {
+                // Add career allocation info
+                const allocatedSkills = [];
+                Object.keys(setupWizardData.careerAllocation.skills || {}).forEach(skill => {
+                    const advances = setupWizardData.careerAllocation.skills[skill];
+                    if (advances > 0) {
+                        allocatedSkills.push(`${skill} (+${advances})`);
+                    }
+                });
+                if (allocatedSkills.length > 0) {
+                    summaryMessage += `Career Skills: ${allocatedSkills.join(', ')}\n`;
+                }
+                if (setupWizardData.careerAllocation.selectedTalent) {
+                    summaryMessage += `Career Talent: ${setupWizardData.careerAllocation.selectedTalent}\n`;
                 }
             }
             
