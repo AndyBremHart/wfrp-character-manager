@@ -13703,10 +13703,14 @@ function loadSymptomsData() {
                     `;
                     
                     choice.options.forEach(talent => {
+                        const inputType = choice.count === 1 ? 'radio' : 'checkbox';
+                        const inputName = choice.count === 1 ? `setup-talent-group-${choiceIndex}` : '';
+                        const nameAttribute = inputType === 'radio' ? `name="${inputName}"` : '';
+                        
                         talentsHTML += `
                             <div>
-                                <input type="checkbox" id="setup-talent-${choiceIndex}-${talent}" value="${talent}" 
-                                       onchange="updateSetupTalentSelection(${choiceIndex}, ${choice.count}, this)">
+                                <input type="${inputType}" id="setup-talent-${choiceIndex}-${talent}" value="${talent}" 
+                                       ${nameAttribute} onchange="updateSetupTalentSelection(${choiceIndex}, ${choice.count}, this)">
                                 <label for="setup-talent-${choiceIndex}-${talent}">${talent}</label>
                             </div>
                         `;
@@ -13728,7 +13732,7 @@ function loadSymptomsData() {
         }
 
         // Update talent selection for setup wizard
-        function updateSetupTalentSelection(choiceIndex, maxCount, checkbox) {
+        function updateSetupTalentSelection(choiceIndex, maxCount, input) {
             // Initialize the choice array if needed
             if (!setupWizardData.talents.choices[choiceIndex]) {
                 setupWizardData.talents.choices[choiceIndex] = [];
@@ -13737,21 +13741,32 @@ function loadSymptomsData() {
             const currentSelections = setupWizardData.talents.choices[choiceIndex];
             const remainingSpan = document.getElementById(`setup-talent-remaining-${choiceIndex}`);
 
-            if (checkbox.checked) {
-                if (currentSelections.length >= maxCount) {
-                    checkbox.checked = false;
-                    alert(`You can only select ${maxCount} talent(s) from this group.`);
-                    return;
+            if (input.type === 'radio') {
+                // For radio buttons, clear existing selection and set new one
+                if (input.checked) {
+                    setupWizardData.talents.choices[choiceIndex] = [input.value];
                 }
-                currentSelections.push(checkbox.value);
             } else {
-                const index = currentSelections.indexOf(checkbox.value);
-                if (index > -1) {
-                    currentSelections.splice(index, 1);
+                // For checkboxes, handle multiple selections
+                if (input.checked) {
+                    if (currentSelections.length >= maxCount) {
+                        input.checked = false;
+                        alert(`You can only select ${maxCount} talent(s) from this group.`);
+                        return;
+                    }
+                    currentSelections.push(input.value);
+                } else {
+                    const index = currentSelections.indexOf(input.value);
+                    if (index > -1) {
+                        currentSelections.splice(index, 1);
+                    }
                 }
             }
 
-            remainingSpan.textContent = maxCount - currentSelections.length;
+            // Update remaining count
+            const newCount = setupWizardData.talents.choices[choiceIndex] ? 
+                setupWizardData.talents.choices[choiceIndex].length : 0;
+            remainingSpan.textContent = maxCount - newCount;
         }
         
         function initializeSetupClass() {
@@ -13997,38 +14012,141 @@ function loadSymptomsData() {
             document.getElementById('class').value = setupWizardData.class;
             
             // Set characteristics from stored wizard data
-            const characteristics = ['ws', 'bs', 's', 't', 'i', 'agi', 'dex', 'int', 'wp', 'fel'];
-            characteristics.forEach(char => {
-                const initialField = document.getElementById(`${char}-initial`);
-                const currentField = document.getElementById(`${char}-current`);
-                if (initialField && setupWizardData.characteristics && setupWizardData.characteristics[char]) {
-                    initialField.value = setupWizardData.characteristics[char];
-                    if (currentField) {
-                        currentField.value = setupWizardData.characteristics[char];
+            if (setupWizardData.characteristics) {
+                Object.keys(setupWizardData.characteristics).forEach(charKey => {
+                    const charData = setupWizardData.characteristics[charKey];
+                    const charLower = charKey.toLowerCase();
+                    
+                    // Map characteristic names to field IDs
+                    const fieldMapping = {
+                        'ws': 'ws', 'bs': 'bs', 's': 's', 't': 't', 'i': 'i',
+                        'ag': 'agi', 'agi': 'agi', 'dex': 'dex', 'int': 'int', 'wp': 'wp', 'fel': 'fel'
+                    };
+                    
+                    const fieldName = fieldMapping[charLower] || charLower;
+                    const initialField = document.getElementById(`${fieldName}-initial`);
+                    const currentField = document.getElementById(`${fieldName}-current`);
+                    
+                    if (initialField && charData && charData.total !== undefined) {
+                        initialField.value = charData.total;
+                        if (currentField) {
+                            currentField.value = charData.total;
+                        }
                     }
-                }
-            });
+                });
+                
+                // Trigger characteristic calculations
+                window.calculateAllCharacteristics();
+            }
             
-            // Apply species selections
-            if (setupWizardData.species_selections) {
-                // Set Fate and Resilience
-                if (setupWizardData.species_selections.fate) {
-                    const fateField = document.getElementById('fate');
-                    if (fateField) {
-                        fateField.value = setupWizardData.species_selections.fate;
+            // Set Fate and Resilience from wizard data
+            if (setupWizardData.fate) {
+                const fateField = document.getElementById('fate');
+                if (fateField) {
+                    fateField.value = setupWizardData.fate.total || setupWizardData.fate.base;
+                }
+            }
+            
+            if (setupWizardData.resilience) {
+                const resilienceField = document.getElementById('resilience');
+                if (resilienceField) {
+                    resilienceField.value = setupWizardData.resilience.total || setupWizardData.resilience.base;
+                }
+            }
+            
+            // Apply skills from wizard
+            if (setupWizardData.skills) {
+                // Add 5 advances to step3 skills and 3 advances to step4 skills
+                const allSelectedSkills = [
+                    ...setupWizardData.skills.step3.map(skill => ({name: skill, advances: 5})),
+                    ...setupWizardData.skills.step4.map(skill => ({name: skill, advances: 3}))
+                ];
+                
+                allSelectedSkills.forEach(skillData => {
+                    if (typeof addSkillAdvances === 'function') {
+                        addSkillAdvances(skillData.name, skillData.advances);
+                    } else {
+                        // Fallback: directly update characterSkills object
+                        if (typeof characterSkills === 'object') {
+                            const skillKey = skillData.name.toLowerCase().replace(/\s+/g, '');
+                            if (!characterSkills[skillKey]) {
+                                characterSkills[skillKey] = { advances: 0 };
+                            }
+                            characterSkills[skillKey].advances = (characterSkills[skillKey].advances || 0) + skillData.advances;
+                        }
                     }
+                });
+                
+                // Refresh skills display
+                if (typeof window.updateSkillsDisplay === 'function') {
+                    window.updateSkillsDisplay();
                 }
                 
-                if (setupWizardData.species_selections.resilience) {
-                    const resilienceField = document.getElementById('resilience');
-                    if (resilienceField) {
-                        resilienceField.value = setupWizardData.species_selections.resilience;
-                    }
+                console.log('Skills applied:', allSelectedSkills);
+            }
+            
+            // Apply talents from wizard
+            if (setupWizardData.talents) {
+                const allSelectedTalents = [];
+                
+                // Add fixed talents
+                if (setupWizardData.talents.fixed) {
+                    allSelectedTalents.push(...setupWizardData.talents.fixed);
                 }
                 
-                // Note: Skills and talents would need to be added to the appropriate sections
-                // This would require integration with the existing skills and talents systems
-                console.log('Species selections applied:', setupWizardData.species_selections);
+                // Add chosen talents from talent choices
+                if (setupWizardData.talents.choices) {
+                    setupWizardData.talents.choices.forEach(choiceArray => {
+                        if (Array.isArray(choiceArray)) {
+                            allSelectedTalents.push(...choiceArray);
+                        }
+                    });
+                }
+                
+                // Add talents to character sheet
+                allSelectedTalents.forEach(talentName => {
+                    if (typeof addTalentToCharacter === 'function') {
+                        addTalentToCharacter(talentName);
+                    } else {
+                        // Fallback: directly update characterTalents object
+                        if (typeof characterTalents === 'object') {
+                            const talentKey = talentName.toLowerCase().replace(/\s+/g, '');
+                            characterTalents[talentKey] = {
+                                name: talentName,
+                                times: 1,
+                                source: 'Species'
+                            };
+                        }
+                    }
+                });
+                
+                // Refresh talents display
+                if (typeof window.updateTalentsDisplay === 'function') {
+                    window.updateTalentsDisplay();
+                }
+                
+                console.log('Talents applied:', allSelectedTalents);
+            }
+            
+            // Apply trappings/equipment from wizard
+            if (setupWizardData.trappings && setupWizardData.trappings.length > 0) {
+                setupWizardData.trappings.forEach(trapping => {
+                    if (typeof addEquipmentItem === 'function') {
+                        addEquipmentItem(trapping, 1, 'Class Starting Equipment');
+                    } else {
+                        // Fallback: add to equipment section manually
+                        const equipmentTextarea = document.getElementById('equipment');
+                        if (equipmentTextarea) {
+                            const currentEquipment = equipmentTextarea.value;
+                            const newEquipment = currentEquipment ? 
+                                currentEquipment + '\n' + trapping : 
+                                trapping;
+                            equipmentTextarea.value = newEquipment;
+                        }
+                    }
+                });
+                
+                console.log('Equipment applied:', setupWizardData.trappings);
             }
             
             // Set career and tier
@@ -14052,16 +14170,38 @@ function loadSymptomsData() {
             closeSetupWizard();
             
             // Show success message with summary
-            const speciesSelections = setupWizardData.species_selections;
             let summaryMessage = 'Character setup complete!\n\n';
             summaryMessage += `Species: ${setupWizardData.species}\n`;
             summaryMessage += `Class: ${setupWizardData.class}\n`;
             summaryMessage += `Career: ${setupWizardData.career}\n`;
-            if (speciesSelections) {
-                summaryMessage += `Fate: ${speciesSelections.fate}, Resilience: ${speciesSelections.resilience}\n`;
-                if (speciesSelections.skills) {
-                    summaryMessage += `Species Skills: ${speciesSelections.skills.join(', ')}\n`;
+            
+            if (setupWizardData.fate) {
+                summaryMessage += `Fate: ${setupWizardData.fate.total || setupWizardData.fate.base}\n`;
+            }
+            if (setupWizardData.resilience) {
+                summaryMessage += `Resilience: ${setupWizardData.resilience.total || setupWizardData.resilience.base}\n`;
+            }
+            
+            if (setupWizardData.skills && (setupWizardData.skills.step3.length > 0 || setupWizardData.skills.step4.length > 0)) {
+                summaryMessage += `Skills (+5): ${setupWizardData.skills.step3.join(', ')}\n`;
+                summaryMessage += `Skills (+3): ${setupWizardData.skills.step4.join(', ')}\n`;
+            }
+            
+            if (setupWizardData.talents) {
+                const allTalents = [];
+                if (setupWizardData.talents.fixed) allTalents.push(...setupWizardData.talents.fixed);
+                if (setupWizardData.talents.choices) {
+                    setupWizardData.talents.choices.forEach(choice => {
+                        if (Array.isArray(choice)) allTalents.push(...choice);
+                    });
                 }
+                if (allTalents.length > 0) {
+                    summaryMessage += `Talents: ${allTalents.join(', ')}\n`;
+                }
+            }
+            
+            if (setupWizardData.trappings && setupWizardData.trappings.length > 0) {
+                summaryMessage += `Equipment: ${setupWizardData.trappings.join(', ')}\n`;
             }
             
             alert(summaryMessage);
