@@ -13278,13 +13278,10 @@ function loadSymptomsData() {
                     <div id="species-details" style="background: #f9f7f1; padding: 10px; border-radius: 5px; margin: 10px 0;">
                         <!-- Species details will be populated -->
                     </div>
-                    <h5>Generate Starting Characteristics:</h5>
-                    <div style="margin: 15px 0;">
-                        <button onclick="generateCharacteristics()" style="padding: 8px 16px; background: #3e2f1f; color: white; border: none; border-radius: 3px; cursor: pointer; margin-right: 10px;">🎲 Roll Characteristics</button>
-                        <button onclick="showManualCharacteristics()" style="padding: 8px 16px; background: #666; color: white; border: none; border-radius: 3px; cursor: pointer;">✏️ Enter Manually</button>
-                    </div>
-                    <div id="generated-characteristics" style="margin-top: 15px; display: none;">
-                        <!-- Generated characteristics will be shown here -->
+                    <h5>Starting Characteristics:</h5>
+                    <p style="color: #666; font-size: 12px;">Enter your rolled values. The display shows: Species Base + Your Roll = Total</p>
+                    <div id="characteristics-input" style="margin-top: 15px;">
+                        <!-- Characteristics input will be shown here -->
                     </div>
                 </div>
             `;
@@ -13359,24 +13356,46 @@ function loadSymptomsData() {
         }
         
         function showCareerStep(content) {
-            const classValue = document.getElementById('setup-class').value || document.getElementById('class').value;
+            const classValue = setupWizardData.class;
             let careerOptions = '';
             
-            if (classValue && careersByClass[classValue]) {
-                careersByClass[classValue].forEach(career => {
+            // Build career options based on selected class
+            if (classValue && careersData && careersData.careers) {
+                const filteredCareers = careersData.careers.filter(career => {
+                    const careerClass = career.class.toLowerCase();
+                    const selectedClass = classValue.toLowerCase();
+                    
+                    // Handle the mapping from display names to JSON names
+                    const classMapping = {
+                        'academic': 'academics',
+                        'burgher': 'burghers',
+                        'courtier': 'courtiers',
+                        'peasant': 'peasants',
+                        'ranger': 'rangers',
+                        'riverfolk': 'riverfolk',
+                        'rogue': 'rogues',
+                        'warrior': 'warriors'
+                    };
+                    
+                    const mappedClass = classMapping[selectedClass] || selectedClass;
+                    return careerClass === mappedClass;
+                });
+                
+                filteredCareers.forEach(career => {
                     careerOptions += `<option value="${career.name}">${career.name}</option>`;
                 });
             }
             
             content.innerHTML = `
                 <h4>Choose Your Starting Career</h4>
-                <p>Select your character's starting career. This will be set to Tier 1.</p>
+                <p>Select your character's starting career from the ${classValue} class. This will be set to Tier 1.</p>
                 <div style="margin: 20px 0;">
                     <select id="setup-career" style="padding: 10px; font-size: 14px; width: 100%; border: 1px solid #8b7355;">
                         <option value="">Select Career</option>
                         ${careerOptions}
                     </select>
                 </div>
+                ${careerOptions ? '' : '<p style="color: #cc0000;">No careers available for selected class. Please ensure careers are loaded.</p>'}
                 <p style="color: #666; font-size: 12px;">Your character will start at Tier 1 with access to tier 1 characteristic advances.</p>
             `;
         }
@@ -13386,6 +13405,7 @@ function loadSymptomsData() {
             const species = document.getElementById('setup-species').value;
             const speciesInfo = document.getElementById('species-info');
             const speciesDetails = document.getElementById('species-details');
+            const characteristicsInput = document.getElementById('characteristics-input');
             
             if (species) {
                 setupWizardData.species = species;
@@ -13394,6 +13414,9 @@ function loadSymptomsData() {
                 // Show species-specific information
                 const speciesData = getSpeciesData(species);
                 speciesDetails.innerHTML = speciesData;
+                
+                // Show characteristics input with species base values
+                showCharacteristicsInput(species, characteristicsInput);
             } else {
                 speciesInfo.style.display = 'none';
             }
@@ -13410,151 +13433,74 @@ function loadSymptomsData() {
             return speciesInfo[species] || 'No additional information available.';
         }
         
-        function generateCharacteristics() {
-            const species = setupWizardData.species;
-            const characteristics = generateRandomCharacteristics(species);
-            setupWizardData.characteristics = characteristics;
-            displayGeneratedCharacteristics(characteristics);
+        function getSpeciesBaseValues(species) {
+            const baseValues = {
+                'Human': {ws: 20, bs: 20, s: 20, t: 20, i: 20, agi: 20, dex: 20, int: 20, wp: 20, fel: 20},
+                'Dwarf': {ws: 30, bs: 20, s: 20, t: 30, i: 20, agi: 10, dex: 30, int: 20, wp: 40, fel: 10},
+                'Halfling': {ws: 10, bs: 30, s: 10, t: 15, i: 20, agi: 30, dex: 40, int: 20, wp: 30, fel: 30},
+                'High Elf': {ws: 30, bs: 30, s: 20, t: 20, i: 40, agi: 30, dex: 30, int: 35, wp: 30, fel: 20},
+                'Wood Elf': {ws: 30, bs: 30, s: 10, t: 10, i: 40, agi: 40, dex: 30, int: 30, wp: 30, fel: 20}
+            };
+            return baseValues[species] || baseValues['Human'];
         }
         
-        function showManualCharacteristics() {
-            const generatedDiv = document.getElementById('generated-characteristics');
-            generatedDiv.style.display = 'block';
-            generatedDiv.innerHTML = `
-                <h5>Enter Characteristics Manually:</h5>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 10px 0;">
-                    <div><label>WS:</label> <input type="number" id="manual-ws" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>BS:</label> <input type="number" id="manual-bs" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>S:</label> <input type="number" id="manual-s" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>T:</label> <input type="number" id="manual-t" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>I:</label> <input type="number" id="manual-i" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>Agi:</label> <input type="number" id="manual-agi" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>Dex:</label> <input type="number" id="manual-dex" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>Int:</label> <input type="number" id="manual-int" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>WP:</label> <input type="number" id="manual-wp" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>Fel:</label> <input type="number" id="manual-fel" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                </div>
-                <button onclick="saveManualCharacteristics()" style="padding: 8px 16px; background: #3e2f1f; color: white; border: none; border-radius: 3px; cursor: pointer; margin-top: 10px;">Save Characteristics</button>
-            `;
-        }
-        
-        function generateRandomCharacteristics(species) {
-            // Basic human characteristics: 2d10+20 for each
-            const rollCharacteristic = () => Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + 21;
-            
-            let characteristics = {
-                ws: rollCharacteristic(),
-                bs: rollCharacteristic(),
-                s: rollCharacteristic(),
-                t: rollCharacteristic(),
-                i: rollCharacteristic(),
-                agi: rollCharacteristic(),
-                dex: rollCharacteristic(),
-                int: rollCharacteristic(),
-                wp: rollCharacteristic(),
-                fel: rollCharacteristic()
+        function showCharacteristicsInput(species, container) {
+            const baseValues = getSpeciesBaseValues(species);
+            const characteristics = ['ws', 'bs', 's', 't', 'i', 'agi', 'dex', 'int', 'wp', 'fel'];
+            const charNames = {
+                'ws': 'Weapon Skill',
+                'bs': 'Ballistic Skill',
+                's': 'Strength',
+                't': 'Toughness',
+                'i': 'Initiative',
+                'agi': 'Agility',
+                'dex': 'Dexterity',
+                'int': 'Intelligence',
+                'wp': 'Willpower',
+                'fel': 'Fellowship'
             };
             
-            // Apply species modifiers (simplified)
-            switch (species) {
-                case 'Dwarf':
-                    characteristics.t += 10;
-                    characteristics.wp += 20;
-                    characteristics.agi -= 10;
-                    characteristics.dex += 10;
-                    break;
-                case 'Halfling':
-                    characteristics.ws -= 10;
-                    characteristics.s -= 10;
-                    characteristics.agi += 10;
-                    characteristics.dex += 20;
-                    characteristics.fel += 10;
-                    break;
-                case 'High Elf':
-                    characteristics.i += 20;
-                    characteristics.agi += 10;
-                    characteristics.dex += 10;
-                    characteristics.wp += 10;
-                    break;
-                case 'Wood Elf':
-                    characteristics.ws += 10;
-                    characteristics.bs += 10;
-                    characteristics.agi += 20;
-                    characteristics.s -= 10;
-                    characteristics.t -= 10;
-                    break;
-            }
+            let html = '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">';
             
-            // Ensure values stay within bounds
-            Object.keys(characteristics).forEach(key => {
-                characteristics[key] = Math.max(1, Math.min(100, characteristics[key]));
+            characteristics.forEach(char => {
+                html += `
+                    <div style="display: flex; align-items: center; gap: 8px; padding: 5px; background: #f9f7f1; border-radius: 3px;">
+                        <label style="width: 40px; font-weight: bold;">${char.toUpperCase()}:</label>
+                        <span style="width: 25px; text-align: center;">${baseValues[char]}</span>
+                        <span>+</span>
+                        <input type="number" id="roll-${char}" min="2" max="20" placeholder="2-20" style="width: 60px; padding: 2px;" onchange="updateCharacteristicTotal('${char}', ${baseValues[char]})">
+                        <span>=</span>
+                        <span id="total-${char}" style="width: 30px; font-weight: bold; text-align: center;">-</span>
+                    </div>
+                `;
             });
             
-            return characteristics;
+            html += '</div>';
+            container.innerHTML = html;
         }
         
-        function displayGeneratedCharacteristics(characteristics) {
-            const generatedDiv = document.getElementById('generated-characteristics');
-            generatedDiv.style.display = 'block';
-            generatedDiv.innerHTML = `
-                <h5>Generated Characteristics:</h5>
-                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 10px 0; text-align: center;">
-                    <div><strong>WS:</strong> ${characteristics.ws}</div>
-                    <div><strong>BS:</strong> ${characteristics.bs}</div>
-                    <div><strong>S:</strong> ${characteristics.s}</div>
-                    <div><strong>T:</strong> ${characteristics.t}</div>
-                    <div><strong>I:</strong> ${characteristics.i}</div>
-                    <div><strong>Agi:</strong> ${characteristics.agi}</div>
-                    <div><strong>Dex:</strong> ${characteristics.dex}</div>
-                    <div><strong>Int:</strong> ${characteristics.int}</div>
-                    <div><strong>WP:</strong> ${characteristics.wp}</div>
-                    <div><strong>Fel:</strong> ${characteristics.fel}</div>
-                </div>
-                <div style="margin-top: 10px;">
-                    <button onclick="generateCharacteristics()" style="padding: 8px 16px; background: #3e2f1f; color: white; border: none; border-radius: 3px; cursor: pointer; margin-right: 10px;">🎲 Re-roll</button>
-                    <button onclick="acceptCharacteristics()" style="padding: 8px 16px; background: #4a9b4a; color: white; border: none; border-radius: 3px; cursor: pointer;">✅ Accept</button>
-                </div>
-            `;
-        }
-        
-        function saveManualCharacteristics() {
-            const characteristics = {};
-            const charCodes = ['ws', 'bs', 's', 't', 'i', 'agi', 'dex', 'int', 'wp', 'fel'];
+        function updateCharacteristicTotal(char, baseValue) {
+            const rollInput = document.getElementById(`roll-${char}`);
+            const totalSpan = document.getElementById(`total-${char}`);
+            const rollValue = parseInt(rollInput.value) || 0;
             
-            for (let char of charCodes) {
-                const value = document.getElementById(`manual-${char}`).value;
-                if (!value || value < 1 || value > 100) {
-                    alert(`Please enter a valid value for ${char.toUpperCase()} (1-100).`);
-                    return;
+            if (rollValue >= 2 && rollValue <= 20) {
+                const total = baseValue + rollValue;
+                totalSpan.textContent = total;
+                
+                // Store in wizard data
+                if (!setupWizardData.characteristics) {
+                    setupWizardData.characteristics = {};
                 }
-                characteristics[char] = parseInt(value);
-            }
-            
-            setupWizardData.characteristics = characteristics;
-            alert('Characteristics saved! Click Next to continue.');
-        }
-        
-        function acceptCharacteristics() {
-            alert('Characteristics accepted! Click Next to continue.');
-        }
-        
-        function regenerateCharacteristics() {
-            if (setupWizardData.species) {
-                const characteristics = generateRandomCharacteristics(setupWizardData.species);
-                setupWizardData.characteristics = characteristics;
-                
-                // Update the input fields
-                const charCodes = ['ws', 'bs', 's', 't', 'i', 'agi', 'dex', 'int', 'wp', 'fel'];
-                charCodes.forEach(char => {
-                    const field = document.getElementById(`setup-${char}`);
-                    if (field) {
-                        field.value = characteristics[char];
-                    }
-                });
-                
-                alert('Characteristics re-rolled!');
+                setupWizardData.characteristics[char] = total;
+            } else {
+                totalSpan.textContent = '-';
+                if (setupWizardData.characteristics) {
+                    delete setupWizardData.characteristics[char];
+                }
             }
         }
+        
         
         function getClassTrappings(className) {
             const classTrappingsData = {
@@ -13668,10 +13614,20 @@ function loadSymptomsData() {
             }
             setupWizardData.species = species;
             
-            // Check if characteristics have been generated or entered
-            if (!setupWizardData.characteristics) {
-                alert('Please generate or manually enter characteristics before proceeding.');
+            // Check if all characteristics have been entered (all 10)
+            if (!setupWizardData.characteristics || Object.keys(setupWizardData.characteristics).length < 10) {
+                alert('Please enter all characteristic roll values (2-20) before proceeding.');
                 return false;
+            }
+            
+            // Validate all characteristics are within proper range
+            const characteristics = ['ws', 'bs', 's', 't', 'i', 'agi', 'dex', 'int', 'wp', 'fel'];
+            for (let char of characteristics) {
+                const value = setupWizardData.characteristics[char];
+                if (!value || value < 22 || value > 120) {
+                    alert(`Invalid total for ${char.toUpperCase()}. Please check your input.`);
+                    return false;
+                }
             }
             
             return true;
@@ -13706,7 +13662,13 @@ function loadSymptomsData() {
         }
         
         function validateCareerStep() {
-            const career = document.getElementById('setup-career').value;
+            const careerSelect = document.getElementById('setup-career');
+            if (!careerSelect) {
+                alert('Career selection not available. Please go back and select a class first.');
+                return false;
+            }
+            
+            const career = careerSelect.value;
             if (!career) {
                 alert('Please select a career.');
                 return false;
