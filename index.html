@@ -881,28 +881,28 @@
         /* Career characteristic advancement styling */
         .career-available {
             background: #e8f5e8 !important;
-            border: 2px solid #4a9b4a !important;
+            border-left: 4px solid #4a9b4a !important;
         }
-        .career-tier-1 td:last-child {
+        .career-tier-1 {
             background: #e8f5e8 !important;
-            border: 2px solid #4a9b4a !important;
+            border-left: 4px solid #4a9b4a !important;
         }
-        .career-tier-2 td:last-child {
+        .career-tier-2 {
             background: #f5e8e0 !important;
-            border: 2px solid #b87333 !important;
+            border-left: 4px solid #b87333 !important;
         }
-        .career-tier-3 td:last-child {
+        .career-tier-3 {
             background: #f0f0f5 !important;
-            border: 2px solid #8b8b94 !important;
+            border-left: 4px solid #8b8b94 !important;
         }
-        .career-tier-4 td:last-child {
+        .career-tier-4 {
             background: #fdf5e6 !important;
-            border: 2px solid #d4af37 !important;
+            border-left: 4px solid #d4af37 !important;
         }
 
-        .career-future td:last-child {
+        .career-future {
             background: #f5f5e8 !important;
-            border: 2px solid #ccb366 !important;
+            border-left: 4px solid #ccb366 !important;
         }
 
         /* Characteristic Advance Indicators */
@@ -5622,7 +5622,7 @@
                     const woundPenalties = window.getCriticalWoundPenalties();
                     const charMap = {
                         'ws': 'WS', 'bs': 'BS', 's': 'S', 't': 'T', 'i': 'I', 
-                        'ag': 'Ag', 'dex': 'Dex', 'int': 'Int', 'wp': 'WP', 'fel': 'Fel'
+                        'agi': 'Ag', 'dex': 'Dex', 'int': 'Int', 'wp': 'WP', 'fel': 'Fel'
                     };
                     
                     const mappedChar = charMap[char];
@@ -5639,7 +5639,7 @@
                     const symptomPenalties = window.getSymptomPenalties();
                     const charMap = {
                         'ws': 'WS', 'bs': 'BS', 's': 'S', 't': 'T', 'i': 'I', 
-                        'ag': 'Ag', 'dex': 'Dex', 'int': 'Int', 'wp': 'WP', 'fel': 'Fel'
+                        'agi': 'Ag', 'dex': 'Dex', 'int': 'Int', 'wp': 'WP', 'fel': 'Fel'
                     };
                     
                     const mappedChar = charMap[char];
@@ -6143,7 +6143,7 @@
                 's': 'Strength',
                 't': 'Toughness',
                 'i': 'Initiative',
-                'ag': 'Agility',
+                'agi': 'Agility',
                 'dex': 'Dexterity',
                 'int': 'Intelligence',
                 'wp': 'Willpower',
@@ -8989,7 +8989,7 @@ window.updateCharacteristicWithMutations = function(charId) {
             const charMap = {
                 'fel': 'fellowship',
                 'int': 'intelligence',
-                'ag': 'agility',
+                'agi': 'agility',
                 't': 'toughness'
             };
             
