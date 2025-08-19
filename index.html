@@ -13547,15 +13547,14 @@ function loadSymptomsData() {
         }
         
         function initializeSetupSkills(speciesInfo) {
+            console.log('initializeSetupSkills called with:', speciesInfo);
             const skillsContent = document.getElementById('setup-skills-content');
             
-            // Initialize skills data structure if not exists
-            if (!setupWizardData.skills) {
-                setupWizardData.skills = {
-                    step3: [], // 5 advances each
-                    step4: []  // 3 advances each
-                };
-            }
+            // Reset skills data structure to ensure clean state
+            setupWizardData.skills = {
+                step3: [], // 5 advances each
+                step4: []  // 3 advances each
+            };
             
             skillsContent.innerHTML = `
                 <div style="background: #f5f2e8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
@@ -13579,6 +13578,14 @@ function loadSymptomsData() {
             
             // Populate first skills list
             const skillsList1 = document.getElementById('setup-species-skills-list-1');
+            console.log('Species skills:', speciesInfo.skills);
+            console.log('Skills list element:', skillsList1);
+            
+            if (!speciesInfo.skills || !Array.isArray(speciesInfo.skills)) {
+                console.error('Species skills not found or not an array:', speciesInfo.skills);
+                return;
+            }
+            
             speciesInfo.skills.forEach(skill => {
                 const skillDiv = document.createElement('div');
                 skillDiv.className = 'skill-checkbox-item';
@@ -13589,8 +13596,8 @@ function loadSymptomsData() {
                 skillsList1.appendChild(skillDiv);
             });
             
-            // Populate second skills list
-            updateSetupSkillsList2();
+            // Populate second skills list (after HTML is created)
+            setTimeout(() => updateSetupSkillsList2(), 0);
             
             // Reset counters
             document.getElementById('setup-remaining-skill-points-1').textContent = 3;
