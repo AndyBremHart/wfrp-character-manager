@@ -1247,12 +1247,7 @@
                 </div>
                 <div class="header-field">
                     <label>Tier</label>
-                    <select id="global-tier" onchange="handleGlobalTierChange()" style="padding: 5px; font-family: Georgia, serif; border: 1px solid #8b7355;">
-                        <option value="1">Tier 1</option>
-                        <option value="2">Tier 2</option>
-                        <option value="3">Tier 3</option>
-                        <option value="4">Tier 4</option>
-                    </select>
+                    <div id="tier-display" style="padding: 5px; font-family: Georgia, serif; border: 1px solid #8b7355; background: #f8f6f0; color: #3e2f1f; min-height: 20px; display: flex; align-items: center;">Tier I</div>
                 </div>
             </div>
         </div>
@@ -4795,25 +4790,22 @@
         let careersByClass = {};
         
         // Global Tier Change Handler
-        function handleGlobalTierChange() {
-            const globalTierSelect = document.getElementById('global-tier');
-            const tierSelect = document.getElementById('tier-select');
+        // Update tier display (called when currentTier changes)
+        function updateTierDisplay() {
+            const tierDisplay = document.getElementById('tier-display');
+            const romanNumerals = ['', 'I', 'II', 'III', 'IV'];
             
-            currentTier = parseInt(globalTierSelect.value);
-            
-            // Sync with the career tier select if it exists
-            if (tierSelect) {
-                tierSelect.value = currentTier;
+            if (tierDisplay && currentTier >= 1 && currentTier <= 4) {
+                tierDisplay.textContent = `Tier ${romanNumerals[currentTier]}`;
             }
             
             // Update characteristic limits if we have a career selected
             if (currentCareer) {
                 updateCharacteristicLimits();
-                updateTierDisplay();
                 saveCareerSelection();
             }
             
-            console.log('Global tier changed to:', currentTier);
+            console.log('Tier display updated to:', currentTier);
         }
         
         // WFRP 4th Edition Official Conditions
@@ -10577,14 +10569,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Handle tier selection
         function handleTierSelection() {
             const tierSelect = document.getElementById('tier-select');
-            const globalTierSelect = document.getElementById('global-tier');
             const selectedTier = parseInt(tierSelect.value);
             
-            // Sync with global tier
+            // Update current tier and display
             currentTier = selectedTier;
-            if (globalTierSelect) {
-                globalTierSelect.value = selectedTier;
-            }
+            updateTierDisplay();
             
             // If we're in preview mode, just update the preview display
             if (previewCareer) {
@@ -13662,6 +13651,9 @@ function loadSymptomsData() {
                 // Reset to tier 1 when changing careers
                 currentTier = 1;
                 
+                // Update tier display
+                updateTierDisplay();
+                
                 // Log the career change
                 if (typeof logXPEntry === 'function') {
                     logXPEntry(
@@ -13696,11 +13688,13 @@ function loadSymptomsData() {
                 // Advance the tier
                 currentTier += 1;
                 
+                // Update tier display
+                updateTierDisplay();
+                
                 // Update the career display with new tier info if we have the data
                 if (currentCareerData) {
                     const newTierData = currentCareerData.tiers.find(t => t.tier === currentTier);
                     if (newTierData) {
-                        // You could update any tier-specific displays here if needed
                         console.log(`Advanced to ${newTierData.name} (Tier ${currentTier})`);
                     }
                 }
@@ -13846,9 +13840,9 @@ function loadSymptomsData() {
             document.getElementById('career-display').textContent = '—';
             document.getElementById('player').value = '';
             
-            // Reset global tier to 1
-            document.getElementById('global-tier').value = '1';
+            // Reset tier to 1
             currentTier = 1;
+            updateTierDisplay();
             
             // Clear characteristics
             const characteristics = ['ws', 'bs', 's', 't', 'i', 'agi', 'dex', 'int', 'wp', 'fel'];
@@ -15917,8 +15911,8 @@ function loadSymptomsData() {
             // Set career and tier
             if (setupWizardData.career) {
                 document.getElementById('career-select').value = setupWizardData.career;
-                document.getElementById('global-tier').value = '1';
                 currentTier = 1;
+                updateTierDisplay();
                 
                 // Ensure careers are loaded, then find and select the career
                 if (!careersData) {
@@ -17002,6 +16996,11 @@ function loadSymptomsData() {
             }
             // Save current session one last time
             saveCurrentSession();
+        });
+
+        // Initialize tier display on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTierDisplay();
         });
 
     </script>
