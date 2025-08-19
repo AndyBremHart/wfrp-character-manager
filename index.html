@@ -10444,19 +10444,32 @@ function loadSymptomsData() {
 
         // Trappings/Inventory Management
         window.addTrapping = function() {
+            const name = prompt('Item name:');
+            if (!name) return; // Exit immediately if user cancels or enters empty name
+            
+            const quantity = parseInt(prompt('Quantity:') || '1');
+            if (quantity === null) return; // Exit if user cancels
+            
+            const encumbrance = parseFloat(prompt('Encumbrance per item:') || '0');
+            if (encumbrance === null) return; // Exit if user cancels
+            
+            const location = prompt('Carried where? (e.g., Backpack, Belt, Worn):') || 'Backpack';
+            if (location === null) return; // Exit if user cancels
+            
+            const notes = prompt('Notes:') || '';
+            if (notes === null) return; // Exit if user cancels
+            
             const item = {
-                name: prompt('Item name:'),
-                quantity: parseInt(prompt('Quantity:') || '1'),
-                encumbrance: parseFloat(prompt('Encumbrance per item:') || '0'),
-                location: prompt('Carried where? (e.g., Backpack, Belt, Worn):') || 'Backpack',
-                notes: prompt('Notes:') || ''
+                name: name,
+                quantity: quantity,
+                encumbrance: encumbrance,
+                location: location,
+                notes: notes
             };
             
-            if (item.name) {
-                trappings.push(item);
-                displayTrappings();
-                updateEncumbrance();
-            }
+            trappings.push(item);
+            displayTrappings();
+            updateEncumbrance();
         }
 
         window.displayTrappings = function() {
