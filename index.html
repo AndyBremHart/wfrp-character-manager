@@ -10228,24 +10228,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 row.classList.remove('career-available', 'career-future');
                 
                 if (advanceData.length > 0) {
-                    // Calculate advances available at current tier and below
+                    // Calculate advances available at current tier and below (cumulative)
                     const availableAdvances = advanceData.filter(tier => tier <= currentTier).length;
                     const futureAdvances = advanceData.filter(tier => tier > currentTier).length;
+                    const availableAtCurrentTier = advanceData.includes(currentTier);
                     const totalAdvances = advanceData.length;
                     
                     // Add visual indicator
                     const indicator = document.createElement('div');
                     indicator.className = 'advance-limit-indicator';
                     
-                    if (availableAdvances > 0) {
+                    // Only show as available if it can be advanced at current tier
+                    if (availableAtCurrentTier) {
                         row.classList.add('career-available');
-                        indicator.innerHTML = `<strong>${availableAdvances}</strong> available now`;
+                        indicator.innerHTML = `<strong>${availableAdvances}</strong> available up to tier ${currentTier}`;
                         if (futureAdvances > 0) {
                             indicator.innerHTML += `<br><span style="color: #888; font-size: 10px;">${futureAdvances} more at higher tiers</span>`;
                         }
                     } else if (futureAdvances > 0) {
                         row.classList.add('career-future');
-                        indicator.innerHTML = `<span style="color: #888;">${futureAdvances} available at higher tiers</span>`;
+                        const nextAvailableTier = Math.min(...advanceData.filter(tier => tier > currentTier));
+                        indicator.innerHTML = `<span style="color: #888;">Available at tier ${nextAvailableTier}+ (${totalAdvances} total)</span>`;
                     }
                     
                     indicator.style.cssText = `
@@ -10263,13 +10266,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     row.style.position = 'relative';
                     row.appendChild(indicator);
                     
-                    // Enable/disable advance button based on availability
+                    // Enable/disable advance button based on availability at current tier
                     const advanceButton = row.querySelector('button[onclick*="advanceCharacteristic"]');
                     if (advanceButton) {
                         const currentAdvances = parseInt(row.querySelector('input[id$="-advances"]')?.value) || 0;
-                        const canAdvance = currentAdvances < availableAdvances;
+                        const canAdvanceAtCurrentTier = availableAtCurrentTier && currentAdvances < availableAdvances;
                         
-                        if (canAdvance && availableAdvances > 0) {
+                        if (canAdvanceAtCurrentTier) {
                             advanceButton.disabled = false;
                             advanceButton.style.opacity = '1';
                             advanceButton.style.cursor = 'pointer';
