@@ -13398,7 +13398,7 @@ function loadSymptomsData() {
             
             // Populate current career information
             const careerDisplay = document.getElementById('career-display').textContent || '—';
-            const currentTotalXP = parseInt(document.getElementById('current-xp').value || '0');
+            const currentTotalXP = parseInt(document.getElementById('xp-total').value || '0');
             
             document.getElementById('current-career-name').textContent = careerDisplay;
             document.getElementById('current-career-tier').textContent = 'Tier I'; // Default tier for now
@@ -13437,7 +13437,7 @@ function loadSymptomsData() {
         function confirmCareerAdvancement() {
             const selectedType = document.querySelector('input[name="advancement-type"]:checked');
             const xpCost = parseInt(document.getElementById('advancement-xp-cost').value || '0');
-            const currentTotalXP = parseInt(document.getElementById('current-xp').value || '0');
+            const currentTotalXP = parseInt(document.getElementById('xp-total').value || '0');
             
             // Validate selection
             if (!selectedType) {
@@ -13494,10 +13494,10 @@ function loadSymptomsData() {
             // Subtract XP cost from total
             if (xpCost > 0) {
                 const newTotalXP = currentTotalXP - xpCost;
-                document.getElementById('current-xp').value = newTotalXP.toString();
+                document.getElementById('xp-total').value = newTotalXP.toString();
                 
                 // Update XP displays if they exist
-                const totalXPDisplay = document.getElementById('total-xp-display');
+                const totalXPDisplay = document.getElementById('xp-total-display');
                 if (totalXPDisplay) {
                     totalXPDisplay.textContent = newTotalXP.toString();
                 }
