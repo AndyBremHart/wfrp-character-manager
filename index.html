@@ -14770,7 +14770,7 @@ function loadSymptomsData() {
                 }
             }
             
-            // Apply skills from wizard
+            // Apply skills from wizard using proven addSkillDirectly function
             if (setupWizardData.skills) {
                 // Add 5 advances to step3 skills and 3 advances to step4 skills
                 const allSelectedSkills = [
@@ -14790,95 +14790,14 @@ function loadSymptomsData() {
                         skillName = skillName.replace('(any)', `(${specialization})`);
                     }
                     
-                    // Try multiple methods to add the skill
-                    let skillAdded = false;
-                    
-                    // Method 1: Try addSkillAdvances function
-                    if (typeof window.addSkillAdvances === 'function') {
-                        try {
-                            window.addSkillAdvances(skillName, skillData.advances);
-                            skillAdded = true;
-                            console.log(`Added ${skillData.advances} advances to ${skillName} using addSkillAdvances`);
-                        } catch (e) {
-                            console.warn('addSkillAdvances failed:', e);
-                        }
-                    }
-                    
-                    // Method 2: Try addSkillToSheet function
-                    if (!skillAdded && typeof window.addSkillToSheet === 'function') {
-                        try {
-                            for (let i = 0; i < skillData.advances; i++) {
-                                window.addSkillToSheet(skillName);
-                            }
-                            skillAdded = true;
-                            console.log(`Added ${skillData.advances} advances to ${skillName} using addSkillToSheet`);
-                        } catch (e) {
-                            console.warn('addSkillToSheet failed:', e);
-                        }
-                    }
-                    
-                    // Method 3: Direct manipulation of skills table
-                    if (!skillAdded) {
-                        try {
-                            const skillsTable = document.querySelector('#skills-section table tbody');
-                            if (skillsTable) {
-                                // Check if skill already exists in the table
-                                let existingRow = null;
-                                const rows = skillsTable.querySelectorAll('tr');
-                                rows.forEach(row => {
-                                    const nameCell = row.querySelector('td:first-child input[type="text"]');
-                                    if (nameCell && nameCell.value.toLowerCase() === skillName.toLowerCase()) {
-                                        existingRow = row;
-                                    }
-                                });
-                                
-                                if (existingRow) {
-                                    // Update existing skill
-                                    const advancesInput = existingRow.querySelector('input[id*="advances"]');
-                                    if (advancesInput) {
-                                        const currentAdvances = parseInt(advancesInput.value) || 0;
-                                        advancesInput.value = currentAdvances + skillData.advances;
-                                        // Trigger change event to update totals
-                                        advancesInput.dispatchEvent(new Event('change'));
-                                    }
-                                } else {
-                                    // Create new row
-                                    const newRow = skillsTable.insertRow();
-                                    newRow.innerHTML = `
-                                        <td><input type="text" value="${skillName}" style="width: 100%; border: none; background: transparent;"></td>
-                                        <td><input type="number" id="skill-${Date.now()}-advances" value="${skillData.advances}" min="0" max="99" style="width: 50px;" onchange="updateSkillTotal(this)"></td>
-                                        <td>-</td>
-                                        <td id="skill-${Date.now()}-total">-</td>
-                                        <td><button onclick="removeSkillRow(this)" style="background: #cc0000; color: white; border: none; padding: 2px 6px; cursor: pointer;">×</button></td>
-                                    `;
-                                    
-                                    // Trigger skill total update
-                                    const advancesInput = newRow.querySelector('input[type="number"]');
-                                    if (advancesInput && typeof updateSkillTotal === 'function') {
-                                        updateSkillTotal(advancesInput);
-                                    }
-                                }
-                                skillAdded = true;
-                                console.log(`Added ${skillData.advances} advances to ${skillName} using direct table manipulation`);
-                            }
-                        } catch (e) {
-                            console.warn('Direct table manipulation failed:', e);
-                        }
-                    }
-                    
-                    if (!skillAdded) {
-                        console.error(`Failed to add skill: ${skillName} with ${skillData.advances} advances`);
+                    // Use the proven addSkillDirectly function from species wizard
+                    if (typeof addSkillDirectly === 'function') {
+                        addSkillDirectly(skillName, skillData.advances);
+                        console.log(`Added ${skillData.advances} advances to ${skillName} using addSkillDirectly`);
+                    } else {
+                        console.error('addSkillDirectly function not available');
                     }
                 });
-                
-                // Refresh skills display if function exists
-                if (typeof window.updateSkillsDisplay === 'function') {
-                    try {
-                        window.updateSkillsDisplay();
-                    } catch (e) {
-                        console.warn('updateSkillsDisplay failed:', e);
-                    }
-                }
             }
             
             // Apply talents from wizard
@@ -14899,27 +14818,15 @@ function loadSymptomsData() {
                     });
                 }
                 
-                // Add talents to character sheet
+                // Add talents to character sheet using proven addTalentDirectly function
                 allSelectedTalents.forEach(talentName => {
-                    if (typeof addTalentToCharacter === 'function') {
-                        addTalentToCharacter(talentName);
+                    if (typeof addTalentDirectly === 'function') {
+                        addTalentDirectly(talentName);
+                        console.log(`Added talent: ${talentName} using addTalentDirectly`);
                     } else {
-                        // Fallback: directly update characterTalents object
-                        if (typeof characterTalents === 'object') {
-                            const talentKey = talentName.toLowerCase().replace(/\s+/g, '');
-                            characterTalents[talentKey] = {
-                                name: talentName,
-                                times: 1,
-                                source: 'Species'
-                            };
-                        }
+                        console.error('addTalentDirectly function not available');
                     }
                 });
-                
-                // Refresh talents display
-                if (typeof window.updateTalentsDisplay === 'function') {
-                    window.updateTalentsDisplay();
-                }
                 
                 console.log('Talents applied:', allSelectedTalents);
             }
@@ -14931,18 +14838,11 @@ function loadSymptomsData() {
                     Object.keys(setupWizardData.careerAllocation.skills).forEach(skillName => {
                         const advances = setupWizardData.careerAllocation.skills[skillName];
                         if (advances > 0) {
-                            if (typeof addSkillAdvances === 'function') {
-                                addSkillAdvances(skillName, advances);
+                            if (typeof addSkillDirectly === 'function') {
+                                addSkillDirectly(skillName, advances);
+                                console.log(`Added ${advances} career advances to ${skillName} using addSkillDirectly`);
                             } else {
-                                // Fallback: directly update characterSkills object
-                                if (typeof characterSkills === 'object') {
-                                    const skillKey = skillName.toLowerCase().replace(/\s+/g, '');
-                                    if (!characterSkills[skillKey]) {
-                                        characterSkills[skillKey] = { advances: 0 };
-                                    }
-                                    characterSkills[skillKey].advances = (characterSkills[skillKey].advances || 0) + advances;
-                                    characterSkills[skillKey].isCareerSkill = true; // Mark as career skill
-                                }
+                                console.error('addSkillDirectly function not available for career skills');
                             }
                         }
                     });
@@ -14956,18 +14856,11 @@ function loadSymptomsData() {
                 // Apply selected career talent
                 if (setupWizardData.careerAllocation.selectedTalent) {
                     const talentName = setupWizardData.careerAllocation.selectedTalent;
-                    if (typeof addTalentToCharacter === 'function') {
-                        addTalentToCharacter(talentName);
+                    if (typeof addTalentDirectly === 'function') {
+                        addTalentDirectly(talentName);
+                        console.log(`Added career talent: ${talentName} using addTalentDirectly`);
                     } else {
-                        // Fallback: directly update characterTalents object
-                        if (typeof characterTalents === 'object') {
-                            const talentKey = talentName.toLowerCase().replace(/\s+/g, '');
-                            characterTalents[talentKey] = {
-                                name: talentName,
-                                times: 1,
-                                source: 'Career'
-                            };
-                        }
+                        console.error('addTalentDirectly function not available for career talents');
                     }
                 }
                 
