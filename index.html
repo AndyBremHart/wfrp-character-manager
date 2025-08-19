@@ -928,6 +928,26 @@
             pointer-events: none;
         }
 
+        /* Character Setup Wizard Styling */
+        .setup-step {
+            padding: 5px 10px;
+            border-radius: 15px;
+            background: #e8dfd0;
+            color: #666;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .setup-step.active {
+            background: #3e2f1f;
+            color: #faf8f3;
+        }
+
+        .setup-step.completed {
+            background: #4a9b4a;
+            color: white;
+        }
+
         /* Mobile responsiveness for career system */
         @media (max-width: 768px) {
             .career-controls {
@@ -1188,6 +1208,13 @@
     </div>
 
     <div class="character-sheet">
+        <!-- Character Setup Button -->
+        <div style="text-align: center; margin: 10px 0;">
+            <button onclick="startCharacterSetup()" style="padding: 12px 24px; background: #8b0000; color: white; border: 2px solid #660000; cursor: pointer; font-size: 14px; font-weight: bold; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);" title="Begin guided character creation process">
+                🎭 Character Setup Wizard
+            </button>
+        </div>
+
         <!-- Header Section -->
         <div class="sheet-header">
             <div class="header-grid">
@@ -1229,6 +1256,15 @@
                 <div class="header-field">
                     <label>Player</label>
                     <input type="text" id="player" placeholder="Player Name">
+                </div>
+                <div class="header-field">
+                    <label>Tier</label>
+                    <select id="global-tier" onchange="handleGlobalTierChange()" style="padding: 5px; font-family: Georgia, serif; border: 1px solid #8b7355;">
+                        <option value="1">Tier 1</option>
+                        <option value="2">Tier 2</option>
+                        <option value="3">Tier 3</option>
+                        <option value="4">Tier 4</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -2467,6 +2503,51 @@
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <button onclick="clearXPHistory()" class="control-btn" style="padding: 8px 16px; background: #d44; color: white;">Clear All History</button>
                 <button onclick="closeXPHistory()" class="control-btn" style="padding: 8px 16px; background: #8b0000; color: white;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Character Setup Wizard Modal -->
+    <div id="character-setup-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 600px; max-width: 800px; max-height: 80vh; overflow-y: auto; border-radius: 10px;">
+            <h3 style="color: #3e2f1f; margin-bottom: 15px;">🎭 Character Setup Wizard</h3>
+            
+            <!-- Warning Section -->
+            <div id="setup-warning" style="background: #ffe6e6; border: 2px solid #cc0000; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+                <h4 style="color: #cc0000; margin: 0 0 10px 0;">⚠️ Warning</h4>
+                <p style="margin: 0; color: #333;">This will clear all current character data and start fresh. This action cannot be undone.</p>
+                <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center;">
+                    <button onclick="confirmDataReset()" style="padding: 8px 16px; background: #cc0000; color: white; border: none; border-radius: 3px; cursor: pointer;">Continue & Clear Data</button>
+                    <button onclick="closeSetupWizard()" style="padding: 8px 16px; background: #666; color: white; border: none; border-radius: 3px; cursor: pointer;">Cancel</button>
+                </div>
+            </div>
+            
+            <!-- Wizard Steps -->
+            <div id="setup-steps" style="display: none;">
+                <div class="setup-progress" style="margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px;">
+                        <span id="step-species" class="setup-step active">1. Species</span>
+                        <span style="flex: 1; height: 1px; background: #ccc; margin: 0 10px;"></span>
+                        <span id="step-characteristics" class="setup-step">2. Characteristics</span>
+                        <span style="flex: 1; height: 1px; background: #ccc; margin: 0 10px;"></span>
+                        <span id="step-class" class="setup-step">3. Class</span>
+                        <span style="flex: 1; height: 1px; background: #ccc; margin: 0 10px;"></span>
+                        <span id="step-trappings" class="setup-step">4. Trappings</span>
+                        <span style="flex: 1; height: 1px; background: #ccc; margin: 0 10px;"></span>
+                        <span id="step-career" class="setup-step">5. Career</span>
+                    </div>
+                </div>
+                
+                <!-- Step Content -->
+                <div id="setup-content" style="min-height: 300px;">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+                
+                <!-- Navigation -->
+                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                    <button id="setup-prev" onclick="previousSetupStep()" style="padding: 10px 20px; background: #666; color: white; border: none; border-radius: 3px; cursor: pointer;" disabled>Previous</button>
+                    <button id="setup-next" onclick="nextSetupStep()" style="padding: 10px 20px; background: #3e2f1f; color: white; border: none; border-radius: 3px; cursor: pointer;">Next</button>
+                </div>
             </div>
         </div>
     </div>
@@ -4734,6 +4815,28 @@
         let previewCareer = null;
         let currentTier = 1;
         let careersByClass = {};
+        
+        // Global Tier Change Handler
+        function handleGlobalTierChange() {
+            const globalTierSelect = document.getElementById('global-tier');
+            const tierSelect = document.getElementById('tier-select');
+            
+            currentTier = parseInt(globalTierSelect.value);
+            
+            // Sync with the career tier select if it exists
+            if (tierSelect) {
+                tierSelect.value = currentTier;
+            }
+            
+            // Update characteristic limits if we have a career selected
+            if (currentCareer) {
+                updateCharacteristicLimits();
+                updateTierDisplay();
+                saveCareerSelection();
+            }
+            
+            console.log('Global tier changed to:', currentTier);
+        }
         
         // WFRP 4th Edition Official Conditions
         const wfrpConditions = {
@@ -10029,34 +10132,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     careersData = data;
                     console.log('Loaded', data.careers.length, 'careers');
                     
-                    // Convert characteristic advances from cumulative arrays to tier availability
-                    data.careers.forEach(career => {
-                        if (career.characteristicAdvances) {
-                            Object.keys(career.characteristicAdvances).forEach(charCode => {
-                                const advances = career.characteristicAdvances[charCode];
-                                if (advances && advances.length > 0) {
-                                    // Convert [1,2,3,4] to [4] (available starting at tier 4)
-                                    // Convert [1,2,3] to [3,4] (available starting at tier 3)
-                                    // Convert [1,2] to [2,3,4] (available starting at tier 2)  
-                                    // Convert [1] to [1,2,3,4] (available starting at tier 1)
-                                    const highestTier = Math.max(...advances);
-                                    const availableTiers = [];
-                                    for (let tier = highestTier; tier <= 4; tier++) {
-                                        availableTiers.push(tier);
-                                    }
-                                    
-                                    // Debug logging for first few careers
-                                    if (data.careers.indexOf(career) < 3) {
-                                        console.log(`${career.name} ${charCode}: ${advances} -> ${availableTiers}`);
-                                    }
-                                    
-                                    career.characteristicAdvances[charCode] = availableTiers;
-                                }
-                            });
-                        }
-                    });
-                    
-                    console.log('Converted characteristic advances to tier availability format');
+                    console.log('Careers loaded with corrected tier availability format');
                     
                     // Map careers.json class names to dropdown class names
                     const classNameMapping = {
@@ -10182,7 +10258,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Handle tier selection
         function handleTierSelection() {
             const tierSelect = document.getElementById('tier-select');
+            const globalTierSelect = document.getElementById('global-tier');
             const selectedTier = parseInt(tierSelect.value);
+            
+            // Sync with global tier
+            currentTier = selectedTier;
+            if (globalTierSelect) {
+                globalTierSelect.value = selectedTier;
+            }
             
             // If we're in preview mode, just update the preview display
             if (previewCareer) {
@@ -10190,7 +10273,6 @@ document.addEventListener('DOMContentLoaded', function() {
             } 
             // If we have a confirmed career, update everything
             else if (currentCareer) {
-                currentTier = selectedTier;
                 updateTierDisplay();
                 updateCharacteristicLimits();
                 highlightCareerSkills();
@@ -13026,6 +13108,352 @@ function loadSymptomsData() {
         document.addEventListener('DOMContentLoaded', function() {
             initializeSpeciesDropdown();
         });
+
+        // =============== CHARACTER SETUP WIZARD FUNCTIONS ===============
+        
+        let setupCurrentStep = 0;
+        const setupSteps = ['species', 'characteristics', 'class', 'trappings', 'career'];
+        let setupWizardData = {};
+        
+        // Start Character Setup Wizard
+        function startCharacterSetup() {
+            document.getElementById('character-setup-modal').style.display = 'block';
+            document.getElementById('setup-warning').style.display = 'block';
+            document.getElementById('setup-steps').style.display = 'none';
+            setupCurrentStep = 0;
+            setupWizardData = {};
+        }
+        
+        // Close Setup Wizard
+        function closeSetupWizard() {
+            document.getElementById('character-setup-modal').style.display = 'none';
+        }
+        
+        // Confirm data reset and start wizard
+        function confirmDataReset() {
+            // Clear all character data
+            clearAllCharacterData();
+            
+            // Hide warning, show wizard steps
+            document.getElementById('setup-warning').style.display = 'none';
+            document.getElementById('setup-steps').style.display = 'block';
+            
+            // Start with first step
+            setupCurrentStep = 0;
+            showSetupStep(setupCurrentStep);
+        }
+        
+        // Clear all character data
+        function clearAllCharacterData() {
+            // Clear basic info
+            document.getElementById('character-name').value = '';
+            document.getElementById('species').value = '';
+            document.getElementById('class').value = '';
+            document.getElementById('player').value = '';
+            
+            // Reset global tier to 1
+            document.getElementById('global-tier').value = '1';
+            currentTier = 1;
+            
+            // Clear characteristics
+            const characteristics = ['ws', 'bs', 's', 't', 'i', 'agi', 'dex', 'int', 'wp', 'fel'];
+            characteristics.forEach(char => {
+                const initialField = document.getElementById(`${char}-initial`);
+                const advancesField = document.getElementById(`${char}-advances`);
+                const currentField = document.getElementById(`${char}-current`);
+                if (initialField) initialField.value = '';
+                if (advancesField) advancesField.value = '';
+                if (currentField) currentField.value = '';
+            });
+            
+            // Clear career
+            document.getElementById('career-select').value = '';
+            currentCareer = null;
+            clearCareerDisplay();
+            clearCharacteristicLimits();
+            
+            // Clear XP
+            document.getElementById('xp-total').value = '';
+            document.getElementById('xp-spent').value = '';
+            window.updateXPDisplay();
+            
+            console.log('Character data cleared for setup wizard');
+        }
+        
+        // Show specific setup step
+        function showSetupStep(stepIndex) {
+            const content = document.getElementById('setup-content');
+            const prevBtn = document.getElementById('setup-prev');
+            const nextBtn = document.getElementById('setup-next');
+            
+            // Update step indicators
+            document.querySelectorAll('.setup-step').forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index < stepIndex) {
+                    step.classList.add('completed');
+                } else if (index === stepIndex) {
+                    step.classList.add('active');
+                }
+            });
+            
+            // Update navigation buttons
+            prevBtn.disabled = stepIndex === 0;
+            nextBtn.textContent = stepIndex === setupSteps.length - 1 ? 'Finish' : 'Next';
+            
+            // Show step content
+            switch (setupSteps[stepIndex]) {
+                case 'species':
+                    showSpeciesStep(content);
+                    break;
+                case 'characteristics':
+                    showCharacteristicsStep(content);
+                    break;
+                case 'class':
+                    showClassStep(content);
+                    break;
+                case 'trappings':
+                    showTrappingsStep(content);
+                    break;
+                case 'career':
+                    showCareerStep(content);
+                    break;
+            }
+        }
+        
+        // Navigation functions
+        function nextSetupStep() {
+            if (validateCurrentStep()) {
+                if (setupCurrentStep < setupSteps.length - 1) {
+                    setupCurrentStep++;
+                    showSetupStep(setupCurrentStep);
+                } else {
+                    // Finish wizard
+                    finishSetup();
+                }
+            }
+        }
+        
+        function previousSetupStep() {
+            if (setupCurrentStep > 0) {
+                setupCurrentStep--;
+                showSetupStep(setupCurrentStep);
+            }
+        }
+        
+        // Validate current step
+        function validateCurrentStep() {
+            switch (setupSteps[setupCurrentStep]) {
+                case 'species':
+                    return validateSpeciesStep();
+                case 'characteristics':
+                    return validateCharacteristicsStep();
+                case 'class':
+                    return validateClassStep();
+                case 'trappings':
+                    return true; // Trappings are optional
+                case 'career':
+                    return validateCareerStep();
+                default:
+                    return true;
+            }
+        }
+        
+        // Step content functions (simplified implementations)
+        function showSpeciesStep(content) {
+            content.innerHTML = `
+                <h4>Choose Your Species</h4>
+                <p>Select your character's species. This affects starting characteristics and special abilities.</p>
+                <div style="margin: 20px 0;">
+                    <select id="setup-species" style="padding: 10px; font-size: 14px; width: 100%; border: 1px solid #8b7355;">
+                        <option value="">Select Species</option>
+                        <option value="Human">Human</option>
+                        <option value="Dwarf">Dwarf</option>
+                        <option value="Halfling">Halfling</option>
+                        <option value="High Elf">High Elf</option>
+                        <option value="Wood Elf">Wood Elf</option>
+                    </select>
+                </div>
+                <div style="margin-top: 15px;">
+                    <button onclick="openSpeciesWizardFromSetup()" style="padding: 8px 16px; background: #3e2f1f; color: white; border: none; border-radius: 3px; cursor: pointer;">Use Species Wizard</button>
+                </div>
+            `;
+        }
+        
+        function showCharacteristicsStep(content) {
+            content.innerHTML = `
+                <h4>Set Starting Characteristics</h4>
+                <p>Enter your character's starting characteristic values.</p>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0;">
+                    <div><label>WS:</label> <input type="number" id="setup-ws" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>BS:</label> <input type="number" id="setup-bs" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>S:</label> <input type="number" id="setup-s" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>T:</label> <input type="number" id="setup-t" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>I:</label> <input type="number" id="setup-i" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>Agi:</label> <input type="number" id="setup-agi" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>Dex:</label> <input type="number" id="setup-dex" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>Int:</label> <input type="number" id="setup-int" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>WP:</label> <input type="number" id="setup-wp" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>Fel:</label> <input type="number" id="setup-fel" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                </div>
+            `;
+        }
+        
+        function showClassStep(content) {
+            content.innerHTML = `
+                <h4>Choose Your Class</h4>
+                <p>Select your character's starting class. This affects available careers and starting trappings.</p>
+                <div style="margin: 20px 0;">
+                    <select id="setup-class" style="padding: 10px; font-size: 14px; width: 100%; border: 1px solid #8b7355;">
+                        <option value="">Select Class</option>
+                        <option value="Academic">Academic</option>
+                        <option value="Burgher">Burgher</option>
+                        <option value="Courtier">Courtier</option>
+                        <option value="Peasant">Peasant</option>
+                        <option value="Ranger">Ranger</option>
+                        <option value="Riverfolk">Riverfolk</option>
+                        <option value="Rogue">Rogue</option>
+                        <option value="Warrior">Warrior</option>
+                    </select>
+                </div>
+            `;
+        }
+        
+        function showTrappingsStep(content) {
+            content.innerHTML = `
+                <h4>Add Starting Trappings</h4>
+                <p>Your class provides certain starting trappings. These will be automatically added.</p>
+                <div style="margin: 20px 0;">
+                    <button onclick="openClassWizardFromSetup()" style="padding: 8px 16px; background: #3e2f1f; color: white; border: none; border-radius: 3px; cursor: pointer;">Use Class Trappings Wizard</button>
+                </div>
+                <p style="color: #666; font-size: 12px;">Note: You can skip this step and add trappings manually later.</p>
+            `;
+        }
+        
+        function showCareerStep(content) {
+            const classValue = document.getElementById('setup-class').value || document.getElementById('class').value;
+            let careerOptions = '';
+            
+            if (classValue && careersByClass[classValue]) {
+                careersByClass[classValue].forEach(career => {
+                    careerOptions += `<option value="${career.name}">${career.name}</option>`;
+                });
+            }
+            
+            content.innerHTML = `
+                <h4>Choose Your Starting Career</h4>
+                <p>Select your character's starting career. This will be set to Tier 1.</p>
+                <div style="margin: 20px 0;">
+                    <select id="setup-career" style="padding: 10px; font-size: 14px; width: 100%; border: 1px solid #8b7355;">
+                        <option value="">Select Career</option>
+                        ${careerOptions}
+                    </select>
+                </div>
+                <p style="color: #666; font-size: 12px;">Your character will start at Tier 1 with access to tier 1 characteristic advances.</p>
+            `;
+        }
+        
+        // Validation functions
+        function validateSpeciesStep() {
+            const species = document.getElementById('setup-species').value;
+            if (!species) {
+                alert('Please select a species.');
+                return false;
+            }
+            setupWizardData.species = species;
+            return true;
+        }
+        
+        function validateCharacteristicsStep() {
+            const characteristics = ['ws', 'bs', 's', 't', 'i', 'agi', 'dex', 'int', 'wp', 'fel'];
+            for (let char of characteristics) {
+                const value = document.getElementById(`setup-${char}`).value;
+                if (!value || value < 0 || value > 100) {
+                    alert(`Please enter a valid value for ${char.toUpperCase()} (0-100).`);
+                    return false;
+                }
+                setupWizardData[char] = parseInt(value);
+            }
+            return true;
+        }
+        
+        function validateClassStep() {
+            const classValue = document.getElementById('setup-class').value;
+            if (!classValue) {
+                alert('Please select a class.');
+                return false;
+            }
+            setupWizardData.class = classValue;
+            return true;
+        }
+        
+        function validateCareerStep() {
+            const career = document.getElementById('setup-career').value;
+            if (!career) {
+                alert('Please select a career.');
+                return false;
+            }
+            setupWizardData.career = career;
+            return true;
+        }
+        
+        // Finish setup wizard
+        function finishSetup() {
+            // Apply all the collected data
+            document.getElementById('character-name').focus(); // Focus on name for user to enter
+            document.getElementById('species').value = setupWizardData.species;
+            document.getElementById('class').value = setupWizardData.class;
+            
+            // Set characteristics
+            const characteristics = ['ws', 'bs', 's', 't', 'i', 'agi', 'dex', 'int', 'wp', 'fel'];
+            characteristics.forEach(char => {
+                const initialField = document.getElementById(`${char}-initial`);
+                const currentField = document.getElementById(`${char}-current`);
+                if (initialField && setupWizardData[char]) {
+                    initialField.value = setupWizardData[char];
+                    if (currentField) {
+                        currentField.value = setupWizardData[char];
+                    }
+                }
+            });
+            
+            // Set career and tier
+            if (setupWizardData.career) {
+                document.getElementById('career-select').value = setupWizardData.career;
+                document.getElementById('global-tier').value = '1';
+                currentTier = 1;
+                
+                // Find and select the career
+                const career = careersData?.careers?.find(c => c.name === setupWizardData.career);
+                if (career) {
+                    currentCareer = career;
+                    updateCharacteristicLimits();
+                    updateTierDisplay();
+                    highlightCareerSkills();
+                    highlightCareerTalents();
+                }
+            }
+            
+            // Close wizard
+            closeSetupWizard();
+            
+            // Show success message
+            alert('Character setup complete! Your character has been created with the selected options.');
+            
+            // Update XP display and trigger save
+            window.updateXPDisplay();
+            window.updateCharacteristics();
+        }
+        
+        // Helper functions for wizard integration
+        function openSpeciesWizardFromSetup() {
+            // This would open the existing species wizard
+            manualOpenSpeciesWizard();
+        }
+        
+        function openClassWizardFromSetup() {
+            // This would open the existing class wizard
+            manualOpenClassWizard();
+        }
 
         // =============== CLASS TRAPPINGS WIZARD FUNCTIONS ===============
 
