@@ -13462,10 +13462,88 @@ function loadSymptomsData() {
             return true;
         }
         
-        // Add placeholder initialization functions
+        // Initialize characteristics step for setup wizard
         function initializeSetupCharacteristics(speciesInfo) {
-            // This will be implemented to replicate species wizard characteristics step
-            console.log('Initializing characteristics step');
+            // Populate species details
+            const speciesDetails = document.getElementById('setup-species-details');
+            speciesDetails.innerHTML = `
+                <h4 style="color: #3e2f1f; margin: 0 0 10px 0;">${setupWizardData.species}</h4>
+                <p style="margin: 0; color: #666; font-size: 14px;">${speciesInfo.description || 'No description available.'}</p>
+            `;
+
+            // Create characteristics grid dynamically
+            const characteristicsGrid = document.getElementById('setup-characteristics-grid');
+            characteristicsGrid.innerHTML = '';
+            
+            Object.keys(speciesInfo.characteristics).forEach(char => {
+                const charData = speciesInfo.characteristics[char];
+                const charDiv = document.createElement('div');
+                charDiv.className = 'char-advance-group';
+                charDiv.innerHTML = `
+                    <label>${char}</label>
+                    <div style="display: flex; align-items: center; gap: 5px; flex-direction: column;">
+                        <div style="font-size: 11px; color: #666;">
+                            Range: <span id="setup-char-${char.toLowerCase()}-range">${charData.min}-${charData.max}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <span id="setup-char-${char.toLowerCase()}-base">${charData.base}</span>
+                            <span>+</span>
+                            <input type="number" id="setup-char-${char.toLowerCase()}-roll" min="2" max="20" value="0" style="width: 50px; text-align: center;" placeholder="2-20" oninput="updateSetupCharacteristicTotal('${char.toLowerCase()}')">
+                            <span>=</span>
+                            <strong id="setup-char-${char.toLowerCase()}-total">${charData.base}</strong>
+                        </div>
+                    </div>
+                `;
+                characteristicsGrid.appendChild(charDiv);
+                
+                // Store in wizard data
+                setupWizardData.characteristics[char] = {
+                    base: charData.base,
+                    roll: 0,
+                    total: charData.base,
+                    min: charData.min,
+                    max: charData.max
+                };
+            });
+        }
+
+        // Update characteristic total in setup wizard
+        function updateSetupCharacteristicTotal(char) {
+            const speciesInfo = speciesData[setupWizardData.species];
+            
+            // Find the correct characteristic key (handle case sensitivity)
+            const charKey = Object.keys(speciesInfo.characteristics).find(key => 
+                key.toLowerCase() === char.toLowerCase()
+            );
+            
+            if (charKey) {
+                const charData = speciesInfo.characteristics[charKey];
+                const rollInput = document.getElementById(`setup-char-${char.toLowerCase()}-roll`);
+                const rollValue = parseInt(rollInput.value) || 0;
+                const baseValue = charData.base;
+                const total = baseValue + rollValue;
+                
+                // Update total display
+                document.getElementById(`setup-char-${char.toLowerCase()}-total`).textContent = total;
+                
+                // Update wizard data
+                setupWizardData.characteristics[charKey] = {
+                    base: baseValue,
+                    roll: rollValue,
+                    total: total,
+                    min: charData.min,
+                    max: charData.max
+                };
+                
+                // Check if total is within range and update styling
+                if (total < charData.min || total > charData.max) {
+                    rollInput.style.borderColor = '#cc0000';
+                    rollInput.style.backgroundColor = '#ffe6e6';
+                } else {
+                    rollInput.style.borderColor = '#8b7355';
+                    rollInput.style.backgroundColor = 'white';
+                }
+            }
         }
         
         function initializeSetupSkills(speciesInfo) {
