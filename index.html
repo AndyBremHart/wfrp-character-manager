@@ -1236,6 +1236,17 @@
                 </div>
             </div>
             
+            <div class="career-actions" id="career-actions" style="display: none; margin: 15px 0;">
+                <button id="enter-career-btn" onclick="confirmCareerSelection()" 
+                        style="padding: 10px 20px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; border-radius: 4px; font-family: Georgia, serif; cursor: pointer;">
+                    Enter Career
+                </button>
+                <button id="cancel-career-btn" onclick="cancelCareerSelection()" 
+                        style="padding: 10px 20px; background: #666; color: white; border: 1px solid #444; border-radius: 4px; font-family: Georgia, serif; cursor: pointer; margin-left: 10px;">
+                    Cancel
+                </button>
+            </div>
+            
             <div id="tier-info" class="tier-info" style="display: none;">
                 <div class="tier-info-header">
                     <div class="tier-name" id="tier-name">-</div>
@@ -4693,6 +4704,7 @@
         // Career System Variables
         let careersData = null;
         let currentCareer = null;
+        let previewCareer = null;
         let currentTier = 1;
         let careersByClass = {};
         
@@ -10028,28 +10040,79 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Handle career selection
+        // Handle career selection (preview only)
         function handleCareerSelection() {
             const careerSelect = document.getElementById('career-select');
             const selectedCareerName = careerSelect.value;
             
             if (selectedCareerName && careersData) {
-                currentCareer = careersData.careers.find(c => c.name === selectedCareerName);
-                if (currentCareer) {
-                    selectCareer(currentCareer);
+                previewCareer = careersData.careers.find(c => c.name === selectedCareerName);
+                if (previewCareer) {
+                    showCareerPreview(previewCareer);
                 }
             } else {
-                currentCareer = null;
+                previewCareer = null;
                 clearCareerDisplay();
+                document.getElementById('career-actions').style.display = 'none';
             }
+        }
+        
+        // Show career preview without applying changes
+        function showCareerPreview(career) {
+            document.getElementById('career-class').textContent = career.class.charAt(0).toUpperCase() + career.class.slice(1);
+            document.getElementById('tier-info').style.display = 'block';
+            document.getElementById('career-actions').style.display = 'block';
+            
+            // Reset tier selector to 1
+            document.getElementById('tier-select').value = '1';
+            document.getElementById('tier-select').disabled = false;
+            
+            // Display tier 1 information
+            displayTierInfo(career, 1);
+        }
+        
+        // Confirm career selection and apply changes
+        function confirmCareerSelection() {
+            if (previewCareer) {
+                currentCareer = previewCareer;
+                currentTier = parseInt(document.getElementById('tier-select').value);
+                previewCareer = null;
+                
+                // Apply characteristic limits and highlighting
+                updateCharacteristicLimits();
+                highlightCareerSkills();
+                highlightCareerTalents();
+                
+                // Save career selection
+                saveCareerSelection();
+                
+                // Hide action buttons
+                document.getElementById('career-actions').style.display = 'none';
+                
+                console.log('Career confirmed:', currentCareer.name, 'Tier:', currentTier);
+            }
+        }
+        
+        // Cancel career selection
+        function cancelCareerSelection() {
+            previewCareer = null;
+            document.getElementById('career-select').value = '';
+            clearCareerDisplay();
+            document.getElementById('career-actions').style.display = 'none';
         }
         
         // Handle tier selection
         function handleTierSelection() {
             const tierSelect = document.getElementById('tier-select');
-            currentTier = parseInt(tierSelect.value);
+            const selectedTier = parseInt(tierSelect.value);
             
-            if (currentCareer) {
+            // If we're in preview mode, just update the preview display
+            if (previewCareer) {
+                displayTierInfo(previewCareer, selectedTier);
+            } 
+            // If we have a confirmed career, update everything
+            else if (currentCareer) {
+                currentTier = selectedTier;
                 updateTierDisplay();
                 updateCharacteristicLimits();
                 highlightCareerSkills();
@@ -10059,23 +10122,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Select and display a career
-        function selectCareer(career) {
-            currentCareer = career;
+        // Display tier information for preview or confirmed career
+        function displayTierInfo(career, tierNumber) {
+            if (!career || !career.tiers) return;
             
-            // Update class display
-            const careerClassDiv = document.getElementById('career-class');
-            careerClassDiv.textContent = career.class.charAt(0).toUpperCase() + career.class.slice(1);
+            const tier = career.tiers.find(t => t.tier === tierNumber);
+            if (!tier) return;
             
-            // Enable tier selector
-            const tierSelect = document.getElementById('tier-select');
-            tierSelect.disabled = false;
+            // Update tier header
+            document.getElementById('tier-name').textContent = tier.name;
+            document.getElementById('tier-status').textContent = tier.status || '-';
             
-            // Update display
-            updateTierDisplay();
-            updateCharacteristicLimits();
-            highlightCareerSkills();
-            highlightCareerTalents();
-            saveCareerSelection();
+            // Update tier details
+            document.getElementById('tier-skills').textContent = tier.skills ? tier.skills.join(', ') : '-';
+            document.getElementById('tier-talents').textContent = tier.talents ? tier.talents.join(', ') : '-';
+            document.getElementById('tier-trappings').textContent = tier.trappings ? tier.trappings.join(', ') : '-';
         }
         
         // Update tier information display
