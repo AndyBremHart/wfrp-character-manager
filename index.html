@@ -10015,22 +10015,73 @@ document.addEventListener('DOMContentLoaded', function() {
                     baseName = talentName.trim();
                 }
 
-                // Generate unique talent ID
-                const talentId = Date.now() + Math.random();
-                
-                // Add talent to talents array
-                if (!talents.find(talent => talent.name === baseName && talent.customisation === customisation)) {
+                // Check if srdTalents is available
+                if (!srdTalents || srdTalents.length === 0) {
+                    console.warn(`srdTalents not loaded yet. Adding talent with basic structure.`);
+                    // Add with minimal structure if SRD data isn't available
+                    const displayName = customisation ? `${baseName} (${customisation})` : baseName;
                     talents.push({
-                        id: talentId,
                         name: baseName,
-                        advances: 1,
+                        displayName: displayName,
+                        max: "1",
+                        tests: '',
+                        description: '',
+                        timesTaken: 1,
                         customisation: customisation,
                         notes: ''
                     });
-
-                    // Refresh the talents display
                     displayTalents();
+                    return;
                 }
+
+                // Find the talent in srdTalents using base name
+                const baseTalent = srdTalents.find(t => t.name === baseName);
+                if (!baseTalent) {
+                    console.warn(`Talent "${baseName}" not found in srdTalents. Adding with basic structure.`);
+                    // Add with minimal structure if talent not found in SRD
+                    const displayName = customisation ? `${baseName} (${customisation})` : baseName;
+                    talents.push({
+                        name: baseName,
+                        displayName: displayName,
+                        max: "1",
+                        tests: '',
+                        description: '',
+                        timesTaken: 1,
+                        customisation: customisation,
+                        notes: ''
+                    });
+                    displayTalents();
+                    return;
+                }
+
+                // Create display name
+                const displayName = customisation ? `${baseName} (${customisation})` : baseName;
+                
+                // Check if talent already exists (by name and customisation)
+                const existingTalent = talents.find(t => t.name === baseName && (t.customisation || '') === customisation);
+                if (existingTalent) {
+                    // If it's a multiple talent, increase the times taken
+                    if (baseTalent.max && baseTalent.max !== "1") {
+                        existingTalent.timesTaken = Math.min((existingTalent.timesTaken || 1) + 1, parseInt(baseTalent.max) || 1);
+                    }
+                    displayTalents();
+                    return;
+                }
+                
+                // Add talent to talents array with complete structure
+                talents.push({
+                    name: baseName,
+                    displayName: displayName,
+                    max: baseTalent.max || "1",
+                    tests: baseTalent.tests || '',
+                    description: baseTalent.description || '',
+                    timesTaken: 1,
+                    customisation: customisation,
+                    notes: ''
+                });
+
+                // Refresh the talents display
+                displayTalents();
             };
         }
 
