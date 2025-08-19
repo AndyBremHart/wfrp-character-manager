@@ -13673,8 +13673,8 @@ function loadSymptomsData() {
                 </div>
                 
                 <div style="text-align: center; padding: 15px; background: #f0f7ff; border-radius: 5px;">
-                    <span style="font-size: 16px; color: #666;">Points Used: </span>
-                    <strong id="setup-points-used" style="font-size: 18px;">${setupWizardData.usedExtraPoints}</strong>
+                    <span style="font-size: 16px; color: #666;">Points Remaining: </span>
+                    <strong id="setup-points-remaining" style="font-size: 18px; color: ${(speciesInfo.extraPoints - setupWizardData.usedExtraPoints) === 0 ? '#2e7d32' : '#666'};">${speciesInfo.extraPoints - setupWizardData.usedExtraPoints}</strong>
                     <span style="font-size: 16px; color: #666;"> / ${speciesInfo.extraPoints}</span>
                 </div>
             `;
@@ -13687,6 +13687,7 @@ function loadSymptomsData() {
             const fateExtra = parseInt(document.getElementById('setup-fate-extra').value) || 0;
             const resilienceExtra = parseInt(document.getElementById('setup-resilience-extra').value) || 0;
             const totalUsed = fateExtra + resilienceExtra;
+            const remaining = speciesInfo.extraPoints - totalUsed;
             
             // Update totals
             const fateTotal = speciesInfo.baseFate + fateExtra;
@@ -13694,7 +13695,12 @@ function loadSymptomsData() {
             
             document.getElementById('setup-fate-total').textContent = fateTotal;
             document.getElementById('setup-resilience-total').textContent = resilienceTotal;
-            document.getElementById('setup-points-used').textContent = totalUsed;
+            
+            const remainingElement = document.getElementById('setup-points-remaining');
+            if (remainingElement) {
+                remainingElement.textContent = remaining;
+                remainingElement.style.color = remaining === 0 ? '#2e7d32' : (remaining < 0 ? '#cc0000' : '#666');
+            }
             
             // Update wizard data
             setupWizardData.fate = {
@@ -13708,25 +13714,30 @@ function loadSymptomsData() {
                 total: resilienceTotal
             };
             setupWizardData.usedExtraPoints = totalUsed;
-            
-            // Validation styling
-            const remaining = speciesInfo.extraPoints - totalUsed;
-            const fateResilienceSection = document.querySelector('[style*="margin-top: 30px"][style*="padding: 20px"]');
-            if (fateResilienceSection) {
-                if (remaining < 0) {
-                    fateResilienceSection.style.borderColor = '#cc0000';
-                    fateResilienceSection.style.backgroundColor = '#ffe6e6';
-                } else {
-                    fateResilienceSection.style.borderColor = '#d0c5a0';
-                    fateResilienceSection.style.backgroundColor = '#f9f7f1';
-                }
-            }
         }
         
         function adjustFateResilience(type, change) {
+            const speciesInfo = speciesData[setupWizardData.species];
+            if (!speciesInfo) return;
+            
             const input = document.getElementById(`setup-${type}-extra`);
             const currentValue = parseInt(input.value) || 0;
-            const newValue = Math.max(0, currentValue + change);
+            const otherInput = document.getElementById(`setup-${type === 'fate' ? 'resilience' : 'fate'}-extra`);
+            const otherValue = parseInt(otherInput.value) || 0;
+            
+            let newValue = currentValue + change;
+            
+            // Prevent going below 0
+            if (newValue < 0) {
+                newValue = 0;
+            }
+            
+            // Prevent going over available points
+            const totalAfterChange = newValue + otherValue;
+            if (totalAfterChange > speciesInfo.extraPoints) {
+                newValue = speciesInfo.extraPoints - otherValue;
+                if (newValue < 0) newValue = 0;
+            }
             
             input.value = newValue;
             updateFateResilience();
@@ -13827,18 +13838,39 @@ function loadSymptomsData() {
                     };
                 }
                 
+                const hasSpecialization = skill.includes('(any');
+                const skillBase = hasSpecialization ? skill.substring(0, skill.indexOf('(')) : skill;
+                const skillId = `skill-spec-${section}-${skill.replace(/[^a-zA-Z0-9]/g, '')}`;
+                
                 skillCard.innerHTML = `
                     <div style="font-weight: bold; color: ${isSelected ? '#2c5aa0' : '#3e2f1f'}; margin-bottom: 5px;">
-                        ${skill}
+                        ${skillBase}${hasSpecialization ? ' (any)' : ''}
                     </div>
                     <div style="font-size: 12px; color: #666; margin-bottom: 8px;">
                         +${section === 1 ? '5' : '3'} Advances
                     </div>
+                    ${hasSpecialization && isSelected ? `
+                        <div style="margin: 8px 0;">
+                            <input type="text" id="${skillId}" placeholder="Specify..." 
+                                   value="${setupWizardData.skillSpecializations?.[skill] || ''}"
+                                   onchange="updateSkillSpecialization('${skill}', this.value)"
+                                   onclick="event.stopPropagation()"
+                                   style="width: 80%; padding: 4px; border: 1px solid #4a90e2; border-radius: 3px; font-size: 11px;">
+                        </div>
+                    ` : ''}
                     ${isSelected ? '<div style="color: #4a90e2; font-size: 12px; font-weight: bold;">✓ SELECTED</div>' : ''}
                 `;
                 
                 container.appendChild(skillCard);
             });
+        }
+
+        // Update skill specialization
+        function updateSkillSpecialization(skill, specialization) {
+            if (!setupWizardData.skillSpecializations) {
+                setupWizardData.skillSpecializations = {};
+            }
+            setupWizardData.skillSpecializations[skill] = specialization;
         }
 
         // Toggle skill selection
@@ -14746,27 +14778,107 @@ function loadSymptomsData() {
                     ...setupWizardData.skills.step4.map(skill => ({name: skill, advances: 3}))
                 ];
                 
+                console.log('Applying skills to character sheet:', allSelectedSkills);
+                console.log('Skill specializations:', setupWizardData.skillSpecializations);
+                
                 allSelectedSkills.forEach(skillData => {
-                    if (typeof addSkillAdvances === 'function') {
-                        addSkillAdvances(skillData.name, skillData.advances);
-                    } else {
-                        // Fallback: directly update characterSkills object
-                        if (typeof characterSkills === 'object') {
-                            const skillKey = skillData.name.toLowerCase().replace(/\s+/g, '');
-                            if (!characterSkills[skillKey]) {
-                                characterSkills[skillKey] = { advances: 0 };
-                            }
-                            characterSkills[skillKey].advances = (characterSkills[skillKey].advances || 0) + skillData.advances;
+                    let skillName = skillData.name;
+                    
+                    // Handle skill specializations
+                    if (setupWizardData.skillSpecializations && setupWizardData.skillSpecializations[skillName]) {
+                        const specialization = setupWizardData.skillSpecializations[skillName];
+                        skillName = skillName.replace('(any)', `(${specialization})`);
+                    }
+                    
+                    // Try multiple methods to add the skill
+                    let skillAdded = false;
+                    
+                    // Method 1: Try addSkillAdvances function
+                    if (typeof window.addSkillAdvances === 'function') {
+                        try {
+                            window.addSkillAdvances(skillName, skillData.advances);
+                            skillAdded = true;
+                            console.log(`Added ${skillData.advances} advances to ${skillName} using addSkillAdvances`);
+                        } catch (e) {
+                            console.warn('addSkillAdvances failed:', e);
                         }
+                    }
+                    
+                    // Method 2: Try addSkillToSheet function
+                    if (!skillAdded && typeof window.addSkillToSheet === 'function') {
+                        try {
+                            for (let i = 0; i < skillData.advances; i++) {
+                                window.addSkillToSheet(skillName);
+                            }
+                            skillAdded = true;
+                            console.log(`Added ${skillData.advances} advances to ${skillName} using addSkillToSheet`);
+                        } catch (e) {
+                            console.warn('addSkillToSheet failed:', e);
+                        }
+                    }
+                    
+                    // Method 3: Direct manipulation of skills table
+                    if (!skillAdded) {
+                        try {
+                            const skillsTable = document.querySelector('#skills-section table tbody');
+                            if (skillsTable) {
+                                // Check if skill already exists in the table
+                                let existingRow = null;
+                                const rows = skillsTable.querySelectorAll('tr');
+                                rows.forEach(row => {
+                                    const nameCell = row.querySelector('td:first-child input[type="text"]');
+                                    if (nameCell && nameCell.value.toLowerCase() === skillName.toLowerCase()) {
+                                        existingRow = row;
+                                    }
+                                });
+                                
+                                if (existingRow) {
+                                    // Update existing skill
+                                    const advancesInput = existingRow.querySelector('input[id*="advances"]');
+                                    if (advancesInput) {
+                                        const currentAdvances = parseInt(advancesInput.value) || 0;
+                                        advancesInput.value = currentAdvances + skillData.advances;
+                                        // Trigger change event to update totals
+                                        advancesInput.dispatchEvent(new Event('change'));
+                                    }
+                                } else {
+                                    // Create new row
+                                    const newRow = skillsTable.insertRow();
+                                    newRow.innerHTML = `
+                                        <td><input type="text" value="${skillName}" style="width: 100%; border: none; background: transparent;"></td>
+                                        <td><input type="number" id="skill-${Date.now()}-advances" value="${skillData.advances}" min="0" max="99" style="width: 50px;" onchange="updateSkillTotal(this)"></td>
+                                        <td>-</td>
+                                        <td id="skill-${Date.now()}-total">-</td>
+                                        <td><button onclick="removeSkillRow(this)" style="background: #cc0000; color: white; border: none; padding: 2px 6px; cursor: pointer;">×</button></td>
+                                    `;
+                                    
+                                    // Trigger skill total update
+                                    const advancesInput = newRow.querySelector('input[type="number"]');
+                                    if (advancesInput && typeof updateSkillTotal === 'function') {
+                                        updateSkillTotal(advancesInput);
+                                    }
+                                }
+                                skillAdded = true;
+                                console.log(`Added ${skillData.advances} advances to ${skillName} using direct table manipulation`);
+                            }
+                        } catch (e) {
+                            console.warn('Direct table manipulation failed:', e);
+                        }
+                    }
+                    
+                    if (!skillAdded) {
+                        console.error(`Failed to add skill: ${skillName} with ${skillData.advances} advances`);
                     }
                 });
                 
-                // Refresh skills display
+                // Refresh skills display if function exists
                 if (typeof window.updateSkillsDisplay === 'function') {
-                    window.updateSkillsDisplay();
+                    try {
+                        window.updateSkillsDisplay();
+                    } catch (e) {
+                        console.warn('updateSkillsDisplay failed:', e);
+                    }
                 }
-                
-                console.log('Skills applied:', allSelectedSkills);
             }
             
             // Apply talents from wizard
