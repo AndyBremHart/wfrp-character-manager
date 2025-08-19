@@ -3636,8 +3636,12 @@
 
         // Initialize Google APIs when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize auto-save system first
-            initializeAutoSaveSystem();
+            // Define showTab function before initializing auto-save
+            // (showTab is defined later in the file, so we'll initialize after a delay)
+            setTimeout(() => {
+                // Initialize auto-save system after showTab is defined
+                initializeAutoSaveSystem();
+            }, 100);
             
             // Add a small delay to ensure Google scripts are loaded
             setTimeout(() => {
@@ -3664,7 +3668,7 @@
         let autoSaveTimeout;
         let lastSaveTime = 0;
         let isAutoSaving = false;
-        let currentActiveTab = 'overview';
+        let currentActiveTab = 'character-tab';
 
         // Save status management
         function updateSaveStatus(status, message) {
@@ -3888,9 +3892,9 @@
 
                 // Pre-restore the saved tab immediately to prevent UI flashing
                 const savedTab = localStorage.getItem(AUTO_SAVE_CONFIG.SAVE_KEYS.CURRENT_TAB);
-                if (savedTab) {
+                if (savedTab && window.showTab) {
                     try {
-                        showTab(savedTab);
+                        window.showTab(savedTab);
                     } catch (error) {
                         console.warn('Could not pre-restore tab:', error);
                     }
@@ -4122,15 +4126,19 @@
                 element.addEventListener('change', triggerAutoSave);
             });
 
-            // Tab switching
-            const originalShowTab = window.showTab;
-            if (originalShowTab) {
+            // Tab switching - wrap only if not already wrapped
+            if (window.showTab && !window.showTab._isWrapped) {
+                const originalShowTab = window.showTab;
                 window.showTab = function(tabId) {
+                    // Call the original function first
+                    const result = originalShowTab.call(this, tabId);
+                    // Then update tracking and trigger save
                     currentActiveTab = tabId;
                     localStorage.setItem(AUTO_SAVE_CONFIG.SAVE_KEYS.CURRENT_TAB, tabId);
                     triggerAutoSave();
-                    return originalShowTab.call(this, tabId);
+                    return result;
                 };
+                window.showTab._isWrapped = true;
             }
 
             // Window events
@@ -4227,12 +4235,12 @@
         }
 
         // Tab switching functionality with enhanced error handling
-        function showTab(tabId, retryCount = 0) {
+        window.showTab = function(tabId, retryCount = 0) {
             try {
                 // Validate that we have a valid tabId
                 if (!tabId || typeof tabId !== 'string') {
-                    console.warn('Invalid tabId provided, defaulting to overview');
-                    tabId = 'overview';
+                    console.warn('Invalid tabId provided, defaulting to character-tab');
+                    tabId = 'character-tab';
                 }
 
                 // Hide all tabs
@@ -4255,18 +4263,18 @@
                     // If tab not found and this is first retry, wait and try again
                     if (retryCount < 1) {
                         console.warn(`Tab with ID '${tabId}' not found, retrying in 500ms...`);
-                        setTimeout(() => showTab(tabId, retryCount + 1), 500);
+                        setTimeout(() => window.showTab(tabId, retryCount + 1), 500);
                         return;
                     }
                     
-                    // After retry, fallback to overview
-                    console.warn(`Tab with ID '${tabId}' not found after retry, defaulting to overview tab`);
-                    targetTab = document.getElementById('overview');
+                    // After retry, fallback to character-tab
+                    console.warn(`Tab with ID '${tabId}' not found after retry, defaulting to character-tab`);
+                    targetTab = document.getElementById('character-tab');
                     if (targetTab) {
                         targetTab.classList.add('active');
-                        tabId = 'overview'; // Update the tabId for consistency
+                        tabId = 'character-tab'; // Update the tabId for consistency
                     } else {
-                        console.error('Critical: Even overview tab not found');
+                        console.error('Critical: Even character-tab not found');
                         return; // Exit if we can't even find overview
                     }
                 }
@@ -4280,15 +4288,17 @@
                     event.target.classList.add('active');
                 }
                 
-                // Update current active tab for auto-save
-                currentActiveTab = tabId;
+                // Update current active tab for auto-save only if not wrapped
+                if (typeof currentActiveTab !== 'undefined') {
+                    currentActiveTab = tabId;
+                }
                 
             } catch (error) {
                 console.error('Error in showTab function:', error);
-                // Ultimate fallback to overview tab
+                // Ultimate fallback to character-tab
                 try {
-                    const overviewTab = document.getElementById('overview');
-                    if (overviewTab) {
+                    const characterTab = document.getElementById('character-tab');
+                    if (characterTab) {
                         // Clear all active states first
                         document.querySelectorAll('.tab-content').forEach(tab => {
                             tab.classList.remove('active');
@@ -4297,17 +4307,19 @@
                             button.classList.remove('active');
                         });
                         
-                        overviewTab.classList.add('active');
-                        currentActiveTab = 'overview';
+                        characterTab.classList.add('active');
+                        if (typeof currentActiveTab !== 'undefined') {
+                            currentActiveTab = 'character-tab';
+                        }
                         
-                        // Try to activate overview button
-                        const overviewButton = document.querySelector('.tab-button[onclick*="overview"]');
-                        if (overviewButton) {
-                            overviewButton.classList.add('active');
+                        // Try to activate character button
+                        const characterButton = document.querySelector('.tab-button[onclick*="character-tab"]');
+                        if (characterButton) {
+                            characterButton.classList.add('active');
                         }
                     }
                 } catch (fallbackError) {
-                    console.error('Critical error: Could not access overview tab:', fallbackError);
+                    console.error('Critical error: Could not access character tab:', fallbackError);
                 }
             }
         }
