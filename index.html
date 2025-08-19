@@ -13547,13 +13547,204 @@ function loadSymptomsData() {
         }
         
         function initializeSetupSkills(speciesInfo) {
-            // This will be implemented to replicate species wizard skills steps
-            console.log('Initializing skills step');
+            const skillsContent = document.getElementById('setup-skills-content');
+            
+            // Initialize skills data structure if not exists
+            if (!setupWizardData.skills) {
+                setupWizardData.skills = {
+                    step3: [], // 5 advances each
+                    step4: []  // 3 advances each
+                };
+            }
+            
+            skillsContent.innerHTML = `
+                <div style="background: #f5f2e8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    <h4 style="color: #3e2f1f; margin: 0 0 10px 0;">Species Skills (5 advances each)</h4>
+                    <p style="margin-bottom: 15px; color: #666;">Select 3 skills from your species list to receive +5 advances each. Remaining: <span id="setup-remaining-skill-points-1">3</span></p>
+                    
+                    <div id="setup-species-skills-list-1" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
+                        <!-- Skills will be populated dynamically -->
+                    </div>
+                </div>
+                
+                <div style="background: #f0f7ff; padding: 15px; border-radius: 5px;">
+                    <h4 style="color: #3e2f1f; margin: 0 0 10px 0;">Additional Skills (3 advances each)</h4>
+                    <p style="margin-bottom: 15px; color: #666;">Select 3 additional skills from your species list to receive +3 advances each. Remaining: <span id="setup-remaining-skill-points-2">3</span></p>
+                    
+                    <div id="setup-species-skills-list-2" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <!-- Skills will be populated dynamically -->
+                    </div>
+                </div>
+            `;
+            
+            // Populate first skills list
+            const skillsList1 = document.getElementById('setup-species-skills-list-1');
+            speciesInfo.skills.forEach(skill => {
+                const skillDiv = document.createElement('div');
+                skillDiv.className = 'skill-checkbox-item';
+                skillDiv.innerHTML = `
+                    <input type="checkbox" id="setup-skill3-${skill}" value="${skill}" onchange="updateSetupSkillSelection(3, this)">
+                    <label for="setup-skill3-${skill}">${skill}</label>
+                `;
+                skillsList1.appendChild(skillDiv);
+            });
+            
+            // Populate second skills list
+            updateSetupSkillsList2();
+            
+            // Reset counters
+            document.getElementById('setup-remaining-skill-points-1').textContent = 3;
+            document.getElementById('setup-remaining-skill-points-2').textContent = 3;
+        }
+
+        // Update skill selection for setup wizard
+        function updateSetupSkillSelection(step, checkbox) {
+            const maxSelections = 3;
+            const currentSelections = step === 3 ? setupWizardData.skills.step3 : setupWizardData.skills.step4;
+            const remainingSpan = step === 3 ? 
+                document.getElementById('setup-remaining-skill-points-1') : 
+                document.getElementById('setup-remaining-skill-points-2');
+
+            if (checkbox.checked) {
+                if (currentSelections.length >= maxSelections) {
+                    checkbox.checked = false;
+                    alert(`You can only select ${maxSelections} skills in this step.`);
+                    return;
+                }
+                currentSelections.push(checkbox.value);
+            } else {
+                const index = currentSelections.indexOf(checkbox.value);
+                if (index > -1) {
+                    currentSelections.splice(index, 1);
+                }
+            }
+
+            remainingSpan.textContent = maxSelections - currentSelections.length;
+            
+            // Update second skills list when first selection changes
+            if (step === 3) {
+                updateSetupSkillsList2();
+            }
+        }
+
+        // Update the second skills list (excluding selected skills from first list)
+        function updateSetupSkillsList2() {
+            const speciesInfo = speciesData[setupWizardData.species];
+            const skillsList2 = document.getElementById('setup-species-skills-list-2');
+            
+            if (!skillsList2) return; // Element doesn't exist yet
+            
+            skillsList2.innerHTML = '';
+
+            // Only show skills not selected in step 3
+            const availableSkills = speciesInfo.skills.filter(skill => 
+                !setupWizardData.skills.step3.includes(skill)
+            );
+
+            availableSkills.forEach(skill => {
+                const skillDiv = document.createElement('div');
+                skillDiv.className = 'skill-checkbox-item';
+                skillDiv.innerHTML = `
+                    <input type="checkbox" id="setup-skill4-${skill}" value="${skill}" onchange="updateSetupSkillSelection(4, this)">
+                    <label for="setup-skill4-${skill}">${skill}</label>
+                `;
+                skillsList2.appendChild(skillDiv);
+            });
         }
         
         function initializeSetupTalents(speciesInfo) {
-            // This will be implemented to replicate species wizard talents step
-            console.log('Initializing talents step');
+            const talentsContent = document.getElementById('setup-talents-content');
+            
+            // Initialize talents data structure if not exists
+            if (!setupWizardData.talents) {
+                setupWizardData.talents = {
+                    fixed: [],
+                    choices: []
+                };
+            }
+            
+            let talentsHTML = '';
+            
+            // Handle fixed talents (automatic)
+            if (speciesInfo.fixedTalents) {
+                setupWizardData.talents.fixed = [...speciesInfo.fixedTalents];
+                talentsHTML += `
+                    <div style="background: #f5f2e8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                        <h4 style="color: #3e2f1f; margin-bottom: 10px;">Fixed Species Talents (Automatic)</h4>
+                        <div id="setup-fixed-talents-list">
+                            ${setupWizardData.talents.fixed.map(talent => 
+                                `<span style="display: inline-block; background: #d4e6f1; padding: 5px 10px; margin: 2px; border-radius: 3px;">${talent}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Handle talent choices
+            if (speciesInfo.talentChoices) {
+                talentsHTML += `
+                    <h4 style="color: #3e2f1f; margin-bottom: 10px;">Talent Choices</h4>
+                    <p style="margin-bottom: 15px; color: #666;">Make your talent selections below:</p>
+                    <div id="setup-talent-choices">
+                `;
+                
+                speciesInfo.talentChoices.forEach((choice, choiceIndex) => {
+                    talentsHTML += `
+                        <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #d0c5a0; border-radius: 5px; background: #f9f7f1;">
+                            <h5 style="color: #3e2f1f; margin: 0 0 10px 0;">Choose ${choice.count} from:</h5>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                    `;
+                    
+                    choice.options.forEach(talent => {
+                        talentsHTML += `
+                            <div>
+                                <input type="checkbox" id="setup-talent-${choiceIndex}-${talent}" value="${talent}" 
+                                       onchange="updateSetupTalentSelection(${choiceIndex}, ${choice.count}, this)">
+                                <label for="setup-talent-${choiceIndex}-${talent}">${talent}</label>
+                            </div>
+                        `;
+                    });
+                    
+                    talentsHTML += `
+                            </div>
+                            <p style="margin: 10px 0 0 0; font-size: 12px; color: #666;">
+                                Remaining: <span id="setup-talent-remaining-${choiceIndex}">${choice.count}</span>
+                            </p>
+                        </div>
+                    `;
+                });
+                
+                talentsHTML += `</div>`;
+            }
+            
+            talentsContent.innerHTML = talentsHTML;
+        }
+
+        // Update talent selection for setup wizard
+        function updateSetupTalentSelection(choiceIndex, maxCount, checkbox) {
+            // Initialize the choice array if needed
+            if (!setupWizardData.talents.choices[choiceIndex]) {
+                setupWizardData.talents.choices[choiceIndex] = [];
+            }
+            
+            const currentSelections = setupWizardData.talents.choices[choiceIndex];
+            const remainingSpan = document.getElementById(`setup-talent-remaining-${choiceIndex}`);
+
+            if (checkbox.checked) {
+                if (currentSelections.length >= maxCount) {
+                    checkbox.checked = false;
+                    alert(`You can only select ${maxCount} talent(s) from this group.`);
+                    return;
+                }
+                currentSelections.push(checkbox.value);
+            } else {
+                const index = currentSelections.indexOf(checkbox.value);
+                if (index > -1) {
+                    currentSelections.splice(index, 1);
+                }
+            }
+
+            remainingSpan.textContent = maxCount - currentSelections.length;
         }
         
         function initializeSetupClass() {
@@ -13582,8 +13773,57 @@ function loadSymptomsData() {
         }
         
         function initializeSetupTrappings() {
-            // Show trappings for selected class
-            console.log('Initializing trappings step');
+            const trappingsContent = document.getElementById('setup-trappings-content');
+            const classValue = setupWizardData.class;
+            
+            if (!classValue) {
+                trappingsContent.innerHTML = `
+                    <div style="background: #ffe6e6; padding: 15px; border: 2px solid #cc0000; border-radius: 5px;">
+                        <p style="color: #cc0000; margin: 0;">Please select a class in the previous step first.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Initialize trappings data structure if not exists
+            if (!setupWizardData.trappings) {
+                setupWizardData.trappings = [];
+            }
+            
+            // Define basic class trappings
+            const classTrappings = {
+                'Academic': ['Book', 'Writing Kit', 'Robes', 'Pouch', '2d10 Brass Pennies'],
+                'Burgher': ['Trade Tools', 'Leather Jerkin', 'Purse', '2d10 Silver Shillings'],
+                'Courtier': ['Fine Clothes', 'Jewelry', 'Perfume', 'Purse', '2d10 Gold Crowns'],
+                'Peasant': ['Sling with 10 stones', 'Leather Jerkin', 'Pouch', '2d10 Brass Pennies'],
+                'Ranger': ['Bow with 10 arrows', 'Leather Jerkin', 'Backpack', '2d10 Silver Shillings'],
+                'Riverfolk': ['Boat Hook', 'Leather Jerkin', 'Net', '2d10 Brass Pennies'],
+                'Rogue': ['Lockpicks', 'Leather Jerkin', 'Rope (10 yards)', '2d10 Silver Shillings'],
+                'Warrior': ['Hand Weapon', 'Mail Shirt', 'Shield', '2d10 Silver Shillings']
+            };
+            
+            const trappings = classTrappings[classValue] || ['Basic Equipment'];
+            setupWizardData.trappings = [...trappings];
+            
+            trappingsContent.innerHTML = `
+                <div style="background: #f5f2e8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    <h4 style="color: #3e2f1f; margin: 0 0 15px 0;">Class Trappings: ${classValue}</h4>
+                    <p style="margin-bottom: 15px; color: #666;">Your character receives the following starting equipment:</p>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+                        ${trappings.map(trapping => `
+                            <div style="display: flex; align-items: center; padding: 8px; background: white; border: 1px solid #d0c5a0; border-radius: 3px;">
+                                <input type="checkbox" checked disabled style="margin-right: 10px;">
+                                <span>${trapping}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <p style="margin: 15px 0 0 0; font-size: 12px; color: #666; font-style: italic;">
+                        These items are automatically added to your character. Additional equipment can be purchased later.
+                    </p>
+                </div>
+            `;
         }
         
         function initializeSetupCareer() {
