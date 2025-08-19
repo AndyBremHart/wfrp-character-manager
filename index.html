@@ -732,6 +732,192 @@
             }
         }
 
+        /* Career System Styles */
+        .career-section {
+            background: #faf8f3;
+            border: 1px solid #e8dfd0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .career-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .career-title {
+            color: #3e2f1f;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .career-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr 100px;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: end;
+        }
+
+        .career-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .career-field label {
+            color: #3e2f1f;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .career-field select {
+            padding: 8px;
+            font-family: Georgia, serif;
+            border: 1px solid #8b7355;
+            border-radius: 4px;
+            background: white;
+            font-size: 13px;
+        }
+
+        .career-field select:disabled {
+            background: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .tier-info {
+            background: #e8f5e8;
+            border: 1px solid #c3e6c3;
+            border-radius: 5px;
+            padding: 12px;
+            margin-top: 15px;
+        }
+
+        .tier-info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .tier-name {
+            font-weight: bold;
+            color: #2d4a2d;
+            font-size: 14px;
+        }
+
+        .tier-status {
+            background: #2d4a2d;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tier-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .tier-category {
+            background: white;
+            border-radius: 4px;
+            padding: 10px;
+        }
+
+        .tier-category-title {
+            font-weight: bold;
+            color: #3e2f1f;
+            font-size: 12px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tier-list {
+            font-size: 11px;
+            line-height: 1.4;
+            color: #555;
+        }
+
+        .tier-list div {
+            margin-bottom: 2px;
+        }
+
+        /* Career Skills/Talents Highlighting */
+        .career-skill {
+            background: #e8f5e8 !important;
+            border: 1px solid #c3e6c3 !important;
+        }
+
+        .career-talent {
+            background: #e8f5e8 !important;
+            border: 1px solid #c3e6c3 !important;
+            position: relative;
+        }
+
+        .career-talent::after {
+            content: "★";
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2d4a2d;
+            font-size: 12px;
+        }
+
+        /* Characteristic Advance Indicators */
+        .characteristic-row {
+            position: relative;
+        }
+
+        .advance-limit-indicator {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            color: #2d4a2d;
+            font-weight: bold;
+            background: rgba(232, 245, 232, 0.8);
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+
+        .advance-disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* Mobile responsiveness for career system */
+        @media (max-width: 768px) {
+            .career-controls {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .tier-details {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .tier-category {
+                padding: 8px;
+            }
+        }
+
         /* Species Creation Wizard Styles */
         .wizard-step {
             width: 40px;
@@ -1014,8 +1200,63 @@
                     </div>
                 </div>
                 <div class="header-field">
+                    <label>Player</label>
+                    <input type="text" id="player" placeholder="Player Name">
+                </div>
+            </div>
+        </div>
+
+        <!-- Career System Section -->
+        <div class="career-section" id="career-section">
+            <div class="career-header">
+                <div class="career-title">Career Path</div>
+            </div>
+            
+            <div class="career-controls">
+                <div class="career-field">
                     <label>Career</label>
-                    <input type="text" id="career" placeholder="Hunter">
+                    <select id="career-select" onchange="handleCareerSelection()">
+                        <option value="">Select Career</option>
+                    </select>
+                </div>
+                
+                <div class="career-field">
+                    <label>Current Tier</label>
+                    <select id="tier-select" onchange="handleTierSelection()" disabled>
+                        <option value="1">Tier 1</option>
+                        <option value="2">Tier 2</option>
+                        <option value="3">Tier 3</option>
+                        <option value="4">Tier 4</option>
+                    </select>
+                </div>
+                
+                <div class="career-field">
+                    <label>Class</label>
+                    <div id="career-class" style="padding: 8px; font-size: 13px; color: #666; font-style: italic;">-</div>
+                </div>
+            </div>
+            
+            <div id="tier-info" class="tier-info" style="display: none;">
+                <div class="tier-info-header">
+                    <div class="tier-name" id="tier-name">-</div>
+                    <div class="tier-status" id="tier-status">-</div>
+                </div>
+                
+                <div class="tier-details">
+                    <div class="tier-category">
+                        <div class="tier-category-title">Skills</div>
+                        <div class="tier-list" id="tier-skills">-</div>
+                    </div>
+                    
+                    <div class="tier-category">
+                        <div class="tier-category-title">Talents</div>
+                        <div class="tier-list" id="tier-talents">-</div>
+                    </div>
+                    
+                    <div class="tier-category">
+                        <div class="tier-category-title">Trappings</div>
+                        <div class="tier-list" id="tier-trappings">-</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1068,7 +1309,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr data-characteristic="ws">
                             <td class="char-name-cell">Weapon Skill (WS)</td>
                             <td><input type="number" id="ws-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="ws-advances" placeholder="0" min="0"></td>
@@ -1078,7 +1319,7 @@
                                 <span id="ws-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-characteristic="bs">
                             <td class="char-name-cell">Ballistic Skill (BS)</td>
                             <td><input type="number" id="bs-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="bs-advances" placeholder="0" min="0"></td>
@@ -1088,7 +1329,7 @@
                                 <span id="bs-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-characteristic="s">
                             <td class="char-name-cell">Strength (S)</td>
                             <td><input type="number" id="s-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="s-advances" placeholder="0" min="0"></td>
@@ -1098,7 +1339,7 @@
                                 <span id="s-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-characteristic="t">
                             <td class="char-name-cell">Toughness (T)</td>
                             <td><input type="number" id="t-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="t-advances" placeholder="0" min="0"></td>
@@ -1108,7 +1349,7 @@
                                 <span id="t-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-characteristic="i">
                             <td class="char-name-cell">Initiative (I)</td>
                             <td><input type="number" id="i-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="i-advances" placeholder="0" min="0"></td>
@@ -1118,7 +1359,7 @@
                                 <span id="i-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-characteristic="agi">
                             <td class="char-name-cell">Agility (Ag)</td>
                             <td><input type="number" id="ag-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="ag-advances" placeholder="0" min="0"></td>
@@ -1128,7 +1369,7 @@
                                 <span id="ag-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-characteristic="dex">
                             <td class="char-name-cell">Dexterity (Dex)</td>
                             <td><input type="number" id="dex-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="dex-advances" placeholder="0" min="0"></td>
@@ -1138,7 +1379,7 @@
                                 <span id="dex-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-characteristic="int">
                             <td class="char-name-cell">Intelligence (Int)</td>
                             <td><input type="number" id="int-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="int-advances" placeholder="0" min="0"></td>
@@ -1148,7 +1389,7 @@
                                 <span id="int-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-characteristic="wp">
                             <td class="char-name-cell">Willpower (WP)</td>
                             <td><input type="number" id="wp-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="wp-advances" placeholder="0" min="0"></td>
@@ -1158,7 +1399,7 @@
                                 <span id="wp-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-characteristic="fel">
                             <td class="char-name-cell">Fellowship (Fel)</td>
                             <td><input type="number" id="fel-initial" placeholder="20" min="0" max="100"></td>
                             <td><input type="number" id="fel-advances" placeholder="0" min="0"></td>
@@ -2933,7 +3174,24 @@
             document.getElementById('character-name').value = characterData.name || '';
             document.getElementById('species').value = characterData.species || '';
             document.getElementById('class').value = characterData.class || '';
-            document.getElementById('career').value = characterData.career || '';
+            if (characterData.player) document.getElementById('player').value = characterData.player;
+            
+            // Restore career data
+            if (characterData.careerData) {
+                // Wait for career data to be loaded, then restore career selection
+                if (careersData && characterData.careerData.careerName) {
+                    const career = careersData.careers.find(c => c.name === characterData.careerData.careerName);
+                    if (career) {
+                        document.getElementById('career-select').value = characterData.careerData.careerName;
+                        document.getElementById('tier-select').value = characterData.careerData.tier || 1;
+                        currentTier = characterData.careerData.tier || 1;
+                        selectCareer(career);
+                    }
+                }
+            } else if (characterData.career) {
+                // Fallback for old save format
+                document.getElementById('career-select').value = characterData.career;
+            }
             
             // Load characteristics
             if (characterData.characteristics && typeof characteristics !== 'undefined') {
@@ -3733,7 +3991,15 @@
                     name: document.getElementById('character-name')?.value || '',
                     species: document.getElementById('species')?.value || '',
                     class: document.getElementById('class')?.value || '',
-                    career: document.getElementById('career')?.value || '',
+                    career: document.getElementById('career-select')?.value || '',
+                    player: document.getElementById('player')?.value || '',
+                    
+                    // Career system data
+                    careerData: {
+                        careerName: currentCareer ? currentCareer.name : null,
+                        tier: currentTier,
+                        className: currentCareer ? currentCareer.class : null
+                    },
                     
                     // Characteristics
                     characteristics: {},
@@ -4006,7 +4272,23 @@
             if (characterData.name) document.getElementById('character-name').value = characterData.name;
             if (characterData.species) document.getElementById('species').value = characterData.species;
             if (characterData.class) document.getElementById('class').value = characterData.class;
-            if (characterData.career) document.getElementById('career').value = characterData.career;
+            if (characterData.player) document.getElementById('player').value = characterData.player;
+            
+            // Restore career data
+            if (characterData.careerData && careersData) {
+                if (characterData.careerData.careerName) {
+                    const career = careersData.careers.find(c => c.name === characterData.careerData.careerName);
+                    if (career) {
+                        document.getElementById('career-select').value = characterData.careerData.careerName;
+                        document.getElementById('tier-select').value = characterData.careerData.tier || 1;
+                        currentTier = characterData.careerData.tier || 1;
+                        selectCareer(career);
+                    }
+                }
+            } else if (characterData.career) {
+                // Fallback for old save format
+                document.getElementById('career-select').value = characterData.career;
+            }
             
             // Characteristics
             if (characterData.characteristics && typeof characteristics !== 'undefined') {
@@ -4407,6 +4689,12 @@
         let armour = [];
         let trappings = [];
         let consumables = [];
+        
+        // Career System Variables
+        let careersData = null;
+        let currentCareer = null;
+        let currentTier = 1;
+        let careersByClass = {};
         
         // WFRP 4th Edition Official Conditions
         const wfrpConditions = {
@@ -6114,6 +6402,11 @@
                 
                 tbody.appendChild(row);
             });
+            
+            // Highlight career skills after displaying
+            if (typeof highlightCareerSkills === 'function') {
+                highlightCareerSkills();
+            }
         }
 
         window.calculateSkillTotal = function(skill, skillKey) {
@@ -6925,6 +7218,11 @@ window.displayTalents = function() {
         `;
         tbody.appendChild(row);
     });
+    
+    // Highlight career talents after displaying
+    if (typeof highlightCareerTalents === 'function') {
+        highlightCareerTalents();
+    }
 }
 
 window.updateTalentNotes = function(index, notes) {
@@ -9611,6 +9909,7 @@ document.addEventListener('DOMContentLoaded', function() {
             loadSpellsData();
             loadDiseasesData();
             loadSymptomsData();
+            loadCareers();
             
             try {
                 displaySkills(); // Show basic skills immediately
@@ -9658,6 +9957,349 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error during initialization:', error);
             }
         });
+
+        // Career System Functions
+        
+        // Load careers data from JSON file
+        function loadCareers() {
+            fetch('careers.json')
+                .then(response => response.json())
+                .then(data => {
+                    careersData = data;
+                    console.log('Loaded', data.careers.length, 'careers');
+                    
+                    // Organize careers by class for dropdown filtering
+                    careersByClass = {};
+                    data.careers.forEach(career => {
+                        const className = career.class.charAt(0).toUpperCase() + career.class.slice(1);
+                        if (!careersByClass[className]) {
+                            careersByClass[className] = [];
+                        }
+                        careersByClass[className].push(career);
+                    });
+                    
+                    // Sort careers within each class alphabetically
+                    Object.keys(careersByClass).forEach(className => {
+                        careersByClass[className].sort((a, b) => a.name.localeCompare(b.name));
+                    });
+                    
+                    // Populate career dropdown based on current class selection
+                    updateCareerDropdown();
+                    
+                    // Restore career selection if saved
+                    restoreCareerSelection();
+                })
+                .catch(error => {
+                    console.error('Error loading careers:', error);
+                });
+        }
+        
+        // Update career dropdown based on selected class
+        function updateCareerDropdown() {
+            const careerSelect = document.getElementById('career-select');
+            const classSelect = document.getElementById('class');
+            const selectedClass = classSelect.value;
+            
+            // Clear existing options except the first one
+            careerSelect.innerHTML = '<option value="">Select Career</option>';
+            
+            if (selectedClass && careersByClass[selectedClass]) {
+                careersByClass[selectedClass].forEach(career => {
+                    const option = document.createElement('option');
+                    option.value = career.name;
+                    option.textContent = career.name;
+                    careerSelect.appendChild(option);
+                });
+                careerSelect.disabled = false;
+            } else {
+                careerSelect.disabled = true;
+            }
+        }
+        
+        // Handle career selection
+        function handleCareerSelection() {
+            const careerSelect = document.getElementById('career-select');
+            const selectedCareerName = careerSelect.value;
+            
+            if (selectedCareerName && careersData) {
+                currentCareer = careersData.careers.find(c => c.name === selectedCareerName);
+                if (currentCareer) {
+                    selectCareer(currentCareer);
+                }
+            } else {
+                currentCareer = null;
+                clearCareerDisplay();
+            }
+        }
+        
+        // Handle tier selection
+        function handleTierSelection() {
+            const tierSelect = document.getElementById('tier-select');
+            currentTier = parseInt(tierSelect.value);
+            
+            if (currentCareer) {
+                updateTierDisplay();
+                updateCharacteristicLimits();
+                highlightCareerSkills();
+                highlightCareerTalents();
+                saveCareerSelection();
+            }
+        }
+        
+        // Select and display a career
+        function selectCareer(career) {
+            currentCareer = career;
+            
+            // Update class display
+            const careerClassDiv = document.getElementById('career-class');
+            careerClassDiv.textContent = career.class.charAt(0).toUpperCase() + career.class.slice(1);
+            
+            // Enable tier selector
+            const tierSelect = document.getElementById('tier-select');
+            tierSelect.disabled = false;
+            
+            // Update display
+            updateTierDisplay();
+            updateCharacteristicLimits();
+            highlightCareerSkills();
+            highlightCareerTalents();
+            saveCareerSelection();
+        }
+        
+        // Update tier information display
+        function updateTierDisplay() {
+            if (!currentCareer || !currentCareer.tiers) return;
+            
+            const tier = currentCareer.tiers.find(t => t.tier === currentTier);
+            if (!tier) return;
+            
+            // Show tier info section
+            document.getElementById('tier-info').style.display = 'block';
+            
+            // Update tier header
+            document.getElementById('tier-name').textContent = tier.name;
+            document.getElementById('tier-status').textContent = tier.status;
+            
+            // Update tier details
+            document.getElementById('tier-skills').innerHTML = 
+                tier.skills.length > 0 ? tier.skills.map(skill => `<div>${skill}</div>`).join('') : '<div style="font-style: italic; color: #999;">None</div>';
+                
+            document.getElementById('tier-talents').innerHTML = 
+                tier.talents.length > 0 ? tier.talents.map(talent => `<div>${talent}</div>`).join('') : '<div style="font-style: italic; color: #999;">None</div>';
+                
+            document.getElementById('tier-trappings').innerHTML = 
+                tier.trappings.length > 0 ? tier.trappings.map(trapping => `<div>${trapping}</div>`).join('') : '<div style="font-style: italic; color: #999;">None</div>';
+        }
+        
+        // Clear career display
+        function clearCareerDisplay() {
+            document.getElementById('career-class').textContent = '-';
+            document.getElementById('tier-select').disabled = true;
+            document.getElementById('tier-info').style.display = 'none';
+            
+            // Clear highlighting
+            clearCareerHighlights();
+            clearCharacteristicLimits();
+            saveCareerSelection();
+        }
+        
+        // Update characteristic advancement limits
+        function updateCharacteristicLimits() {
+            if (!currentCareer || !currentCareer.characteristicAdvances) return;
+            
+            const charRows = document.querySelectorAll('tr[data-characteristic]');
+            
+            charRows.forEach(row => {
+                const charName = row.getAttribute('data-characteristic');
+                const advanceData = currentCareer.characteristicAdvances[charName] || [];
+                
+                // Remove existing indicators
+                const existingIndicator = row.querySelector('.advance-limit-indicator');
+                if (existingIndicator) {
+                    existingIndicator.remove();
+                }
+                
+                // Add new indicator if there are advances available
+                if (advanceData.length > 0) {
+                    const maxTier = Math.max(...advanceData);
+                    const availableAtCurrentTier = advanceData.includes(currentTier);
+                    const maxAdvances = advanceData.filter(tier => tier <= currentTier).length;
+                    
+                    if (maxAdvances > 0) {
+                        const indicator = document.createElement('div');
+                        indicator.className = 'advance-limit-indicator';
+                        indicator.textContent = `${maxAdvances} available`;
+                        row.style.position = 'relative';
+                        row.appendChild(indicator);
+                        
+                        // Enable/disable advance buttons based on current tier
+                        const advanceCell = row.querySelector('td:last-child');
+                        if (advanceCell && !availableAtCurrentTier) {
+                            advanceCell.classList.add('advance-disabled');
+                        } else if (advanceCell) {
+                            advanceCell.classList.remove('advance-disabled');
+                        }
+                    }
+                } else {
+                    // No advances available for this characteristic
+                    const advanceCell = row.querySelector('td:last-child');
+                    if (advanceCell) {
+                        advanceCell.classList.add('advance-disabled');
+                    }
+                }
+            });
+        }
+        
+        // Clear characteristic limit indicators
+        function clearCharacteristicLimits() {
+            document.querySelectorAll('.advance-limit-indicator').forEach(indicator => indicator.remove());
+            document.querySelectorAll('.advance-disabled').forEach(cell => cell.classList.remove('advance-disabled'));
+        }
+        
+        // Highlight career skills in skills section
+        function highlightCareerSkills() {
+            // Clear existing highlights
+            document.querySelectorAll('.career-skill').forEach(el => el.classList.remove('career-skill'));
+            
+            if (!currentCareer || !currentCareer.tiers) return;
+            
+            // Get all skills for current and previous tiers
+            const availableSkills = new Set();
+            currentCareer.tiers
+                .filter(tier => tier.tier <= currentTier)
+                .forEach(tier => {
+                    tier.skills.forEach(skill => {
+                        // Normalize skill name for matching
+                        const normalizedSkill = skill.toLowerCase().trim();
+                        availableSkills.add(normalizedSkill);
+                    });
+                });
+            
+            // Highlight matching skills in the skills table
+            const skillRows = document.querySelectorAll('#basic-skills-tbody tr, #advanced-skills-tbody tr');
+            skillRows.forEach(row => {
+                const skillNameCell = row.querySelector('.skill-name-cell');
+                if (skillNameCell) {
+                    const skillName = skillNameCell.textContent.toLowerCase().trim();
+                    
+                    // Check for exact match or partial match for specialized skills
+                    for (const careerSkill of availableSkills) {
+                        if (skillName === careerSkill || 
+                            skillName.startsWith(careerSkill + ' (') ||
+                            careerSkill.startsWith(skillName + ' (')) {
+                            row.classList.add('career-skill');
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Highlight career talents in talents section
+        function highlightCareerTalents() {
+            // Clear existing highlights
+            document.querySelectorAll('.career-talent').forEach(el => el.classList.remove('career-talent'));
+            
+            if (!currentCareer || !currentCareer.tiers) return;
+            
+            // Get all talents for current and previous tiers
+            const availableTalents = new Set();
+            currentCareer.tiers
+                .filter(tier => tier.tier <= currentTier)
+                .forEach(tier => {
+                    tier.talents.forEach(talent => {
+                        const normalizedTalent = talent.toLowerCase().trim();
+                        availableTalents.add(normalizedTalent);
+                    });
+                });
+            
+            // Highlight matching talents in the talents table
+            const talentRows = document.querySelectorAll('#talents-tbody tr');
+            talentRows.forEach(row => {
+                const talentNameCell = row.querySelector('.talent-name');
+                if (talentNameCell) {
+                    const talentName = talentNameCell.textContent.toLowerCase().trim();
+                    
+                    // Check for exact match or partial match for specialized talents
+                    for (const careerTalent of availableTalents) {
+                        if (talentName === careerTalent || 
+                            talentName.startsWith(careerTalent + ' (') ||
+                            careerTalent.startsWith(talentName + ' (')) {
+                            row.classList.add('career-talent');
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Clear all career highlights
+        function clearCareerHighlights() {
+            document.querySelectorAll('.career-skill').forEach(el => el.classList.remove('career-skill'));
+            document.querySelectorAll('.career-talent').forEach(el => el.classList.remove('career-talent'));
+        }
+        
+        // Save career selection to localStorage
+        function saveCareerSelection() {
+            const careerData = {
+                careerName: currentCareer ? currentCareer.name : null,
+                tier: currentTier
+            };
+            localStorage.setItem('selectedCareer', JSON.stringify(careerData));
+        }
+        
+        // Restore career selection from localStorage
+        function restoreCareerSelection() {
+            const saved = localStorage.getItem('selectedCareer');
+            if (!saved) return;
+            
+            try {
+                const careerData = JSON.parse(saved);
+                if (careerData.careerName && careersData) {
+                    const career = careersData.careers.find(c => c.name === careerData.careerName);
+                    if (career) {
+                        // Set dropdown values
+                        document.getElementById('career-select').value = careerData.careerName;
+                        document.getElementById('tier-select').value = careerData.tier || 1;
+                        
+                        // Update current variables
+                        currentTier = careerData.tier || 1;
+                        selectCareer(career);
+                    }
+                }
+            } catch (error) {
+                console.warn('Error restoring career selection:', error);
+            }
+        }
+        
+        // Connect career system to class dropdown
+        function handleClassSelection() {
+            // Update career dropdown when class changes
+            updateCareerDropdown();
+            
+            // Clear current career if it doesn't match new class
+            if (currentCareer) {
+                const selectedClass = document.getElementById('class').value;
+                const currentCareerClass = currentCareer.class.charAt(0).toUpperCase() + currentCareer.class.slice(1);
+                
+                if (selectedClass !== currentCareerClass) {
+                    currentCareer = null;
+                    document.getElementById('career-select').value = '';
+                    clearCareerDisplay();
+                }
+            }
+            
+            // Call original class wizard logic if it exists
+            const classSelect = document.getElementById('class');
+            const selectedValue = classSelect.value;
+            
+            if (selectedValue && classTrappings[selectedValue]) {
+                const currentClass = selectedClass;
+                if (!currentClass || currentClass !== selectedValue) {
+                    openClassWizard(selectedValue);
+                }
+            }
+        }
 
         // SRD Data Loading
 function loadSRDData() {
@@ -12165,19 +12807,6 @@ function loadSymptomsData() {
         });
 
         // =============== CLASS TRAPPINGS WIZARD FUNCTIONS ===============
-
-        function handleClassSelection() {
-            const classSelect = document.getElementById('class');
-            const selectedValue = classSelect.value;
-            
-            if (selectedValue && classTrappings[selectedValue]) {
-                // Check if this is the first time selecting a class or changing class
-                const currentClass = selectedClass;
-                if (!currentClass || currentClass !== selectedValue) {
-                    openClassWizard(selectedValue);
-                }
-            }
-        }
 
         function manualOpenClassWizard() {
             const classSelect = document.getElementById('class');
