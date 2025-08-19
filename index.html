@@ -574,32 +574,38 @@
         /* Auto-Save Status Indicator Styles */
         .save-status-container {
             position: fixed;
-            top: 20px;
+            bottom: 20px;
             right: 20px;
-            background: #faf8f3;
-            border: 2px solid #e8dfd0;
-            border-radius: 5px;
-            padding: 8px 12px;
+            background: rgba(250, 248, 243, 0.9);
+            border: 1px solid rgba(232, 223, 208, 0.6);
+            border-radius: 4px;
+            padding: 4px 8px;
             font-family: 'Georgia', serif;
-            font-size: 11px;
-            color: #3e2f1f;
+            font-size: 10px;
+            color: rgba(62, 47, 31, 0.7);
             z-index: 999;
             display: flex;
             align-items: center;
-            gap: 6px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            gap: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
             transition: all 0.3s ease;
+            opacity: 1;
+        }
+        
+        .save-status-container.fade-out {
+            opacity: 0;
+            pointer-events: none;
         }
 
         .save-status-indicator {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             transition: background-color 0.3s ease;
         }
 
         .save-status-container.saved-local {
-            border-color: #28a745;
+            border-color: rgba(40, 167, 69, 0.4);
         }
 
         .save-status-container.saved-local .save-status-indicator {
@@ -607,7 +613,7 @@
         }
 
         .save-status-container.saved-cloud {
-            border-color: #007bff;
+            border-color: rgba(0, 123, 255, 0.4);
         }
 
         .save-status-container.saved-cloud .save-status-indicator {
@@ -615,7 +621,7 @@
         }
 
         .save-status-container.syncing {
-            border-color: #ffc107;
+            border-color: rgba(255, 193, 7, 0.6);
         }
 
         .save-status-container.syncing .save-status-indicator {
@@ -624,7 +630,7 @@
         }
 
         .save-status-container.error {
-            border-color: #dc3545;
+            border-color: rgba(220, 53, 69, 0.6);
         }
 
         .save-status-container.error .save-status-indicator {
@@ -632,7 +638,7 @@
         }
 
         .save-status-container.offline {
-            border-color: #6c757d;
+            border-color: rgba(108, 117, 125, 0.4);
         }
 
         .save-status-container.offline .save-status-indicator {
@@ -709,10 +715,10 @@
         /* Mobile responsiveness for auto-save UI */
         @media (max-width: 768px) {
             .save-status-container {
-                top: 10px;
+                bottom: 10px;
                 right: 10px;
-                padding: 6px 10px;
-                font-size: 10px;
+                padding: 3px 6px;
+                font-size: 9px;
             }
 
             .save-status-indicator {
@@ -963,10 +969,9 @@
 </head>
 <body>
     <!-- Auto-Save Status Indicator -->
-    <div id="save-status-container" class="save-status-container saved-local">
+    <div id="save-status-container" class="save-status-container saved-local fade-out">
         <div class="save-status-indicator"></div>
         <span class="save-status-text" id="save-status-text">Ready</span>
-        <button onclick="triggerImmediateAutoSave()" style="margin-left: 8px; padding: 2px 6px; background: transparent; border: 1px solid #8b7355; border-radius: 3px; font-size: 10px; color: #3e2f1f; cursor: pointer;" title="Force save now">💾</button>
     </div>
 
     <div class="character-sheet">
@@ -3671,14 +3676,19 @@
         let currentActiveTab = 'character-tab';
 
         // Save status management
+        let fadeOutTimer;
         function updateSaveStatus(status, message) {
             const container = document.getElementById('save-status-container');
             const text = document.getElementById('save-status-text');
             
             if (!container || !text) return;
 
-            // Remove all status classes
+            // Clear any existing fade timer
+            clearTimeout(fadeOutTimer);
+            
+            // Remove all status classes and show the container
             container.className = 'save-status-container';
+            container.classList.remove('fade-out');
             
             // Add new status class
             switch (status) {
@@ -3700,6 +3710,17 @@
             }
             
             text.textContent = message || 'Ready';
+            
+            // Fade out after 3 seconds for saved states
+            if (status === 'saved-local' || status === 'saved-cloud' || status === 'offline') {
+                fadeOutTimer = setTimeout(() => {
+                    container.classList.add('fade-out');
+                }, 3000);
+            }
+            // Keep visible for syncing and errors
+            else if (status === 'syncing' || status === 'error') {
+                // Stay visible
+            }
         }
 
         // Comprehensive data collection function
