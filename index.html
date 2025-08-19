@@ -14165,8 +14165,10 @@ function loadSymptomsData() {
                     }
                 });
                 
-                // Trigger characteristic calculations
-                window.calculateAllCharacteristics();
+                // Trigger characteristic updates
+                if (typeof window.updateAllCharacteristicsFromWounds === 'function') {
+                    window.updateAllCharacteristicsFromWounds();
+                }
             }
             
             // Set Fate and Resilience from wizard data
@@ -14417,8 +14419,14 @@ function loadSymptomsData() {
             alert(summaryMessage);
             
             // Update XP display and trigger save
-            window.updateXPDisplay();
-            window.updateCharacteristics();
+            if (typeof window.updateXPDisplay === 'function') {
+                window.updateXPDisplay();
+            }
+            
+            // Update characteristics if functions exist
+            if (typeof window.updateAllCharacteristicsFromWounds === 'function') {
+                window.updateAllCharacteristicsFromWounds();
+            }
             
             // Clear wizard data
             setupWizardData = {};
