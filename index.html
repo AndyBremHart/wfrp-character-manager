@@ -13441,7 +13441,7 @@ function loadSymptomsData() {
             const currentTotalXP = parseInt(document.getElementById('xp-total').value || '0');
             
             document.getElementById('current-career-name').textContent = careerDisplay;
-            document.getElementById('current-career-tier').textContent = 'Tier I'; // Default tier for now
+            document.getElementById('current-career-tier').textContent = `Tier ${currentTier}`;
             document.getElementById('current-total-xp').textContent = currentTotalXP.toString();
             
             // Reset form
@@ -13456,6 +13456,11 @@ function loadSymptomsData() {
             
             // Load careers data if not already loaded
             loadCareersForAdvancement();
+            
+            // Update advancement options to show correct tier information
+            setTimeout(() => {
+                updateAdvancementOptions();
+            }, 100);
             
             modal.style.display = 'block';
         }
@@ -13605,6 +13610,18 @@ function loadSymptomsData() {
             } else {
                 newCareerSelection.style.display = 'none';
                 document.getElementById('new-career-name').value = '';
+                document.getElementById('career-details-preview').style.display = 'none';
+            }
+            
+            // Update tier advancement label to show next tier
+            const tierAdvancementLabel = document.querySelector('input[value="tier"]').parentNode.querySelector('span');
+            if (tierAdvancementLabel && currentTier < 4) {
+                const romanNumerals = ['', 'I', 'II', 'III', 'IV'];
+                const nextTier = currentTier + 1;
+                tierAdvancementLabel.textContent = `Advance to Tier ${romanNumerals[nextTier]} (next tier)`;
+            } else if (tierAdvancementLabel && currentTier >= 4) {
+                tierAdvancementLabel.textContent = 'Advance to next career tier (maximum tier reached)';
+                document.querySelector('input[value="tier"]').disabled = true;
             }
         }
         
@@ -13642,25 +13659,58 @@ function loadSymptomsData() {
                 // Update career display
                 document.getElementById('career-display').textContent = newCareerName;
                 
+                // Reset to tier 1 when changing careers
+                currentTier = 1;
+                
                 // Log the career change
                 if (typeof logXPEntry === 'function') {
                     logXPEntry(
                         'spent',
                         xpCost,
-                        `Changed career to ${newCareerName}`,
+                        `Changed career to ${newCareerName} (Tier 1)`,
                         'Career Change'
                     );
                 }
             } else if (selectedType.value === 'tier') {
                 // Handle tier advancement
-                const currentCareer = document.getElementById('career-display').textContent;
+                const currentCareerName = document.getElementById('career-display').textContent;
+                
+                // Check if advancement is possible
+                if (currentTier >= 4) {
+                    alert('You are already at the maximum tier (IV) for this career.');
+                    return;
+                }
+                
+                // Find current career data to validate tier advancement
+                const currentCareerData = availableCareers.find(career => career.name === currentCareerName);
+                if (currentCareerData && currentCareerData.tiers) {
+                    const nextTier = currentTier + 1;
+                    const nextTierData = currentCareerData.tiers.find(t => t.tier === nextTier);
+                    
+                    if (!nextTierData) {
+                        alert(`Tier ${nextTier} is not available for ${currentCareerName}.`);
+                        return;
+                    }
+                }
+                
+                // Advance the tier
+                currentTier += 1;
+                
+                // Update the career display with new tier info if we have the data
+                if (currentCareerData) {
+                    const newTierData = currentCareerData.tiers.find(t => t.tier === currentTier);
+                    if (newTierData) {
+                        // You could update any tier-specific displays here if needed
+                        console.log(`Advanced to ${newTierData.name} (Tier ${currentTier})`);
+                    }
+                }
                 
                 // Log the tier advancement
                 if (typeof logXPEntry === 'function') {
                     logXPEntry(
                         'spent',
                         xpCost,
-                        `Advanced to next tier in ${currentCareer}`,
+                        `Advanced to Tier ${currentTier} in ${currentCareerName}`,
                         'Career Advancement'
                     );
                 }
