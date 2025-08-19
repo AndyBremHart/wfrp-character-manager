@@ -2509,8 +2509,8 @@
 
     <!-- Character Setup Wizard Modal -->
     <div id="character-setup-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 600px; max-width: 800px; max-height: 80vh; overflow-y: auto; border-radius: 10px;">
-            <h3 style="color: #3e2f1f; margin-bottom: 15px;">🎭 Character Setup Wizard</h3>
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #faf8f3; border: 3px solid #3e2f1f; padding: 20px; min-width: 700px; max-width: 900px; max-height: 90vh; overflow-y: auto;">
+            <h2 style="color: #3e2f1f; margin-bottom: 20px; text-align: center;">Character Creation Wizard</h2>
             
             <!-- Warning Section -->
             <div id="setup-warning" style="background: #ffe6e6; border: 2px solid #cc0000; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
@@ -2524,29 +2524,92 @@
             
             <!-- Wizard Steps -->
             <div id="setup-steps" style="display: none;">
-                <div class="setup-progress" style="margin-bottom: 20px;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px;">
-                        <span id="step-species" class="setup-step active">1. Species</span>
-                        <span style="flex: 1; height: 1px; background: #ccc; margin: 0 10px;"></span>
-                        <span id="step-characteristics" class="setup-step">2. Characteristics</span>
-                        <span style="flex: 1; height: 1px; background: #ccc; margin: 0 10px;"></span>
-                        <span id="step-class" class="setup-step">3. Class</span>
-                        <span style="flex: 1; height: 1px; background: #ccc; margin: 0 10px;"></span>
-                        <span id="step-trappings" class="setup-step">4. Trappings</span>
-                        <span style="flex: 1; height: 1px; background: #ccc; margin: 0 10px;"></span>
-                        <span id="step-career" class="setup-step">5. Career</span>
+                <!-- Progress indicator -->
+                <div style="display: flex; justify-content: center; margin-bottom: 30px; gap: 10px;">
+                    <div class="wizard-step" id="setup-step-indicator-0">0</div>
+                    <div class="wizard-step" id="setup-step-indicator-1">1</div>
+                    <div class="wizard-step" id="setup-step-indicator-2">2</div>
+                    <div class="wizard-step" id="setup-step-indicator-3">3</div>
+                    <div class="wizard-step" id="setup-step-indicator-4">4</div>
+                    <div class="wizard-step" id="setup-step-indicator-5">5</div>
+                    <div class="wizard-step" id="setup-step-indicator-6">6</div>
+                </div>
+                
+                <!-- Step 0: Species Selection -->
+                <div id="setup-wizard-step-0" class="wizard-content">
+                    <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 0: Choose Your Species</h3>
+                    <p style="margin-bottom: 15px; color: #666;">Select your character's species to begin the creation process.</p>
+                    <div style="margin: 20px 0;">
+                        <select id="setup-species-select" onchange="handleSetupSpeciesSelection()" style="padding: 10px; font-size: 16px; width: 100%; border: 1px solid #8b7355;">
+                            <option value="">Select Species</option>
+                            <option value="Human">Human</option>
+                            <option value="Dwarf">Dwarf</option>
+                            <option value="Halfling">Halfling</option>
+                            <option value="High Elf">High Elf</option>
+                            <option value="Wood Elf">Wood Elf</option>
+                        </select>
+                    </div>
+                    <div id="setup-species-info" style="display: none; background: #f5f2e8; padding: 15px; border-radius: 5px; margin-top: 20px;">
+                        <!-- Species info will be populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Step 1: Species Characteristics -->
+                <div id="setup-wizard-step-1" class="wizard-content" style="display: none;">
+                    <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 1: Species Characteristics</h3>
+                    <div id="setup-species-details" style="background: #f5f2e8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                        <!-- Species info will be populated dynamically -->
+                    </div>
+                    
+                    <div id="setup-characteristics-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                        <!-- Characteristics will be populated dynamically -->
                     </div>
                 </div>
                 
-                <!-- Step Content -->
-                <div id="setup-content" style="min-height: 300px;">
-                    <!-- Content will be populated by JavaScript -->
+                <!-- Step 2: Skills Selection -->
+                <div id="setup-wizard-step-2" class="wizard-content" style="display: none;">
+                    <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 2: Skills Selection</h3>
+                    <div id="setup-skills-content">
+                        <!-- Skills content will be populated dynamically -->
+                    </div>
                 </div>
                 
-                <!-- Navigation -->
-                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-                    <button id="setup-prev" onclick="previousSetupStep()" style="padding: 10px 20px; background: #666; color: white; border: none; border-radius: 3px; cursor: pointer;" disabled>Previous</button>
-                    <button id="setup-next" onclick="nextSetupStep()" style="padding: 10px 20px; background: #3e2f1f; color: white; border: none; border-radius: 3px; cursor: pointer;">Next</button>
+                <!-- Step 3: Talents Selection -->
+                <div id="setup-wizard-step-3" class="wizard-content" style="display: none;">
+                    <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 3: Talents Selection</h3>
+                    <div id="setup-talents-content">
+                        <!-- Talents content will be populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Step 4: Class Selection -->
+                <div id="setup-wizard-step-4" class="wizard-content" style="display: none;">
+                    <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 4: Class Selection</h3>
+                    <div id="setup-class-content">
+                        <!-- Class content will be populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Step 5: Trappings -->
+                <div id="setup-wizard-step-5" class="wizard-content" style="display: none;">
+                    <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 5: Class Trappings</h3>
+                    <div id="setup-trappings-content">
+                        <!-- Trappings content will be populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Step 6: Career Selection -->
+                <div id="setup-wizard-step-6" class="wizard-content" style="display: none;">
+                    <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 6: Career Selection</h3>
+                    <div id="setup-career-content">
+                        <!-- Career content will be populated dynamically -->
+                    </div>
+                </div>
+                
+                <!-- Navigation buttons -->
+                <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                    <button id="setup-wizard-prev-btn" class="control-btn" onclick="previousSetupStep()" style="padding: 10px 20px;" disabled>← Previous</button>
+                    <button id="setup-wizard-next-btn" class="control-btn" onclick="nextSetupStep()" style="padding: 10px 20px;">Next →</button>
                 </div>
             </div>
         </div>
@@ -13112,8 +13175,9 @@ function loadSymptomsData() {
         // =============== CHARACTER SETUP WIZARD FUNCTIONS ===============
         
         let setupCurrentStep = 0;
-        const setupSteps = ['species', 'characteristics', 'class', 'trappings', 'career'];
+        const setupSteps = ['species-selection', 'characteristics', 'skills', 'talents', 'class', 'trappings', 'career'];
         let setupWizardData = {};
+        let selectedSpeciesForSetup = '';
         
         // Start Character Setup Wizard
         function startCharacterSetup() {
@@ -13180,52 +13244,55 @@ function loadSymptomsData() {
             console.log('Character data cleared for setup wizard');
         }
         
-        // Show specific setup step
-        function showSetupStep(stepIndex) {
-            const content = document.getElementById('setup-content');
-            const prevBtn = document.getElementById('setup-prev');
-            const nextBtn = document.getElementById('setup-next');
+        // Update the wizard display - following species wizard pattern
+        function updateSetupWizardDisplay() {
+            // Hide all step contents
+            for (let i = 0; i <= 6; i++) {
+                const stepElement = document.getElementById(`setup-wizard-step-${i}`);
+                if (stepElement) {
+                    stepElement.style.display = 'none';
+                }
+            }
+            
+            // Show current step
+            const currentStepElement = document.getElementById(`setup-wizard-step-${setupCurrentStep}`);
+            if (currentStepElement) {
+                currentStepElement.style.display = 'block';
+            }
             
             // Update step indicators
-            document.querySelectorAll('.setup-step').forEach((step, index) => {
-                step.classList.remove('active', 'completed');
-                if (index < stepIndex) {
-                    step.classList.add('completed');
-                } else if (index === stepIndex) {
-                    step.classList.add('active');
+            for (let i = 0; i <= 6; i++) {
+                const indicator = document.getElementById(`setup-step-indicator-${i}`);
+                if (indicator) {
+                    indicator.classList.remove('active', 'completed');
+                    if (i < setupCurrentStep) {
+                        indicator.classList.add('completed');
+                    } else if (i === setupCurrentStep) {
+                        indicator.classList.add('active');
+                    }
                 }
-            });
+            }
             
             // Update navigation buttons
-            prevBtn.disabled = stepIndex === 0;
-            nextBtn.textContent = stepIndex === setupSteps.length - 1 ? 'Finish' : 'Next';
+            const prevBtn = document.getElementById('setup-wizard-prev-btn');
+            const nextBtn = document.getElementById('setup-wizard-next-btn');
             
-            // Show step content
-            switch (setupSteps[stepIndex]) {
-                case 'species':
-                    showSpeciesStep(content);
-                    break;
-                case 'characteristics':
-                    showCharacteristicsStep(content);
-                    break;
-                case 'class':
-                    showClassStep(content);
-                    break;
-                case 'trappings':
-                    showTrappingsStep(content);
-                    break;
-                case 'career':
-                    showCareerStep(content);
-                    break;
+            if (prevBtn) {
+                prevBtn.disabled = setupCurrentStep === 0;
+            }
+            
+            if (nextBtn) {
+                nextBtn.textContent = setupCurrentStep === 6 ? 'Finish Character' : 'Next →';
             }
         }
         
         // Navigation functions
         function nextSetupStep() {
-            if (validateCurrentStep()) {
-                if (setupCurrentStep < setupSteps.length - 1) {
+            if (validateCurrentSetupStep()) {
+                if (setupCurrentStep < 6) {
                     setupCurrentStep++;
-                    showSetupStep(setupCurrentStep);
+                    initializeSetupStep(setupCurrentStep);
+                    updateSetupWizardDisplay();
                 } else {
                     // Finish wizard
                     finishSetup();
@@ -13236,23 +13303,101 @@ function loadSymptomsData() {
         function previousSetupStep() {
             if (setupCurrentStep > 0) {
                 setupCurrentStep--;
-                showSetupStep(setupCurrentStep);
+                updateSetupWizardDisplay();
+            }
+        }
+        
+        // Handle species selection in setup wizard
+        function handleSetupSpeciesSelection() {
+            const species = document.getElementById('setup-species-select').value;
+            const speciesInfo = document.getElementById('setup-species-info');
+            
+            if (species && speciesData[species]) {
+                selectedSpeciesForSetup = species;
+                setupWizardData.species = species;
+                
+                // Initialize wizard data like the species wizard
+                const speciesDataObj = speciesData[species];
+                setupWizardData = {
+                    species: species,
+                    characteristics: {},
+                    wounds: 0,
+                    fate: { base: speciesDataObj.baseFate, extra: 0, total: speciesDataObj.baseFate },
+                    resilience: { base: speciesDataObj.baseResilience, extra: 0, total: speciesDataObj.baseResilience },
+                    movement: speciesDataObj.movement,
+                    skills: { step3: [], step4: [] },
+                    talents: { fixed: speciesDataObj.fixedTalents || [], choices: [], selected: [] },
+                    extraPoints: speciesDataObj.extraPoints,
+                    usedExtraPoints: 0,
+                    class: '',
+                    career: '',
+                    trappings: []
+                };
+                
+                // Show species info
+                speciesInfo.style.display = 'block';
+                speciesInfo.innerHTML = `
+                    <h4 style="color: #3e2f1f; margin-bottom: 10px;">${species}</h4>
+                    <p><strong>Fate:</strong> ${speciesDataObj.baseFate} | <strong>Resilience:</strong> ${speciesDataObj.baseResilience} | <strong>Movement:</strong> ${speciesDataObj.movement}</p>
+                    <p><strong>Species Skills:</strong> ${speciesDataObj.skills.join(', ')}</p>
+                    <p><strong>Fixed Talents:</strong> ${speciesDataObj.fixedTalents ? speciesDataObj.fixedTalents.join(', ') : 'None'}</p>
+                `;
+            } else {
+                speciesInfo.style.display = 'none';
+                selectedSpeciesForSetup = '';
+                setupWizardData.species = '';
+            }
+        }
+        
+        // Initialize each step when entering it
+        function initializeSetupStep(stepIndex) {
+            const speciesInfo = setupWizardData.species ? speciesData[setupWizardData.species] : null;
+            
+            switch (stepIndex) {
+                case 1: // Characteristics
+                    if (speciesInfo) {
+                        initializeSetupCharacteristics(speciesInfo);
+                    }
+                    break;
+                case 2: // Skills
+                    if (speciesInfo) {
+                        initializeSetupSkills(speciesInfo);
+                    }
+                    break;
+                case 3: // Talents
+                    if (speciesInfo) {
+                        initializeSetupTalents(speciesInfo);
+                    }
+                    break;
+                case 4: // Class
+                    initializeSetupClass();
+                    break;
+                case 5: // Trappings
+                    initializeSetupTrappings();
+                    break;
+                case 6: // Career
+                    initializeSetupCareer();
+                    break;
             }
         }
         
         // Validate current step
-        function validateCurrentStep() {
-            switch (setupSteps[setupCurrentStep]) {
-                case 'species':
-                    return validateSpeciesStep();
-                case 'characteristics':
-                    return validateCharacteristicsStep();
-                case 'class':
-                    return validateClassStep();
-                case 'trappings':
+        function validateCurrentSetupStep() {
+            switch (setupCurrentStep) {
+                case 0: // Species selection
+                    return validateSetupSpeciesStep();
+                case 1: // Characteristics
+                    return validateSetupCharacteristicsStep();
+                case 2: // Skills
+                    return validateSetupSkillsStep();
+                case 3: // Talents
+                    return validateSetupTalentsStep();
+                case 4: // Class
+                    return validateSetupClassStep();
+                case 5: // Trappings
                     return true; // Trappings are optional
-                case 'career':
-                    return validateCareerStep();
+                case 6: // Career
+                    return validateSetupCareerStep();
                 default:
                     return true;
             }
