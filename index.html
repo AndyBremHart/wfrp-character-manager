@@ -13494,13 +13494,17 @@ function loadSymptomsData() {
         }
         
         function validateSetupFateResilienceStep() {
-            // Optional validation - users can choose to allocate 0 points if they want
             if (setupWizardData.species) {
                 const speciesInfo = speciesData[setupWizardData.species];
                 if (speciesInfo) {
                     const usedPoints = setupWizardData.usedExtraPoints || 0;
                     if (usedPoints > speciesInfo.extraPoints) {
                         alert(`You have allocated ${usedPoints} extra points but can only allocate ${speciesInfo.extraPoints}. Please adjust your Fate/Resilience allocation.`);
+                        return false;
+                    }
+                    if (usedPoints < speciesInfo.extraPoints) {
+                        const remaining = speciesInfo.extraPoints - usedPoints;
+                        alert(`You must allocate all ${speciesInfo.extraPoints} extra points. You have ${remaining} point(s) remaining to allocate between Fate and Resilience.`);
                         return false;
                     }
                 }
@@ -13668,6 +13672,12 @@ function loadSymptomsData() {
                     </p>
                 </div>
                 
+                <div style="text-align: center; padding: 15px; background: #f0f7ff; border-radius: 5px; margin-bottom: 20px;">
+                    <span style="font-size: 16px; color: #666;">Points Remaining: </span>
+                    <strong id="setup-points-remaining" style="font-size: 18px; color: ${(speciesInfo.extraPoints - setupWizardData.usedExtraPoints) === 0 ? '#2e7d32' : '#666'};">${speciesInfo.extraPoints - setupWizardData.usedExtraPoints}</strong>
+                    <span style="font-size: 16px; color: #666;"> / ${speciesInfo.extraPoints}</span>
+                </div>
+                
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
                     <div style="padding: 20px; background: white; border: 1px solid #d0c5a0; border-radius: 8px;">
                         <label style="display: block; font-weight: bold; margin-bottom: 15px; color: #3e2f1f;">Fate</label>
@@ -13729,12 +13739,6 @@ function loadSymptomsData() {
                         </div>
                         <p style="margin: 10px 0 0 0; font-size: 12px; color: #666;">Squares per turn in combat</p>
                     </div>
-                </div>
-                
-                <div style="text-align: center; padding: 15px; background: #f0f7ff; border-radius: 5px;">
-                    <span style="font-size: 16px; color: #666;">Points Remaining: </span>
-                    <strong id="setup-points-remaining" style="font-size: 18px; color: ${(speciesInfo.extraPoints - setupWizardData.usedExtraPoints) === 0 ? '#2e7d32' : '#666'};">${speciesInfo.extraPoints - setupWizardData.usedExtraPoints}</strong>
-                    <span style="font-size: 16px; color: #666;"> / ${speciesInfo.extraPoints}</span>
                 </div>
             `;
         }
@@ -14083,29 +14087,59 @@ function loadSymptomsData() {
                             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
                     `;
                     
-                    choice.options.forEach(talent => {
+                    choice.options.forEach((talent, talentIndex) => {
                         const inputType = choice.count === 1 ? 'radio' : 'checkbox';
-                        const inputName = choice.count === 1 ? `setup-talent-group-${choiceIndex}` : '';
+                        const inputName = choice.count === 1 ? `setup-talent-choice-${choiceIndex}` : '';
                         const nameAttribute = inputType === 'radio' ? `name="${inputName}"` : '';
                         
-                        // Check if this is an (any) talent that needs customization
-                        const needsCustomization = talent.includes('(any)') || talent.includes('(Any)');
-                        const cleanTalentId = talent.replace(/[()]/g, '').replace(/\s+/g, '-').toLowerCase();
+                        // Check if this is an (any one) talent that needs customization
+                        const needsCustomization = talent.includes('(any one)') || talent.includes('(choose one)');
+                        const baseTalentName = needsCustomization ? talent.replace(/\s*\(.+\)/, '') : talent;
+                        const inputId = `setup-talent-${choiceIndex}-${talentIndex}-custom`;
                         
-                        talentsHTML += `
-                            <div>
-                                <input type="${inputType}" id="setup-talent-${choiceIndex}-${talent}" value="${talent}" 
-                                       ${nameAttribute} onchange="updateSetupTalentSelection(${choiceIndex}, ${choice.count}, this)">
-                                <label for="setup-talent-${choiceIndex}-${talent}">${talent}</label>
-                                ${needsCustomization ? `
-                                    <div id="setup-talent-custom-${choiceIndex}-${cleanTalentId}" style="display: none; margin-top: 5px;">
-                                        <input type="text" placeholder="Enter type (e.g., Hearing, Sight)" 
-                                               style="width: 150px; padding: 3px; font-size: 11px; border: 1px solid #8b7355;"
-                                               onchange="updateSetupTalentCustomization('${talent}', this.value)">
-                                    </div>
-                                ` : ''}
-                            </div>
-                        `;
+                        if (choice.count === 1) {
+                            // Radio button layout (single choice)
+                            talentsHTML += `
+                                <div style="margin-bottom: 8px;">
+                                    <label style="display: flex; align-items: center; cursor: pointer; padding: 8px; border-radius: 4px;" 
+                                           onmouseover="this.style.background='#f0f7ff'" onmouseout="this.style.background='transparent'">
+                                        <input type="radio" ${nameAttribute} value="${talent}" 
+                                               onchange="updateSetupTalentChoiceSelection(${choiceIndex}, this)"
+                                               style="margin-right: 8px;">
+                                        <span>${talent}</span>
+                                    </label>
+                                    ${needsCustomization ? `
+                                        <div style="margin-left: 24px; margin-top: 4px;">
+                                            <input type="text" id="${inputId}" placeholder="Specify ${baseTalentName.toLowerCase()} type"
+                                                   style="width: 200px; padding: 4px; font-size: 12px; border: 1px solid #8b7355; border-radius: 3px;"
+                                                   onchange="updateSetupTalentCustomizationValue(${choiceIndex}, ${talentIndex}, this.value)"
+                                                   disabled>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `;
+                        } else {
+                            // Checkbox layout (multiple choice)
+                            talentsHTML += `
+                                <div style="margin-bottom: 8px;">
+                                    <label style="display: flex; align-items: center; cursor: pointer; padding: 8px; border-radius: 4px;" 
+                                           onmouseover="this.style.background='#f0f7ff'" onmouseout="this.style.background='transparent'">
+                                        <input type="checkbox" value="${talent}" 
+                                               onchange="updateSetupTalentMultipleSelection(${choiceIndex}, ${choice.count}, ${talentIndex}, this)"
+                                               style="margin-right: 8px;">
+                                        <span>${talent}</span>
+                                    </label>
+                                    ${needsCustomization ? `
+                                        <div style="margin-left: 24px; margin-top: 4px;">
+                                            <input type="text" id="${inputId}" placeholder="Specify ${baseTalentName.toLowerCase()} type"
+                                                   style="width: 200px; padding: 4px; font-size: 12px; border: 1px solid #8b7355; border-radius: 3px;"
+                                                   onchange="updateSetupTalentCustomizationValue(${choiceIndex}, ${talentIndex}, this.value)"
+                                                   disabled>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `;
+                        }
                     });
                     
                     talentsHTML += `
@@ -14123,68 +14157,119 @@ function loadSymptomsData() {
             talentsContent.innerHTML = talentsHTML;
         }
 
-        // Update talent selection for setup wizard
-        function updateSetupTalentSelection(choiceIndex, maxCount, input) {
+        // Handle single talent choice (radio button)
+        function updateSetupTalentChoiceSelection(choiceIndex, radio) {
+            if (radio.checked) {
+                // Initialize the choice object
+                if (!setupWizardData.talents.choices[choiceIndex]) {
+                    setupWizardData.talents.choices[choiceIndex] = {};
+                }
+                
+                // Find the talent index to get the customization input
+                const choiceGroup = document.querySelectorAll(`input[name="setup-talent-choice-${choiceIndex}"]`);
+                let talentIndex = -1;
+                choiceGroup.forEach((input, index) => {
+                    if (input === radio) talentIndex = index;
+                });
+                
+                // Enable/disable customization inputs
+                choiceGroup.forEach((input, index) => {
+                    const customInput = document.getElementById(`setup-talent-${choiceIndex}-${index}-custom`);
+                    if (customInput) {
+                        if (index === talentIndex) {
+                            customInput.disabled = false;
+                            customInput.focus();
+                        } else {
+                            customInput.disabled = true;
+                            customInput.value = '';
+                        }
+                    }
+                });
+                
+                setupWizardData.talents.choices[choiceIndex] = {
+                    talent: radio.value,
+                    customization: ''
+                };
+                
+                // Update remaining count
+                const remainingSpan = document.getElementById(`setup-talent-remaining-${choiceIndex}`);
+                if (remainingSpan) {
+                    remainingSpan.textContent = '0';
+                }
+            }
+        }
+        
+        // Handle multiple talent choices (checkboxes)
+        function updateSetupTalentMultipleSelection(choiceIndex, maxCount, talentIndex, checkbox) {
             // Initialize the choice array if needed
             if (!setupWizardData.talents.choices[choiceIndex]) {
                 setupWizardData.talents.choices[choiceIndex] = [];
             }
             
-            const currentSelections = setupWizardData.talents.choices[choiceIndex];
-            const remainingSpan = document.getElementById(`setup-talent-remaining-${choiceIndex}`);
-
-            // Check if this talent needs customization
-            const needsCustomization = input.value.includes('(any)') || input.value.includes('(Any)');
-            const cleanTalentId = input.value.replace(/[()]/g, '').replace(/\s+/g, '-').toLowerCase();
-            const customDiv = document.getElementById(`setup-talent-custom-${choiceIndex}-${cleanTalentId}`);
-
-            if (input.type === 'radio') {
-                // For radio buttons, clear existing selection and set new one
-                if (input.checked) {
-                    setupWizardData.talents.choices[choiceIndex] = [input.value];
-                    // Show customization div if needed
-                    if (needsCustomization && customDiv) {
-                        customDiv.style.display = 'block';
-                    }
+            const choiceArray = setupWizardData.talents.choices[choiceIndex];
+            const customInput = document.getElementById(`setup-talent-${choiceIndex}-${talentIndex}-custom`);
+            
+            if (checkbox.checked) {
+                // Check if we've reached the limit
+                if (choiceArray.length >= maxCount) {
+                    checkbox.checked = false;
+                    alert(`You can only select ${maxCount} talent(s) from this group.`);
+                    return;
+                }
+                
+                // Enable customization input if needed
+                if (customInput) {
+                    customInput.disabled = false;
+                }
+                
+                // Add talent object with customization support
+                const existingIndex = choiceArray.findIndex(t => 
+                    (typeof t === 'string' ? t : t.talent) === checkbox.value
+                );
+                if (existingIndex === -1) {
+                    choiceArray.push({
+                        talent: checkbox.value,
+                        customization: ''
+                    });
                 }
             } else {
-                // For checkboxes, handle multiple selections
-                if (input.checked) {
-                    if (currentSelections.length >= maxCount) {
-                        input.checked = false;
-                        alert(`You can only select ${maxCount} talent(s) from this group.`);
-                        return;
-                    }
-                    currentSelections.push(input.value);
-                    // Show customization div if needed
-                    if (needsCustomization && customDiv) {
-                        customDiv.style.display = 'block';
-                    }
-                } else {
-                    const index = currentSelections.indexOf(input.value);
-                    if (index > -1) {
-                        currentSelections.splice(index, 1);
-                    }
-                    // Hide customization div
-                    if (needsCustomization && customDiv) {
-                        customDiv.style.display = 'none';
-                        customDiv.querySelector('input').value = '';
-                    }
+                // Disable and clear customization input
+                if (customInput) {
+                    customInput.disabled = true;
+                    customInput.value = '';
+                }
+                
+                // Remove talent
+                const index = choiceArray.findIndex(t => 
+                    (typeof t === 'string' ? t : t.talent) === checkbox.value
+                );
+                if (index > -1) {
+                    choiceArray.splice(index, 1);
                 }
             }
-
+            
             // Update remaining count
-            const newCount = setupWizardData.talents.choices[choiceIndex] ? 
-                setupWizardData.talents.choices[choiceIndex].length : 0;
-            remainingSpan.textContent = maxCount - newCount;
+            const remainingSpan = document.getElementById(`setup-talent-remaining-${choiceIndex}`);
+            if (remainingSpan) {
+                remainingSpan.textContent = maxCount - choiceArray.length;
+            }
         }
         
-        // Update talent customization for setup wizard
-        function updateSetupTalentCustomization(talentName, customization) {
-            if (!setupWizardData.talentSpecializations) {
-                setupWizardData.talentSpecializations = {};
+        // Update talent customization value
+        function updateSetupTalentCustomizationValue(choiceIndex, talentIndex, customization) {
+            if (!setupWizardData.talents.choices[choiceIndex]) return;
+            
+            const choice = setupWizardData.talents.choices[choiceIndex];
+            if (Array.isArray(choice)) {
+                // Multiple choice - find the talent object
+                const talentObj = choice.find(t => t && typeof t === 'object');
+                if (talentObj) {
+                    talentObj.customization = customization;
+                }
+            } else if (choice && typeof choice === 'object') {
+                // Single choice
+                choice.customization = customization;
             }
-            setupWizardData.talentSpecializations[talentName] = customization;
         }
         
         function initializeSetupClass() {
@@ -14858,6 +14943,12 @@ function loadSymptomsData() {
                 const fateField = document.getElementById('fate');
                 if (fateField) {
                     fateField.value = setupWizardData.fate.total || setupWizardData.fate.base;
+                    
+                    // Set Fortune points (current and max) equal to Fate points
+                    const fortuneField = document.getElementById('fortune-current');
+                    if (fortuneField) {
+                        fortuneField.value = setupWizardData.fate.total || setupWizardData.fate.base;
+                    }
                 }
             }
             
@@ -14865,7 +14956,18 @@ function loadSymptomsData() {
                 const resilienceField = document.getElementById('resilience');
                 if (resilienceField) {
                     resilienceField.value = setupWizardData.resilience.total || setupWizardData.resilience.base;
+                    
+                    // Set Resolve points (current and max) equal to Resilience points
+                    const resolveField = document.getElementById('resolve-current');
+                    if (resolveField) {
+                        resolveField.value = setupWizardData.resilience.total || setupWizardData.resilience.base;
+                    }
                 }
+            }
+            
+            // Update Fortune/Resolve max displays
+            if (typeof window.updateFateFortuneResilienceResolveDisplay === 'function') {
+                window.updateFateFortuneResilienceResolveDisplay();
             }
             
             // Apply skills from wizard using proven addSkillDirectly function
@@ -14909,9 +15011,27 @@ function loadSymptomsData() {
                 
                 // Add chosen talents from talent choices
                 if (setupWizardData.talents.choices) {
-                    setupWizardData.talents.choices.forEach(choiceArray => {
-                        if (Array.isArray(choiceArray)) {
-                            allSelectedTalents.push(...choiceArray);
+                    setupWizardData.talents.choices.forEach(choice => {
+                        if (Array.isArray(choice)) {
+                            // Multiple selection - array of talent objects
+                            choice.forEach(talentObj => {
+                                if (typeof talentObj === 'object' && talentObj.talent) {
+                                    const talentName = talentObj.customization ? 
+                                        `${talentObj.talent.replace(/\s*\(.+\)/, '')} (${talentObj.customization})` : 
+                                        talentObj.talent;
+                                    allSelectedTalents.push(talentName);
+                                } else if (typeof talentObj === 'string') {
+                                    allSelectedTalents.push(talentObj);
+                                }
+                            });
+                        } else if (typeof choice === 'object' && choice.talent) {
+                            // Single selection - talent object
+                            const talentName = choice.customization ? 
+                                `${choice.talent.replace(/\s*\(.+\)/, '')} (${choice.customization})` : 
+                                choice.talent;
+                            allSelectedTalents.push(talentName);
+                        } else if (typeof choice === 'string') {
+                            allSelectedTalents.push(choice);
                         }
                     });
                 }
@@ -15141,7 +15261,25 @@ function loadSymptomsData() {
                 if (setupWizardData.talents.fixed) allTalents.push(...setupWizardData.talents.fixed);
                 if (setupWizardData.talents.choices) {
                     setupWizardData.talents.choices.forEach(choice => {
-                        if (Array.isArray(choice)) allTalents.push(...choice);
+                        if (Array.isArray(choice)) {
+                            choice.forEach(talentObj => {
+                                if (typeof talentObj === 'object' && talentObj.talent) {
+                                    const talentName = talentObj.customization ? 
+                                        `${talentObj.talent.replace(/\s*\(.+\)/, '')} (${talentObj.customization})` : 
+                                        talentObj.talent;
+                                    allTalents.push(talentName);
+                                } else if (typeof talentObj === 'string') {
+                                    allTalents.push(talentObj);
+                                }
+                            });
+                        } else if (typeof choice === 'object' && choice.talent) {
+                            const talentName = choice.customization ? 
+                                `${choice.talent.replace(/\s*\(.+\)/, '')} (${choice.customization})` : 
+                                choice.talent;
+                            allTalents.push(talentName);
+                        } else if (typeof choice === 'string') {
+                            allTalents.push(choice);
+                        }
                     });
                 }
                 if (allTalents.length > 0) {
