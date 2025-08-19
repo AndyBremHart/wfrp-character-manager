@@ -12163,8 +12163,8 @@ function loadSymptomsData() {
             finalEquipment: []
         };
 
-        // Species Creation Wizard Functions
-        function openSpeciesWizard(species) {
+        // Species Creation Wizard Functions (DISABLED - use Character Generator)
+        /* function openSpeciesWizard(species) {
             selectedSpecies = species;
             const speciesInfo = speciesData[species];
             
@@ -13151,7 +13151,8 @@ function loadSymptomsData() {
                 }
             }
             
-            openSpeciesWizard(selectedValue);
+            // Species wizard disabled - use Character Generator instead
+            alert('Use the Character Generator button above for guided character creation.');
         }
 
         // Check if character has significant data
@@ -13181,12 +13182,14 @@ function loadSymptomsData() {
                         
                         if (!hasData) {
                             // Auto-open wizard for new character
-                            openSpeciesWizard(selectedValue);
+                            // Species wizard disabled - use Character Generator instead
+            alert('Use the Character Generator button above for guided character creation.');
                         } else {
                             // Ask if they want to open the wizard for existing character
                             const shouldOpen = confirm('Would you like to open the Species Creation Wizard? This will overwrite existing character data.');
                             if (shouldOpen) {
-                                openSpeciesWizard(selectedValue);
+                                // Species wizard disabled - use Character Generator instead
+            alert('Use the Character Generator button above for guided character creation.');
                             }
                         }
                     }
@@ -13199,6 +13202,8 @@ function loadSymptomsData() {
             initializeSpeciesDropdown();
         });
 
+        */ // End of disabled species wizard functions
+        
         // =============== CHARACTER SETUP WIZARD FUNCTIONS ===============
         
         let setupCurrentStep = 0;
@@ -13597,6 +13602,12 @@ function loadSymptomsData() {
 
         // Update characteristic total in setup wizard
         function updateSetupCharacteristicTotal(char) {
+            // Guard clause: ensure species is selected first
+            if (!setupWizardData.species || !speciesData[setupWizardData.species]) {
+                console.log('Species not selected yet, skipping characteristic update');
+                return;
+            }
+            
             const speciesInfo = speciesData[setupWizardData.species];
             
             // Find the correct characteristic key (handle case sensitivity)
@@ -15327,9 +15338,10 @@ function loadSymptomsData() {
             setupWizardData = {};
         }
 
-        // =============== CLASS TRAPPINGS WIZARD FUNCTIONS ===============
+        // =============== CLASS TRAPPINGS WIZARD FUNCTIONS (DISABLED) ===============
+        // All class wizard functions disabled - use Character Generator instead
 
-        function manualOpenClassWizard() {
+        /* function manualOpenClassWizard() {
             const classSelect = document.getElementById('class');
             const selectedValue = classSelect.value;
             
@@ -15343,7 +15355,8 @@ function loadSymptomsData() {
                 return;
             }
             
-            openClassWizard(selectedValue);
+            // Class wizard disabled - use Character Generator instead
+            alert('Use the Character Generator button above for guided character creation.');
         }
 
         function openClassWizard(className) {
@@ -15765,7 +15778,7 @@ function loadSymptomsData() {
                 choices: {},
                 finalEquipment: []
             };
-        }
+        } */
 
         // =============== SESSION NOTES SYSTEM ===============
 
