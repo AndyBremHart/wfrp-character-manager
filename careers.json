@@ -15,31 +15,13 @@
         "ws": [],
         "bs": [],
         "s": [],
-        "t": [
-          1
-        ],
-        "i": [
-          1,
-          2,
-          3
-        ],
+        "t": [1, 2, 3, 4],
+        "i": [3, 4],
         "agi": [],
-        "dex": [
-          1
-        ],
-        "int": [
-          1
-        ],
-        "wp": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "fel": [
-          1,
-          2
-        ]
+        "dex": [1, 2, 3, 4],
+        "int": [1, 2, 3, 4],
+        "wp": [4],
+        "fel": [2, 3, 4]
       },
       "tiers": [
         {
@@ -146,32 +128,14 @@
       "description": "You create machines and constructions both useful and bizarre, and often downright deadly",
       "characteristicAdvances": {
         "ws": [],
-        "bs": [
-          1
-        ],
+        "bs": [1, 2, 3, 4],
         "s": [],
-        "t": [
-          1,
-          2,
-          3
-        ],
-        "i": [
-          1,
-          2
-        ],
+        "t": [3, 4],
+        "i": [2, 3, 4],
         "agi": [],
-        "dex": [
-          1
-        ],
-        "int": [
-          1
-        ],
-        "wp": [
-          1,
-          2,
-          3,
-          4
-        ],
+        "dex": [1, 2, 3, 4],
+        "int": [1, 2, 3, 4],
+        "wp": [4],
         "fel": []
       },
       "tiers": [
@@ -281,31 +245,13 @@
         "ws": [],
         "bs": [],
         "s": [],
-        "t": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "i": [
-          1
-        ],
+        "t": [4],
+        "i": [1, 2, 3, 4],
         "agi": [],
-        "dex": [
-          1
-        ],
-        "int": [
-          1
-        ],
-        "wp": [
-          1,
-          2,
-          3
-        ],
-        "fel": [
-          1,
-          2
-        ]
+        "dex": [1, 2, 3, 4],
+        "int": [1, 2, 3, 4],
+        "wp": [3, 4],
+        "fel": [2, 3, 4]
       },
       "tiers": [
         {
@@ -411,30 +357,13 @@
         "ws": [],
         "bs": [],
         "s": [],
-        "t": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "i": [
-          1,
-          2
-        ],
+        "t": [4],
+        "i": [3, 4],
         "agi": [],
-        "dex": [
-          1
-        ],
-        "int": [
-          1
-        ],
-        "wp": [
-          1,
-          2
-        ],
-        "fel": [
-          1
-        ]
+        "dex": [1, 2, 3, 4],
+        "int": [1, 2, 3, 4],
+        "wp": [2, 3, 4],
+        "fel": [1, 2, 3, 4]
       },
       "tiers": [
         {
@@ -543,30 +472,12 @@
         "bs": [],
         "s": [],
         "t": [],
-        "i": [
-          1,
-          2,
-          3
-        ],
-        "agi": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "dex": [
-          1
-        ],
-        "int": [
-          1
-        ],
-        "wp": [
-          1
-        ],
-        "fel": [
-          1,
-          2
-        ]
+        "i": [3, 4],
+        "agi": [4],
+        "dex": [1, 2, 3, 4],
+        "int": [1, 2, 3, 4],
+        "wp": [1, 2, 3, 4],
+        "fel": [2, 3, 4]
       },
       "tiers": [
         {
@@ -672,31 +583,13 @@
         "ws": [],
         "bs": [],
         "s": [],
-        "t": [
-          1
-        ],
-        "i": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "agi": [
-          1
-        ],
+        "t": [1, 2, 3, 4],
+        "i": [4],
+        "agi": [1, 2, 3, 4],
         "dex": [],
-        "int": [
-          1,
-          2,
-          3
-        ],
-        "wp": [
-          1
-        ],
-        "fel": [
-          1,
-          2
-        ]
+        "int": [3, 4],
+        "wp": [1, 2, 3, 4],
+        "fel": [2, 3, 4]
       },
       "tiers": [
         {
@@ -807,31 +700,13 @@
         "ws": [],
         "bs": [],
         "s": [],
-        "t": [
-          1
-        ],
-        "i": [
-          1,
-          2
-        ],
+        "t": [1, 2, 3, 4],
+        "i": [2, 3, 4],
         "agi": [],
-        "dex": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "int": [
-          1
-        ],
-        "wp": [
-          1
-        ],
-        "fel": [
-          1,
-          2,
-          3
-        ]
+        "dex": [4],
+        "int": [1, 2, 3, 4],
+        "wp": [1, 2, 3, 4],
+        "fel": [3, 4]
       },
       "tiers": [
         {
@@ -936,34 +811,16 @@
       ],
       "description": "Feared and distrusted by the citizens of the Empire, you legally wield powerful and dangerous magic",
       "characteristicAdvances": {
-        "ws": [
-          1
-        ],
+        "ws": [1, 2, 3, 4],
         "bs": [],
         "s": [],
         "t": [],
-        "i": [
-          1,
-          2,
-          3
-        ],
-        "agi": [
-          1,
-          2
-        ],
+        "i": [3, 4],
+        "agi": [2, 3, 4],
         "dex": [],
-        "int": [
-          1
-        ],
-        "wp": [
-          1
-        ],
-        "fel": [
-          1,
-          2,
-          3,
-          4
-        ]
+        "int": [1, 2, 3, 4],
+        "wp": [1, 2, 3, 4],
+        "fel": [4]
       },
       "tiers": [
         {
@@ -1068,34 +925,16 @@
       ],
       "description": "Charismatic and articulate, you champion your cause in the face of establishment opposition",
       "characteristicAdvances": {
-        "ws": [
-          1,
-          2,
-          3
-        ],
-        "bs": [
-          1
-        ],
+        "ws": [3, 4],
+        "bs": [1, 2, 3, 4],
         "s": [],
         "t": [],
-        "i": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "agi": [
-          1,
-          2
-        ],
+        "i": [4],
+        "agi": [2, 3, 4],
         "dex": [],
-        "int": [
-          1
-        ],
+        "int": [1, 2, 3, 4],
         "wp": [],
-        "fel": [
-          1
-        ]
+        "fel": [1, 2, 3, 4]
       },
       "tiers": [
         {
@@ -1205,32 +1044,14 @@
       "characteristicAdvances": {
         "ws": [],
         "bs": [],
-        "s": [
-          1
-        ],
-        "t": [
-          1
-        ],
+        "s": [1, 2, 3, 4],
+        "t": [1, 2, 3, 4],
         "i": [],
         "agi": [],
-        "dex": [
-          1
-        ],
-        "int": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "wp": [
-          1,
-          2,
-          3
-        ],
-        "fel": [
-          1,
-          2
-        ]
+        "dex": [1, 2, 3, 4],
+        "int": [4],
+        "wp": [3, 4],
+        "fel": [2, 3, 4]
       },
       "tiers": [
         {
@@ -1335,34 +1156,16 @@
       ],
       "description": "Street-smart, you make a living from the charity of others using persuasion and charm",
       "characteristicAdvances": {
-        "ws": [
-          1,
-          2,
-          3
-        ],
+        "ws": [3, 4],
         "bs": [],
         "s": [],
-        "t": [
-          1
-        ],
-        "i": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "agi": [
-          1
-        ],
+        "t": [1, 2, 3, 4],
+        "i": [4],
+        "agi": [1, 2, 3, 4],
         "dex": [],
         "int": [],
-        "wp": [
-          1,
-          2
-        ],
-        "fel": [
-          1
-        ]
+        "wp": [2, 3, 4],
+        "fel": [1, 2, 3, 4]
       },
       "tiers": [
         {
@@ -1472,30 +1275,12 @@
         "bs": [],
         "s": [],
         "t": [],
-        "i": [
-          1
-        ],
-        "agi": [
-          1
-        ],
-        "dex": [
-          1,
-          2,
-          3
-        ],
-        "int": [
-          1
-        ],
-        "wp": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "fel": [
-          1,
-          2
-        ]
+        "i": [1, 2, 3, 4],
+        "agi": [1, 2, 3, 4],
+        "dex": [3, 4],
+        "int": [1, 2, 3, 4],
+        "wp": [4],
+        "fel": [2, 3, 4]
       },
       "tiers": [
         {
@@ -1604,34 +1389,16 @@
       ],
       "description": "Shrewd and numerate, you buy low to sell high, making more money than most will ever see",
       "characteristicAdvances": {
-        "ws": [
-          1,
-          2,
-          3,
-          4
-        ],
+        "ws": [4],
         "bs": [],
         "s": [],
         "t": [],
-        "i": [
-          1,
-          2,
-          3
-        ],
-        "agi": [
-          1
-        ],
+        "i": [3, 4],
+        "agi": [1, 2, 3, 4],
         "dex": [],
-        "int": [
-          1,
-          2
-        ],
-        "wp": [
-          1
-        ],
-        "fel": [
-          1
-        ]
+        "int": [2, 3, 4],
+        "wp": [1, 2, 3, 4],
+        "fel": [1, 2, 3, 4]
       },
       "tiers": [
         {
@@ -1742,33 +1509,15 @@
       ],
       "description": "You spare civilisation from being overrun by vermin with help from your trusty, canine companion",
       "characteristicAdvances": {
-        "ws": [
-          1
-        ],
-        "bs": [
-          1
-        ],
-        "s": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "t": [
-          1,
-          2
-        ],
-        "i": [
-          1,
-          2,
-          3
-        ],
+        "ws": [1, 2, 3, 4],
+        "bs": [1, 2, 3, 4],
+        "s": [4],
+        "t": [2, 3, 4],
+        "i": [3, 4],
         "agi": [],
         "dex": [],
         "int": [],
-        "wp": [
-          1
-        ],
+        "wp": [1, 2, 3, 4],
         "fel": []
       },
       "tiers": [
@@ -1881,30 +1630,12 @@
         "bs": [],
         "s": [],
         "t": [],
-        "i": [
-          1,
-          2
-        ],
-        "agi": [
-          1
-        ],
-        "dex": [
-          1,
-          2,
-          3
-        ],
-        "int": [
-          1
-        ],
-        "wp": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "fel": [
-          1
-        ]
+        "i": [2, 3, 4],
+        "agi": [1, 2, 3, 4],
+        "dex": [3, 4],
+        "int": [1, 2, 3, 4],
+        "wp": [4],
+        "fel": [1, 2, 3, 4]
       },
       "tiers": [
         {
@@ -2012,34 +1743,16 @@
       ],
       "description": "You maintain the peace and keep the rabble in line so your town doesn't descend into anarchy",
       "characteristicAdvances": {
-        "ws": [
-          1
-        ],
+        "ws": [1, 2, 3, 4],
         "bs": [],
-        "s": [
-          1
-        ],
+        "s": [1, 2, 3, 4],
         "t": [],
-        "i": [
-          1,
-          2,
-          3
-        ],
+        "i": [3, 4],
         "agi": [],
         "dex": [],
-        "int": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "wp": [
-          1,
-          2
-        ],
-        "fel": [
-          1
-        ]
+        "int": [4],
+        "wp": [2, 3, 4],
+        "fel": [1, 2, 3, 4]
       },
       "tiers": [
         {
@@ -2153,31 +1866,13 @@
         "ws": [],
         "bs": [],
         "s": [],
-        "t": [
-          1
-        ],
-        "i": [
-          1
-        ],
-        "agi": [
-          1
-        ],
+        "t": [1, 2, 3, 4],
+        "i": [1, 2, 3, 4],
+        "agi": [1, 2, 3, 4],
         "dex": [],
-        "int": [
-          1,
-          2,
-          3
-        ],
-        "wp": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "fel": [
-          1,
-          2
-        ]
+        "int": [3, 4],
+        "wp": [4],
+        "fel": [2, 3, 4]
       },
       "tiers": [
         {
@@ -2284,32 +1979,14 @@
       "characteristicAdvances": {
         "ws": [],
         "bs": [],
-        "s": [
-          1
-        ],
+        "s": [1, 2, 3, 4],
         "t": [],
-        "i": [
-          1
-        ],
+        "i": [1, 2, 3, 4],
         "agi": [],
-        "dex": [
-          1
-        ],
-        "int": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "wp": [
-          1,
-          2,
-          3
-        ],
-        "fel": [
-          1,
-          2
-        ]
+        "dex": [1, 2, 3, 4],
+        "int": [4],
+        "wp": [3, 4],
+        "fel": [2, 3, 4]
       },
       "tiers": [
         {
@@ -2413,33 +2090,15 @@
       ],
       "description": "Your blade is an instrument of justice, bound by long tradition and employed with deadly precision",
       "characteristicAdvances": {
-        "ws": [
-          1
-        ],
-        "bs": [
-          1,
-          2
-        ],
-        "s": [
-          1,
-          2,
-          3
-        ],
+        "ws": [1, 2, 3, 4],
+        "bs": [2, 3, 4],
+        "s": [3, 4],
         "t": [],
-        "i": [
-          1
-        ],
-        "agi": [
-          1
-        ],
+        "i": [1, 2, 3, 4],
+        "agi": [1, 2, 3, 4],
         "dex": [],
         "int": [],
-        "wp": [
-          1,
-          2,
-          3,
-          4
-        ],
+        "wp": [4],
         "fel": []
       },
       "tiers": [
@@ -2550,31 +2209,13 @@
         "ws": [],
         "bs": [],
         "s": [],
-        "t": [
-          1
-        ],
-        "i": [
-          1,
-          2,
-          3
-        ],
-        "agi": [
-          1
-        ],
+        "t": [1, 2, 3, 4],
+        "i": [3, 4],
+        "agi": [1, 2, 3, 4],
         "dex": [],
-        "int": [
-          1,
-          2
-        ],
-        "wp": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "fel": [
-          1
-        ]
+        "int": [2, 3, 4],
+        "wp": [4],
+        "fel": [1, 2, 3, 4]
       },
       "tiers": [
         {
@@ -2683,34 +2324,16 @@
       ],
       "description": "As the scion of a noble bloodline, you stand proudly from the common rabble",
       "characteristicAdvances": {
-        "ws": [
-          1
-        ],
+        "ws": [1, 2, 3, 4],
         "bs": [],
         "s": [],
         "t": [],
-        "i": [
-          1
-        ],
+        "i": [1, 2, 3, 4],
         "agi": [],
-        "dex": [
-          1
-        ],
-        "int": [
-          1,
-          2,
-          3
-        ],
-        "wp": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "fel": [
-          1,
-          2
-        ]
+        "dex": [1, 2, 3, 4],
+        "int": [3, 4],
+        "wp": [4],
+        "fel": [2, 3, 4]
       },
       "tiers": [
         {
@@ -2828,32 +2451,14 @@
       "characteristicAdvances": {
         "ws": [],
         "bs": [],
-        "s": [
-          1
-        ],
-        "t": [
-          1
-        ],
-        "i": [
-          1,
-          2
-        ],
-        "agi": [
-          1
-        ],
+        "s": [1, 2, 3, 4],
+        "t": [1, 2, 3, 4],
+        "i": [2, 3, 4],
+        "agi": [1, 2, 3, 4],
         "dex": [],
-        "int": [
-          1,
-          2,
-          3
-        ],
+        "int": [3, 4],
         "wp": [],
-        "fel": [
-          1,
-          2,
-          3,
-          4
-        ]
+        "fel": [4]
       },
       "tiers": [
         {
@@ -2960,34 +2565,16 @@
       ],
       "description": "You are the eyes and ears of another, exposing secrets and spreading lies",
       "characteristicAdvances": {
-        "ws": [
-          1,
-          2
-        ],
+        "ws": [2, 3, 4],
         "bs": [],
         "s": [],
         "t": [],
-        "i": [
-          1,
-          2,
-          3
-        ],
-        "agi": [
-          1
-        ],
+        "i": [3, 4],
+        "agi": [1, 2, 3, 4],
         "dex": [],
-        "int": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "wp": [
-          1
-        ],
-        "fel": [
-          1
-        ]
+        "int": [4],
+        "wp": [1, 2, 3, 4],
+        "fel": [1, 2, 3, 4]
       },
       "tiers": [
         {
@@ -3099,33 +2686,16 @@
       ],
       "description": "You oversee another's territory, ensuring it is properly maintained and, if necessary, protected",
       "characteristicAdvances": {
-        "ws": [
-          1,
-          2
-        ],
+        "ws": [2, 3, 4],
         "bs": [],
-        "s": [
-          1
-        ],
-        "t": [
-          1
-        ],
+        "s": [1, 2, 3, 4],
+        "t": [1, 2, 3, 4],
         "i": [],
         "agi": [],
         "dex": [],
-        "int": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "wp": [
-          1
-        ],
-        "fel": [
-          1,
-          2
-        ]
+        "int": [4],
+        "wp": [1, 2, 3, 4],
+        "fel": [3, 4]
       },
       "tiers": [
         {
@@ -3234,30 +2804,16 @@
       ],
       "description": "Official trusted by local rulers to administer their lands efficiently and firmly",
       "characteristicAdvances": {
-        "ws": [
-          1
-        ],
+        "ws": [1, 2, 3, 4],
         "bs": [],
-        "s": [
-          1
-        ],
-        "t": [
-          1
-        ],
-        "i": [
-          1
-        ],
-        "agi": [],
+        "s": [],
+        "t": [],
+        "i": [1, 2, 3, 4],
+        "agi": [3, 4],
         "dex": [],
-        "int": [
-          1
-        ],
-        "wp": [
-          1
-        ],
-        "fel": [
-          1
-        ]
+        "int": [4],
+        "wp": [1, 2, 3, 4],
+        "fel": [2, 3, 4]
       },
       "tiers": [
         {
@@ -3364,31 +2920,13 @@
         "ws": [],
         "bs": [],
         "s": [],
-        "t": [
-          1
-        ],
-        "i": [
-          1
-        ],
+        "t": [1, 2, 3, 4],
+        "i": [1, 2, 3, 4],
         "agi": [],
-        "dex": [
-          1
-        ],
-        "int": [
-          1,
-          2
-        ],
-        "wp": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "fel": [
-          1,
-          2,
-          3
-        ]
+        "dex": [1, 2, 3, 4],
+        "int": [2, 3, 4],
+        "wp": [4],
+        "fel": [3, 4]
       },
       "tiers": [
         {
@@ -3498,31 +3036,13 @@
         "ws": [],
         "bs": [],
         "s": [],
-        "t": [
-          1
-        ],
-        "i": [
-          1
-        ],
-        "agi": [
-          1
-        ],
-        "dex": [
-          1,
-          2
-        ],
-        "int": [
-          1,
-          2,
-          3,
-          4
-        ],
+        "t": [1, 2, 3, 4],
+        "i": [1, 2, 3, 4],
+        "agi": [1, 2, 3, 4],
+        "dex": [2, 3, 4],
+        "int": [4],
         "wp": [],
-        "fel": [
-          1,
-          2,
-          3
-        ]
+        "fel": [3, 4]
       },
       "tiers": [
         {
@@ -3632,31 +3152,13 @@
       "description": "Tough, independent killers who make a living off the fur and flesh of wild creatures",
       "characteristicAdvances": {
         "ws": [],
-        "bs": [
-          1,
-          2
-        ],
-        "s": [
-          1
-        ],
-        "t": [
-          1
-        ],
-        "i": [
-          1,
-          2,
-          3
-        ],
+        "bs": [2, 3, 4],
+        "s": [1, 2, 3, 4],
+        "t": [1, 2, 3, 4],
+        "i": [3, 4],
         "agi": [],
-        "dex": [
-          1
-        ],
-        "int": [
-          1,
-          2,
-          3,
-          4
-        ],
+        "dex": [1, 2, 3, 4],
+        "int": [4],
         "wp": [],
         "fel": []
       },
@@ -3764,34 +3266,16 @@
       ],
       "description": "A hewer of stone, you pursue back-breaking work in the darkest depths of the world",
       "characteristicAdvances": {
-        "ws": [
-          1,
-          2
-        ],
+        "ws": [2, 3, 4],
         "bs": [],
-        "s": [
-          1
-        ],
-        "t": [
-          1
-        ],
-        "i": [
-          1,
-          2,
-          3
-        ],
+        "s": [1, 2, 3, 4],
+        "t": [1, 2, 3, 4],
+        "i": [3, 4],
         "agi": [],
         "dex": [],
         "int": [],
-        "wp": [
-          1
-        ],
-        "fel": [
-          1,
-          2,
-          3,
-          4
-        ]
+        "wp": [1, 2, 3, 4],
+        "fel": [4]
       },
       "tiers": [
         {
@@ -3904,28 +3388,34 @@
         "s": [],
         "t": [],
         "i": [
-          1
-        ],
-        "agi": [
-          1,
-          2,
-          3
-        ],
-        "dex": [
-          1
-        ],
-        "int": [
           1,
           2,
           3,
           4
         ],
-        "wp": [
+        "agi": [
+          3,
+          4
+        ],
+        "dex": [
           1,
-          2
+          2,
+          3,
+          4
+        ],
+        "int": [
+          4
+        ],
+        "wp": [
+          2,
+          3,
+          4
         ],
         "fel": [
-          1
+          1,
+          2,
+          3,
+          4
         ]
       },
       "tiers": [
@@ -4031,28 +3521,35 @@
       "characteristicAdvances": {
         "ws": [],
         "bs": [
-          1,
-          2
+          2,
+          3,
+          4
         ],
         "s": [],
         "t": [
-          1
-        ],
-        "i": [
-          1
-        ],
-        "agi": [
-          1
-        ],
-        "dex": [
           1,
           2,
           3,
           4
         ],
-        "int": [
+        "i": [
           1,
-          2
+          2,
+          3,
+          4
+        ],
+        "agi": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "dex": [
+          4
+        ],
+        "int": [
+          3,
+          4
         ],
         "wp": [],
         "fel": []
@@ -4164,32 +3661,38 @@
       "description": "You are the beating heart of rural life, working the countryside to feed civilisation",
       "characteristicAdvances": {
         "ws": [
-          1,
-          2
+          2,
+          3,
+          4
         ],
         "bs": [],
         "s": [
-          1
-        ],
-        "t": [
-          1
-        ],
-        "i": [],
-        "agi": [
-          1
-        ],
-        "dex": [],
-        "int": [
           1,
           2,
           3,
           4
         ],
-        "wp": [],
-        "fel": [
+        "t": [
           1,
           2,
-          3
+          3,
+          4
+        ],
+        "i": [],
+        "agi": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "dex": [],
+        "int": [
+          4
+        ],
+        "wp": [],
+        "fel": [
+          3,
+          4
         ]
       },
       "tiers": [
@@ -4296,29 +3799,35 @@
       "description": "Ruthless and determined, you pursue your quarry to the bitter end - for justice, or for money",
       "characteristicAdvances": {
         "ws": [
-          1
-        ],
-        "bs": [
-          1,
-          2
-        ],
-        "s": [
-          1,
-          2,
-          3
-        ],
-        "t": [
-          1
-        ],
-        "i": [],
-        "agi": [
-          1
-        ],
-        "dex": [],
-        "int": [
           1,
           2,
           3,
+          4
+        ],
+        "bs": [
+          2,
+          3,
+          4
+        ],
+        "s": [
+          3,
+          4
+        ],
+        "t": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "i": [],
+        "agi": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "dex": [],
+        "int": [
           4
         ],
         "wp": [],
@@ -4432,31 +3941,37 @@
       "description": "Determined and rugged, you deliver passengers safely by coach despite the daily dangers you face",
       "characteristicAdvances": {
         "ws": [
-          1,
-          2,
-          3
+          3,
+          4
         ],
         "bs": [
-          1
-        ],
-        "s": [],
-        "t": [
-          1
-        ],
-        "i": [
           1,
           2,
           3,
           4
         ],
-        "agi": [
+        "s": [],
+        "t": [
           1,
-          2
+          2,
+          3,
+          4
+        ],
+        "i": [
+          4
+        ],
+        "agi": [
+          2,
+          3,
+          4
         ],
         "dex": [],
         "int": [],
         "wp": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "fel": []
       },
@@ -4568,32 +4083,38 @@
       "description": "Whether high-born or low-brow, you distract people from the harsh realities of life",
       "characteristicAdvances": {
         "ws": [
-          1,
-          2
+          2,
+          3,
+          4
         ],
         "bs": [
-          1,
-          2,
-          3
+          3,
+          4
         ],
         "s": [],
         "t": [
+          4
+        ],
+        "i": [],
+        "agi": [
           1,
           2,
           3,
           4
         ],
-        "i": [],
-        "agi": [
-          1
-        ],
         "dex": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "int": [],
         "wp": [],
         "fel": [
-          1
+          1,
+          2,
+          3,
+          4
         ]
       },
       "tiers": [
@@ -4700,31 +4221,37 @@
       "description": "Just when you abandoned all hope, your suffering and the righteousness of Sigmar saved you!",
       "characteristicAdvances": {
         "ws": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "bs": [],
         "s": [
-          1
-        ],
-        "t": [
-          1
-        ],
-        "i": [
           1,
           2,
-          3
+          3,
+          4
+        ],
+        "t": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "i": [
+          3,
+          4
         ],
         "agi": [],
         "dex": [],
         "int": [],
         "wp": [
-          1,
-          2
-        ],
-        "fel": [
-          1,
           2,
           3,
+          4
+        ],
+        "fel": [
           4
         ]
       },
@@ -4835,30 +4362,38 @@
       "description": "Swift and sure-footed, nothing stops you delivering your messages on time",
       "characteristicAdvances": {
         "ws": [
-          1,
-          2
+          2,
+          3,
+          4
         ],
         "bs": [],
         "s": [],
         "t": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "i": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "agi": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "dex": [],
         "int": [],
         "wp": [
-          1,
-          2,
-          3
+          3,
+          4
         ],
         "fel": [
-          1,
-          2
+          4
         ]
       },
       "tiers": [
@@ -4969,29 +4504,35 @@
         "bs": [],
         "s": [],
         "t": [
-          1
-        ],
-        "i": [
-          1,
-          2,
-          3
-        ],
-        "agi": [],
-        "dex": [
-          1
-        ],
-        "int": [
           1,
           2,
           3,
           4
         ],
+        "i": [
+          3,
+          4
+        ],
+        "agi": [],
+        "dex": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "int": [
+          4
+        ],
         "wp": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "fel": [
-          1,
-          2
+          2,
+          3,
+          4
         ]
       },
       "tiers": [
@@ -5101,32 +4642,38 @@
       "description": "With a wary eye and ready weapon, you tour the highways of the Empire enforcing the law",
       "characteristicAdvances": {
         "ws": [
-          1,
-          2
+          2,
+          3,
+          4
         ],
         "bs": [
-          1
-        ],
-        "s": [],
-        "t": [
-          1
-        ],
-        "i": [
-          1
-        ],
-        "agi": [],
-        "dex": [],
-        "int": [
           1,
           2,
           3,
           4
         ],
-        "wp": [],
-        "fel": [
+        "s": [],
+        "t": [
           1,
           2,
-          3
+          3,
+          4
+        ],
+        "i": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "agi": [],
+        "dex": [],
+        "int": [
+          4
+        ],
+        "wp": [],
+        "fel": [
+          3,
+          4
         ]
       },
       "tiers": [
@@ -5236,32 +4783,38 @@
       "description": "You hunt the illegal witches plaguing the Empire by any and all means necessary",
       "characteristicAdvances": {
         "ws": [
-          1
-        ],
-        "bs": [
-          1,
-          2
-        ],
-        "s": [],
-        "t": [
-          1
-        ],
-        "i": [],
-        "agi": [],
-        "dex": [],
-        "int": [
           1,
           2,
           3,
           4
         ],
-        "wp": [
-          1
+        "bs": [
+          2,
+          3,
+          4
         ],
-        "fel": [
+        "s": [],
+        "t": [
           1,
           2,
-          3
+          3,
+          4
+        ],
+        "i": [],
+        "agi": [],
+        "dex": [],
+        "int": [
+          4
+        ],
+        "wp": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "fel": [
+          3,
+          4
         ]
       },
       "tiers": [
@@ -5374,27 +4927,33 @@
         "ws": [],
         "bs": [],
         "s": [
-          1
-        ],
-        "t": [
-          1
-        ],
-        "i": [
-          1,
-          2
-        ],
-        "agi": [
-          1
-        ],
-        "dex": [
-          1,
-          2,
-          3
-        ],
-        "int": [
           1,
           2,
           3,
+          4
+        ],
+        "t": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "i": [
+          2,
+          3,
+          4
+        ],
+        "agi": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "dex": [
+          3,
+          4
+        ],
+        "int": [
           4
         ],
         "wp": [],
@@ -5504,31 +5063,37 @@
       "description": "You pilot ships and boats through the most treacherous waters of the Old World",
       "characteristicAdvances": {
         "ws": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "bs": [],
         "s": [],
         "t": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "i": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "agi": [],
         "dex": [],
         "int": [
-          1,
-          2,
-          3
+          3,
+          4
         ],
         "wp": [
-          1,
-          2
-        ],
-        "fel": [
-          1,
           2,
           3,
+          4
+        ],
+        "fel": [
           4
         ]
       },
@@ -5635,32 +5200,38 @@
       "description": "Strong-backed and sure, you patrol the riverways in pursuit of lawbreakers and troublemakers",
       "characteristicAdvances": {
         "ws": [
-          1,
-          2
+          2,
+          3,
+          4
         ],
         "bs": [
-          1
-        ],
-        "s": [
-          1
-        ],
-        "t": [],
-        "i": [
-          1,
-          2,
-          3
-        ],
-        "agi": [],
-        "dex": [],
-        "int": [
           1,
           2,
           3,
           4
         ],
+        "s": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "t": [],
+        "i": [
+          3,
+          4
+        ],
+        "agi": [],
+        "dex": [],
+        "int": [
+          4
+        ],
         "wp": [],
         "fel": [
-          1
+          1,
+          2,
+          3,
+          4
         ]
       },
       "tiers": [
@@ -5769,31 +5340,37 @@
       "description": "Rivers carry most of the Old World's traffic, and you stand in the heart of that excitement",
       "characteristicAdvances": {
         "ws": [
-          1,
-          2
+          2,
+          3,
+          4
         ],
         "bs": [],
         "s": [],
         "t": [
-          1
-        ],
-        "i": [
           1,
           2,
-          3
+          3,
+          4
+        ],
+        "i": [
+          3,
+          4
         ],
         "agi": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "dex": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "int": [],
         "wp": [],
         "fel": [
-          1,
-          2,
-          3,
           4
         ]
       },
@@ -5903,32 +5480,38 @@
       "description": "A life on the ocean waves calls to you, though many Reiklander Seamen never see the sea...",
       "characteristicAdvances": {
         "ws": [
-          1,
-          2
+          2,
+          3,
+          4
         ],
         "bs": [],
         "s": [],
         "t": [],
         "i": [
-          1,
-          2,
-          3
+          3,
+          4
         ],
         "agi": [
-          1
-        ],
-        "dex": [
-          1
-        ],
-        "int": [
           1,
           2,
           3,
           4
         ],
+        "dex": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "int": [
+          4
+        ],
         "wp": [],
         "fel": [
-          1
+          1,
+          2,
+          3,
+          4
         ]
       },
       "tiers": [
@@ -6041,27 +5624,33 @@
         "s": [],
         "t": [],
         "i": [
-          1,
-          2
+          2,
+          3,
+          4
         ],
         "agi": [
-          1
-        ],
-        "dex": [
-          1
-        ],
-        "int": [
-          1,
-          2,
-          3
-        ],
-        "wp": [
-          1
-        ],
-        "fel": [
           1,
           2,
           3,
+          4
+        ],
+        "dex": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "int": [
+          3,
+          4
+        ],
+        "wp": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "fel": [
           4
         ]
       },
@@ -6172,31 +5761,37 @@
       "description": "You may officially load cargo for coin, but everyone knows the Stevedores rule the docklands",
       "characteristicAdvances": {
         "ws": [
-          1
-        ],
-        "bs": [],
-        "s": [
-          1,
-          2
-        ],
-        "t": [
-          1
-        ],
-        "i": [
-          1
-        ],
-        "agi": [],
-        "dex": [],
-        "int": [
           1,
           2,
           3,
           4
         ],
-        "wp": [
+        "bs": [],
+        "s": [
+          2,
+          3,
+          4
+        ],
+        "t": [
           1,
           2,
-          3
+          3,
+          4
+        ],
+        "i": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "agi": [],
+        "dex": [],
+        "int": [
+          4
+        ],
+        "wp": [
+          3,
+          4
         ],
         "fel": []
       },
@@ -6305,31 +5900,37 @@
       "description": "You lure vessels to a watery doom and make off with their cargo",
       "characteristicAdvances": {
         "ws": [
-          1
-        ],
-        "bs": [
           1,
           2,
-          3
+          3,
+          4
+        ],
+        "bs": [
+          3,
+          4
         ],
         "s": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "t": [],
         "i": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "agi": [],
         "dex": [],
         "int": [],
         "wp": [
-          1,
-          2
-        ],
-        "fel": [
-          1,
           2,
           3,
+          4
+        ],
+        "fel": [
           4
         ]
       },
@@ -6444,28 +6045,34 @@
         "s": [],
         "t": [],
         "i": [
-          1,
-          2
+          2,
+          3,
+          4
         ],
         "agi": [
-          1
-        ],
-        "dex": [
-          1
-        ],
-        "int": [
           1,
           2,
           3,
           4
         ],
-        "wp": [
+        "dex": [
           1,
           2,
-          3
+          3,
+          4
+        ],
+        "int": [
+          4
+        ],
+        "wp": [
+          3,
+          4
         ],
         "fel": [
-          1
+          1,
+          2,
+          3,
+          4
         ]
       },
       "tiers": [
@@ -6573,28 +6180,34 @@
         "s": [],
         "t": [],
         "i": [
-          1
-        ],
-        "agi": [
-          1,
-          2,
-          3
-        ],
-        "dex": [
-          1
-        ],
-        "int": [
           1,
           2,
           3,
           4
         ],
-        "wp": [
+        "agi": [
+          3,
+          4
+        ],
+        "dex": [
           1,
-          2
+          2,
+          3,
+          4
+        ],
+        "int": [
+          4
+        ],
+        "wp": [
+          2,
+          3,
+          4
         ],
         "fel": [
-          1
+          1,
+          2,
+          3,
+          4
         ]
       },
       "tiers": [
@@ -6709,28 +6322,34 @@
         "s": [],
         "t": [],
         "i": [
-          1
-        ],
-        "agi": [
-          1
-        ],
-        "dex": [
-          1,
-          2
-        ],
-        "int": [
-          1,
-          2,
-          3
-        ],
-        "wp": [
           1,
           2,
           3,
           4
         ],
+        "agi": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "dex": [
+          2,
+          3,
+          4
+        ],
+        "int": [
+          3,
+          4
+        ],
+        "wp": [
+          4
+        ],
         "fel": [
-          1
+          1,
+          2,
+          3,
+          4
         ]
       },
       "tiers": [
@@ -6836,31 +6455,37 @@
       "description": "You brave the threat of necromancy, stealing from the dead to line your own pockets",
       "characteristicAdvances": {
         "ws": [
-          1,
-          2
+          2,
+          3,
+          4
         ],
         "bs": [],
         "s": [
-          1
-        ],
-        "t": [],
-        "i": [
-          1
-        ],
-        "agi": [],
-        "dex": [
-          1,
-          2,
-          3
-        ],
-        "int": [
           1,
           2,
           3,
           4
         ],
+        "t": [],
+        "i": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "agi": [],
+        "dex": [
+          3,
+          4
+        ],
+        "int": [
+          4
+        ],
         "wp": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "fel": []
       },
@@ -6979,31 +6604,37 @@
       "description": "You prey upon travellers, extracting a toll from the vulnerable and the unsuspecting",
       "characteristicAdvances": {
         "ws": [
-          1
-        ],
-        "bs": [
-          1,
-          2
-        ],
-        "s": [
-          1
-        ],
-        "t": [
-          1
-        ],
-        "i": [
           1,
           2,
-          3
+          3,
+          4
+        ],
+        "bs": [
+          2,
+          3,
+          4
+        ],
+        "s": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "t": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "i": [
+          3,
+          4
         ],
         "agi": [],
         "dex": [],
         "int": [],
         "wp": [],
         "fel": [
-          1,
-          2,
-          3,
           4
         ]
       },
@@ -7115,32 +6746,38 @@
       "description": "You are part of an organised criminal gang, collecting debts and extorting money from the weak",
       "characteristicAdvances": {
         "ws": [
-          1
-        ],
-        "bs": [],
-        "s": [
-          1
-        ],
-        "t": [
-          1
-        ],
-        "i": [],
-        "agi": [],
-        "dex": [],
-        "int": [
           1,
           2,
           3,
           4
         ],
-        "wp": [
+        "bs": [],
+        "s": [
           1,
           2,
-          3
+          3,
+          4
+        ],
+        "t": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "i": [],
+        "agi": [],
+        "dex": [],
+        "int": [
+          4
+        ],
+        "wp": [
+          3,
+          4
         ],
         "fel": [
-          1,
-          2
+          2,
+          3,
+          4
         ]
       },
       "tiers": [
@@ -7251,29 +6888,35 @@
         "ws": [],
         "bs": [],
         "s": [
-          1,
-          2,
-          3
+          3,
+          4
         ],
         "t": [],
         "i": [
-          1
-        ],
-        "agi": [
-          1
-        ],
-        "dex": [
-          1,
-          2
-        ],
-        "int": [],
-        "wp": [
-          1
-        ],
-        "fel": [
           1,
           2,
           3,
+          4
+        ],
+        "agi": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "dex": [
+          2,
+          3,
+          4
+        ],
+        "int": [],
+        "wp": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "fel": [
           4
         ]
       },
@@ -7379,32 +7022,38 @@
       "description": "Wilful and ambitious, you strive to master magic without an officially sanctioned licence to operate",
       "characteristicAdvances": {
         "ws": [
-          1
-        ],
-        "bs": [],
-        "s": [],
-        "t": [
-          1
-        ],
-        "i": [
-          1,
-          2
-        ],
-        "agi": [],
-        "dex": [],
-        "int": [
           1,
           2,
           3,
           4
         ],
-        "wp": [
-          1
-        ],
-        "fel": [
+        "bs": [],
+        "s": [],
+        "t": [
           1,
           2,
-          3
+          3,
+          4
+        ],
+        "i": [
+          2,
+          3,
+          4
+        ],
+        "agi": [],
+        "dex": [],
+        "int": [
+          4
+        ],
+        "wp": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "fel": [
+          3,
+          4
         ]
       },
       "tiers": [
@@ -7515,31 +7164,37 @@
       "description": "A dashing and fearless rider, you bring speed, versatility, and skill-at-arms to the battlefield",
       "characteristicAdvances": {
         "ws": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "bs": [
-          1,
-          2
+          2,
+          3,
+          4
         ],
         "s": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "t": [],
         "i": [
-          1,
-          2,
-          3
+          3,
+          4
         ],
         "agi": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "dex": [],
         "int": [],
         "wp": [],
         "fel": [
-          1,
-          2,
-          3,
           4
         ]
       },
@@ -7650,29 +7305,35 @@
       "description": "Your job is simple, keep undesirables out",
       "characteristicAdvances": {
         "ws": [
-          1
-        ],
-        "bs": [],
-        "s": [
-          1,
-          2,
-          3
-        ],
-        "t": [
-          1
-        ],
-        "i": [
-          1,
-          2
-        ],
-        "agi": [
-          1
-        ],
-        "dex": [],
-        "int": [
           1,
           2,
           3,
+          4
+        ],
+        "bs": [],
+        "s": [
+          3,
+          4
+        ],
+        "t": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "i": [
+          2,
+          3,
+          4
+        ],
+        "agi": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "dex": [],
+        "int": [
           4
         ],
         "wp": [],
@@ -7784,31 +7445,37 @@
       "description": "Thundering into battle on a heavy charger, you dominate the field, spreading fear in your wake",
       "characteristicAdvances": {
         "ws": [
-          1,
-          2
+          2,
+          3,
+          4
         ],
         "bs": [],
         "s": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "t": [],
         "i": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "agi": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "dex": [],
         "int": [],
         "wp": [
-          1,
-          2,
-          3
+          3,
+          4
         ],
         "fel": [
-          1,
-          2,
-          3,
           4
         ]
       },
@@ -7923,31 +7590,37 @@
       "description": "You fight for money, for glory, and for the entertainment of the masses",
       "characteristicAdvances": {
         "ws": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "bs": [],
         "s": [
-          1
-        ],
-        "t": [
-          1
-        ],
-        "i": [
-          1,
-          2
-        ],
-        "agi": [
           1,
           2,
-          3
+          3,
+          4
+        ],
+        "t": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "i": [
+          2,
+          3,
+          4
+        ],
+        "agi": [
+          3,
+          4
         ],
         "dex": [],
         "int": [],
         "wp": [],
         "fel": [
-          1,
-          2,
-          3,
           4
         ]
       },
@@ -8056,31 +7729,37 @@
       "description": "A strong-arm for hire, you bully, fight, and maybe even kill for coin",
       "characteristicAdvances": {
         "ws": [
-          1
-        ],
-        "bs": [
           1,
           2,
-          3
+          3,
+          4
+        ],
+        "bs": [
+          3,
+          4
         ],
         "s": [],
         "t": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "i": [
-          1,
-          2
+          2,
+          3,
+          4
         ],
         "agi": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "dex": [],
         "int": [],
         "wp": [],
         "fel": [
-          1,
-          2,
-          3,
           4
         ]
       },
@@ -8190,31 +7869,37 @@
       "description": "You are rage and shame incarnate, seeking a worthy death to reclaim your lost honour",
       "characteristicAdvances": {
         "ws": [
-          1
-        ],
-        "bs": [],
-        "s": [
-          1
-        ],
-        "t": [
-          1,
-          2
-        ],
-        "i": [
           1,
           2,
           3,
           4
         ],
-        "agi": [
+        "bs": [],
+        "s": [
           1,
           2,
-          3
+          3,
+          4
+        ],
+        "t": [
+          2,
+          3,
+          4
+        ],
+        "i": [
+          4
+        ],
+        "agi": [
+          3,
+          4
         ],
         "dex": [],
         "int": [],
         "wp": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "fel": []
       },
@@ -8325,31 +8010,37 @@
       "description": "You are paid to train, be disciplined, and, when the need comes, go to war",
       "characteristicAdvances": {
         "ws": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "bs": [
-          1,
-          2
+          2,
+          3,
+          4
         ],
         "s": [],
         "t": [
-          1
-        ],
-        "i": [
           1,
           2,
-          3
+          3,
+          4
+        ],
+        "i": [
+          3,
+          4
         ],
         "agi": [],
         "dex": [],
         "int": [],
         "wp": [
-          1
-        ],
-        "fel": [
           1,
           2,
           3,
+          4
+        ],
+        "fel": [
           4
         ]
       },
@@ -8461,31 +8152,37 @@
       "description": "You bring divinity to the thick of battle, slaying the enemies of the Empire with righteous fury",
       "characteristicAdvances": {
         "ws": [
-          1
+          1,
+          2,
+          3,
+          4
         ],
         "bs": [],
         "s": [
-          1,
-          2
+          2,
+          3,
+          4
         ],
         "t": [
-          1
-        ],
-        "i": [
           1,
           2,
-          3
+          3,
+          4
+        ],
+        "i": [
+          3,
+          4
         ],
         "agi": [],
         "dex": [],
         "int": [],
         "wp": [
-          1
-        ],
-        "fel": [
           1,
           2,
           3,
+          4
+        ],
+        "fel": [
           4
         ]
       },
