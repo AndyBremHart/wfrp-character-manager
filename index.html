@@ -6142,13 +6142,14 @@
             // Check career tier restrictions
             if (currentCareer && currentCareer.characteristicAdvances) {
                 const careerAdvances = currentCareer.characteristicAdvances[charCode] || [];
-                const availableAdvances = careerAdvances.filter(tier => tier <= currentTier).length;
+                const availableAtCurrentTier = careerAdvances.includes(currentTier);
                 
-                if (careerAdvances.length > 0 && currentAdvances >= availableAdvances) {
-                    if (availableAdvances === 0) {
-                        alert(`${charNames[charCode]} cannot be advanced with your current career (${currentCareer.name}) until higher tiers!`);
+                if (careerAdvances.length > 0 && !availableAtCurrentTier) {
+                    const nextAvailableTier = Math.min(...careerAdvances.filter(tier => tier > currentTier));
+                    if (isFinite(nextAvailableTier)) {
+                        alert(`${charNames[charCode]} cannot be advanced at tier ${currentTier}. Available at tier ${nextAvailableTier}+.`);
                     } else {
-                        alert(`${charNames[charCode]} has reached the maximum advances (${availableAdvances}) available at your current tier (${currentTier}). Advance to a higher tier to continue.`);
+                        alert(`${charNames[charCode]} cannot be advanced with your current career (${currentCareer.name}).`);
                     }
                     return;
                 }
@@ -10212,6 +10213,8 @@ document.addEventListener('DOMContentLoaded', function() {
         function updateCharacteristicLimits() {
             if (!currentCareer || !currentCareer.characteristicAdvances) return;
             
+            console.log('Updating characteristic limits for:', currentCareer.name, 'Tier:', currentTier);
+            
             const charRows = document.querySelectorAll('tr[data-characteristic]');
             
             charRows.forEach(row => {
@@ -10227,28 +10230,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Clear existing highlighting
                 row.classList.remove('career-available', 'career-future');
                 
-                if (advanceData.length > 0) {
-                    // Calculate advances available at current tier and below (cumulative)
-                    const availableAdvances = advanceData.filter(tier => tier <= currentTier).length;
-                    const futureAdvances = advanceData.filter(tier => tier > currentTier).length;
-                    const availableAtCurrentTier = advanceData.includes(currentTier);
-                    const totalAdvances = advanceData.length;
+                // Check if this characteristic can be advanced at the current tier
+                const availableAtCurrentTier = advanceData.includes(currentTier);
+                const futureAdvances = advanceData.filter(tier => tier > currentTier);
+                
+                if (availableAtCurrentTier) {
+                    // Characteristic is available at current tier - unlimited advances
+                    row.classList.add('career-available');
                     
-                    // Add visual indicator
                     const indicator = document.createElement('div');
                     indicator.className = 'advance-limit-indicator';
+                    indicator.innerHTML = `<strong>Available</strong> at tier ${currentTier}`;
                     
-                    // Only show as available if it can be advanced at current tier
-                    if (availableAtCurrentTier) {
-                        row.classList.add('career-available');
-                        indicator.innerHTML = `<strong>${availableAdvances}</strong> available up to tier ${currentTier}`;
-                        if (futureAdvances > 0) {
-                            indicator.innerHTML += `<br><span style="color: #888; font-size: 10px;">${futureAdvances} more at higher tiers</span>`;
-                        }
-                    } else if (futureAdvances > 0) {
-                        row.classList.add('career-future');
-                        const nextAvailableTier = Math.min(...advanceData.filter(tier => tier > currentTier));
-                        indicator.innerHTML = `<span style="color: #888;">Available at tier ${nextAvailableTier}+ (${totalAdvances} total)</span>`;
+                    if (futureAdvances.length > 0) {
+                        indicator.innerHTML += `<br><span style="color: #888; font-size: 10px;">Also at higher tiers</span>`;
                     }
                     
                     indicator.style.cssText = `
@@ -10266,21 +10261,52 @@ document.addEventListener('DOMContentLoaded', function() {
                     row.style.position = 'relative';
                     row.appendChild(indicator);
                     
-                    // Enable/disable advance button based on availability at current tier
+                    // Enable advance button
                     const advanceButton = row.querySelector('button[onclick*="advanceCharacteristic"]');
                     if (advanceButton) {
-                        const currentAdvances = parseInt(row.querySelector('input[id$="-advances"]')?.value) || 0;
-                        const canAdvanceAtCurrentTier = availableAtCurrentTier && currentAdvances < availableAdvances;
-                        
-                        if (canAdvanceAtCurrentTier) {
-                            advanceButton.disabled = false;
-                            advanceButton.style.opacity = '1';
-                            advanceButton.style.cursor = 'pointer';
-                        } else {
-                            advanceButton.disabled = true;
-                            advanceButton.style.opacity = '0.5';
-                            advanceButton.style.cursor = 'not-allowed';
-                        }
+                        advanceButton.disabled = false;
+                        advanceButton.style.opacity = '1';
+                        advanceButton.style.cursor = 'pointer';
+                    }
+                    
+                } else if (advanceData.length > 0) {
+                    // Characteristic is available at future tiers only
+                    row.classList.add('career-future');
+                    
+                    const indicator = document.createElement('div');
+                    indicator.className = 'advance-limit-indicator';
+                    const nextAvailableTier = Math.min(...advanceData);
+                    indicator.innerHTML = `<span style="color: #888;">Available at tier ${nextAvailableTier}+</span>`;
+                    
+                    indicator.style.cssText = `
+                        position: absolute;
+                        right: 5px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        font-size: 10px;
+                        text-align: right;
+                        line-height: 1.2;
+                        pointer-events: none;
+                        z-index: 1;
+                    `;
+                    
+                    row.style.position = 'relative';
+                    row.appendChild(indicator);
+                    
+                    // Disable advance button
+                    const advanceButton = row.querySelector('button[onclick*="advanceCharacteristic"]');
+                    if (advanceButton) {
+                        advanceButton.disabled = true;
+                        advanceButton.style.opacity = '0.5';
+                        advanceButton.style.cursor = 'not-allowed';
+                    }
+                } else {
+                    // Characteristic is never available for this career
+                    const advanceButton = row.querySelector('button[onclick*="advanceCharacteristic"]');
+                    if (advanceButton) {
+                        advanceButton.disabled = true;
+                        advanceButton.style.opacity = '0.5';
+                        advanceButton.style.cursor = 'not-allowed';
                     }
                 }
             });
