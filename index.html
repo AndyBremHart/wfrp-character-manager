@@ -1235,6 +1235,12 @@
                     </div>
                 </div>
                 <div class="header-field">
+                    <label>Career</label>
+                    <div style="display: flex; gap: 5px; align-items: center;">
+                        <span id="career-display" style="flex: 1; padding: 5px; font-family: Georgia, serif; border: 1px solid #8b7355; background: #f8f6f0; color: #3e2f1f; min-height: 20px; display: flex; align-items: center;">—</span>
+                    </div>
+                </div>
+                <div class="header-field">
                     <label>Player</label>
                     <input type="text" id="player" placeholder="Player Name">
                 </div>
@@ -2955,7 +2961,7 @@
                 name: document.getElementById('character-name').value,
                 species: document.getElementById('species-display').textContent,
                 class: document.getElementById('class-display').textContent,
-                career: document.getElementById('career').value,
+                career: document.getElementById('career-display').textContent,
                 characteristics: {},
                 wounds: {
                     current: document.getElementById('wounds-current').value,
@@ -3173,6 +3179,7 @@
             document.getElementById('character-name').value = characterData.name || '';
             document.getElementById('species-display').textContent = characterData.species || '—';
             document.getElementById('class-display').textContent = characterData.class || '—';
+            document.getElementById('career-display').textContent = characterData.career || '—';
             if (characterData.player) document.getElementById('player').value = characterData.player;
             
             // Restore career data
@@ -3428,7 +3435,7 @@
 
             const species = document.getElementById('species-display').textContent;
             const characterClass = document.getElementById('class-display').textContent;
-            const career = document.getElementById('career').value;
+            const career = document.getElementById('career-display').textContent;
 
             if (species) addText(`Species: ${species}\n`);
             if (characterClass) addText(`Class: ${characterClass}\n`);
@@ -3988,7 +3995,7 @@
                     name: document.getElementById('character-name')?.value || '',
                     species: document.getElementById('species-display')?.textContent || '',
                     class: document.getElementById('class-display')?.textContent || '',
-                    career: document.getElementById('career-select')?.value || '',
+                    career: document.getElementById('career-display')?.textContent || '',
                     player: document.getElementById('player')?.value || '',
                     
                     // Career system data
@@ -9696,7 +9703,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: document.getElementById('character-name').value,
                 species: document.getElementById('species-display').textContent,
                 class: document.getElementById('class-display').textContent,
-                career: document.getElementById('career').value,
+                career: document.getElementById('career-display').textContent,
                 characteristics: {},
                 wounds: {
                     current: document.getElementById('wounds-current').value,
@@ -9770,7 +9777,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('character-name').value = characterData.name || '';
             document.getElementById('species-display').textContent = characterData.species || '—';
             document.getElementById('class-display').textContent = characterData.class || '—';
-            document.getElementById('career').value = characterData.career || '';
+            document.getElementById('career-display').textContent = characterData.career || '—';
             
             // Load characteristics
             if (characterData.characteristics) {
@@ -13430,6 +13437,7 @@ function loadSymptomsData() {
             document.getElementById('character-name').value = '';
             document.getElementById('species-display').textContent = '—';
             document.getElementById('class-display').textContent = '—';
+            document.getElementById('career-display').textContent = '—';
             document.getElementById('player').value = '';
             
             // Reset global tier to 1
@@ -15215,6 +15223,7 @@ function loadSymptomsData() {
             document.getElementById('character-name').focus(); // Focus on name for user to enter
             document.getElementById('species-display').textContent = setupWizardData.species;
             document.getElementById('class-display').textContent = setupWizardData.class;
+            document.getElementById('career-display').textContent = setupWizardData.career;
             
             // Set characteristics from stored wizard data
             if (setupWizardData.characteristics) {
@@ -15547,6 +15556,20 @@ function loadSymptomsData() {
             document.getElementById('xp-total').value = xpEarned.toString();
             document.getElementById('xp-spent').value = '0';
             window.updateXPDisplay();
+            
+            // Add XP log entry for character generation
+            if (typeof logXPEntry === 'function') {
+                const description = xpEarned > 0 
+                    ? `Experience earned during character creation` 
+                    : `Character creation completed (no additional XP earned)`;
+                
+                logXPEntry(
+                    'earned',
+                    xpEarned,
+                    description,
+                    'Character Generation'
+                );
+            }
             
             // Add Character Generation session note
             if (typeof sessionNotes !== 'undefined') {
