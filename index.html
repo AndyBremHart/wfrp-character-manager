@@ -13809,43 +13809,173 @@ function loadSymptomsData() {
             
             // Initialize trappings data structure if not exists
             if (!setupWizardData.trappings) {
-                setupWizardData.trappings = [];
+                setupWizardData.trappings = {
+                    fixed: [],
+                    rolls: [],
+                    choices: []
+                };
             }
             
-            // Define basic class trappings
-            const classTrappings = {
-                'Academic': ['Book', 'Writing Kit', 'Robes', 'Pouch', '2d10 Brass Pennies'],
-                'Burgher': ['Trade Tools', 'Leather Jerkin', 'Purse', '2d10 Silver Shillings'],
-                'Courtier': ['Fine Clothes', 'Jewelry', 'Perfume', 'Purse', '2d10 Gold Crowns'],
-                'Peasant': ['Sling with 10 stones', 'Leather Jerkin', 'Pouch', '2d10 Brass Pennies'],
-                'Ranger': ['Bow with 10 arrows', 'Leather Jerkin', 'Backpack', '2d10 Silver Shillings'],
-                'Riverfolk': ['Boat Hook', 'Leather Jerkin', 'Net', '2d10 Brass Pennies'],
-                'Rogue': ['Lockpicks', 'Leather Jerkin', 'Rope (10 yards)', '2d10 Silver Shillings'],
-                'Warrior': ['Hand Weapon', 'Mail Shirt', 'Shield', '2d10 Silver Shillings']
-            };
+            const trappingData = classTrappings[classValue];
+            if (!trappingData) {
+                trappingsContent.innerHTML = `
+                    <div style="background: #ffe6e6; padding: 15px; border: 2px solid #cc0000; border-radius: 5px;">
+                        <p style="color: #cc0000; margin: 0;">No trappings data found for ${classValue}.</p>
+                    </div>
+                `;
+                return;
+            }
             
-            const trappings = classTrappings[classValue] || ['Basic Equipment'];
-            setupWizardData.trappings = [...trappings];
-            
-            trappingsContent.innerHTML = `
+            let trappingsHTML = `
                 <div style="background: #f5f2e8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
                     <h4 style="color: #3e2f1f; margin: 0 0 15px 0;">Class Trappings: ${classValue}</h4>
                     <p style="margin-bottom: 15px; color: #666;">Your character receives the following starting equipment:</p>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
-                        ${trappings.map(trapping => `
-                            <div style="display: flex; align-items: center; padding: 8px; background: white; border: 1px solid #d0c5a0; border-radius: 3px;">
-                                <input type="checkbox" checked disabled style="margin-right: 10px;">
-                                <span>${trapping}</span>
-                            </div>
-                        `).join('')}
+            `;
+            
+            // Fixed trappings
+            if (trappingData.fixed && trappingData.fixed.length > 0) {
+                setupWizardData.trappings.fixed = [...trappingData.fixed];
+                trappingsHTML += `
+                    <div style="margin-bottom: 20px;">
+                        <h5 style="color: #3e2f1f; margin: 0 0 10px 0;">Fixed Equipment:</h5>
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 5px;">
+                            ${trappingData.fixed.map(trapping => `
+                                <div style="display: flex; align-items: center; padding: 5px; background: white; border: 1px solid #d0c5a0; border-radius: 3px;">
+                                    <input type="checkbox" checked disabled style="margin-right: 10px;">
+                                    <span>${trapping}</span>
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
+                `;
+            }
+            
+            // Variable trappings (dice rolls)
+            if (trappingData.rolls && trappingData.rolls.length > 0) {
+                trappingsHTML += `
+                    <div style="margin-bottom: 20px;">
+                        <h5 style="color: #3e2f1f; margin: 0 0 10px 0;">Variable Equipment (Roll dice or enter amount):</h5>
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+                `;
+                
+                trappingData.rolls.forEach((roll, index) => {
+                    trappingsHTML += `
+                        <div style="display: flex; align-items: center; padding: 8px; background: white; border: 1px solid #d0c5a0; border-radius: 3px; gap: 10px;">
+                            <span style="flex: 1;">${roll.item}</span>
+                            <span style="color: #666; font-size: 12px;">(${roll.dice})</span>
+                            <input type="number" id="setup-roll-${index}" min="1" max="100" value="" 
+                                   style="width: 60px; padding: 3px; text-align: center; border: 1px solid #8b7355;" 
+                                   placeholder="Roll"
+                                   onchange="updateSetupTrappingRoll(${index}, '${roll.item}', '${roll.unit}', this.value)">
+                            <span>${roll.unit}</span>
+                        </div>
+                    `;
+                });
+                
+                trappingsHTML += `
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Choice trappings
+            if (trappingData.choices && trappingData.choices.length > 0) {
+                trappingsHTML += `
+                    <div style="margin-bottom: 20px;">
+                        <h5 style="color: #3e2f1f; margin: 0 0 10px 0;">Equipment Choices:</h5>
+                `;
+                
+                trappingData.choices.forEach((choice, choiceIndex) => {
+                    trappingsHTML += `
+                        <div style="margin-bottom: 15px; padding: 10px; background: white; border: 1px solid #d0c5a0; border-radius: 3px;">
+                            <p style="margin: 0 0 10px 0; font-weight: bold;">Choose ${choice.choose} from:</p>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px;">
+                    `;
                     
+                    choice.from.forEach(item => {
+                        const inputType = choice.choose === 1 ? 'radio' : 'checkbox';
+                        const inputName = choice.choose === 1 ? `setup-trapping-choice-${choiceIndex}` : '';
+                        const nameAttribute = inputType === 'radio' ? `name="${inputName}"` : '';
+                        
+                        trappingsHTML += `
+                            <div>
+                                <input type="${inputType}" id="setup-choice-${choiceIndex}-${item}" value="${item}" 
+                                       ${nameAttribute} onchange="updateSetupTrappingChoice(${choiceIndex}, ${choice.choose}, this)">
+                                <label for="setup-choice-${choiceIndex}-${item}">${item}</label>
+                            </div>
+                        `;
+                    });
+                    
+                    trappingsHTML += `
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                trappingsHTML += `</div>`;
+            }
+            
+            trappingsHTML += `
                     <p style="margin: 15px 0 0 0; font-size: 12px; color: #666; font-style: italic;">
-                        These items are automatically added to your character. Additional equipment can be purchased later.
+                        These items will be automatically added to your character sheet in the appropriate sections.
                     </p>
                 </div>
             `;
+            
+            trappingsContent.innerHTML = trappingsHTML;
+        }
+
+        // Update trapping dice roll results
+        function updateSetupTrappingRoll(index, itemName, unit, value) {
+            if (!setupWizardData.trappings.rolls) {
+                setupWizardData.trappings.rolls = [];
+            }
+            
+            const rollValue = parseInt(value) || 0;
+            if (rollValue > 0) {
+                const itemText = unit ? `${itemName} (${rollValue} ${unit})` : `${itemName} (${rollValue})`;
+                setupWizardData.trappings.rolls[index] = {
+                    item: itemName,
+                    amount: rollValue,
+                    unit: unit,
+                    displayText: itemText
+                };
+            } else {
+                setupWizardData.trappings.rolls[index] = null;
+            }
+        }
+
+        // Update trapping choice selections
+        function updateSetupTrappingChoice(choiceIndex, maxChoices, input) {
+            if (!setupWizardData.trappings.choices) {
+                setupWizardData.trappings.choices = [];
+            }
+            
+            if (!setupWizardData.trappings.choices[choiceIndex]) {
+                setupWizardData.trappings.choices[choiceIndex] = [];
+            }
+            
+            const currentSelections = setupWizardData.trappings.choices[choiceIndex];
+
+            if (input.type === 'radio') {
+                if (input.checked) {
+                    setupWizardData.trappings.choices[choiceIndex] = [input.value];
+                }
+            } else {
+                if (input.checked) {
+                    if (currentSelections.length >= maxChoices) {
+                        input.checked = false;
+                        alert(`You can only select ${maxChoices} item(s) from this group.`);
+                        return;
+                    }
+                    currentSelections.push(input.value);
+                } else {
+                    const index = currentSelections.indexOf(input.value);
+                    if (index > -1) {
+                        currentSelections.splice(index, 1);
+                    }
+                }
+            }
         }
         
         function initializeSetupCareer() {
@@ -14129,24 +14259,90 @@ function loadSymptomsData() {
             }
             
             // Apply trappings/equipment from wizard
-            if (setupWizardData.trappings && setupWizardData.trappings.length > 0) {
-                setupWizardData.trappings.forEach(trapping => {
-                    if (typeof addEquipmentItem === 'function') {
-                        addEquipmentItem(trapping, 1, 'Class Starting Equipment');
-                    } else {
-                        // Fallback: add to equipment section manually
-                        const equipmentTextarea = document.getElementById('equipment');
-                        if (equipmentTextarea) {
-                            const currentEquipment = equipmentTextarea.value;
-                            const newEquipment = currentEquipment ? 
-                                currentEquipment + '\n' + trapping : 
-                                trapping;
-                            equipmentTextarea.value = newEquipment;
+            if (setupWizardData.trappings) {
+                const allTrappings = [];
+                
+                // Collect all trappings from different sources
+                if (setupWizardData.trappings.fixed) {
+                    allTrappings.push(...setupWizardData.trappings.fixed);
+                }
+                
+                if (setupWizardData.trappings.rolls) {
+                    setupWizardData.trappings.rolls.forEach(roll => {
+                        if (roll && roll.displayText) {
+                            allTrappings.push(roll.displayText);
                         }
+                    });
+                }
+                
+                if (setupWizardData.trappings.choices) {
+                    setupWizardData.trappings.choices.forEach(choiceArray => {
+                        if (Array.isArray(choiceArray)) {
+                            allTrappings.push(...choiceArray);
+                        }
+                    });
+                }
+                
+                // Separate equipment by type
+                const weapons = [];
+                const armor = [];
+                const generalEquipment = [];
+                
+                // Define weapon and armor keywords
+                const weaponKeywords = ['weapon', 'sword', 'dagger', 'bow', 'crossbow', 'axe', 'mace', 'spear', 'staff', 'club', 'whip', 'sling'];
+                const armorKeywords = ['armor', 'armour', 'mail', 'leather', 'jerkin', 'helm', 'helmet', 'shield', 'gauntlets', 'boots'];
+                
+                allTrappings.forEach(item => {
+                    const itemLower = item.toLowerCase();
+                    let isWeapon = weaponKeywords.some(keyword => itemLower.includes(keyword));
+                    let isArmor = armorKeywords.some(keyword => itemLower.includes(keyword));
+                    
+                    if (isWeapon) {
+                        weapons.push(item);
+                    } else if (isArmor) {
+                        armor.push(item);
+                    } else {
+                        generalEquipment.push(item);
                     }
                 });
                 
-                console.log('Equipment applied:', setupWizardData.trappings);
+                // Add weapons to weapons section
+                if (weapons.length > 0) {
+                    const weaponsTextarea = document.getElementById('weapons');
+                    if (weaponsTextarea) {
+                        const currentWeapons = weaponsTextarea.value;
+                        const newWeapons = currentWeapons ? 
+                            currentWeapons + '\n' + weapons.join('\n') : 
+                            weapons.join('\n');
+                        weaponsTextarea.value = newWeapons;
+                    }
+                }
+                
+                // Add armor to armor section
+                if (armor.length > 0) {
+                    const armorTextarea = document.getElementById('armor');
+                    if (armorTextarea) {
+                        const currentArmor = armorTextarea.value;
+                        const newArmor = currentArmor ? 
+                            currentArmor + '\n' + armor.join('\n') : 
+                            armor.join('\n');
+                        armorTextarea.value = newArmor;
+                    }
+                }
+                
+                // Add general equipment to equipment section
+                if (generalEquipment.length > 0) {
+                    const equipmentTextarea = document.getElementById('equipment');
+                    if (equipmentTextarea) {
+                        const currentEquipment = equipmentTextarea.value;
+                        const newEquipment = currentEquipment ? 
+                            currentEquipment + '\n' + generalEquipment.join('\n') : 
+                            generalEquipment.join('\n');
+                        equipmentTextarea.value = newEquipment;
+                    }
+                }
+                
+                console.log('Equipment applied:', { weapons, armor, generalEquipment });
             }
             
             // Set career and tier
@@ -14200,8 +14396,22 @@ function loadSymptomsData() {
                 }
             }
             
-            if (setupWizardData.trappings && setupWizardData.trappings.length > 0) {
-                summaryMessage += `Equipment: ${setupWizardData.trappings.join(', ')}\n`;
+            if (setupWizardData.trappings) {
+                const allTrappings = [];
+                if (setupWizardData.trappings.fixed) allTrappings.push(...setupWizardData.trappings.fixed);
+                if (setupWizardData.trappings.rolls) {
+                    setupWizardData.trappings.rolls.forEach(roll => {
+                        if (roll && roll.displayText) allTrappings.push(roll.displayText);
+                    });
+                }
+                if (setupWizardData.trappings.choices) {
+                    setupWizardData.trappings.choices.forEach(choice => {
+                        if (Array.isArray(choice)) allTrappings.push(...choice);
+                    });
+                }
+                if (allTrappings.length > 0) {
+                    summaryMessage += `Equipment: ${allTrappings.join(', ')}\n`;
+                }
             }
             
             alert(summaryMessage);
