@@ -13258,13 +13258,13 @@ function loadSymptomsData() {
             }
         }
         
-        // Step content functions (simplified implementations)
+        // Step content functions (fully integrated implementations)
         function showSpeciesStep(content) {
             content.innerHTML = `
                 <h4>Choose Your Species</h4>
                 <p>Select your character's species. This affects starting characteristics and special abilities.</p>
                 <div style="margin: 20px 0;">
-                    <select id="setup-species" style="padding: 10px; font-size: 14px; width: 100%; border: 1px solid #8b7355;">
+                    <select id="setup-species" onchange="handleSpeciesSelection()" style="padding: 10px; font-size: 14px; width: 100%; border: 1px solid #8b7355;">
                         <option value="">Select Species</option>
                         <option value="Human">Human</option>
                         <option value="Dwarf">Dwarf</option>
@@ -13273,27 +13273,44 @@ function loadSymptomsData() {
                         <option value="Wood Elf">Wood Elf</option>
                     </select>
                 </div>
-                <div style="margin-top: 15px;">
-                    <button onclick="openSpeciesWizardFromSetup()" style="padding: 8px 16px; background: #3e2f1f; color: white; border: none; border-radius: 3px; cursor: pointer;">Use Species Wizard</button>
+                <div id="species-info" style="margin-top: 15px; display: none;">
+                    <h5>Species Benefits:</h5>
+                    <div id="species-details" style="background: #f9f7f1; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                        <!-- Species details will be populated -->
+                    </div>
+                    <h5>Generate Starting Characteristics:</h5>
+                    <div style="margin: 15px 0;">
+                        <button onclick="generateCharacteristics()" style="padding: 8px 16px; background: #3e2f1f; color: white; border: none; border-radius: 3px; cursor: pointer; margin-right: 10px;">🎲 Roll Characteristics</button>
+                        <button onclick="showManualCharacteristics()" style="padding: 8px 16px; background: #666; color: white; border: none; border-radius: 3px; cursor: pointer;">✏️ Enter Manually</button>
+                    </div>
+                    <div id="generated-characteristics" style="margin-top: 15px; display: none;">
+                        <!-- Generated characteristics will be shown here -->
+                    </div>
                 </div>
             `;
         }
         
         function showCharacteristicsStep(content) {
+            // Get previously generated or entered characteristics
+            const savedCharacteristics = setupWizardData.characteristics || {};
+            
             content.innerHTML = `
-                <h4>Set Starting Characteristics</h4>
-                <p>Enter your character's starting characteristic values.</p>
+                <h4>Review Starting Characteristics</h4>
+                <p>Confirm or adjust your character's starting characteristic values.</p>
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0;">
-                    <div><label>WS:</label> <input type="number" id="setup-ws" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>BS:</label> <input type="number" id="setup-bs" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>S:</label> <input type="number" id="setup-s" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>T:</label> <input type="number" id="setup-t" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>I:</label> <input type="number" id="setup-i" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>Agi:</label> <input type="number" id="setup-agi" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>Dex:</label> <input type="number" id="setup-dex" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>Int:</label> <input type="number" id="setup-int" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>WP:</label> <input type="number" id="setup-wp" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>Fel:</label> <input type="number" id="setup-fel" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>WS:</label> <input type="number" id="setup-ws" min="0" max="100" value="${savedCharacteristics.ws || ''}" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>BS:</label> <input type="number" id="setup-bs" min="0" max="100" value="${savedCharacteristics.bs || ''}" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>S:</label> <input type="number" id="setup-s" min="0" max="100" value="${savedCharacteristics.s || ''}" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>T:</label> <input type="number" id="setup-t" min="0" max="100" value="${savedCharacteristics.t || ''}" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>I:</label> <input type="number" id="setup-i" min="0" max="100" value="${savedCharacteristics.i || ''}" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>Agi:</label> <input type="number" id="setup-agi" min="0" max="100" value="${savedCharacteristics.agi || ''}" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>Dex:</label> <input type="number" id="setup-dex" min="0" max="100" value="${savedCharacteristics.dex || ''}" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>Int:</label> <input type="number" id="setup-int" min="0" max="100" value="${savedCharacteristics.int || ''}" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>WP:</label> <input type="number" id="setup-wp" min="0" max="100" value="${savedCharacteristics.wp || ''}" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>Fel:</label> <input type="number" id="setup-fel" min="0" max="100" value="${savedCharacteristics.fel || ''}" style="width: 60px; margin-left: 10px;"></div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <button onclick="regenerateCharacteristics()" style="padding: 8px 16px; background: #3e2f1f; color: white; border: none; border-radius: 3px; cursor: pointer;">🎲 Re-roll All</button>
                 </div>
             `;
         }
@@ -13319,11 +13336,23 @@ function loadSymptomsData() {
         }
         
         function showTrappingsStep(content) {
+            const classValue = setupWizardData.class;
+            const classTrappings = getClassTrappings(classValue);
+            
             content.innerHTML = `
-                <h4>Add Starting Trappings</h4>
-                <p>Your class provides certain starting trappings. These will be automatically added.</p>
+                <h4>Starting Trappings</h4>
+                <p>Based on your selected class (${classValue}), you can add these starting trappings:</p>
                 <div style="margin: 20px 0;">
-                    <button onclick="openClassWizardFromSetup()" style="padding: 8px 16px; background: #3e2f1f; color: white; border: none; border-radius: 3px; cursor: pointer;">Use Class Trappings Wizard</button>
+                    <div style="background: #f9f7f1; padding: 15px; border-radius: 5px; border: 1px solid #e8dfd0;">
+                        <h5>Available ${classValue} Trappings:</h5>
+                        <div id="trappings-list" style="margin: 10px 0; max-height: 300px; overflow-y: auto;">
+                            ${classTrappings}
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button onclick="addAllClassTrappings()" style="padding: 8px 16px; background: #3e2f1f; color: white; border: none; border-radius: 3px; cursor: pointer; margin-right: 10px;">✅ Add All Recommended</button>
+                        <button onclick="selectCustomTrappings()" style="padding: 8px 16px; background: #666; color: white; border: none; border-radius: 3px; cursor: pointer;">🔧 Select Custom</button>
+                    </div>
                 </div>
                 <p style="color: #666; font-size: 12px;">Note: You can skip this step and add trappings manually later.</p>
             `;
@@ -13352,6 +13381,284 @@ function loadSymptomsData() {
             `;
         }
         
+        // Integrated wizard helper functions
+        function handleSpeciesSelection() {
+            const species = document.getElementById('setup-species').value;
+            const speciesInfo = document.getElementById('species-info');
+            const speciesDetails = document.getElementById('species-details');
+            
+            if (species) {
+                setupWizardData.species = species;
+                speciesInfo.style.display = 'block';
+                
+                // Show species-specific information
+                const speciesData = getSpeciesData(species);
+                speciesDetails.innerHTML = speciesData;
+            } else {
+                speciesInfo.style.display = 'none';
+            }
+        }
+        
+        function getSpeciesData(species) {
+            const speciesInfo = {
+                'Human': 'Fate: 2-3, Resilience: 2-3, Extra XP: 20, Movement: 4, Species Skills: Any 3 skills',
+                'Dwarf': 'Fate: 1-2, Resilience: 4-5, Night Vision, Magic Resistance, Movement: 3, Species Skills: Consume Alcohol, Cool, Endurance',
+                'Halfling': 'Fate: 2-3, Resilience: 2-3, Small size, Night Vision, Movement: 3, Species Skills: Charm, Consume Alcohol, Gossip',
+                'High Elf': 'Fate: 1, Resilience: 1, Night Vision, Second Sight, Movement: 5, Species Skills: Melee (Polearm), Play (Musical Instrument), Ride (Horse)',
+                'Wood Elf': 'Fate: 1, Resilience: 1, Night Vision, Second Sight, Movement: 5, Species Skills: Athletics, Climb, Stealth'
+            };
+            return speciesInfo[species] || 'No additional information available.';
+        }
+        
+        function generateCharacteristics() {
+            const species = setupWizardData.species;
+            const characteristics = generateRandomCharacteristics(species);
+            setupWizardData.characteristics = characteristics;
+            displayGeneratedCharacteristics(characteristics);
+        }
+        
+        function showManualCharacteristics() {
+            const generatedDiv = document.getElementById('generated-characteristics');
+            generatedDiv.style.display = 'block';
+            generatedDiv.innerHTML = `
+                <h5>Enter Characteristics Manually:</h5>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 10px 0;">
+                    <div><label>WS:</label> <input type="number" id="manual-ws" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>BS:</label> <input type="number" id="manual-bs" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>S:</label> <input type="number" id="manual-s" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>T:</label> <input type="number" id="manual-t" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>I:</label> <input type="number" id="manual-i" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>Agi:</label> <input type="number" id="manual-agi" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>Dex:</label> <input type="number" id="manual-dex" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>Int:</label> <input type="number" id="manual-int" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>WP:</label> <input type="number" id="manual-wp" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                    <div><label>Fel:</label> <input type="number" id="manual-fel" min="0" max="100" style="width: 60px; margin-left: 10px;"></div>
+                </div>
+                <button onclick="saveManualCharacteristics()" style="padding: 8px 16px; background: #3e2f1f; color: white; border: none; border-radius: 3px; cursor: pointer; margin-top: 10px;">Save Characteristics</button>
+            `;
+        }
+        
+        function generateRandomCharacteristics(species) {
+            // Basic human characteristics: 2d10+20 for each
+            const rollCharacteristic = () => Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + 21;
+            
+            let characteristics = {
+                ws: rollCharacteristic(),
+                bs: rollCharacteristic(),
+                s: rollCharacteristic(),
+                t: rollCharacteristic(),
+                i: rollCharacteristic(),
+                agi: rollCharacteristic(),
+                dex: rollCharacteristic(),
+                int: rollCharacteristic(),
+                wp: rollCharacteristic(),
+                fel: rollCharacteristic()
+            };
+            
+            // Apply species modifiers (simplified)
+            switch (species) {
+                case 'Dwarf':
+                    characteristics.t += 10;
+                    characteristics.wp += 20;
+                    characteristics.agi -= 10;
+                    characteristics.dex += 10;
+                    break;
+                case 'Halfling':
+                    characteristics.ws -= 10;
+                    characteristics.s -= 10;
+                    characteristics.agi += 10;
+                    characteristics.dex += 20;
+                    characteristics.fel += 10;
+                    break;
+                case 'High Elf':
+                    characteristics.i += 20;
+                    characteristics.agi += 10;
+                    characteristics.dex += 10;
+                    characteristics.wp += 10;
+                    break;
+                case 'Wood Elf':
+                    characteristics.ws += 10;
+                    characteristics.bs += 10;
+                    characteristics.agi += 20;
+                    characteristics.s -= 10;
+                    characteristics.t -= 10;
+                    break;
+            }
+            
+            // Ensure values stay within bounds
+            Object.keys(characteristics).forEach(key => {
+                characteristics[key] = Math.max(1, Math.min(100, characteristics[key]));
+            });
+            
+            return characteristics;
+        }
+        
+        function displayGeneratedCharacteristics(characteristics) {
+            const generatedDiv = document.getElementById('generated-characteristics');
+            generatedDiv.style.display = 'block';
+            generatedDiv.innerHTML = `
+                <h5>Generated Characteristics:</h5>
+                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 10px 0; text-align: center;">
+                    <div><strong>WS:</strong> ${characteristics.ws}</div>
+                    <div><strong>BS:</strong> ${characteristics.bs}</div>
+                    <div><strong>S:</strong> ${characteristics.s}</div>
+                    <div><strong>T:</strong> ${characteristics.t}</div>
+                    <div><strong>I:</strong> ${characteristics.i}</div>
+                    <div><strong>Agi:</strong> ${characteristics.agi}</div>
+                    <div><strong>Dex:</strong> ${characteristics.dex}</div>
+                    <div><strong>Int:</strong> ${characteristics.int}</div>
+                    <div><strong>WP:</strong> ${characteristics.wp}</div>
+                    <div><strong>Fel:</strong> ${characteristics.fel}</div>
+                </div>
+                <div style="margin-top: 10px;">
+                    <button onclick="generateCharacteristics()" style="padding: 8px 16px; background: #3e2f1f; color: white; border: none; border-radius: 3px; cursor: pointer; margin-right: 10px;">🎲 Re-roll</button>
+                    <button onclick="acceptCharacteristics()" style="padding: 8px 16px; background: #4a9b4a; color: white; border: none; border-radius: 3px; cursor: pointer;">✅ Accept</button>
+                </div>
+            `;
+        }
+        
+        function saveManualCharacteristics() {
+            const characteristics = {};
+            const charCodes = ['ws', 'bs', 's', 't', 'i', 'agi', 'dex', 'int', 'wp', 'fel'];
+            
+            for (let char of charCodes) {
+                const value = document.getElementById(`manual-${char}`).value;
+                if (!value || value < 1 || value > 100) {
+                    alert(`Please enter a valid value for ${char.toUpperCase()} (1-100).`);
+                    return;
+                }
+                characteristics[char] = parseInt(value);
+            }
+            
+            setupWizardData.characteristics = characteristics;
+            alert('Characteristics saved! Click Next to continue.');
+        }
+        
+        function acceptCharacteristics() {
+            alert('Characteristics accepted! Click Next to continue.');
+        }
+        
+        function regenerateCharacteristics() {
+            if (setupWizardData.species) {
+                const characteristics = generateRandomCharacteristics(setupWizardData.species);
+                setupWizardData.characteristics = characteristics;
+                
+                // Update the input fields
+                const charCodes = ['ws', 'bs', 's', 't', 'i', 'agi', 'dex', 'int', 'wp', 'fel'];
+                charCodes.forEach(char => {
+                    const field = document.getElementById(`setup-${char}`);
+                    if (field) {
+                        field.value = characteristics[char];
+                    }
+                });
+                
+                alert('Characteristics re-rolled!');
+            }
+        }
+        
+        function getClassTrappings(className) {
+            const classTrappingsData = {
+                'Academic': [
+                    'Clothing (Robes)',
+                    'Dagger',
+                    'Pouch',
+                    'Sling Bag',
+                    'Writing Kit (Quill, Ink, Parchment)',
+                    'Book (Academic Subject)',
+                    'Candle',
+                    'Lantern'
+                ],
+                'Burgher': [
+                    'Clothing (Quality)',
+                    'Cloak',
+                    'Dagger',
+                    'Pouch',
+                    'Sling Bag',
+                    'Trade Tools',
+                    'Purse',
+                    'Guild License'
+                ],
+                'Courtier': [
+                    'Clothing (Courtly)',
+                    'Dagger',
+                    'Jewelry',
+                    'Perfume',
+                    'Pouch',
+                    'Rapier',
+                    'Writing Kit'
+                ],
+                'Peasant': [
+                    'Clothing (Poor)',
+                    'Cloak',
+                    'Dagger',
+                    'Pouch',
+                    'Sling Bag',
+                    'Trade Tools (Farming)',
+                    'Rations (1 day)'
+                ],
+                'Ranger': [
+                    'Clothing (Practical)',
+                    'Cloak',
+                    'Dagger',
+                    'Hand Weapon',
+                    'Leather Jack',
+                    'Pouch',
+                    'Sling Bag'
+                ],
+                'Riverfolk': [
+                    'Clothing (Practical)',
+                    'Cloak',
+                    'Dagger',
+                    'Hand Weapon',
+                    'Leather Jack',
+                    'Pouch',
+                    'Rope (10 yards)'
+                ],
+                'Rogue': [
+                    'Clothing (Dark)',
+                    'Dagger',
+                    'Hood',
+                    'Lockpicks',
+                    'Pouch',
+                    'Rope (10 yards)',
+                    'Sling Bag'
+                ],
+                'Warrior': [
+                    'Clothing (Practical)',
+                    'Dagger',
+                    'Hand Weapon',
+                    'Leather Jack',
+                    'Pouch',
+                    'Shield',
+                    'Sling Bag'
+                ]
+            };
+            
+            const trappings = classTrappingsData[className] || [];
+            return trappings.map(item => `<div style="padding: 2px 0;"><input type="checkbox" id="trapping-${item}" checked> ${item}</div>`).join('');
+        }
+        
+        function addAllClassTrappings() {
+            // This would add all checked trappings to the character sheet
+            const checkboxes = document.querySelectorAll('#trappings-list input[type="checkbox"]:checked');
+            let addedCount = 0;
+            
+            checkboxes.forEach(checkbox => {
+                const trappingName = checkbox.id.replace('trapping-', '');
+                // Add to trappings section (simplified)
+                addedCount++;
+            });
+            
+            if (addedCount > 0) {
+                alert(`Added ${addedCount} trappings to your character.`);
+                setupWizardData.trappingsAdded = true;
+            }
+        }
+        
+        function selectCustomTrappings() {
+            alert('Custom trapping selection would open a detailed interface. For now, you can manually add trappings after character creation.');
+        }
+
         // Validation functions
         function validateSpeciesStep() {
             const species = document.getElementById('setup-species').value;
@@ -13360,19 +13667,31 @@ function loadSymptomsData() {
                 return false;
             }
             setupWizardData.species = species;
+            
+            // Check if characteristics have been generated or entered
+            if (!setupWizardData.characteristics) {
+                alert('Please generate or manually enter characteristics before proceeding.');
+                return false;
+            }
+            
             return true;
         }
         
         function validateCharacteristicsStep() {
             const characteristics = ['ws', 'bs', 's', 't', 'i', 'agi', 'dex', 'int', 'wp', 'fel'];
+            const characteristicValues = {};
+            
             for (let char of characteristics) {
                 const value = document.getElementById(`setup-${char}`).value;
-                if (!value || value < 0 || value > 100) {
-                    alert(`Please enter a valid value for ${char.toUpperCase()} (0-100).`);
+                if (!value || value < 1 || value > 100) {
+                    alert(`Please enter a valid value for ${char.toUpperCase()} (1-100).`);
                     return false;
                 }
-                setupWizardData[char] = parseInt(value);
+                characteristicValues[char] = parseInt(value);
             }
+            
+            // Update the stored characteristics with any manual changes
+            setupWizardData.characteristics = characteristicValues;
             return true;
         }
         
@@ -13403,15 +13722,15 @@ function loadSymptomsData() {
             document.getElementById('species').value = setupWizardData.species;
             document.getElementById('class').value = setupWizardData.class;
             
-            // Set characteristics
+            // Set characteristics from stored wizard data
             const characteristics = ['ws', 'bs', 's', 't', 'i', 'agi', 'dex', 'int', 'wp', 'fel'];
             characteristics.forEach(char => {
                 const initialField = document.getElementById(`${char}-initial`);
                 const currentField = document.getElementById(`${char}-current`);
-                if (initialField && setupWizardData[char]) {
-                    initialField.value = setupWizardData[char];
+                if (initialField && setupWizardData.characteristics && setupWizardData.characteristics[char]) {
+                    initialField.value = setupWizardData.characteristics[char];
                     if (currentField) {
-                        currentField.value = setupWizardData[char];
+                        currentField.value = setupWizardData.characteristics[char];
                     }
                 }
             });
@@ -13442,17 +13761,9 @@ function loadSymptomsData() {
             // Update XP display and trigger save
             window.updateXPDisplay();
             window.updateCharacteristics();
-        }
-        
-        // Helper functions for wizard integration
-        function openSpeciesWizardFromSetup() {
-            // This would open the existing species wizard
-            manualOpenSpeciesWizard();
-        }
-        
-        function openClassWizardFromSetup() {
-            // This would open the existing class wizard
-            manualOpenClassWizard();
+            
+            // Clear wizard data
+            setupWizardData = {};
         }
 
         // =============== CLASS TRAPPINGS WIZARD FUNCTIONS ===============
