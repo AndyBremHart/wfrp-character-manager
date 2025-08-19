@@ -13204,7 +13204,7 @@ function loadSymptomsData() {
             
             // Start with first step
             setupCurrentStep = 0;
-            showSetupStep(setupCurrentStep);
+            updateSetupWizardDisplay();
         }
         
         // Clear all character data
@@ -13403,90 +13403,78 @@ function loadSymptomsData() {
             }
         }
         
-        // Step content functions (fully integrated implementations)
-        function showSpeciesStep(content) {
-            content.innerHTML = `
-                <h4>Choose Your Species</h4>
-                <p>Select your character's species. This affects starting characteristics and special abilities.</p>
-                <div style="margin: 20px 0;">
-                    <select id="setup-species" onchange="handleSpeciesSelection()" style="padding: 10px; font-size: 14px; width: 100%; border: 1px solid #8b7355;">
-                        <option value="">Select Species</option>
-                        <option value="Human">Human</option>
-                        <option value="Dwarf">Dwarf</option>
-                        <option value="Halfling">Halfling</option>
-                        <option value="High Elf">High Elf</option>
-                        <option value="Wood Elf">Wood Elf</option>
-                    </select>
-                </div>
-                <div id="species-info" style="margin-top: 15px; display: none;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <!-- Left Column: Characteristics -->
-                        <div>
-                            <h5>Starting Characteristics:</h5>
-                            <p style="color: #666; font-size: 12px;">Enter your rolled values. Format: Species Base + Your Roll = Total</p>
-                            <div id="characteristics-input" style="margin-top: 10px;">
-                                <!-- Characteristics input will be shown here -->
-                            </div>
-                        </div>
-                        
-                        <!-- Right Column: Species Features -->
-                        <div>
-                            <h5>Species Features:</h5>
-                            <div id="species-features" style="background: #f9f7f1; padding: 10px; border-radius: 5px; margin: 10px 0;">
-                                <!-- Species features will be populated -->
-                            </div>
-                            
-                            <h5>Fate & Resilience:</h5>
-                            <div id="fate-resilience-input" style="margin: 10px 0;">
-                                <!-- Fate/Resilience input will be shown here -->
-                            </div>
-                            
-                            <h5>Species Skills:</h5>
-                            <div id="species-skills" style="margin: 10px 0;">
-                                <!-- Species skills will be shown here -->
-                            </div>
-                            
-                            <h5>Species Talents:</h5>
-                            <div id="species-talents" style="margin: 10px 0;">
-                                <!-- Species talents will be shown here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+        // Add the missing validation functions
+        function validateSetupSpeciesStep() {
+            const species = document.getElementById('setup-species-select').value;
+            if (!species) {
+                alert('Please select a species.');
+                return false;
+            }
+            return true;
         }
         
-        function showCharacteristicsStep(content) {
-            // Get previously generated or entered characteristics
-            const savedCharacteristics = setupWizardData.characteristics || {};
-            
-            content.innerHTML = `
-                <h4>Review Starting Characteristics</h4>
-                <p>Confirm or adjust your character's starting characteristic values.</p>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0;">
-                    <div><label>WS:</label> <input type="number" id="setup-ws" min="0" max="100" value="${savedCharacteristics.ws || ''}" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>BS:</label> <input type="number" id="setup-bs" min="0" max="100" value="${savedCharacteristics.bs || ''}" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>S:</label> <input type="number" id="setup-s" min="0" max="100" value="${savedCharacteristics.s || ''}" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>T:</label> <input type="number" id="setup-t" min="0" max="100" value="${savedCharacteristics.t || ''}" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>I:</label> <input type="number" id="setup-i" min="0" max="100" value="${savedCharacteristics.i || ''}" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>Agi:</label> <input type="number" id="setup-agi" min="0" max="100" value="${savedCharacteristics.agi || ''}" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>Dex:</label> <input type="number" id="setup-dex" min="0" max="100" value="${savedCharacteristics.dex || ''}" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>Int:</label> <input type="number" id="setup-int" min="0" max="100" value="${savedCharacteristics.int || ''}" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>WP:</label> <input type="number" id="setup-wp" min="0" max="100" value="${savedCharacteristics.wp || ''}" style="width: 60px; margin-left: 10px;"></div>
-                    <div><label>Fel:</label> <input type="number" id="setup-fel" min="0" max="100" value="${savedCharacteristics.fel || ''}" style="width: 60px; margin-left: 10px;"></div>
-                </div>
-                <div style="margin-top: 15px;">
-                    <button onclick="regenerateCharacteristics()" style="padding: 8px 16px; background: #3e2f1f; color: white; border: none; border-radius: 3px; cursor: pointer;">🎲 Re-roll All</button>
-                </div>
-            `;
+        function validateSetupCharacteristicsStep() {
+            // Validate that all characteristics have been set
+            if (!setupWizardData.characteristics || Object.keys(setupWizardData.characteristics).length < 10) {
+                alert('Please enter all characteristic values before proceeding.');
+                return false;
+            }
+            return true;
         }
         
-        function showClassStep(content) {
+        function validateSetupSkillsStep() {
+            // Validate skills selection
+            if (!setupWizardData.skills || 
+                (setupWizardData.skills.step3.length < 3 || setupWizardData.skills.step4.length < 3)) {
+                alert('Please complete skill selections before proceeding.');
+                return false;
+            }
+            return true;
+        }
+        
+        function validateSetupTalentsStep() {
+            // Validate talent selections are complete
+            return true; // For now, we'll implement this later
+        }
+        
+        function validateSetupClassStep() {
+            if (!setupWizardData.class) {
+                alert('Please select a class.');
+                return false;
+            }
+            return true;
+        }
+        
+        function validateSetupCareerStep() {
+            if (!setupWizardData.career) {
+                alert('Please select a career.');
+                return false;
+            }
+            return true;
+        }
+        
+        // Add placeholder initialization functions
+        function initializeSetupCharacteristics(speciesInfo) {
+            // This will be implemented to replicate species wizard characteristics step
+            console.log('Initializing characteristics step');
+        }
+        
+        function initializeSetupSkills(speciesInfo) {
+            // This will be implemented to replicate species wizard skills steps
+            console.log('Initializing skills step');
+        }
+        
+        function initializeSetupTalents(speciesInfo) {
+            // This will be implemented to replicate species wizard talents step
+            console.log('Initializing talents step');
+        }
+        
+        function initializeSetupClass() {
+            // Show class selection
+            const content = document.getElementById('setup-class-content');
             content.innerHTML = `
-                <h4>Choose Your Class</h4>
-                <p>Select your character's starting class. This affects available careers and starting trappings.</p>
                 <div style="margin: 20px 0;">
-                    <select id="setup-class" style="padding: 10px; font-size: 14px; width: 100%; border: 1px solid #8b7355;">
+                    <select id="setup-class-select" onchange="handleSetupClassSelection()" style="padding: 10px; font-size: 14px; width: 100%; border: 1px solid #8b7355;">
                         <option value="">Select Class</option>
                         <option value="Academic">Academic</option>
                         <option value="Burgher">Burgher</option>
@@ -13501,30 +13489,19 @@ function loadSymptomsData() {
             `;
         }
         
-        function showTrappingsStep(content) {
-            const classValue = setupWizardData.class;
-            const classTrappings = getClassTrappings(classValue);
-            
-            content.innerHTML = `
-                <h4>Starting Trappings</h4>
-                <p>Based on your selected class (${classValue}), you can add these starting trappings:</p>
-                <div style="margin: 20px 0;">
-                    <div style="background: #f9f7f1; padding: 15px; border-radius: 5px; border: 1px solid #e8dfd0;">
-                        <h5>Available ${classValue} Trappings:</h5>
-                        <div id="trappings-list" style="margin: 10px 0; max-height: 300px; overflow-y: auto;">
-                            ${classTrappings}
-                        </div>
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <button onclick="addAllClassTrappings()" style="padding: 8px 16px; background: #3e2f1f; color: white; border: none; border-radius: 3px; cursor: pointer; margin-right: 10px;">✅ Add All Recommended</button>
-                        <button onclick="selectCustomTrappings()" style="padding: 8px 16px; background: #666; color: white; border: none; border-radius: 3px; cursor: pointer;">🔧 Select Custom</button>
-                    </div>
-                </div>
-                <p style="color: #666; font-size: 12px;">Note: You can skip this step and add trappings manually later.</p>
-            `;
+        function handleSetupClassSelection() {
+            const classValue = document.getElementById('setup-class-select').value;
+            setupWizardData.class = classValue;
         }
         
-        function showCareerStep(content) {
+        function initializeSetupTrappings() {
+            // Show trappings for selected class
+            console.log('Initializing trappings step');
+        }
+        
+        function initializeSetupCareer() {
+            // Show career selection based on class
+            const content = document.getElementById('setup-career-content');
             const classValue = setupWizardData.class;
             let careerOptions = '';
             
@@ -13556,446 +13533,24 @@ function loadSymptomsData() {
             }
             
             content.innerHTML = `
-                <h4>Choose Your Starting Career</h4>
-                <p>Select your character's starting career from the ${classValue} class. This will be set to Tier 1.</p>
+                <p style="margin-bottom: 15px; color: #666;">Select your starting career from the ${classValue} class. This will be set to Tier 1.</p>
                 <div style="margin: 20px 0;">
-                    <select id="setup-career" style="padding: 10px; font-size: 14px; width: 100%; border: 1px solid #8b7355;">
+                    <select id="setup-career-select" onchange="handleSetupCareerSelection()" style="padding: 10px; font-size: 14px; width: 100%; border: 1px solid #8b7355;">
                         <option value="">Select Career</option>
                         ${careerOptions}
                     </select>
                 </div>
-                ${careerOptions ? '' : '<p style="color: #cc0000;">No careers available for selected class. Please ensure careers are loaded.</p>'}
                 <p style="color: #666; font-size: 12px;">Your character will start at Tier 1 with access to tier 1 characteristic advances.</p>
             `;
         }
         
-        // Integrated wizard helper functions
-        function handleSpeciesSelection() {
-            const species = document.getElementById('setup-species').value;
-            const speciesInfo = document.getElementById('species-info');
-            const characteristicsInput = document.getElementById('characteristics-input');
-            const speciesFeatures = document.getElementById('species-features');
-            const fateResilienceInput = document.getElementById('fate-resilience-input');
-            const speciesSkills = document.getElementById('species-skills');
-            const speciesTalents = document.getElementById('species-talents');
-            
-            if (species) {
-                setupWizardData.species = species;
-                speciesInfo.style.display = 'block';
-                
-                // Show characteristics input with species base values
-                showCharacteristicsInput(species, characteristicsInput);
-                
-                // Show species features
-                showSpeciesFeatures(species, speciesFeatures);
-                
-                // Show fate & resilience input
-                showFateResilienceInput(species, fateResilienceInput);
-                
-                // Show species skills selection
-                showSpeciesSkills(species, speciesSkills);
-                
-                // Show species talents selection  
-                showSpeciesTalents(species, speciesTalents);
-            } else {
-                speciesInfo.style.display = 'none';
-            }
+        function handleSetupCareerSelection() {
+            const career = document.getElementById('setup-career-select').value;
+            setupWizardData.career = career;
         }
         
-        function getSpeciesData(species) {
-            const speciesInfo = {
-                'Human': 'Fate: 2-3, Resilience: 2-3, Extra XP: 20, Movement: 4, Species Skills: Any 3 skills',
-                'Dwarf': 'Fate: 1-2, Resilience: 4-5, Night Vision, Magic Resistance, Movement: 3, Species Skills: Consume Alcohol, Cool, Endurance',
-                'Halfling': 'Fate: 2-3, Resilience: 2-3, Small size, Night Vision, Movement: 3, Species Skills: Charm, Consume Alcohol, Gossip',
-                'High Elf': 'Fate: 1, Resilience: 1, Night Vision, Second Sight, Movement: 5, Species Skills: Melee (Polearm), Play (Musical Instrument), Ride (Horse)',
-                'Wood Elf': 'Fate: 1, Resilience: 1, Night Vision, Second Sight, Movement: 5, Species Skills: Athletics, Climb, Stealth'
-            };
-            return speciesInfo[species] || 'No additional information available.';
-        }
+        // =============== OLD VALIDATION FUNCTIONS (TO BE REPLACED) ===============
         
-        function getSpeciesBaseValues(species) {
-            const baseValues = {
-                'Human': {ws: 20, bs: 20, s: 20, t: 20, i: 20, agi: 20, dex: 20, int: 20, wp: 20, fel: 20},
-                'Dwarf': {ws: 30, bs: 20, s: 20, t: 30, i: 20, agi: 10, dex: 30, int: 20, wp: 40, fel: 10},
-                'Halfling': {ws: 10, bs: 30, s: 10, t: 15, i: 20, agi: 30, dex: 40, int: 20, wp: 30, fel: 30},
-                'High Elf': {ws: 30, bs: 30, s: 20, t: 20, i: 40, agi: 30, dex: 30, int: 35, wp: 30, fel: 20},
-                'Wood Elf': {ws: 30, bs: 30, s: 10, t: 10, i: 40, agi: 40, dex: 30, int: 30, wp: 30, fel: 20}
-            };
-            return baseValues[species] || baseValues['Human'];
-        }
-        
-        function showCharacteristicsInput(species, container) {
-            const baseValues = getSpeciesBaseValues(species);
-            const characteristics = ['ws', 'bs', 's', 't', 'i', 'agi', 'dex', 'int', 'wp', 'fel'];
-            const charNames = {
-                'ws': 'Weapon Skill',
-                'bs': 'Ballistic Skill',
-                's': 'Strength',
-                't': 'Toughness',
-                'i': 'Initiative',
-                'agi': 'Agility',
-                'dex': 'Dexterity',
-                'int': 'Intelligence',
-                'wp': 'Willpower',
-                'fel': 'Fellowship'
-            };
-            
-            let html = '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">';
-            
-            characteristics.forEach(char => {
-                html += `
-                    <div style="display: flex; align-items: center; gap: 8px; padding: 5px; background: #f9f7f1; border-radius: 3px;">
-                        <label style="width: 40px; font-weight: bold;">${char.toUpperCase()}:</label>
-                        <span style="width: 25px; text-align: center;">${baseValues[char]}</span>
-                        <span>+</span>
-                        <input type="number" id="roll-${char}" min="2" max="20" placeholder="2-20" style="width: 60px; padding: 2px;" onchange="updateCharacteristicTotal('${char}', ${baseValues[char]})">
-                        <span>=</span>
-                        <span id="total-${char}" style="width: 30px; font-weight: bold; text-align: center;">-</span>
-                    </div>
-                `;
-            });
-            
-            html += '</div>';
-            container.innerHTML = html;
-        }
-        
-        function updateCharacteristicTotal(char, baseValue) {
-            const rollInput = document.getElementById(`roll-${char}`);
-            const totalSpan = document.getElementById(`total-${char}`);
-            const rollValue = parseInt(rollInput.value) || 0;
-            
-            if (rollValue >= 2 && rollValue <= 20) {
-                const total = baseValue + rollValue;
-                totalSpan.textContent = total;
-                
-                // Store in wizard data
-                if (!setupWizardData.characteristics) {
-                    setupWizardData.characteristics = {};
-                }
-                setupWizardData.characteristics[char] = total;
-            } else {
-                totalSpan.textContent = '-';
-                if (setupWizardData.characteristics) {
-                    delete setupWizardData.characteristics[char];
-                }
-            }
-        }
-        
-        function showSpeciesFeatures(species, container) {
-            // Use the existing species data from the wizard
-            const speciesInfo = speciesData[species];
-            if (!speciesInfo) {
-                container.innerHTML = 'Species data not found.';
-                return;
-            }
-            
-            let features = [];
-            features.push(`<strong>Movement:</strong> ${speciesInfo.movement}`);
-            features.push(`<strong>Extra Points:</strong> ${speciesInfo.extraPoints}`);
-            features.push(`<strong>Wounds Formula:</strong> ${speciesInfo.woundsFormula}`);
-            
-            // Add fixed talents as features
-            if (speciesInfo.fixedTalents && speciesInfo.fixedTalents.length > 0) {
-                features.push(`<strong>Special Abilities:</strong> ${speciesInfo.fixedTalents.join(', ')}`);
-            }
-            
-            container.innerHTML = features.join('<br>');
-        }
-        
-        function showFateResilienceInput(species, container) {
-            const speciesInfo = speciesData[species];
-            if (!speciesInfo) return;
-            
-            const minFate = speciesInfo.baseFate;
-            const maxFate = speciesInfo.baseFate + speciesInfo.extraPoints;
-            const minResilience = speciesInfo.baseResilience;
-            const maxResilience = speciesInfo.baseResilience + speciesInfo.extraPoints;
-            
-            container.innerHTML = `
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <div>
-                        <label><strong>Fate:</strong></label>
-                        <select id="setup-fate" onchange="updateFateResilience()">
-                            ${generateRange(minFate, maxFate).map(n => `<option value="${n}">${n}</option>`).join('')}
-                        </select>
-                        <div style="font-size: 11px; color: #666;">(${minFate}-${maxFate})</div>
-                    </div>
-                    <div>
-                        <label><strong>Resilience:</strong></label>
-                        <select id="setup-resilience" onchange="updateFateResilience()">
-                            ${generateRange(minResilience, maxResilience).map(n => `<option value="${n}">${n}</option>`).join('')}
-                        </select>
-                        <div style="font-size: 11px; color: #666;">(${minResilience}-${maxResilience})</div>
-                    </div>
-                </div>
-                <div style="margin-top: 10px; font-size: 12px; color: #666;">
-                    <strong>Resolve = Fate, Fortune = Fate</strong>
-                </div>
-            `;
-            
-            // Set initial values
-            document.getElementById('setup-fate').value = minFate;
-            document.getElementById('setup-resilience').value = minResilience;
-            updateFateResilience();
-        }
-        
-        function generateRange(min, max) {
-            const range = [];
-            for (let i = min; i <= max; i++) {
-                range.push(i);
-            }
-            return range;
-        }
-        
-        function updateFateResilience() {
-            const fate = parseInt(document.getElementById('setup-fate')?.value) || 0;
-            const resilience = parseInt(document.getElementById('setup-resilience')?.value) || 0;
-            
-            if (!setupWizardData.species_selections) {
-                setupWizardData.species_selections = {};
-            }
-            setupWizardData.species_selections.fate = fate;
-            setupWizardData.species_selections.resilience = resilience;
-        }
-        
-        function showSpeciesSkills(species, container) {
-            const speciesInfo = speciesData[species];
-            if (!speciesInfo || !speciesInfo.skills) {
-                container.innerHTML = 'No species skills available.';
-                return;
-            }
-            
-            // For Human, they get to choose 3 skills from the list
-            if (species === 'Human') {
-                container.innerHTML = `
-                    <div style="font-size: 12px; color: #666; margin-bottom: 10px;">Choose 3 skills from the list:</div>
-                    <div style="max-height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 5px;">
-                        ${speciesInfo.skills.map(skill => `
-                            <div style="margin: 2px 0;">
-                                <label>
-                                    <input type="checkbox" id="skill-${skill}" onchange="updateSpeciesSkills()"> ${skill}
-                                </label>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div id="skills-count" style="font-size: 11px; color: #666; margin-top: 5px;">Selected: 0/3</div>
-                `;
-            } else {
-                // Other species have fixed skills (usually first 3)
-                const fixedSkills = speciesInfo.skills.slice(0, 3);
-                container.innerHTML = `
-                    <div style="font-size: 12px; color: #666; margin-bottom: 10px;">Fixed species skills:</div>
-                    <div style="background: #f0f0f0; padding: 8px; border-radius: 3px;">
-                        ${fixedSkills.map(skill => `<div>• ${skill}</div>`).join('')}
-                    </div>
-                `;
-                
-                // Store the fixed skills
-                if (!setupWizardData.species_selections) {
-                    setupWizardData.species_selections = {};
-                }
-                setupWizardData.species_selections.skills = fixedSkills;
-            }
-        }
-        
-        function updateSpeciesSkills() {
-            const checkboxes = document.querySelectorAll('[id^="skill-"]:checked');
-            const selectedSkills = Array.from(checkboxes).map(cb => cb.id.replace('skill-', ''));
-            
-            // Limit to 3 for humans
-            if (selectedSkills.length > 3) {
-                // Uncheck the last one
-                checkboxes[checkboxes.length - 1].checked = false;
-                selectedSkills.pop();
-            }
-            
-            document.getElementById('skills-count').textContent = `Selected: ${selectedSkills.length}/3`;
-            
-            if (!setupWizardData.species_selections) {
-                setupWizardData.species_selections = {};
-            }
-            setupWizardData.species_selections.skills = selectedSkills;
-        }
-        
-        function showSpeciesTalents(species, container) {
-            const speciesInfo = speciesData[species];
-            if (!speciesInfo || !speciesInfo.talentChoices) {
-                container.innerHTML = 'No talent choices available.';
-                return;
-            }
-            
-            let html = '';
-            speciesInfo.talentChoices.forEach((choice, index) => {
-                html += `
-                    <div style="margin: 10px 0; padding: 8px; background: #f9f9f9; border-radius: 3px;">
-                        <div style="font-size: 12px; font-weight: bold; margin-bottom: 5px;">${choice.description}</div>
-                        <div style="max-height: 120px; overflow-y: auto;">
-                `;
-                
-                if (choice.multiple && choice.count) {
-                    // Multiple choice (like human's 3 talents)
-                    html += choice.options.map(talent => `
-                        <div style="margin: 2px 0;">
-                            <label>
-                                <input type="checkbox" id="talent-${index}-${talent}" onchange="updateSpeciesTalents(${index}, ${choice.count})"> ${talent}
-                            </label>
-                        </div>
-                    `).join('');
-                    html += `<div id="talents-count-${index}" style="font-size: 11px; color: #666; margin-top: 5px;">Selected: 0/${choice.count}</div>`;
-                } else {
-                    // Single choice
-                    html += choice.options.map(talent => `
-                        <div style="margin: 2px 0;">
-                            <label>
-                                <input type="radio" name="talent-choice-${index}" id="talent-${index}-${talent}" onchange="updateSpeciesTalents(${index}, 1)"> ${talent}
-                            </label>
-                        </div>
-                    `).join('');
-                }
-                
-                html += `
-                        </div>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = html;
-        }
-        
-        function updateSpeciesTalents(choiceIndex, maxCount) {
-            const selector = maxCount === 1 ? `input[name="talent-choice-${choiceIndex}"]:checked` : `[id^="talent-${choiceIndex}-"]:checked`;
-            const selected = document.querySelectorAll(selector);
-            const selectedTalents = Array.from(selected).map(input => input.id.replace(`talent-${choiceIndex}-`, ''));
-            
-            if (maxCount > 1) {
-                // Multiple selection - limit count
-                if (selectedTalents.length > maxCount) {
-                    // Uncheck the last one
-                    selected[selected.length - 1].checked = false;
-                    selectedTalents.pop();
-                }
-                
-                const countElement = document.getElementById(`talents-count-${choiceIndex}`);
-                if (countElement) {
-                    countElement.textContent = `Selected: ${selectedTalents.length}/${maxCount}`;
-                }
-            }
-            
-            // Store selections
-            if (!setupWizardData.species_selections) {
-                setupWizardData.species_selections = {};
-            }
-            if (!setupWizardData.species_selections.talents) {
-                setupWizardData.species_selections.talents = {};
-            }
-            setupWizardData.species_selections.talents[choiceIndex] = selectedTalents;
-        }
-        
-        
-        function getClassTrappings(className) {
-            const classTrappingsData = {
-                'Academic': [
-                    'Clothing (Robes)',
-                    'Dagger',
-                    'Pouch',
-                    'Sling Bag',
-                    'Writing Kit (Quill, Ink, Parchment)',
-                    'Book (Academic Subject)',
-                    'Candle',
-                    'Lantern'
-                ],
-                'Burgher': [
-                    'Clothing (Quality)',
-                    'Cloak',
-                    'Dagger',
-                    'Pouch',
-                    'Sling Bag',
-                    'Trade Tools',
-                    'Purse',
-                    'Guild License'
-                ],
-                'Courtier': [
-                    'Clothing (Courtly)',
-                    'Dagger',
-                    'Jewelry',
-                    'Perfume',
-                    'Pouch',
-                    'Rapier',
-                    'Writing Kit'
-                ],
-                'Peasant': [
-                    'Clothing (Poor)',
-                    'Cloak',
-                    'Dagger',
-                    'Pouch',
-                    'Sling Bag',
-                    'Trade Tools (Farming)',
-                    'Rations (1 day)'
-                ],
-                'Ranger': [
-                    'Clothing (Practical)',
-                    'Cloak',
-                    'Dagger',
-                    'Hand Weapon',
-                    'Leather Jack',
-                    'Pouch',
-                    'Sling Bag'
-                ],
-                'Riverfolk': [
-                    'Clothing (Practical)',
-                    'Cloak',
-                    'Dagger',
-                    'Hand Weapon',
-                    'Leather Jack',
-                    'Pouch',
-                    'Rope (10 yards)'
-                ],
-                'Rogue': [
-                    'Clothing (Dark)',
-                    'Dagger',
-                    'Hood',
-                    'Lockpicks',
-                    'Pouch',
-                    'Rope (10 yards)',
-                    'Sling Bag'
-                ],
-                'Warrior': [
-                    'Clothing (Practical)',
-                    'Dagger',
-                    'Hand Weapon',
-                    'Leather Jack',
-                    'Pouch',
-                    'Shield',
-                    'Sling Bag'
-                ]
-            };
-            
-            const trappings = classTrappingsData[className] || [];
-            return trappings.map(item => `<div style="padding: 2px 0;"><input type="checkbox" id="trapping-${item}" checked> ${item}</div>`).join('');
-        }
-        
-        function addAllClassTrappings() {
-            // This would add all checked trappings to the character sheet
-            const checkboxes = document.querySelectorAll('#trappings-list input[type="checkbox"]:checked');
-            let addedCount = 0;
-            
-            checkboxes.forEach(checkbox => {
-                const trappingName = checkbox.id.replace('trapping-', '');
-                // Add to trappings section (simplified)
-                addedCount++;
-            });
-            
-            if (addedCount > 0) {
-                alert(`Added ${addedCount} trappings to your character.`);
-                setupWizardData.trappingsAdded = true;
-            }
-        }
-        
-        function selectCustomTrappings() {
-            alert('Custom trapping selection would open a detailed interface. For now, you can manually add trappings after character creation.');
-        }
-
-        // Validation functions
         function validateSpeciesStep() {
             const species = document.getElementById('setup-species').value;
             if (!species) {
