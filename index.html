@@ -13274,14 +13274,38 @@ function loadSymptomsData() {
                     </select>
                 </div>
                 <div id="species-info" style="margin-top: 15px; display: none;">
-                    <h5>Species Benefits:</h5>
-                    <div id="species-details" style="background: #f9f7f1; padding: 10px; border-radius: 5px; margin: 10px 0;">
-                        <!-- Species details will be populated -->
-                    </div>
-                    <h5>Starting Characteristics:</h5>
-                    <p style="color: #666; font-size: 12px;">Enter your rolled values. The display shows: Species Base + Your Roll = Total</p>
-                    <div id="characteristics-input" style="margin-top: 15px;">
-                        <!-- Characteristics input will be shown here -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <!-- Left Column: Characteristics -->
+                        <div>
+                            <h5>Starting Characteristics:</h5>
+                            <p style="color: #666; font-size: 12px;">Enter your rolled values. Format: Species Base + Your Roll = Total</p>
+                            <div id="characteristics-input" style="margin-top: 10px;">
+                                <!-- Characteristics input will be shown here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column: Species Features -->
+                        <div>
+                            <h5>Species Features:</h5>
+                            <div id="species-features" style="background: #f9f7f1; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                                <!-- Species features will be populated -->
+                            </div>
+                            
+                            <h5>Fate & Resilience:</h5>
+                            <div id="fate-resilience-input" style="margin: 10px 0;">
+                                <!-- Fate/Resilience input will be shown here -->
+                            </div>
+                            
+                            <h5>Species Skills:</h5>
+                            <div id="species-skills" style="margin: 10px 0;">
+                                <!-- Species skills will be shown here -->
+                            </div>
+                            
+                            <h5>Species Talents:</h5>
+                            <div id="species-talents" style="margin: 10px 0;">
+                                <!-- Species talents will be shown here -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -13404,19 +13428,30 @@ function loadSymptomsData() {
         function handleSpeciesSelection() {
             const species = document.getElementById('setup-species').value;
             const speciesInfo = document.getElementById('species-info');
-            const speciesDetails = document.getElementById('species-details');
             const characteristicsInput = document.getElementById('characteristics-input');
+            const speciesFeatures = document.getElementById('species-features');
+            const fateResilienceInput = document.getElementById('fate-resilience-input');
+            const speciesSkills = document.getElementById('species-skills');
+            const speciesTalents = document.getElementById('species-talents');
             
             if (species) {
                 setupWizardData.species = species;
                 speciesInfo.style.display = 'block';
                 
-                // Show species-specific information
-                const speciesData = getSpeciesData(species);
-                speciesDetails.innerHTML = speciesData;
-                
                 // Show characteristics input with species base values
                 showCharacteristicsInput(species, characteristicsInput);
+                
+                // Show species features
+                showSpeciesFeatures(species, speciesFeatures);
+                
+                // Show fate & resilience input
+                showFateResilienceInput(species, fateResilienceInput);
+                
+                // Show species skills selection
+                showSpeciesSkills(species, speciesSkills);
+                
+                // Show species talents selection  
+                showSpeciesTalents(species, speciesTalents);
             } else {
                 speciesInfo.style.display = 'none';
             }
@@ -13499,6 +13534,216 @@ function loadSymptomsData() {
                     delete setupWizardData.characteristics[char];
                 }
             }
+        }
+        
+        function showSpeciesFeatures(species, container) {
+            // Use the existing species data from the wizard
+            const speciesInfo = speciesData[species];
+            if (!speciesInfo) {
+                container.innerHTML = 'Species data not found.';
+                return;
+            }
+            
+            let features = [];
+            features.push(`<strong>Movement:</strong> ${speciesInfo.movement}`);
+            features.push(`<strong>Extra Points:</strong> ${speciesInfo.extraPoints}`);
+            features.push(`<strong>Wounds Formula:</strong> ${speciesInfo.woundsFormula}`);
+            
+            // Add fixed talents as features
+            if (speciesInfo.fixedTalents && speciesInfo.fixedTalents.length > 0) {
+                features.push(`<strong>Special Abilities:</strong> ${speciesInfo.fixedTalents.join(', ')}`);
+            }
+            
+            container.innerHTML = features.join('<br>');
+        }
+        
+        function showFateResilienceInput(species, container) {
+            const speciesInfo = speciesData[species];
+            if (!speciesInfo) return;
+            
+            const minFate = speciesInfo.baseFate;
+            const maxFate = speciesInfo.baseFate + speciesInfo.extraPoints;
+            const minResilience = speciesInfo.baseResilience;
+            const maxResilience = speciesInfo.baseResilience + speciesInfo.extraPoints;
+            
+            container.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label><strong>Fate:</strong></label>
+                        <select id="setup-fate" onchange="updateFateResilience()">
+                            ${generateRange(minFate, maxFate).map(n => `<option value="${n}">${n}</option>`).join('')}
+                        </select>
+                        <div style="font-size: 11px; color: #666;">(${minFate}-${maxFate})</div>
+                    </div>
+                    <div>
+                        <label><strong>Resilience:</strong></label>
+                        <select id="setup-resilience" onchange="updateFateResilience()">
+                            ${generateRange(minResilience, maxResilience).map(n => `<option value="${n}">${n}</option>`).join('')}
+                        </select>
+                        <div style="font-size: 11px; color: #666;">(${minResilience}-${maxResilience})</div>
+                    </div>
+                </div>
+                <div style="margin-top: 10px; font-size: 12px; color: #666;">
+                    <strong>Resolve = Fate, Fortune = Fate</strong>
+                </div>
+            `;
+            
+            // Set initial values
+            document.getElementById('setup-fate').value = minFate;
+            document.getElementById('setup-resilience').value = minResilience;
+            updateFateResilience();
+        }
+        
+        function generateRange(min, max) {
+            const range = [];
+            for (let i = min; i <= max; i++) {
+                range.push(i);
+            }
+            return range;
+        }
+        
+        function updateFateResilience() {
+            const fate = parseInt(document.getElementById('setup-fate')?.value) || 0;
+            const resilience = parseInt(document.getElementById('setup-resilience')?.value) || 0;
+            
+            if (!setupWizardData.species_selections) {
+                setupWizardData.species_selections = {};
+            }
+            setupWizardData.species_selections.fate = fate;
+            setupWizardData.species_selections.resilience = resilience;
+        }
+        
+        function showSpeciesSkills(species, container) {
+            const speciesInfo = speciesData[species];
+            if (!speciesInfo || !speciesInfo.skills) {
+                container.innerHTML = 'No species skills available.';
+                return;
+            }
+            
+            // For Human, they get to choose 3 skills from the list
+            if (species === 'Human') {
+                container.innerHTML = `
+                    <div style="font-size: 12px; color: #666; margin-bottom: 10px;">Choose 3 skills from the list:</div>
+                    <div style="max-height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 5px;">
+                        ${speciesInfo.skills.map(skill => `
+                            <div style="margin: 2px 0;">
+                                <label>
+                                    <input type="checkbox" id="skill-${skill}" onchange="updateSpeciesSkills()"> ${skill}
+                                </label>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div id="skills-count" style="font-size: 11px; color: #666; margin-top: 5px;">Selected: 0/3</div>
+                `;
+            } else {
+                // Other species have fixed skills (usually first 3)
+                const fixedSkills = speciesInfo.skills.slice(0, 3);
+                container.innerHTML = `
+                    <div style="font-size: 12px; color: #666; margin-bottom: 10px;">Fixed species skills:</div>
+                    <div style="background: #f0f0f0; padding: 8px; border-radius: 3px;">
+                        ${fixedSkills.map(skill => `<div>• ${skill}</div>`).join('')}
+                    </div>
+                `;
+                
+                // Store the fixed skills
+                if (!setupWizardData.species_selections) {
+                    setupWizardData.species_selections = {};
+                }
+                setupWizardData.species_selections.skills = fixedSkills;
+            }
+        }
+        
+        function updateSpeciesSkills() {
+            const checkboxes = document.querySelectorAll('[id^="skill-"]:checked');
+            const selectedSkills = Array.from(checkboxes).map(cb => cb.id.replace('skill-', ''));
+            
+            // Limit to 3 for humans
+            if (selectedSkills.length > 3) {
+                // Uncheck the last one
+                checkboxes[checkboxes.length - 1].checked = false;
+                selectedSkills.pop();
+            }
+            
+            document.getElementById('skills-count').textContent = `Selected: ${selectedSkills.length}/3`;
+            
+            if (!setupWizardData.species_selections) {
+                setupWizardData.species_selections = {};
+            }
+            setupWizardData.species_selections.skills = selectedSkills;
+        }
+        
+        function showSpeciesTalents(species, container) {
+            const speciesInfo = speciesData[species];
+            if (!speciesInfo || !speciesInfo.talentChoices) {
+                container.innerHTML = 'No talent choices available.';
+                return;
+            }
+            
+            let html = '';
+            speciesInfo.talentChoices.forEach((choice, index) => {
+                html += `
+                    <div style="margin: 10px 0; padding: 8px; background: #f9f9f9; border-radius: 3px;">
+                        <div style="font-size: 12px; font-weight: bold; margin-bottom: 5px;">${choice.description}</div>
+                        <div style="max-height: 120px; overflow-y: auto;">
+                `;
+                
+                if (choice.multiple && choice.count) {
+                    // Multiple choice (like human's 3 talents)
+                    html += choice.options.map(talent => `
+                        <div style="margin: 2px 0;">
+                            <label>
+                                <input type="checkbox" id="talent-${index}-${talent}" onchange="updateSpeciesTalents(${index}, ${choice.count})"> ${talent}
+                            </label>
+                        </div>
+                    `).join('');
+                    html += `<div id="talents-count-${index}" style="font-size: 11px; color: #666; margin-top: 5px;">Selected: 0/${choice.count}</div>`;
+                } else {
+                    // Single choice
+                    html += choice.options.map(talent => `
+                        <div style="margin: 2px 0;">
+                            <label>
+                                <input type="radio" name="talent-choice-${index}" id="talent-${index}-${talent}" onchange="updateSpeciesTalents(${index}, 1)"> ${talent}
+                            </label>
+                        </div>
+                    `).join('');
+                }
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function updateSpeciesTalents(choiceIndex, maxCount) {
+            const selector = maxCount === 1 ? `input[name="talent-choice-${choiceIndex}"]:checked` : `[id^="talent-${choiceIndex}-"]:checked`;
+            const selected = document.querySelectorAll(selector);
+            const selectedTalents = Array.from(selected).map(input => input.id.replace(`talent-${choiceIndex}-`, ''));
+            
+            if (maxCount > 1) {
+                // Multiple selection - limit count
+                if (selectedTalents.length > maxCount) {
+                    // Uncheck the last one
+                    selected[selected.length - 1].checked = false;
+                    selectedTalents.pop();
+                }
+                
+                const countElement = document.getElementById(`talents-count-${choiceIndex}`);
+                if (countElement) {
+                    countElement.textContent = `Selected: ${selectedTalents.length}/${maxCount}`;
+                }
+            }
+            
+            // Store selections
+            if (!setupWizardData.species_selections) {
+                setupWizardData.species_selections = {};
+            }
+            if (!setupWizardData.species_selections.talents) {
+                setupWizardData.species_selections.talents = {};
+            }
+            setupWizardData.species_selections.talents[choiceIndex] = selectedTalents;
         }
         
         
@@ -13630,6 +13875,39 @@ function loadSymptomsData() {
                 }
             }
             
+            // Validate species selections
+            if (!setupWizardData.species_selections) {
+                alert('Please complete all species selections (Fate/Resilience, Skills, Talents).');
+                return false;
+            }
+            
+            // Check Fate & Resilience
+            if (!setupWizardData.species_selections.fate || !setupWizardData.species_selections.resilience) {
+                alert('Please select Fate and Resilience values.');
+                return false;
+            }
+            
+            // Check Skills
+            if (!setupWizardData.species_selections.skills || setupWizardData.species_selections.skills.length === 0) {
+                alert('Please select species skills.');
+                return false;
+            }
+            
+            // Check Talents - validate that all talent choices are made
+            const speciesInfo = speciesData[species];
+            if (speciesInfo && speciesInfo.talentChoices) {
+                for (let i = 0; i < speciesInfo.talentChoices.length; i++) {
+                    const choice = speciesInfo.talentChoices[i];
+                    const selectedTalents = setupWizardData.species_selections.talents?.[i] || [];
+                    const expectedCount = choice.count || 1;
+                    
+                    if (selectedTalents.length < expectedCount) {
+                        alert(`Please complete talent selection: "${choice.description}"`);
+                        return false;
+                    }
+                }
+            }
+            
             return true;
         }
         
@@ -13697,6 +13975,28 @@ function loadSymptomsData() {
                 }
             });
             
+            // Apply species selections
+            if (setupWizardData.species_selections) {
+                // Set Fate and Resilience
+                if (setupWizardData.species_selections.fate) {
+                    const fateField = document.getElementById('fate');
+                    if (fateField) {
+                        fateField.value = setupWizardData.species_selections.fate;
+                    }
+                }
+                
+                if (setupWizardData.species_selections.resilience) {
+                    const resilienceField = document.getElementById('resilience');
+                    if (resilienceField) {
+                        resilienceField.value = setupWizardData.species_selections.resilience;
+                    }
+                }
+                
+                // Note: Skills and talents would need to be added to the appropriate sections
+                // This would require integration with the existing skills and talents systems
+                console.log('Species selections applied:', setupWizardData.species_selections);
+            }
+            
             // Set career and tier
             if (setupWizardData.career) {
                 document.getElementById('career-select').value = setupWizardData.career;
@@ -13717,8 +14017,20 @@ function loadSymptomsData() {
             // Close wizard
             closeSetupWizard();
             
-            // Show success message
-            alert('Character setup complete! Your character has been created with the selected options.');
+            // Show success message with summary
+            const speciesSelections = setupWizardData.species_selections;
+            let summaryMessage = 'Character setup complete!\n\n';
+            summaryMessage += `Species: ${setupWizardData.species}\n`;
+            summaryMessage += `Class: ${setupWizardData.class}\n`;
+            summaryMessage += `Career: ${setupWizardData.career}\n`;
+            if (speciesSelections) {
+                summaryMessage += `Fate: ${speciesSelections.fate}, Resilience: ${speciesSelections.resilience}\n`;
+                if (speciesSelections.skills) {
+                    summaryMessage += `Species Skills: ${speciesSelections.skills.join(', ')}\n`;
+                }
+            }
+            
+            alert(summaryMessage);
             
             // Update XP display and trigger save
             window.updateXPDisplay();
