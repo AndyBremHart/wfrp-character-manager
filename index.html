@@ -6379,10 +6379,8 @@
             const skillData = characterSkills[skillKey] || { career: false, advances: 0, notes: '' };
             const currentAdvances = skillData.advances || 0;
             
-            if (currentAdvances >= 5) {
-                alert('Skills cannot exceed 5 advances!');
-                return;
-            }
+            // No hard limit on advances - skills can have more than 5 advances from character creation
+            // and can continue to be advanced during play
             
             const cost = window.getSkillCost(currentAdvances);
             const total = parseInt(xpTotal.value) || 0;
@@ -7444,8 +7442,24 @@ window.displayTalents = function() {
             timesDisplay = talent.max === "1" ? "1" : `${currentTimes}/${talent.max}`;
         }
         
+        // Check if talent has (Any) designation and needs customization
+        let talentDisplayName = talent.displayName;
+        if (talent.displayName.includes('(Any)') || talent.displayName.includes('(any)')) {
+            // If the talent already has a customisation stored, use it
+            if (talent.customisation) {
+                talentDisplayName = talent.displayName.replace(/\([Aa]ny\)/, `(${talent.customisation})`);
+            } else {
+                // Show input field for customisation
+                talentDisplayName = `${talent.displayName.replace(/\s*\([Aa]ny\)/, '')} <input type="text" 
+                    value="${talent.customisation || ''}" 
+                    placeholder="Enter type" 
+                    style="width: 100px; font-size: 11px; padding: 2px; border: 1px solid #8b7355;"
+                    onchange="window.updateTalentCustomisation(${talents.indexOf(talent)}, this.value)">`;
+            }
+        }
+        
         row.innerHTML = `
-            <td class="skill-name-cell">${talent.displayName}</td>
+            <td class="skill-name-cell">${talentDisplayName}</td>
             <td style="text-align: center;">${timesDisplay}</td>
             <td style="text-align: center;">
                 ${canTakeMore ? 
@@ -7476,6 +7490,17 @@ window.displayTalents = function() {
 window.updateTalentNotes = function(index, notes) {
     if (talents[index]) {
         talents[index].notes = notes;
+    }
+}
+
+window.updateTalentCustomisation = function(index, customisation) {
+    if (talents[index]) {
+        talents[index].customisation = customisation;
+        // Update the display name to include the customisation
+        if (customisation) {
+            talents[index].displayName = talents[index].name.replace(/\([Aa]ny.*?\)/, `(${customisation})`);
+        }
+        displayTalents(); // Refresh display to show the updated name
     }
 }
 
@@ -14959,39 +14984,58 @@ function loadSymptomsData() {
                     }
                 });
                 
-                // Add weapons to weapons section
-                if (weapons.length > 0) {
-                    const weaponsTextarea = document.getElementById('weapons');
-                    if (weaponsTextarea) {
-                        const currentWeapons = weaponsTextarea.value;
-                        const newWeapons = currentWeapons ? 
-                            currentWeapons + '\n' + weapons.join('\n') : 
-                            weapons.join('\n');
-                        weaponsTextarea.value = newWeapons;
+                // Add weapons to weapons array
+                if (weapons.length > 0 && typeof window.weapons !== 'undefined') {
+                    weapons.forEach(weaponName => {
+                        window.weapons.push({
+                            name: weaponName,
+                            group: 'Basic',
+                            encumbrance: 1,
+                            range: '-',
+                            damage: '+SB',
+                            qualities: [],
+                            flaws: [],
+                            notes: 'From character creation',
+                            equipped: false
+                        });
+                    });
+                    if (typeof displayWeapons === 'function') {
+                        displayWeapons();
                     }
                 }
                 
-                // Add armor to armor section
-                if (armor.length > 0) {
-                    const armorTextarea = document.getElementById('armor');
-                    if (armorTextarea) {
-                        const currentArmor = armorTextarea.value;
-                        const newArmor = currentArmor ? 
-                            currentArmor + '\n' + armor.join('\n') : 
-                            armor.join('\n');
-                        armorTextarea.value = newArmor;
+                // Add armor to armour array
+                if (armor.length > 0 && typeof window.armour !== 'undefined') {
+                    armor.forEach(armorName => {
+                        window.armour.push({
+                            name: armorName,
+                            locations: ['Body'],
+                            encumbrance: 1,
+                            ap: 1,
+                            qualities: [],
+                            flaws: [],
+                            notes: 'From character creation',
+                            worn: false
+                        });
+                    });
+                    if (typeof displayArmour === 'function') {
+                        displayArmour();
                     }
                 }
                 
-                // Add general equipment to equipment section
-                if (generalEquipment.length > 0) {
-                    const equipmentTextarea = document.getElementById('equipment');
-                    if (equipmentTextarea) {
-                        const currentEquipment = equipmentTextarea.value;
-                        const newEquipment = currentEquipment ? 
-                            currentEquipment + '\n' + generalEquipment.join('\n') : 
-                            generalEquipment.join('\n');
-                        equipmentTextarea.value = newEquipment;
+                // Add general equipment to trappings array
+                if (generalEquipment.length > 0 && typeof window.trappings !== 'undefined') {
+                    generalEquipment.forEach(itemName => {
+                        window.trappings.push({
+                            name: itemName,
+                            quantity: 1,
+                            encumbrance: 0.5,
+                            location: 'Backpack',
+                            notes: 'From character creation'
+                        });
+                    });
+                    if (typeof displayTrappings === 'function') {
+                        displayTrappings();
                     }
                 }
                 
