@@ -10448,11 +10448,14 @@ document.addEventListener('DOMContentLoaded', function() {
         function updateCharacteristicLimits() {
             if (!currentCareer || !currentCareer.characteristicAdvances) {
                 console.log('No career selected, clearing all restrictions');
+                console.log('Current career:', currentCareer);
+                console.log('Has characteristicAdvances:', currentCareer?.characteristicAdvances ? 'yes' : 'no');
                 clearCharacteristicLimits();
                 return;
             }
             
             console.log('Updating characteristic limits for:', currentCareer.name, 'Tier:', currentTier);
+            console.log('Career characteristic advances:', currentCareer.characteristicAdvances);
             
             const charRows = document.querySelectorAll('tr[data-characteristic]');
             
@@ -15084,14 +15087,36 @@ function loadSymptomsData() {
                 document.getElementById('global-tier').value = '1';
                 currentTier = 1;
                 
-                // Find and select the career
+                // Ensure careers are loaded, then find and select the career
+                if (!careersData) {
+                    console.log('Careers not loaded yet, waiting...');
+                    // Wait for careers to load
+                    const checkCareers = setInterval(() => {
+                        if (careersData) {
+                            clearInterval(checkCareers);
+                            selectCareerFromSetup();
+                        }
+                    }, 100);
+                } else {
+                    selectCareerFromSetup();
+                }
+            }
+            
+            function selectCareerFromSetup() {
                 const career = careersData?.careers?.find(c => c.name === setupWizardData.career);
+                console.log('Setup wizard career search for:', setupWizardData.career);
+                console.log('Career found:', career ? 'yes' : 'no');
                 if (career) {
+                    console.log('Career name:', career.name);
+                    console.log('Career has characteristicAdvances:', career.characteristicAdvances ? 'yes' : 'no');
                     currentCareer = career;
+                    console.log('About to call updateCharacteristicLimits with currentTier:', currentTier);
                     updateCharacteristicLimits();
                     updateTierDisplay();
                     highlightCareerSkills();
                     highlightCareerTalents();
+                } else {
+                    console.log('Career not found in careersData. Available careers:', careersData?.careers?.map(c => c.name));
                 }
             }
             
