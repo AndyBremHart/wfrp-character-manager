@@ -9934,6 +9934,102 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Character loaded!');
         }
 
+        // Initialize essential helper functions for Character Generator
+        function initializeHelperFunctions() {
+            // Helper function to directly add a skill to the character
+            window.addSkillDirectly = function(skillName, advances = 0) {
+                // Parse skill name and specialization
+                let baseName, specialization = '';
+                const match = skillName.match(/^(.+?)\s*\((.+)\)$/);
+                
+                if (match) {
+                    baseName = match[1].trim();
+                    specialization = match[2].trim();
+                } else {
+                    baseName = skillName;
+                }
+
+                // Find the base skill in allSkills
+                const baseSkill = allSkills.find(skill => 
+                    skill.name.toLowerCase() === baseName.toLowerCase()
+                );
+
+                if (!baseSkill) {
+                    console.error(`Base skill '${baseName}' not found in allSkills`);
+                    return;
+                }
+
+                // Create a unique key for this skill
+                const skillKey = specialization ? 
+                    `${baseName.toLowerCase().replace(/\s+/g, '_')}_${specialization.toLowerCase().replace(/\s+/g, '_')}` : 
+                    baseName.toLowerCase().replace(/\s+/g, '_');
+
+                // Add to addedSkills array if it doesn't exist
+                if (!addedSkills.find(skill => skill.key === skillKey)) {
+                    addedSkills.push({
+                        key: skillKey,
+                        name: baseName,
+                        characteristic: baseSkill.characteristic,
+                        type: baseSkill.type,
+                        specialisation: specialization
+                    });
+
+                    // Initialize skill data with advances
+                    characterSkills[skillKey] = { career: false, advances: advances, notes: '' };
+
+                    // Refresh the skills display
+                    displaySkills();
+                }
+            };
+
+            // Helper function to directly add a talent to the character
+            window.addTalentDirectly = function(talentName) {
+                // Parse talent name and customization
+                let baseName, customisation = '';
+                const match = talentName.match(/^(.+?)\s*\((.+)\)$/);
+                
+                if (match) {
+                    baseName = match[1].trim();
+                    const customPart = match[2].trim();
+                    
+                    // Handle specific customizations
+                    if (customPart.toLowerCase().includes('any one') || customPart.toLowerCase().includes('choose one')) {
+                        // For "any one" talents, use a default or prompt for specification
+                        if (baseName === 'Acute Sense') {
+                            customisation = 'Sight'; // Default to sight for character creation
+                        } else if (baseName === 'Craftsman') {
+                            customisation = 'Metalworking'; // Default craft
+                        } else if (baseName === 'Resistance') {
+                            customisation = 'Disease'; // Default resistance
+                        } else {
+                            customisation = customPart; // Use as-is if not recognized
+                        }
+                    } else {
+                        customisation = customPart;
+                    }
+                } else {
+                    baseName = talentName.trim();
+                }
+
+                // Generate unique talent ID
+                const talentId = Date.now() + Math.random();
+                
+                // Add talent to characterTalents array
+                if (!characterTalents.find(talent => talent.name === baseName && talent.customisation === customisation)) {
+                    characterTalents.push({
+                        id: talentId,
+                        name: baseName,
+                        advances: 1,
+                        customisation: customisation,
+                        notes: ''
+                    });
+
+                    // Refresh the talents display
+                    displayTalents();
+                }
+            };
+        }
+
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded, initializing...');
@@ -9942,6 +10038,9 @@ document.addEventListener('DOMContentLoaded', function() {
             xpTotal = document.getElementById('xp-total');
             xpSpent = document.getElementById('xp-spent');
             window.updateXPDisplay();
+            
+            // Define essential helper functions for Character Generator
+            initializeHelperFunctions();
             
             // Initialize Fate/Fortune/Resilience/Resolve system
             previousFate = parseInt(document.getElementById('fate').value) || 0;
