@@ -3173,9 +3173,7 @@
                     const career = careersData.careers.find(c => c.name === characterData.careerData.careerName);
                     if (career) {
                         document.getElementById('career-select').value = characterData.careerData.careerName;
-                        document.getElementById('tier-select').value = characterData.careerData.tier || 1;
-                        currentTier = characterData.careerData.tier || 1;
-                        selectCareer(career);
+                        showCareerReference(career);
                     }
                 }
             } else if (characterData.career) {
@@ -4270,9 +4268,7 @@
                     const career = careersData.careers.find(c => c.name === characterData.careerData.careerName);
                     if (career) {
                         document.getElementById('career-select').value = characterData.careerData.careerName;
-                        document.getElementById('tier-select').value = characterData.careerData.tier || 1;
-                        currentTier = characterData.careerData.tier || 1;
-                        selectCareer(career);
+                        showCareerReference(career);
                     }
                 }
             } else if (characterData.career) {
@@ -10239,9 +10235,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('tier-info').style.display = 'block';
             document.getElementById('career-actions').style.display = 'block';
             
-            // Reset tier selector to 1
-            document.getElementById('tier-select').value = '1';
-            document.getElementById('tier-select').disabled = false;
+            // Note: Tier selection removed - using reference system instead
             
             // Display tier 1 information
             displayTierInfo(career, 1);
@@ -10251,7 +10245,7 @@ document.addEventListener('DOMContentLoaded', function() {
         function confirmCareerSelection() {
             if (previewCareer) {
                 currentCareer = previewCareer;
-                currentTier = parseInt(document.getElementById('tier-select').value);
+                currentTier = 1; // Default to tier 1 since tier selection is now reference-only
                 previewCareer = null;
                 
                 // Apply characteristic limits and highlighting
@@ -10590,11 +10584,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (career) {
                         // Set dropdown values
                         document.getElementById('career-select').value = careerData.careerName;
-                        document.getElementById('tier-select').value = careerData.tier || 1;
                         
-                        // Update current variables
-                        currentTier = careerData.tier || 1;
-                        selectCareer(career);
+                        // Show career reference
+                        showCareerReference(career);
                     }
                 }
             } catch (error) {
@@ -14569,6 +14561,12 @@ function loadSymptomsData() {
                 };
             }
             
+            // Store career status information
+            setupWizardData.careerStatus = {
+                tier: statusTier,
+                standing: statusStanding
+            };
+            
             // Initialize skill allocations to 0
             tier1.skills.forEach(skill => {
                 if (!setupWizardData.careerAllocation.skills[skill]) {
@@ -14576,11 +14574,34 @@ function loadSymptomsData() {
                 }
             });
             
+            // Determine career status tier and standing
+            const statusTier = career.status || 'Brass'; // Default to Brass if not specified
+            const statusStanding = tier1.standing || '1'; // Default to 1 if not specified
+            
             // Build the allocation interface
             let allocationHTML = `
                 <div style="background: #f5f2e8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
                     <h4 style="color: #3e2f1f; margin: 0 0 10px 0;">${careerName} - ${tier1.name}</h4>
                     <p style="margin: 0; color: #666; font-size: 14px;">Allocate 40 Advances across your career skills (maximum 10 per skill).</p>
+                </div>
+                
+                <div style="background: #fff8dc; padding: 15px; border: 2px solid #d4a574; border-radius: 5px; margin-bottom: 20px;">
+                    <h4 style="color: #8b4513; margin: 0 0 10px 0; display: flex; align-items: center; gap: 10px;">
+                        <span>📊 Career Status</span>
+                    </h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-items: center;">
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; color: #8b4513; font-weight: bold;">Status Tier:</label>
+                            <span style="display: block; padding: 8px; background: white; border: 1px solid #d4a574; border-radius: 3px; font-weight: bold; color: #3e2f1f;">${statusTier}</span>
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; color: #8b4513; font-weight: bold;">Standing:</label>
+                            <span style="display: block; padding: 8px; background: white; border: 1px solid #d4a574; border-radius: 3px; font-weight: bold; color: #3e2f1f;">${statusStanding}</span>
+                        </div>
+                    </div>
+                    <p style="margin: 10px 0 0 0; font-size: 12px; color: #8b4513; font-style: italic;">
+                        This status will be applied to your character sheet and can be modified manually during gameplay.
+                    </p>
                 </div>
                 
                 <div style="background: #f0f7ff; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
@@ -15211,14 +15232,18 @@ function loadSymptomsData() {
                     console.log('Career name:', career.name);
                     console.log('Career has characteristicAdvances:', career.characteristicAdvances ? 'yes' : 'no');
                     
-                    // Use the same method as the dropdown system - set previewCareer and call confirmCareerSelection
-                    previewCareer = career;
-                    document.getElementById('tier-select').value = '1';
-                    console.log('About to call confirmCareerSelection() like the dropdown system');
-                    confirmCareerSelection();
+                    // Simply set the career dropdown and trigger the reference display
+                    document.getElementById('career-select').value = career.name;
+                    showCareerReference(career);
                 } else {
                     console.log('Career not found in careersData. Available careers:', careersData?.careers?.map(c => c.name));
                 }
+            }
+            
+            // Set career status from wizard data
+            if (setupWizardData.careerStatus) {
+                document.getElementById('status-tier').value = setupWizardData.careerStatus.tier;
+                document.getElementById('status-standing').value = setupWizardData.careerStatus.standing;
             }
             
             // Set initial XP for new character (0 starting XP - player earns XP through play)
@@ -15234,6 +15259,10 @@ function loadSymptomsData() {
             summaryMessage += `Species: ${setupWizardData.species}\n`;
             summaryMessage += `Class: ${setupWizardData.class}\n`;
             summaryMessage += `Career: ${setupWizardData.career}\n`;
+            
+            if (setupWizardData.careerStatus) {
+                summaryMessage += `Status: ${setupWizardData.careerStatus.tier} ${setupWizardData.careerStatus.standing}\n`;
+            }
             
             if (setupWizardData.fate) {
                 summaryMessage += `Fate: ${setupWizardData.fate.total || setupWizardData.fate.base}\n`;
