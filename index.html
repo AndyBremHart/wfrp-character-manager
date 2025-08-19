@@ -9964,11 +9964,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     `${baseName.toLowerCase().replace(/\s+/g, '_')}_${specialization.toLowerCase().replace(/\s+/g, '_')}` : 
                     baseName.toLowerCase().replace(/\s+/g, '_');
 
+                // Create display name for the skill
+                const displayName = specialization ? `${baseName} (${specialization})` : baseName;
+                
                 // Add to addedSkills array if it doesn't exist
                 if (!addedSkills.find(skill => skill.key === skillKey)) {
                     addedSkills.push({
                         key: skillKey,
                         name: baseName,
+                        displayName: displayName,
                         characteristic: baseSkill.characteristic,
                         type: baseSkill.type,
                         specialisation: specialization
