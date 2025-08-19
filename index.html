@@ -1250,13 +1250,6 @@
             </div>
         </div>
 
-        <!-- Career Selection (Simplified) -->
-        <div class="header-field">
-            <label>Career</label>
-            <select id="career-select" onchange="handleCareerSelection()" style="padding: 5px; font-family: Georgia, serif; border: 1px solid #8b7355;">
-                <option value="">Select Career</option>
-            </select>
-        </div>
 
         <!-- Google Drive Integration Section -->
         <div class="google-drive-section" id="google-drive-section">
@@ -2376,12 +2369,25 @@
         </div>
 
         <!-- Career Reference Section -->
-        <div class="career-reference-section" id="career-reference-section" style="display: none; margin-top: 30px; background: #faf8f3; border: 2px solid #8b7355; border-radius: 8px; padding: 20px;">
+        <div class="career-reference-section" style="margin-top: 30px; background: #faf8f3; border: 2px solid #8b7355; border-radius: 8px; padding: 20px;">
             <div style="text-align: center; margin-bottom: 20px;">
                 <h2 style="color: #3e2f1f; margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 2px;">Career Reference</h2>
-                <div id="career-reference-name" style="font-size: 18px; color: #8b7355; margin: 5px 0; font-style: italic;">Select a career to view details</div>
-                <div id="career-reference-class" style="font-size: 14px; color: #666; font-weight: bold;"></div>
+                
+                <!-- Career Selection -->
+                <div style="margin: 15px auto; max-width: 300px;">
+                    <label style="display: block; margin-bottom: 5px; color: #3e2f1f; font-weight: bold;">Select Career:</label>
+                    <select id="career-select" onchange="handleCareerSelection()" style="width: 100%; padding: 8px; font-family: Georgia, serif; border: 1px solid #8b7355; font-size: 14px;">
+                        <option value="">Choose a career to view details...</option>
+                    </select>
+                </div>
+                
+                <div id="career-reference-info" style="display: none;">
+                    <div id="career-reference-name" style="font-size: 18px; color: #8b7355; margin: 10px 0; font-style: italic;"></div>
+                    <div id="career-reference-class" style="font-size: 14px; color: #666; font-weight: bold;"></div>
+                </div>
             </div>
+            
+            <div id="career-reference-content" style="display: none;">
 
             <!-- Career Characteristics -->
             <div class="career-reference-section">
@@ -2414,6 +2420,8 @@
                     <!-- Trappings by tier will be populated dynamically -->
                 </div>
             </div>
+            
+            </div> <!-- End career-reference-content -->
         </div>
     </div>
 
@@ -10093,12 +10101,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Show comprehensive career reference
         function showCareerReference(career) {
-            const referenceSection = document.getElementById('career-reference-section');
+            const careerInfo = document.getElementById('career-reference-info');
+            const careerContent = document.getElementById('career-reference-content');
             const careerName = document.getElementById('career-reference-name');
             const careerClass = document.getElementById('career-reference-class');
             
-            // Show the reference section
-            referenceSection.style.display = 'block';
+            // Show the career info and content sections
+            careerInfo.style.display = 'block';
+            careerContent.style.display = 'block';
             
             // Set career name and class
             careerName.textContent = career.name;
@@ -10119,7 +10129,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Hide career reference
         function hideCareerReference() {
-            document.getElementById('career-reference-section').style.display = 'none';
+            document.getElementById('career-reference-info').style.display = 'none';
+            document.getElementById('career-reference-content').style.display = 'none';
         }
 
         // Populate career characteristics
@@ -10337,9 +10348,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Clear career display
         function clearCareerDisplay() {
-            document.getElementById('career-class').textContent = '-';
-            document.getElementById('tier-select').disabled = true;
-            document.getElementById('tier-info').style.display = 'none';
+            // Hide career reference section
+            hideCareerReference();
+            
+            // Reset career dropdown
+            document.getElementById('career-select').value = '';
             
             // Clear highlighting
             clearCareerHighlights();
