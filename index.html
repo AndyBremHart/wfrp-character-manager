@@ -1399,12 +1399,12 @@
                         </tr>
                         <tr data-characteristic="agi">
                             <td class="char-name-cell">Agility (Ag)</td>
-                            <td><input type="number" id="ag-initial" placeholder="20" min="0" max="100"></td>
-                            <td><input type="number" id="ag-advances" placeholder="0" min="0"></td>
-                            <td class="current-cell"><input type="number" id="ag-current" placeholder="20" readonly></td>
+                            <td><input type="number" id="agi-initial" placeholder="20" min="0" max="100"></td>
+                            <td><input type="number" id="agi-advances" placeholder="0" min="0"></td>
+                            <td class="current-cell"><input type="number" id="agi-current" placeholder="20" readonly></td>
                             <td style="text-align: center;">
-                                <button onclick="window.advanceCharacteristic('ag')" style="padding: 5px 10px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">+</button>
-                                <span id="ag-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
+                                <button onclick="window.advanceCharacteristic('agi')" style="padding: 5px 10px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">+</button>
+                                <span id="agi-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(25 XP)</span>
                             </td>
                         </tr>
                         <tr data-characteristic="dex">
@@ -5586,7 +5586,7 @@
         }
 
         // Auto-calculate current characteristics
-        const characteristics = ['ws', 'bs', 's', 't', 'i', 'ag', 'dex', 'int', 'wp', 'fel'];
+        const characteristics = ['ws', 'bs', 's', 't', 'i', 'agi', 'dex', 'int', 'wp', 'fel'];
         
         characteristics.forEach(char => {
             const initial = document.getElementById(`${char}-initial`);
@@ -5601,7 +5601,7 @@
                 let totalPenalty = 0;
                 
                 // Apply encumbrance penalty to Agility
-                if (char === 'ag') {
+                if (char === 'agi') {
                     const encStatus = document.getElementById('enc-status');
                     const agilityPenalty = parseInt(encStatus?.getAttribute('data-agility-penalty') || 0);
                     
@@ -5655,7 +5655,7 @@
                 if (totalPenalty > 0) {
                     current.style.color = 'red';
                     current.title = `Base: ${init + adv}, ${penalties.join(', ')}`;
-                } else if (char !== 'ag') { // Don't clear ag styling if it was set by encumbrance
+                } else if (char !== 'agi') { // Don't clear agi styling if it was set by encumbrance
                     current.style.color = '';
                     current.title = '';
                 }
@@ -7050,7 +7050,7 @@ window.getTalentCurrentLimit = function(talentName, characteristics) {
             characteristicValue = parseInt(document.getElementById('wp-current')?.value) || 0;
             break;
         case "agilityBonus":
-            characteristicValue = parseInt(document.getElementById('ag-current')?.value) || 0;
+            characteristicValue = parseInt(document.getElementById('agi-current')?.value) || 0;
             break;
         case "dexterityBonus":
             characteristicValue = parseInt(document.getElementById('dex-current')?.value) || 0;
@@ -10256,7 +10256,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Update characteristic advancement limits based on career tier
         function updateCharacteristicLimits() {
-            if (!currentCareer || !currentCareer.characteristicAdvances) return;
+            if (!currentCareer || !currentCareer.characteristicAdvances) {
+                console.log('No career selected, clearing all restrictions');
+                clearCharacteristicLimits();
+                return;
+            }
             
             console.log('Updating characteristic limits for:', currentCareer.name, 'Tier:', currentTier);
             
@@ -11956,7 +11960,7 @@ function loadSymptomsData() {
             document.getElementById('enc-status').setAttribute('data-travel-fatigue', travelFatigue);
             
             // Update Agility to show penalty
-            const agCurrent = document.getElementById('ag-current');
+            const agCurrent = document.getElementById('agi-current');
             if (agCurrent && agCurrent.updateFunction) {
                 agCurrent.updateFunction();
             }
