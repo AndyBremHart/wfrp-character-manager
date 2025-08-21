@@ -10609,10 +10609,23 @@ document.addEventListener('DOMContentLoaded', function() {
         function updateTierDisplay() {
             // Update the main tier display (near player)
             const tierDisplay = document.getElementById('tier-display');
-            const romanNumerals = ['', 'I', 'II', 'III', 'IV'];
             
             if (tierDisplay && currentTier >= 1 && currentTier <= 4) {
-                tierDisplay.textContent = `Tier ${romanNumerals[currentTier]}`;
+                // If we have career data, show the tier name
+                if (currentCareer && currentCareer.tiers) {
+                    const tier = currentCareer.tiers.find(t => t.tier === currentTier);
+                    if (tier && tier.name) {
+                        tierDisplay.textContent = tier.name;
+                    } else {
+                        // Fallback to roman numerals if tier name not found
+                        const romanNumerals = ['', 'I', 'II', 'III', 'IV'];
+                        tierDisplay.textContent = `Tier ${romanNumerals[currentTier]}`;
+                    }
+                } else {
+                    // Fallback to roman numerals if no career selected
+                    const romanNumerals = ['', 'I', 'II', 'III', 'IV'];
+                    tierDisplay.textContent = `Tier ${romanNumerals[currentTier]}`;
+                }
             }
             
             // Update characteristic limits if we have a career selected
