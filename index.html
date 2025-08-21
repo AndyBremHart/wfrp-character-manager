@@ -10258,8 +10258,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                     
                     // Apply characteristic bonuses if this talent provides them
+                    console.log("DEBUG: [Function 1 - No SRD] About to check for characteristic bonus for:", baseName);
                     if (typeof window.applyTalentCharacteristicBonus === 'function') {
+                        console.log("DEBUG: [Function 1 - No SRD] Calling applyTalentCharacteristicBonus for:", baseName);
                         window.applyTalentCharacteristicBonus(baseName, true);
+                    } else {
+                        console.log("DEBUG: [Function 1 - No SRD] applyTalentCharacteristicBonus function not available");
                     }
                     
                     displayTalents();
@@ -14083,8 +14087,12 @@ function loadSymptomsData() {
             talents.push(talentToAdd);
             
             // Apply characteristic bonuses if this talent provides them
+            console.log("DEBUG: [Function 3] About to check for characteristic bonus for:", baseName);
             if (typeof window.applyTalentCharacteristicBonus === 'function') {
+                console.log("DEBUG: [Function 3] Calling applyTalentCharacteristicBonus for:", baseName);
                 window.applyTalentCharacteristicBonus(baseName, true);
+            } else {
+                console.log("DEBUG: [Function 3] applyTalentCharacteristicBonus function not available");
             }
             
             // Refresh the talents display
