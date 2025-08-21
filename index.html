@@ -6111,10 +6111,25 @@
                 const advancesField = document.getElementById(`${char}-advances`);
                 if (advancesField) {
                     const advances = parseInt(advancesField.value) || 0;
-                    const cost = window.getCharacteristicCost(advances);
+                    const baseCost = window.getCharacteristicCost(advances);
+                    
+                    // Check if this characteristic is available in current career tier
+                    let finalCost = baseCost;
+                    let costText = `${baseCost} XP`;
+                    
+                    if (currentCareer && currentCareer.characteristicAdvances) {
+                        const careerAdvances = currentCareer.characteristicAdvances[char] || [];
+                        const isInCareer = careerAdvances.includes(currentTier);
+                        
+                        if (!isInCareer) {
+                            finalCost = baseCost * 2;
+                            costText = `${finalCost} XP (2x)`;
+                        }
+                    }
+                    
                     const costDisplay = document.getElementById(`${char}-cost-display`);
                     if (costDisplay) {
-                        costDisplay.textContent = `(${cost} XP)`;
+                        costDisplay.textContent = `(${costText})`;
                         const button = costDisplay.parentElement.querySelector('button');
                         if (button) {
                             // Always enable the button - XP check happens when clicked
@@ -6176,7 +6191,7 @@
             
             const advancesField = document.getElementById(`${charCode}-advances`);
             const currentAdvances = parseInt(advancesField.value) || 0;
-            const cost = window.getCharacteristicCost(currentAdvances);
+            const baseCost = window.getCharacteristicCost(currentAdvances);
             const total = parseInt(xpTotal.value) || 0;
             const spent = parseInt(xpSpent.value) || 0;
             const current = total - spent;
@@ -6194,29 +6209,33 @@
                 'fel': 'Fellowship'
             };
             
-            if (!window.canAffordAdvance(cost)) {
-                alert(`Insufficient XP! Need ${cost} XP to advance ${charNames[charCode]}, only have ${current} available.`);
-                return;
-            }
+            // Check if this characteristic is available in current career tier
+            let isInCareer = false;
+            let finalCost = baseCost;
+            let costDescription = `${baseCost} XP`;
             
-            // Check career tier restrictions
             if (currentCareer && currentCareer.characteristicAdvances) {
                 const careerAdvances = currentCareer.characteristicAdvances[charCode] || [];
-                const availableAtCurrentTier = careerAdvances.includes(currentTier);
+                isInCareer = careerAdvances.includes(currentTier);
                 
-                if (careerAdvances.length > 0 && !availableAtCurrentTier) {
-                    const nextAvailableTier = Math.min(...careerAdvances.filter(tier => tier > currentTier));
-                    if (isFinite(nextAvailableTier)) {
-                        alert(`${charNames[charCode]} cannot be advanced at tier ${currentTier}. Available at tier ${nextAvailableTier}+.`);
-                    } else {
-                        alert(`${charNames[charCode]} cannot be advanced with your current career (${currentCareer.name}).`);
-                    }
-                    return;
+                // If not in career for current tier, apply double cost (optional rule)
+                if (!isInCareer) {
+                    finalCost = baseCost * 2;
+                    costDescription = `${finalCost} XP (double cost - out of career)`;
                 }
             }
             
-            if (confirm(`Advance ${charNames[charCode]} for ${cost} XP? (Current XP: ${current})`)) {
-                if (window.spendXP(cost, `${charNames[charCode]} advance`)) {
+            if (!window.canAffordAdvance(finalCost)) {
+                alert(`Insufficient XP! Need ${finalCost} XP to advance ${charNames[charCode]}, only have ${current} available.`);
+                return;
+            }
+            
+            const confirmMessage = isInCareer 
+                ? `Advance ${charNames[charCode]} for ${costDescription}? (Current XP: ${current})`
+                : `Advance ${charNames[charCode]} for ${costDescription}? (Current XP: ${current})`;
+            
+            if (confirm(confirmMessage)) {
+                if (window.spendXP(finalCost, `${charNames[charCode]} advance${isInCareer ? '' : ' (out of career)'}`)) {
                     advancesField.value = currentAdvances + 1;
                     advancesField.dispatchEvent(new Event('input'));
                     
@@ -6225,7 +6244,7 @@
                         updateCharacteristicLimits();
                     }
                     
-                    alert(`${charNames[charCode]} advanced! Spent ${cost} XP.`);
+                    alert(`${charNames[charCode]} advanced! Spent ${finalCost} XP.`);
                 }
             }
         }
@@ -10852,7 +10871,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const indicator = document.createElement('div');
                     indicator.className = 'advance-limit-indicator';
                     const nextAvailableTier = Math.min(...advanceData);
-                    indicator.innerHTML = `<span style="color: #888;">Available at tier ${nextAvailableTier}+</span>`;
+                    indicator.innerHTML = `<span style="color: #888;">Normal cost at tier ${nextAvailableTier}+</span>`;
                     
                     indicator.style.cssText = `
                         position: absolute;
@@ -10868,24 +10887,33 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     row.style.position = 'relative';
                     row.appendChild(indicator);
-                    
-                    // Disable advance button
-                    const advanceButton = row.querySelector('button[onclick*="advanceCharacteristic"]');
-                    if (advanceButton) {
-                        advanceButton.disabled = true;
-                        advanceButton.style.opacity = '0.5';
-                        advanceButton.style.cursor = 'not-allowed';
-                    }
                 } else {
-                    // Characteristic is never available for this career
-                    const advanceButton = row.querySelector('button[onclick*="advanceCharacteristic"]');
-                    if (advanceButton) {
-                        advanceButton.disabled = true;
-                        advanceButton.style.opacity = '0.5';
-                        advanceButton.style.cursor = 'not-allowed';
-                    }
+                    // Characteristic is never available for this career - shows as double cost
+                    const indicator = document.createElement('div');
+                    indicator.className = 'advance-limit-indicator';
+                    indicator.innerHTML = `<span style="color: #888;">Double cost (out of career)</span>`;
+                    
+                    indicator.style.cssText = `
+                        position: absolute;
+                        right: 5px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        font-size: 10px;
+                        text-align: right;
+                        line-height: 1.2;
+                        pointer-events: none;
+                        z-index: 1;
+                    `;
+                    
+                    row.style.position = 'relative';
+                    row.appendChild(indicator);
                 }
             });
+            
+            // Update cost displays to reflect career/out-of-career costs
+            if (window.updateAdvanceCosts) {
+                window.updateAdvanceCosts();
+            }
         }
         
         // Clear characteristic limit indicators
