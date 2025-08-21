@@ -10290,8 +10290,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                     
                     // Apply characteristic bonuses if this talent provides them
+                    console.log("DEBUG: [Function 1 - Not Found] About to check for characteristic bonus for:", baseName);
                     if (typeof window.applyTalentCharacteristicBonus === 'function') {
+                        console.log("DEBUG: [Function 1 - Not Found] Calling applyTalentCharacteristicBonus for:", baseName);
                         window.applyTalentCharacteristicBonus(baseName, true);
+                    } else {
+                        console.log("DEBUG: [Function 1 - Not Found] applyTalentCharacteristicBonus function not available");
                     }
                     
                     displayTalents();
@@ -10327,8 +10331,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 // Apply characteristic bonuses if this talent provides them
+                console.log("DEBUG: [First Function] About to check for characteristic bonus for:", baseName);
                 if (typeof window.applyTalentCharacteristicBonus === 'function') {
+                    console.log("DEBUG: [First Function] Calling applyTalentCharacteristicBonus for:", baseName);
                     window.applyTalentCharacteristicBonus(baseName, true);
+                } else {
+                    console.log("DEBUG: [First Function] applyTalentCharacteristicBonus function not available");
                 }
 
                 // Refresh the talents display
