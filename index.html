@@ -4743,7 +4743,7 @@
                 S: { initial: 0, advances: 0, current: 0 },
                 T: { initial: 0, advances: 0, current: 0 },
                 I: { initial: 0, advances: 0, current: 0 },
-                Ag: { initial: 0, advances: 0, current: 0 },
+                Agi: { initial: 0, advances: 0, current: 0 },
                 Dex: { initial: 0, advances: 0, current: 0 },
                 Int: { initial: 0, advances: 0, current: 0 },
                 WP: { initial: 0, advances: 0, current: 0 },
@@ -5385,7 +5385,7 @@
                     "S": { base: 20, min: 22, max: 40 },
                     "T": { base: 20, min: 22, max: 40 },
                     "I": { base: 20, min: 22, max: 40 },
-                    "Ag": { base: 20, min: 22, max: 40 },
+                    "Agi": { base: 20, min: 22, max: 40 },
                     "Dex": { base: 20, min: 22, max: 40 },
                     "Int": { base: 20, min: 22, max: 40 },
                     "WP": { base: 20, min: 22, max: 40 },
@@ -5439,7 +5439,7 @@
                     "S": { base: 20, min: 22, max: 40 },
                     "T": { base: 30, min: 32, max: 50 },
                     "I": { base: 20, min: 22, max: 40 },
-                    "Ag": { base: 10, min: 12, max: 30 },
+                    "Agi": { base: 10, min: 12, max: 30 },
                     "Dex": { base: 30, min: 32, max: 50 },
                     "Int": { base: 20, min: 22, max: 40 },
                     "WP": { base: 40, min: 42, max: 60 },
@@ -5477,7 +5477,7 @@
                     "S": { base: 10, min: 12, max: 30 },
                     "T": { base: 20, min: 22, max: 40 },
                     "I": { base: 20, min: 22, max: 40 },
-                    "Ag": { base: 20, min: 22, max: 40 },
+                    "Agi": { base: 20, min: 22, max: 40 },
                     "Dex": { base: 30, min: 32, max: 50 },
                     "Int": { base: 20, min: 22, max: 40 },
                     "WP": { base: 30, min: 32, max: 50 },
@@ -5518,7 +5518,7 @@
                     "S": { base: 20, min: 22, max: 40 },
                     "T": { base: 20, min: 22, max: 40 },
                     "I": { base: 40, min: 42, max: 60 },
-                    "Ag": { base: 30, min: 32, max: 50 },
+                    "Agi": { base: 30, min: 32, max: 50 },
                     "Dex": { base: 30, min: 32, max: 50 },
                     "Int": { base: 30, min: 32, max: 50 },
                     "WP": { base: 30, min: 32, max: 50 },
@@ -5556,7 +5556,7 @@
                     "S": { base: 20, min: 22, max: 40 },
                     "T": { base: 20, min: 22, max: 40 },
                     "I": { base: 40, min: 42, max: 60 },
-                    "Ag": { base: 30, min: 32, max: 50 },
+                    "Agi": { base: 30, min: 32, max: 50 },
                     "Dex": { base: 30, min: 32, max: 50 },
                     "Int": { base: 30, min: 32, max: 50 },
                     "WP": { base: 30, min: 32, max: 50 },
@@ -5593,15 +5593,15 @@
         const allSkills = [
             // Basic Skills
             { name: "Art", characteristic: "Dex", type: "Basic", grouped: true },
-            { name: "Athletics", characteristic: "Ag", type: "Basic", grouped: false },
+            { name: "Athletics", characteristic: "Agi", type: "Basic", grouped: false },
             { name: "Bribery", characteristic: "Fel", type: "Basic", grouped: false },
             { name: "Charm", characteristic: "Fel", type: "Basic", grouped: false },
             { name: "Charm Animal", characteristic: "WP", type: "Basic", grouped: false },
             { name: "Climb", characteristic: "S", type: "Basic", grouped: false },
             { name: "Cool", characteristic: "WP", type: "Basic", grouped: false },
             { name: "Consume Alcohol", characteristic: "T", type: "Basic", grouped: false },
-            { name: "Dodge", characteristic: "Ag", type: "Basic", grouped: false },
-            { name: "Drive", characteristic: "Ag", type: "Basic", grouped: false },
+            { name: "Dodge", characteristic: "Agi", type: "Basic", grouped: false },
+            { name: "Drive", characteristic: "Agi", type: "Basic", grouped: false },
             { name: "Endurance", characteristic: "T", type: "Basic", grouped: false },
             { name: "Entertain", characteristic: "Fel", type: "Basic", grouped: true },
             { name: "Gamble", characteristic: "Int", type: "Basic", grouped: false },
@@ -5614,9 +5614,9 @@
             { name: "Navigation", characteristic: "I", type: "Basic", grouped: false },
             { name: "Outdoor Survival", characteristic: "Int", type: "Basic", grouped: false },
             { name: "Perception", characteristic: "I", type: "Basic", grouped: false },
-            { name: "Ride", characteristic: "Ag", type: "Basic", grouped: true },
+            { name: "Ride", characteristic: "Agi", type: "Basic", grouped: true },
             { name: "Row", characteristic: "S", type: "Basic", grouped: false },
-            { name: "Stealth", characteristic: "Ag", type: "Basic", grouped: true },
+            { name: "Stealth", characteristic: "Agi", type: "Basic", grouped: true },
             
             // Advanced Skills
             { name: "Animal Care", characteristic: "Int", type: "Advanced", grouped: false },
@@ -5626,13 +5626,13 @@
             { name: "Heal", characteristic: "Int", type: "Advanced", grouped: false },
             { name: "Language", characteristic: "Int", type: "Advanced", grouped: true },
             { name: "Lore", characteristic: "Int", type: "Advanced", grouped: true },
-            { name: "Perform", characteristic: "Ag", type: "Advanced", grouped: true },
+            { name: "Perform", characteristic: "Agi", type: "Advanced", grouped: true },
             { name: "Pick Lock", characteristic: "Dex", type: "Advanced", grouped: false },
             { name: "Play", characteristic: "Dex", type: "Advanced", grouped: true },
             { name: "Pray", characteristic: "Fel", type: "Advanced", grouped: false },
             { name: "Ranged", characteristic: "BS", type: "Advanced", grouped: true },
             { name: "Research", characteristic: "Int", type: "Advanced", grouped: false },
-            { name: "Sail", characteristic: "Ag", type: "Advanced", grouped: false },
+            { name: "Sail", characteristic: "Agi", type: "Advanced", grouped: false },
             { name: "Secret Signs", characteristic: "Int", type: "Advanced", grouped: true },
             { name: "Set Trap", characteristic: "Dex", type: "Advanced", grouped: false },
             { name: "Sleight of Hand", characteristic: "Dex", type: "Advanced", grouped: false },
@@ -7303,7 +7303,14 @@ window.displayTalents = function() {
             timesDisplay = `<span style="${limitColor}">${currentCount}/${currentLimit}</span>`;
         } else {
             // For non-limited talents, show the regular times taken display
-            timesDisplay = talent.max === "1" ? "1" : `${currentTimes}/${talent.max}`;
+            // Check if max is a number or "No Limit"
+            if (talent.max === "No Limit") {
+                timesDisplay = `${currentTimes}`;
+            } else {
+                // Ensure max is treated as a number, default to 1 if not set
+                const maxValue = parseInt(talent.max) || 1;
+                timesDisplay = `${currentTimes}/${maxValue}`;
+            }
         }
         
         // Check if talent has (Any) designation and needs customization
@@ -10174,10 +10181,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 // Add talent to talents array with complete structure
+                // Ensure max is converted to string for consistency
+                const talentMax = baseTalent.max !== undefined ? String(baseTalent.max) : "1";
                 talents.push({
                     name: baseName,
                     displayName: displayName,
-                    max: baseTalent.max || "1",
+                    max: talentMax,
                     tests: baseTalent.tests || '',
                     description: baseTalent.description || '',
                     timesTaken: 1,
