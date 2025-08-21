@@ -13532,7 +13532,11 @@ function loadSymptomsData() {
                 const allSelectedSkills = [...wizardData.skills.step3, ...wizardData.skills.step4];
                 allSelectedSkills.forEach(skillName => {
                     const advances = wizardData.skills.step3.includes(skillName) ? 5 : 3;
-                    addSkillDirectly(skillName, advances);
+                    if (typeof window.addSkillDirectly === 'function') {
+                        window.addSkillDirectly(skillName, advances);
+                    } else {
+                        console.error('window.addSkillDirectly function not available');
+                    }
                 });
 
                 // Apply talents
@@ -13602,7 +13606,11 @@ function loadSymptomsData() {
                 });
                 
                 allTalents.forEach(talentName => {
-                    addTalentDirectly(talentName);
+                    if (typeof window.addTalentDirectly === 'function') {
+                        window.addTalentDirectly(talentName);
+                    } else {
+                        console.error('window.addTalentDirectly function not available');
+                    }
                 });
 
                 // Close wizard and show success message
