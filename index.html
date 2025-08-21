@@ -16069,6 +16069,8 @@ function loadSymptomsData() {
                 
                 // Add talents to character sheet using proven addTalentDirectly function
                 allSelectedTalents.forEach(talentName => {
+                    console.log("DEBUG: About to call window.addTalentDirectly for:", talentName);
+                    console.log("DEBUG: Function type:", typeof window.addTalentDirectly);
                     if (typeof window.addTalentDirectly === 'function') {
                         window.addTalentDirectly(talentName);
                         console.log(`Added talent: ${talentName} using addTalentDirectly`);
