@@ -10023,55 +10023,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Initialize essential helper functions for Character Generator
         function initializeHelperFunctions() {
-            // Helper function to directly add a skill to the character
-            window.addSkillDirectly = function(skillName, advances = 0) {
-                // Parse skill name and specialization
-                let baseName, specialization = '';
-                const match = skillName.match(/^(.+?)\s*\((.+)\)$/);
-                
-                if (match) {
-                    baseName = match[1].trim();
-                    specialization = match[2].trim();
-                } else {
-                    baseName = skillName;
-                }
-
-                // Find the base skill in allSkills
-                const baseSkill = allSkills.find(skill => 
-                    skill.name.toLowerCase() === baseName.toLowerCase()
-                );
-
-                if (!baseSkill) {
-                    console.error(`Base skill '${baseName}' not found in allSkills`);
-                    return;
-                }
-
-                // Create a unique key for this skill
-                const skillKey = specialization ? 
-                    `${baseName.toLowerCase().replace(/\s+/g, '_')}_${specialization.toLowerCase().replace(/\s+/g, '_')}` : 
-                    baseName.toLowerCase().replace(/\s+/g, '_');
-
-                // Create display name for the skill
-                const displayName = specialization ? `${baseName} (${specialization})` : baseName;
-                
-                // Add to addedSkills array if it doesn't exist
-                if (!addedSkills.find(skill => skill.key === skillKey)) {
-                    addedSkills.push({
-                        key: skillKey,
-                        name: baseName,
-                        displayName: displayName,
-                        characteristic: baseSkill.characteristic,
-                        type: baseSkill.type,
-                        specialisation: specialization
-                    });
-
-                    // Initialize skill data with advances
-                    characterSkills[skillKey] = { career: false, advances: advances, notes: '' };
-
-                    // Refresh the skills display
-                    displaySkills();
-                }
-            };
+            // Note: addSkillDirectly is now defined later in the file with proper handling for basic skills
 
             // Helper function to directly add a talent to the character
             window.addTalentDirectly = function(talentName) {
@@ -13090,13 +13042,14 @@ function loadSymptomsData() {
             }
 
             // Create skill key and display name
-            const skillKey = skillName; // Use full name as key (e.g., "Melee (Basic)")
+            // For basic ungrouped skills, use just the base name as the key to match existing display
+            const skillKey = (baseSkill.type === 'Basic' && !baseSkill.grouped && !specialization) ? baseName : skillName;
             const displayName = skillName;
 
             // For basic ungrouped skills, they should already exist in characterSkills
             // Just add advances to them rather than creating duplicates
             if (baseSkill.type === 'Basic' && !baseSkill.grouped && !specialization) {
-                // This is a basic skill like "Charm" - just add advances
+                // This is a basic skill like "Cool", "Dodge", "Drive" - just add advances
                 if (!characterSkills[skillKey]) {
                     characterSkills[skillKey] = { career: false, advances: 0, notes: '' };
                 }
