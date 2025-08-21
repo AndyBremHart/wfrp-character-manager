@@ -7462,8 +7462,8 @@ window.removeTalent = function(index) {
         const removedTalent = talents[index];
         
         // Remove characteristic bonuses if this talent provided them
-        if (typeof applyTalentCharacteristicBonus === 'function') {
-            applyTalentCharacteristicBonus(removedTalent.name, false);
+        if (typeof window.applyTalentCharacteristicBonus === 'function') {
+            window.applyTalentCharacteristicBonus(removedTalent.name, false);
         }
         
         talents.splice(index, 1);
@@ -10026,7 +10026,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Apply visual styling for loaded bonuses
                 Object.keys(characteristicBonuses).forEach(char => {
                     if (characteristicBonuses[char] > 0) {
-                        updateCharacteristicBonusVisuals(char, true);
+                        window.updateCharacteristicBonusVisuals(char, true);
                     }
                 });
             }
@@ -10034,7 +10034,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Load movement bonuses
             if (characterData.movementBonuses) {
                 movementBonuses = characterData.movementBonuses;
-                updateMovementDisplay();
+                window.updateMovementDisplay();
             }
             
             // Load active conditions
@@ -13279,7 +13279,7 @@ function loadSymptomsData() {
         // Note: addSkillDirectly is now defined in initializeHelperFunctions() to ensure proper timing
 
         // Apply or remove characteristic bonuses from talents
-        function applyTalentCharacteristicBonus(talentName, isAdding) {
+        window.applyTalentCharacteristicBonus = function(talentName, isAdding) {
             // Check for characteristic bonuses
             if (talentCharacteristicBonuses[talentName]) {
                 const bonus = talentCharacteristicBonuses[talentName];
@@ -13294,7 +13294,7 @@ function loadSymptomsData() {
                     charField.dispatchEvent(new Event('input'));
                     
                     // Apply visual styling
-                    updateCharacteristicBonusVisuals(bonus.characteristic, isAdding);
+                    window.updateCharacteristicBonusVisuals(bonus.characteristic, isAdding);
                     
                     // Update the tracking
                     if (isAdding) {
@@ -13316,12 +13316,12 @@ function loadSymptomsData() {
                 }
                 
                 // Update movement display
-                updateMovementDisplay();
+                window.updateMovementDisplay();
             }
         }
         
         // Update visual styling for characteristic bonuses
-        function updateCharacteristicBonusVisuals(characteristic, hasBonus) {
+        window.updateCharacteristicBonusVisuals = function(characteristic, hasBonus) {
             const charField = document.getElementById(`${characteristic}-initial`);
             if (charField) {
                 if (hasBonus && characteristicBonuses[characteristic] > 0) {
@@ -13337,7 +13337,7 @@ function loadSymptomsData() {
         }
         
         // Update movement display with bonuses
-        function updateMovementDisplay() {
+        window.updateMovementDisplay = function() {
             const movementField = document.getElementById('movement');
             if (movementField) {
                 const baseMovement = parseInt(movementField.dataset.baseValue) || parseInt(movementField.value) || 0;
@@ -13378,7 +13378,7 @@ function loadSymptomsData() {
                 if (talentCharacteristicBonuses[talent.name]) {
                     const bonus = talentCharacteristicBonuses[talent.name];
                     characteristicBonuses[bonus.characteristic] += bonus.amount;
-                    updateCharacteristicBonusVisuals(bonus.characteristic, true);
+                    window.updateCharacteristicBonusVisuals(bonus.characteristic, true);
                 }
                 
                 if (talentMovementBonuses[talent.name]) {
@@ -13387,7 +13387,7 @@ function loadSymptomsData() {
             });
             
             // Update movement display
-            updateMovementDisplay();
+            window.updateMovementDisplay();
         }
 
         // Helper function to directly add a talent to the character
@@ -13452,7 +13452,9 @@ function loadSymptomsData() {
             });
 
             // Apply characteristic bonuses if this talent provides them
-            applyTalentCharacteristicBonus(baseName, true);
+            if (typeof window.applyTalentCharacteristicBonus === 'function') {
+                window.applyTalentCharacteristicBonus(baseName, true);
+            }
 
             // Refresh the talents display
             displayTalents();
@@ -13493,7 +13495,13 @@ function loadSymptomsData() {
 
                 if (fateField) fateField.value = wizardData.fate.total;
                 if (resilienceField) resilienceField.value = wizardData.resilience.total;
-                if (movementField) movementField.value = wizardData.movement;
+                if (movementField) {
+                    movementField.value = wizardData.movement;
+                    // Store base movement for encumbrance system
+                    movementField.setAttribute('data-base-movement', wizardData.movement);
+                    // Trigger input event to ensure proper updates
+                    movementField.dispatchEvent(new Event('input'));
+                }
 
                 // Apply skills (add them to existing skills)
                 const allSelectedSkills = [...wizardData.skills.step3, ...wizardData.skills.step4];
