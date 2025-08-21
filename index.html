@@ -10656,28 +10656,48 @@ document.addEventListener('DOMContentLoaded', function() {
             
             console.log('Tier display updated to:', numericTier);
             
-            // Also update the tier info section if career data is available
+            // Also update the tier info section if career data is available (if elements exist)
             if (!currentCareer || !currentCareer.tiers) return;
             
-            const tier = currentCareer.tiers.find(t => t.tier === currentTier);
+            const tier = currentCareer.tiers.find(t => t.tier === numericTier);
             if (!tier) return;
             
-            // Show tier info section
-            document.getElementById('tier-info').style.display = 'block';
+            // Only update tier info elements if they exist
+            const tierInfo = document.getElementById('tier-info');
+            if (tierInfo) {
+                tierInfo.style.display = 'block';
+            }
             
-            // Update tier header
-            document.getElementById('tier-name').textContent = tier.name;
-            document.getElementById('tier-status').textContent = tier.status;
+            const tierName = document.getElementById('tier-name');
+            if (tierName) {
+                tierName.textContent = tier.name;
+            }
             
-            // Update tier details
-            document.getElementById('tier-skills').innerHTML = 
-                tier.skills.length > 0 ? tier.skills.map(skill => `<div>${skill}</div>`).join('') : '<div style="font-style: italic; color: #999;">None</div>';
-                
-            document.getElementById('tier-talents').innerHTML = 
-                tier.talents.length > 0 ? tier.talents.map(talent => `<div>${talent}</div>`).join('') : '<div style="font-style: italic; color: #999;">None</div>';
-                
-            document.getElementById('tier-trappings').innerHTML = 
-                tier.trappings.length > 0 ? tier.trappings.map(trapping => `<div>${trapping}</div>`).join('') : '<div style="font-style: italic; color: #999;">None</div>';
+            const tierStatus = document.getElementById('tier-status');
+            if (tierStatus) {
+                tierStatus.textContent = tier.status;
+            }
+            
+            const tierSkills = document.getElementById('tier-skills');
+            if (tierSkills) {
+                tierSkills.innerHTML = tier.skills.length > 0 ? 
+                    tier.skills.map(skill => `<div>${skill}</div>`).join('') : 
+                    '<div style="font-style: italic; color: #999;">None</div>';
+            }
+            
+            const tierTalents = document.getElementById('tier-talents');
+            if (tierTalents) {
+                tierTalents.innerHTML = tier.talents.length > 0 ? 
+                    tier.talents.map(talent => `<div>${talent}</div>`).join('') : 
+                    '<div style="font-style: italic; color: #999;">None</div>';
+            }
+            
+            const tierTrappings = document.getElementById('tier-trappings');
+            if (tierTrappings) {
+                tierTrappings.innerHTML = tier.trappings.length > 0 ? 
+                    tier.trappings.map(trapping => `<div>${trapping}</div>`).join('') : 
+                    '<div style="font-style: italic; color: #999;">None</div>';
+            }
         }
         
         // Clear career display
