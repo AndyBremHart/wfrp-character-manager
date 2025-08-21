@@ -5294,20 +5294,14 @@
         // WFRP Talent Limitations - talents limited by characteristic bonuses
         const talentLimitations = {
           "Hardy": "toughnessBonus",
-          "Savvy": "intelligenceBonus", 
           "Luck": "willpowerBonus",
-          "Sharp": "intelligenceBonus",
           "Strong Back": "strengthBonus",
           "Flee!": "agilityBonus",
-          "Very Strong": "strengthBonus", 
-          "Lightning Reflexes": "agilityBonus",
           "Sturdy": "strengthBonus",
           "Iron Jaw": "toughnessBonus",
           "Iron Will": "willpowerBonus",
-          "Coolheaded": "willpowerBonus",
           "Fast Hands": "dexterityBonus",
           "Very Fast": "agilityBonus",
-          "Nimble Fingered": "dexterityBonus",
           "Night Vision": "intelligenceBonus",
           "Acute Sense": "intelligenceBonus",
           "Perfect Pitch": "intelligenceBonus",
@@ -5317,7 +5311,6 @@
           "Magic Resistance": "willpowerBonus",
           "Specialist Weapon Group": "strengthBonus",
           "Weapon Master": "weaponSkillBonus",
-          "Ambidextrous": "dexterityBonus",
           "Combat Reflexes": "agilityBonus"
         };
 
@@ -7322,14 +7315,6 @@ window.displayTalents = function() {
         const cleanTalentKey = talent.displayName.replace(/\s+/g, '-').replace(/[()]/g, '').toLowerCase();
         const cost = window.getTalentCost(currentTimes - 1); // Cost for next advance
         
-        // Debug logging for problematic talents
-        if (talent.name === "Savvy" || talent.displayName === "Savvy") {
-            console.log("=== SAVVY DEBUG ===");
-            console.log("Talent object:", talent);
-            console.log("Max value:", talent.max, "Type:", typeof talent.max);
-            console.log("Is Limited?:", window.isTalentLimited(talent.name));
-            console.log("===================");
-        }
         
         // Check talent limitations
         const isLimited = window.isTalentLimited(talent.name);
