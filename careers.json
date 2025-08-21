@@ -34,6 +34,7 @@
             "Language (Classical)",
             "Lore (Chemistry)",
             "Lore (Medicine)",
+            "Lore (Plants)",
             "Trade (Apothecary)",
             "Trade (Poisoner)"
           ],
@@ -169,10 +170,12 @@
           "name": "Engineer",
           "status": "silver-4",
           "skills": [
-            "Language (Khazalid)",
-            "Leadership",
-            "Ride (Horse)",
-            "Secret Signs (Guilder)"
+            "Drive",
+            "Dodge",
+            "Navigation",
+            "Ranged (Engineering)",
+            "Research",
+            "Language (Guilder)"
           ],
           "talents": [
             "Etiquette (Scholar)",
@@ -189,12 +192,10 @@
           "name": "Master Engineer",
           "status": "silver-2",
           "skills": [
-            "Drive",
-            "Dodge",
-            "Navigation",
-            "Ranged (Engineering)",
-            "Research",
-            "Language (Guilder)"
+            "Language (Khazalid)",
+            "Leadership",
+            "Ride (Horse)",
+            "Secret Signs (Guilder)"
           ],
           "talents": [
             "Craftsman (Engineer)",
@@ -1880,12 +1881,14 @@
           "name": "Aide",
           "status": "silver-4",
           "skills": [
-            "Charm",
-            "Cool",
-            "Evaluate",
-            "Gamble",
-            "Intuition",
-            "Lore (Local)"
+            "Bribery",
+            "Consume Alcohol",
+            "Endurance",
+            "Gossip",
+            "Haggle",
+            "Language (Classical)",
+            "Lore (Politics)",
+            "Perception"
           ],
           "talents": [
             "Blather",
@@ -1902,14 +1905,12 @@
           "name": "Advisor",
           "status": "silver-2",
           "skills": [
-            "Bribery",
-            "Consume Alcohol",
-            "Endurance",
-            "Gossip",
-            "Haggle",
-            "Language (Classical)",
-            "Lore (Politics)",
-            "Perception"
+            "Charm",
+            "Cool",
+            "Evaluate",
+            "Gamble",
+            "Intuition",
+            "Lore (Local)"
           ],
           "talents": [
             "Beneath Notice",
@@ -2223,12 +2224,14 @@
           "name": "Herald",
           "status": "silver-4",
           "skills": [
-            "Art (Writing)",
-            "Bribery",
-            "Cool",
-            "Gossip",
-            "Haggle",
-            "Lore (Politics)"
+            "Athletics",
+            "Charm",
+            "Drive",
+            "Dodge",
+            "Endurance",
+            "Intuition",
+            "Ride (Horse)",
+            "Row"
           ],
           "talents": [
             "Attractive",
@@ -2246,14 +2249,12 @@
           "name": "Envoy",
           "status": "silver-2",
           "skills": [
-            "Athletics",
-            "Charm",
-            "Drive",
-            "Dodge",
-            "Endurance",
-            "Intuition",
-            "Ride (Horse)",
-            "Row"
+            "Art (Writing)",
+            "Bribery",
+            "Cool",
+            "Gossip",
+            "Haggle",
+            "Lore (Politics)"
           ],
           "talents": [
             "Blather",
@@ -4707,10 +4708,12 @@
           "name": "Road Warden",
           "status": "silver-4",
           "skills": [
-            "Athletics",
-            "Charm",
-            "Leadership",
-            "Ranged (Blackpowder)"
+            "Animal Care",
+            "Endurance",
+            "Intimidate",
+            "Intuition",
+            "Outdoor Survival",
+            "Ride (Horse)"
           ],
           "talents": [
             "Etiquette (Soldiers)",
@@ -4730,12 +4733,10 @@
           "name": "Road Sergeant",
           "status": "silver-2",
           "skills": [
-            "Animal Care",
-            "Endurance",
-            "Intimidate",
-            "Intuition",
-            "Outdoor Survival",
-            "Ride (Horse)"
+            "Athletics",
+            "Charm",
+            "Leadership",
+            "Ranged (Blackpowder)"
           ],
           "talents": [
             "Crack the Whip",
@@ -5240,10 +5241,14 @@
           "name": "River Recruit",
           "status": "silver-4",
           "skills": [
-            "Climb",
-            "Cool",
-            "Intuition",
-            "Leadership"
+            "Athletics",
+            "Dodge",
+            "Endurance",
+            "Melee (Basic)",
+            "Perception",
+            "Row",
+            "Sail",
+            "Swim"
           ],
           "talents": [
             "Fearless (Wreckers)",
@@ -5262,14 +5267,12 @@
           "name": "Riverwarden",
           "status": "silver-1",
           "skills": [
-            "Athletics",
-            "Dodge",
-            "Endurance",
-            "Melee (Basic)",
-            "Perception",
-            "Row",
-            "Sail",
-            "Swim"
+            "Bribery",
+            "Charm",
+            "Intimidate",
+            "Gossip",
+            "Lore (Riverways)",
+            "Ranged (Blackpowder)"
           ],
           "talents": [
             "Strong Swimmer",
@@ -5288,12 +5291,10 @@
           "name": "Shipsword",
           "status": "silver-2",
           "skills": [
-            "Bribery",
-            "Charm",
-            "Intimidate",
-            "Gossip",
-            "Lore (Riverways)",
-            "Ranged (Blackpowder)"
+            "Climb",
+            "Cool",
+            "Intuition",
+            "Leadership"
           ],
           "talents": [
             "Criminal",
@@ -6268,8 +6269,10 @@
           "name": "Con Artist",
           "status": "silver-4",
           "skills": [
-            "Lore (Genealogy)",
-            "Research"
+            "Language (Thief)",
+            "Lore (Heraldry)",
+            "Pick Lock",
+            "Secret Signs (Thief)"
           ],
           "talents": [
             "Gregarious",
@@ -6287,10 +6290,8 @@
           "name": "Scoundrel",
           "status": "silver-2",
           "skills": [
-            "Language (Thief)",
-            "Lore (Heraldry)",
-            "Pick Lock",
-            "Secret Signs (Thief)"
+            "Lore (Genealogy)",
+            "Research"
           ],
           "talents": [
             "Attractive",
@@ -6358,8 +6359,14 @@
           "name": "Broker",
           "status": "silver-4",
           "skills": [
-            "Lore (Heraldry)",
-            "Research"
+            "Charm",
+            "Consume Alcohol",
+            "Dodge",
+            "Evaluate",
+            "Gamble",
+            "Gossip",
+            "Haggle",
+            "Melee (Basic)"
           ],
           "talents": [
             "Dirty Fighting",
@@ -6378,14 +6385,12 @@
           "name": "Fence",
           "status": "silver-1",
           "skills": [
-            "Charm",
-            "Consume Alcohol",
-            "Dodge",
-            "Evaluate",
-            "Gamble",
-            "Gossip",
-            "Haggle",
-            "Melee (Basic)"
+            "Cool",
+            "Intimidate",
+            "Intuition",
+            "Perception",
+            "Secret Signs (Thief)",
+            "Trade (Engraver)"
           ],
           "talents": [
             "Alley Cat",
@@ -6403,12 +6408,10 @@
           "name": "Master Fence",
           "status": "silver-2",
           "skills": [
-            "Cool",
-            "Intimidate",
-            "Intuition",
-            "Perception",
-            "Secret Signs (Thief)",
-            "Trade (Engraver)"
+            "Bribery",
+            "Entertain (Storytelling)",
+            "Lore (Art)",
+            "Lore (Local)"
           ],
           "talents": [
             "Criminal",
@@ -6427,10 +6430,8 @@
           "name": "Black Marketeer",
           "status": "silver-3",
           "skills": [
-            "Bribery",
-            "Entertain (Storytelling)",
-            "Lore (Art)",
-            "Lore (Local)"
+            "Lore (Heraldry)",
+            "Research"
           ],
           "talents": [
             "Kingpin",
@@ -7204,12 +7205,14 @@
           "name": "Horseman",
           "status": "silver-4",
           "skills": [
-            "Charm",
-            "Consume Alcohol",
-            "Cool",
-            "Gossip",
-            "Melee (Cavalry)",
-            "Ranged (Blackpowder)"
+            "Animal Care",
+            "Charm Animal",
+            "Endurance",
+            "Language (Battle)",
+            "Melee (Basic)",
+            "Outdoor Survival",
+            "Perception",
+            "Ride (Horse)"
           ],
           "talents": [
             "Etiquette (Soldiers)",
@@ -7230,14 +7233,12 @@
           "name": "Cavalryman",
           "status": "silver-2",
           "skills": [
-            "Animal Care",
-            "Charm Animal",
-            "Endurance",
-            "Language (Battle)",
-            "Melee (Basic)",
-            "Outdoor Survival",
-            "Perception",
-            "Ride (Horse)"
+            "Charm",
+            "Consume Alcohol",
+            "Cool",
+            "Gossip",
+            "Melee (Cavalry)",
+            "Ranged (Blackpowder)"
           ],
           "talents": [
             "Combat Aware",
@@ -7795,10 +7796,12 @@
           "name": "Protagonist",
           "status": "silver-4",
           "skills": [
-            "Climb",
-            "Cool",
-            "Navigation",
-            "Ranged (Thrown)"
+            "Bribery",
+            "Charm",
+            "Intuition",
+            "Melee (Basic)",
+            "Perception",
+            "Ride (Horse)"
           ],
           "talents": [
             "Careful Strike",
@@ -7818,12 +7821,10 @@
           "name": "Hitman",
           "status": "silver-1",
           "skills": [
-            "Bribery",
-            "Charm",
-            "Intuition",
-            "Melee (Basic)",
-            "Perception",
-            "Ride (Horse)"
+            "Climb",
+            "Cool",
+            "Navigation",
+            "Ranged (Thrown)"
           ],
           "talents": [
             "Combat Reflexes",
@@ -8220,8 +8221,12 @@
           "name": "Warrior Priest",
           "status": "silver-4",
           "skills": [
-            "Consume Alcohol",
-            "Lore (Warfare)"
+            "Charm",
+            "Entertain (Speeches)",
+            "Intimidate",
+            "Language (Battle)",
+            "Melee (Any)",
+            "Ranged (Any)"
           ],
           "talents": [
             "Fearless (Any)",
@@ -8238,12 +8243,10 @@
           "name": "Priest Sergeant",
           "status": "silver-2",
           "skills": [
-            "Charm",
-            "Entertain (Speeches)",
-            "Intimidate",
-            "Language (battle)",
-            "Melee (Any)",
-            "Ranged (Any)"
+            "Animal Care",
+            "Intuition",
+            "Perception",
+            "Ride (Horse)"
           ],
           "talents": [
             "Dual Wielder",
@@ -8261,10 +8264,8 @@
           "name": "Priest Captain",
           "status": "silver-3",
           "skills": [
-            "Animal Care",
-            "Intuition",
-            "Perception",
-            "Ride (Horse)"
+            "Consume Alcohol",
+            "Lore (Warfare)"
           ],
           "talents": [
             "Combat Aware",

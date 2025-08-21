@@ -7018,6 +7018,51 @@ window.closeAddTalentModal = function() {
     document.getElementById('talent-customisation').style.display = 'none';
 }
 
+// Function to fix existing talent max values that may be incorrect
+function fixExistingTalentMaxValues() {
+    if (!srdTalents || srdTalents.length === 0) {
+        console.log("SRD talents not loaded yet, retrying...");
+        setTimeout(fixExistingTalentMaxValues, 500);
+        return;
+    }
+    
+    let fixedCount = 0;
+    console.log("Checking talent max values...");
+    talents.forEach(talent => {
+        // Special logging for Savvy
+        if (talent.name === "Savvy" || talent.displayName === "Savvy") {
+            console.log("Found Savvy in talents array:", talent);
+        }
+        
+        // Find the correct talent data from SRD
+        const srdTalent = srdTalents.find(t => t.name === talent.name);
+        if (srdTalent) {
+            // Convert max to string for consistency
+            const correctMax = srdTalent.max !== undefined ? String(srdTalent.max) : "1";
+            
+            // Special check for Savvy
+            if (talent.name === "Savvy") {
+                console.log(`Savvy SRD data:`, srdTalent);
+                console.log(`Savvy current max: "${talent.max}", correct max: "${correctMax}"`);
+            }
+            
+            // Check if the current max value is different from what it should be
+            if (talent.max !== correctMax) {
+                console.log(`Fixing ${talent.name}: max was "${talent.max}", should be "${correctMax}"`);
+                talent.max = correctMax;
+                fixedCount++;
+            }
+        } else {
+            console.log(`Warning: No SRD data found for talent: ${talent.name}`);
+        }
+    });
+    
+    if (fixedCount > 0) {
+        console.log(`Fixed ${fixedCount} talent(s) with incorrect max values`);
+        displayTalents(); // Refresh the display
+    }
+}
+
 // Talent Limitations System
 window.isTalentLimited = function(talentName) {
     // Check hard-coded limitations first
@@ -7277,6 +7322,15 @@ window.displayTalents = function() {
         const cleanTalentKey = talent.displayName.replace(/\s+/g, '-').replace(/[()]/g, '').toLowerCase();
         const cost = window.getTalentCost(currentTimes - 1); // Cost for next advance
         
+        // Debug logging for problematic talents
+        if (talent.name === "Savvy" || talent.displayName === "Savvy") {
+            console.log("=== SAVVY DEBUG ===");
+            console.log("Talent object:", talent);
+            console.log("Max value:", talent.max, "Type:", typeof talent.max);
+            console.log("Is Limited?:", window.isTalentLimited(talent.name));
+            console.log("===================");
+        }
+        
         // Check talent limitations
         const isLimited = window.isTalentLimited(talent.name);
         let timesDisplay = "";
@@ -7286,6 +7340,11 @@ window.displayTalents = function() {
         if (isLimited) {
             const currentCount = window.getTalentCurrentCount(talent.name);
             const currentLimit = window.getTalentCurrentLimit(talent.name);
+            
+            // Debug for Savvy if it's somehow limited
+            if (talent.name === "Savvy") {
+                console.log("Savvy is being treated as LIMITED - currentCount:", currentCount, "currentLimit:", currentLimit);
+            }
             
             // Determine color based on limit status
             if (currentCount > currentLimit) {
@@ -7309,6 +7368,9 @@ window.displayTalents = function() {
             } else {
                 // Ensure max is treated as a number, default to 1 if not set
                 const maxValue = parseInt(talent.max) || 1;
+                if (talent.name === "Savvy") {
+                    console.log("Savvy display calculation - currentTimes:", currentTimes, "maxValue:", maxValue, "from talent.max:", talent.max);
+                }
                 timesDisplay = `${currentTimes}/${maxValue}`;
             }
         }
@@ -10224,6 +10286,11 @@ document.addEventListener('DOMContentLoaded', function() {
             loadDiseasesData();
             loadSymptomsData();
             loadCareers();
+            
+            // Fix existing talent max values after SRD data is loaded
+            setTimeout(() => {
+                fixExistingTalentMaxValues();
+            }, 1000);
             
             try {
                 displaySkills(); // Show basic skills immediately
