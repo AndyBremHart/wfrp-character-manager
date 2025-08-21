@@ -10399,6 +10399,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const careerName = document.getElementById('career-reference-name');
             const careerClass = document.getElementById('career-reference-class');
             
+            // Set as current career for tier display purposes
+            currentCareer = career;
+            
+            // Update tier display now that we have career data
+            updateTierDisplay();
+            
             // Show the career info and content sections
             careerInfo.style.display = 'block';
             careerContent.style.display = 'block';
@@ -10424,6 +10430,10 @@ document.addEventListener('DOMContentLoaded', function() {
         function hideCareerReference() {
             document.getElementById('career-reference-info').style.display = 'none';
             document.getElementById('career-reference-content').style.display = 'none';
+            
+            // Clear current career and update tier display
+            currentCareer = null;
+            updateTierDisplay();
         }
 
         // Populate career characteristics
@@ -10616,14 +10626,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const tierNameDisplay = document.getElementById('tier-name-display');
             const romanNumerals = ['', 'I', 'II', 'III', 'IV'];
             
-            if (tierDisplay && currentTier >= 1 && currentTier <= 4) {
+            // Ensure currentTier is a valid number
+            const numericTier = parseInt(currentTier) || 1;
+            
+            if (tierDisplay && numericTier >= 1 && numericTier <= 4) {
                 // Always show roman numerals in the tier display
-                tierDisplay.textContent = `Tier ${romanNumerals[currentTier]}`;
+                tierDisplay.textContent = `Tier ${romanNumerals[numericTier]}`;
                 
                 // Update tier name display
                 if (tierNameDisplay) {
                     if (currentCareer && currentCareer.tiers) {
-                        const tier = currentCareer.tiers.find(t => t.tier === currentTier);
+                        const tier = currentCareer.tiers.find(t => t.tier === numericTier);
                         if (tier && tier.name) {
                             tierNameDisplay.textContent = tier.name;
                         } else {
@@ -10641,7 +10654,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 saveCareerSelection();
             }
             
-            console.log('Tier display updated to:', currentTier);
+            console.log('Tier display updated to:', numericTier);
             
             // Also update the tier info section if career data is available
             if (!currentCareer || !currentCareer.tiers) return;
