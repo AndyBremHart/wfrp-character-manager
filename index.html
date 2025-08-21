@@ -13280,6 +13280,10 @@ function loadSymptomsData() {
 
         // Apply or remove characteristic bonuses from talents
         window.applyTalentCharacteristicBonus = function(talentName, isAdding) {
+            // Debug logging
+            console.log("applyTalentCharacteristicBonus called with:", talentName, "isAdding:", isAdding);
+            console.log("Available bonus talents:", Object.keys(talentCharacteristicBonuses));
+            
             // Check for characteristic bonuses
             if (talentCharacteristicBonuses[talentName]) {
                 const bonus = talentCharacteristicBonuses[talentName];
