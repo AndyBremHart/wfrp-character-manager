@@ -5341,6 +5341,112 @@
             "Fleet Footed": 1
         };
         
+        // Apply or remove characteristic bonuses from talents
+        window.applyTalentCharacteristicBonus = function(talentName, isAdding) {
+            // Debug logging
+            console.log("=== applyTalentCharacteristicBonus DEBUG ===");
+            console.log("Talent name:", talentName, "isAdding:", isAdding);
+            console.log("Available bonus talents:", Object.keys(window.talentCharacteristicBonuses));
+            console.log("Mapping check:", window.talentCharacteristicBonuses[talentName]);
+            
+            // Check for characteristic bonuses
+            if (window.talentCharacteristicBonuses[talentName]) {
+                const bonus = window.talentCharacteristicBonuses[talentName];
+                console.log("Found bonus configuration:", bonus);
+                
+                const charFieldId = `${bonus.characteristic}-initial`;
+                console.log("Looking for element with ID:", charFieldId);
+                const charField = document.getElementById(charFieldId);
+                console.log("Element found:", charField);
+                
+                if (charField) {
+                    const currentValue = parseInt(charField.value) || 0;
+                    const newValue = isAdding ? currentValue + bonus.amount : currentValue - bonus.amount;
+                    console.log(`Updating ${bonus.characteristic}: ${currentValue} -> ${newValue}`);
+                    
+                    charField.value = Math.max(0, newValue);
+                    
+                    // Trigger input event to update totals
+                    charField.dispatchEvent(new Event('input'));
+                    
+                    // Apply visual styling
+                    window.updateCharacteristicBonusVisuals(bonus.characteristic, isAdding);
+                    
+                    // Update the tracking
+                    if (isAdding) {
+                        characteristicBonuses[bonus.characteristic] += bonus.amount;
+                    } else {
+                        characteristicBonuses[bonus.characteristic] = Math.max(0, characteristicBonuses[bonus.characteristic] - bonus.amount);
+                    }
+                    
+                    console.log("Characteristic bonus applied successfully");
+                } else {
+                    console.error("Could not find element with ID:", charFieldId);
+                }
+            } else {
+                console.log("No bonus configuration found for talent:", talentName);
+            }
+            
+            // Check for movement bonuses
+            if (window.talentMovementBonuses[talentName]) {
+                const bonus = window.talentMovementBonuses[talentName];
+                
+                if (isAdding) {
+                    movementBonuses[talentName] = bonus;
+                } else {
+                    delete movementBonuses[talentName];
+                }
+                
+                // Update movement display
+                window.updateMovementDisplay();
+            }
+        }
+        
+        // Update visual styling for characteristic bonuses
+        window.updateCharacteristicBonusVisuals = function(characteristic, hasBonus) {
+            const charField = document.getElementById(`${characteristic}-initial`);
+            if (charField) {
+                if (hasBonus && characteristicBonuses[characteristic] > 0) {
+                    charField.style.backgroundColor = '#e8f5e8';
+                    charField.style.border = '2px solid #4caf50';
+                    charField.title = `Enhanced by talent: +${characteristicBonuses[characteristic]}`;
+                } else {
+                    charField.style.backgroundColor = '';
+                    charField.style.border = '';
+                    charField.title = '';
+                }
+            }
+        }
+        
+        // Update movement display with bonuses
+        window.updateMovementDisplay = function() {
+            const movementField = document.getElementById('movement');
+            if (movementField) {
+                const baseMovement = parseInt(movementField.dataset.baseValue) || parseInt(movementField.value) || 0;
+                
+                // Store base value if not already stored
+                if (!movementField.dataset.baseValue) {
+                    movementField.dataset.baseValue = baseMovement;
+                }
+                
+                const totalBonus = Object.values(movementBonuses).reduce((sum, bonus) => sum + bonus, 0);
+                const newMovement = baseMovement + totalBonus;
+                
+                movementField.value = newMovement;
+                
+                // Apply visual styling if there are bonuses
+                if (totalBonus > 0) {
+                    movementField.style.backgroundColor = '#e8f5e8';
+                    movementField.style.border = '2px solid #4caf50';
+                    movementField.title = `Base: ${baseMovement}, Talent bonuses: +${totalBonus}`;
+                } else {
+                    movementField.style.backgroundColor = '';
+                    movementField.style.border = '';
+                    movementField.title = '';
+                }
+            }
+        }
+        
         // Disease management
         let diseaseIdCounter = 1;
 
@@ -10331,12 +10437,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 // Apply characteristic bonuses if this talent provides them
-                console.log("DEBUG: [First Function] About to check for characteristic bonus for:", baseName);
+                console.log("=== addTalentDirectly MAIN PATH DEBUG ===");
+                console.log("About to check for characteristic bonus for talent:", baseName);
+                console.log("Talent mapping exists:", window.talentCharacteristicBonuses[baseName]);
                 if (typeof window.applyTalentCharacteristicBonus === 'function') {
-                    console.log("DEBUG: [First Function] Calling applyTalentCharacteristicBonus for:", baseName);
+                    console.log("Calling applyTalentCharacteristicBonus for:", baseName);
                     window.applyTalentCharacteristicBonus(baseName, true);
                 } else {
-                    console.log("DEBUG: [First Function] applyTalentCharacteristicBonus function not available");
+                    console.error("applyTalentCharacteristicBonus function not available");
                 }
 
                 // Refresh the talents display
@@ -13308,97 +13416,6 @@ function loadSymptomsData() {
         }
 
         // Note: addSkillDirectly is now defined in initializeHelperFunctions() to ensure proper timing
-
-        // Apply or remove characteristic bonuses from talents
-        window.applyTalentCharacteristicBonus = function(talentName, isAdding) {
-            // Debug logging
-            console.log("applyTalentCharacteristicBonus called with:", talentName, "isAdding:", isAdding);
-            console.log("Available bonus talents:", Object.keys(window.talentCharacteristicBonuses));
-            
-            // Check for characteristic bonuses
-            if (window.talentCharacteristicBonuses[talentName]) {
-                const bonus = window.talentCharacteristicBonuses[talentName];
-                const charField = document.getElementById(`${bonus.characteristic}-initial`);
-                
-                if (charField) {
-                    const currentValue = parseInt(charField.value) || 0;
-                    const newValue = isAdding ? currentValue + bonus.amount : currentValue - bonus.amount;
-                    charField.value = Math.max(0, newValue);
-                    
-                    // Trigger input event to update totals
-                    charField.dispatchEvent(new Event('input'));
-                    
-                    // Apply visual styling
-                    window.updateCharacteristicBonusVisuals(bonus.characteristic, isAdding);
-                    
-                    // Update the tracking
-                    if (isAdding) {
-                        characteristicBonuses[bonus.characteristic] += bonus.amount;
-                    } else {
-                        characteristicBonuses[bonus.characteristic] = Math.max(0, characteristicBonuses[bonus.characteristic] - bonus.amount);
-                    }
-                }
-            }
-            
-            // Check for movement bonuses
-            if (window.talentMovementBonuses[talentName]) {
-                const bonus = window.talentMovementBonuses[talentName];
-                
-                if (isAdding) {
-                    movementBonuses[talentName] = bonus;
-                } else {
-                    delete movementBonuses[talentName];
-                }
-                
-                // Update movement display
-                window.updateMovementDisplay();
-            }
-        }
-        
-        // Update visual styling for characteristic bonuses
-        window.updateCharacteristicBonusVisuals = function(characteristic, hasBonus) {
-            const charField = document.getElementById(`${characteristic}-initial`);
-            if (charField) {
-                if (hasBonus && characteristicBonuses[characteristic] > 0) {
-                    charField.style.backgroundColor = '#e8f5e8';
-                    charField.style.border = '2px solid #4caf50';
-                    charField.title = `Enhanced by talent: +${characteristicBonuses[characteristic]}`;
-                } else {
-                    charField.style.backgroundColor = '';
-                    charField.style.border = '';
-                    charField.title = '';
-                }
-            }
-        }
-        
-        // Update movement display with bonuses
-        window.updateMovementDisplay = function() {
-            const movementField = document.getElementById('movement');
-            if (movementField) {
-                const baseMovement = parseInt(movementField.dataset.baseValue) || parseInt(movementField.value) || 0;
-                
-                // Store base value if not already stored
-                if (!movementField.dataset.baseValue) {
-                    movementField.dataset.baseValue = baseMovement;
-                }
-                
-                const totalBonus = Object.values(movementBonuses).reduce((sum, bonus) => sum + bonus, 0);
-                const newMovement = baseMovement + totalBonus;
-                
-                movementField.value = newMovement;
-                
-                // Apply visual styling if there are bonuses
-                if (totalBonus > 0) {
-                    movementField.style.backgroundColor = '#e8f5e8';
-                    movementField.style.border = '2px solid #4caf50';
-                    movementField.title = `Base: ${baseMovement}, Talent bonuses: +${totalBonus}`;
-                } else {
-                    movementField.style.backgroundColor = '';
-                    movementField.style.border = '';
-                    movementField.title = '';
-                }
-            }
-        }
         
         // Recalculate all talent bonuses from current talents
         function recalculateAllTalentBonuses() {
@@ -13425,75 +13442,7 @@ function loadSymptomsData() {
             window.updateMovementDisplay();
         }
 
-        // Helper function to directly add a talent to the character
-        window.addTalentDirectly = function(talentName) {
-            // Parse talent name and customization
-            let baseName, customisation = '';
-            const match = talentName.match(/^(.+?)\s*\((.+)\)$/);
-            
-            if (match) {
-                baseName = match[1].trim();
-                const customPart = match[2].trim();
-                
-                // Handle specific customizations
-                if (customPart.toLowerCase().includes('any one') || customPart.toLowerCase().includes('choose one')) {
-                    // For "any one" talents, use a default or prompt for specification
-                    if (baseName === 'Acute Sense') {
-                        customisation = 'Sight'; // Default to sight for character creation
-                    } else if (baseName === 'Craftsman') {
-                        customisation = 'Metalworking'; // Default craft
-                    } else if (baseName === 'Resistance') {
-                        customisation = 'Disease'; // Default resistance
-                    } else {
-                        customisation = customPart; // Use the original text for now
-                    }
-                } else {
-                    customisation = customPart;
-                }
-            } else {
-                baseName = talentName;
-            }
-
-            // Find the talent in srdTalents using base name
-            const baseTalent = srdTalents.find(t => t.name === baseName);
-            if (!baseTalent) {
-                console.warn(`Talent "${baseName}" not found in srdTalents`);
-                return;
-            }
-
-            // Create display name
-            const displayName = customisation ? `${baseName} (${customisation})` : baseName;
-
-            // Check if talent already exists (by name and customisation)
-            const existingTalent = talents.find(t => t.name === baseName && (t.customisation || '') === customisation);
-            if (existingTalent) {
-                // If it's a multiple talent, increase the times taken
-                if (baseTalent.max && baseTalent.max !== "1") {
-                    existingTalent.timesTaken = Math.min((existingTalent.timesTaken || 1) + 1, parseInt(baseTalent.max) || 1);
-                }
-                return;
-            }
-
-            // Add the talent with proper structure
-            talents.push({
-                name: baseName,
-                displayName: displayName,
-                max: baseTalent.max || "1",
-                tests: baseTalent.tests || '',
-                description: baseTalent.description || '',
-                timesTaken: 1,
-                customisation: customisation,
-                notes: ''
-            });
-
-            // Apply characteristic bonuses if this talent provides them
-            if (typeof window.applyTalentCharacteristicBonus === 'function') {
-                window.applyTalentCharacteristicBonus(baseName, true);
-            }
-
-            // Refresh the talents display
-            displayTalents();
-        }
+        // Note: addTalentDirectly is now defined in initializeHelperFunctions() to ensure proper timing
 
         function applySpeciesCreation() {
             const speciesInfo = speciesData[selectedSpecies];
@@ -14047,77 +13996,7 @@ function loadSymptomsData() {
 
         // =============== ESSENTIAL HELPER FUNCTIONS ===============
         // These functions are needed by the Character Generator
-        // Note: addSkillDirectly function is already defined above and working properly
-
-        // Helper function to directly add a talent to the character
-        window.addTalentDirectly = function(talentName) {
-            console.log("DEBUG: addTalentDirectly (ESSENTIAL HELPER) called with:", talentName);
-            
-            // Parse talent name and customization
-            let baseName, customisation = '';
-            const match = talentName.match(/^(.+?)\s*\((.+)\)$/);
-            
-            if (match) {
-                baseName = match[1].trim();
-                const customPart = match[2].trim();
-                
-                // Handle specific customizations
-                if (customPart.toLowerCase().includes('any one') || customPart.toLowerCase().includes('choose one')) {
-                    // For "any one" talents, use a default or prompt for specification
-                    if (baseName === 'Acute Sense') {
-                        customisation = 'Sight'; // Default to sight for character creation
-                    } else if (baseName === 'Craftsman') {
-                        customisation = 'Metalworking'; // Default craft
-                    } else if (baseName === 'Resistance') {
-                        customisation = 'Disease'; // Default resistance
-                    } else {
-                        customisation = customPart; // Use as-is if not recognized
-                    }
-                } else {
-                    customisation = customPart;
-                }
-            } else {
-                baseName = talentName.trim();
-            }
-
-            // Create the talent object
-            const talentToAdd = {
-                name: baseName,
-                displayName: customisation ? `${baseName} (${customisation})` : baseName,
-                timesTaken: 1,
-                notes: '',
-                description: '', // Will be filled from SRD data if available
-                max: "1" // Default, will be updated from SRD data if available
-            };
-
-            // Try to find talent info from SRD data
-            if (typeof srdTalents !== 'undefined' && srdTalents.length > 0) {
-                const srdTalent = srdTalents.find(t => 
-                    t.name.toLowerCase() === baseName.toLowerCase() || 
-                    t.name.toLowerCase().includes(baseName.toLowerCase())
-                );
-                
-                if (srdTalent) {
-                    talentToAdd.description = srdTalent.description || srdTalent.tests || '';
-                    talentToAdd.max = srdTalent.max || "1";
-                }
-            }
-
-            // Add to talents array
-            talents.push(talentToAdd);
-            
-            // Apply characteristic bonuses if this talent provides them
-            console.log("DEBUG: [Function 3] About to check for characteristic bonus for:", baseName);
-            if (typeof window.applyTalentCharacteristicBonus === 'function') {
-                console.log("DEBUG: [Function 3] Calling applyTalentCharacteristicBonus for:", baseName);
-                window.applyTalentCharacteristicBonus(baseName, true);
-            } else {
-                console.log("DEBUG: [Function 3] applyTalentCharacteristicBonus function not available");
-            }
-            
-            // Refresh the talents display
-            displayTalents();
-        }
+        // Note: addSkillDirectly and addTalentDirectly functions are already defined in initializeHelperFunctions() to ensure proper timing
         
         // =============== CHARACTER SETUP WIZARD FUNCTIONS ===============
         
