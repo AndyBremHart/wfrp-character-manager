@@ -14482,6 +14482,10 @@ function loadSymptomsData() {
             // Wounds calculation: (SB × 2) + (TB × 2) + WPB
             const wounds = (sbValue * 2) + (tbValue * 2) + wpbValue;
             
+            // Store wounds and movement in setupWizardData for later use
+            setupWizardData.wounds = wounds;
+            setupWizardData.movement = speciesInfo.movement || 4;
+            
             // Movement is based on species
             const movement = speciesInfo.movement || 4;
             
@@ -15909,6 +15913,40 @@ function loadSymptomsData() {
             // Update Fortune/Resolve max displays
             if (typeof window.updateFateFortuneResilienceResolveDisplay === 'function') {
                 window.updateFateFortuneResilienceResolveDisplay();
+            }
+            
+            // Set Movement from wizard data
+            if (setupWizardData.movement) {
+                const movementField = document.getElementById('movement');
+                if (movementField) {
+                    movementField.value = setupWizardData.movement;
+                    console.log(`Set movement to ${setupWizardData.movement} for species ${setupWizardData.species}`);
+                    
+                    // Store base movement for encumbrance system
+                    movementField.setAttribute('data-base-movement', setupWizardData.movement);
+                    
+                    // Update movement bonuses display
+                    if (typeof window.updateMovementDisplay === 'function') {
+                        window.updateMovementDisplay();
+                    }
+                }
+            }
+            
+            // Set Max Wounds and Current Wounds from calculated values
+            if (setupWizardData.wounds) {
+                const woundsMaxField = document.getElementById('wounds-max');
+                const woundsCurrentField = document.getElementById('wounds-current');
+                
+                if (woundsMaxField) {
+                    woundsMaxField.value = setupWizardData.wounds;
+                    console.log(`Set max wounds to ${setupWizardData.wounds}`);
+                }
+                
+                // Set current wounds equal to max wounds for new characters
+                if (woundsCurrentField) {
+                    woundsCurrentField.value = setupWizardData.wounds;
+                    console.log(`Set current wounds to ${setupWizardData.wounds} (equal to max)`);
+                }
             }
             
             // Apply skills from wizard using proven addSkillDirectly function
