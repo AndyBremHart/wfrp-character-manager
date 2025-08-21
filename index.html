@@ -10256,6 +10256,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         customisation: customisation,
                         notes: ''
                     });
+                    
+                    // Apply characteristic bonuses if this talent provides them
+                    if (typeof window.applyTalentCharacteristicBonus === 'function') {
+                        window.applyTalentCharacteristicBonus(baseName, true);
+                    }
+                    
                     displayTalents();
                     return;
                 }
@@ -10276,6 +10282,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         customisation: customisation,
                         notes: ''
                     });
+                    
+                    // Apply characteristic bonuses if this talent provides them
+                    if (typeof window.applyTalentCharacteristicBonus === 'function') {
+                        window.applyTalentCharacteristicBonus(baseName, true);
+                    }
+                    
                     displayTalents();
                     return;
                 }
@@ -10307,6 +10319,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     customisation: customisation,
                     notes: ''
                 });
+
+                // Apply characteristic bonuses if this talent provides them
+                if (typeof window.applyTalentCharacteristicBonus === 'function') {
+                    window.applyTalentCharacteristicBonus(baseName, true);
+                }
 
                 // Refresh the talents display
                 displayTalents();
