@@ -14041,6 +14041,8 @@ function loadSymptomsData() {
 
         // Helper function to directly add a talent to the character
         window.addTalentDirectly = function(talentName) {
+            console.log("DEBUG: addTalentDirectly (ESSENTIAL HELPER) called with:", talentName);
+            
             // Parse talent name and customization
             let baseName, customisation = '';
             const match = talentName.match(/^(.+?)\s*\((.+)\)$/);
