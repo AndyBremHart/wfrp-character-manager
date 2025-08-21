@@ -1249,6 +1249,10 @@
                     <label>Tier</label>
                     <div id="tier-display" style="padding: 5px; font-family: Georgia, serif; border: 1px solid #8b7355; background: #f8f6f0; color: #3e2f1f; min-height: 20px; display: flex; align-items: center;">Tier I</div>
                 </div>
+                <div class="header-field">
+                    <label>Tier Name</label>
+                    <div id="tier-name-display" style="padding: 5px; font-family: Georgia, serif; border: 1px solid #8b7355; background: #f8f6f0; color: #3e2f1f; min-height: 20px; display: flex; align-items: center;">—</div>
+                </div>
             </div>
         </div>
 
@@ -10607,24 +10611,27 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Update tier information display
         function updateTierDisplay() {
-            // Update the main tier display (near player)
+            // Update the main tier display (near player) and tier name display
             const tierDisplay = document.getElementById('tier-display');
+            const tierNameDisplay = document.getElementById('tier-name-display');
+            const romanNumerals = ['', 'I', 'II', 'III', 'IV'];
             
             if (tierDisplay && currentTier >= 1 && currentTier <= 4) {
-                // If we have career data, show the tier name
-                if (currentCareer && currentCareer.tiers) {
-                    const tier = currentCareer.tiers.find(t => t.tier === currentTier);
-                    if (tier && tier.name) {
-                        tierDisplay.textContent = tier.name;
+                // Always show roman numerals in the tier display
+                tierDisplay.textContent = `Tier ${romanNumerals[currentTier]}`;
+                
+                // Update tier name display
+                if (tierNameDisplay) {
+                    if (currentCareer && currentCareer.tiers) {
+                        const tier = currentCareer.tiers.find(t => t.tier === currentTier);
+                        if (tier && tier.name) {
+                            tierNameDisplay.textContent = tier.name;
+                        } else {
+                            tierNameDisplay.textContent = '—';
+                        }
                     } else {
-                        // Fallback to roman numerals if tier name not found
-                        const romanNumerals = ['', 'I', 'II', 'III', 'IV'];
-                        tierDisplay.textContent = `Tier ${romanNumerals[currentTier]}`;
+                        tierNameDisplay.textContent = '—';
                     }
-                } else {
-                    // Fallback to roman numerals if no career selected
-                    const romanNumerals = ['', 'I', 'II', 'III', 'IV'];
-                    tierDisplay.textContent = `Tier ${romanNumerals[currentTier]}`;
                 }
             }
             
