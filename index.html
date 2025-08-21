@@ -7124,6 +7124,17 @@ window.confirmAddTalent = function() {
             }
             
             talents[existingTalentIndex].timesTaken = newTotal;
+            
+            // Apply characteristic bonuses for additional instances if this talent provides them
+            console.log("=== confirmAddTalent EXISTING TALENT BONUS CHECK ===");
+            console.log("Adding additional instances of talent:", talentData.name);
+            if (typeof window.applyTalentCharacteristicBonus === 'function') {
+                // Apply bonus for each additional instance added
+                const additionalInstances = newTotal - currentTimes;
+                for (let i = 0; i < additionalInstances; i++) {
+                    window.applyTalentCharacteristicBonus(talentData.name, true);
+                }
+            }
         } else {
             alert('You already have this talent');
             return;
@@ -7134,6 +7145,16 @@ window.confirmAddTalent = function() {
             talent.timesTaken = timesTaken;
         }
         talents.push(talent);
+        
+        // Apply characteristic bonuses for new talent if it provides them
+        console.log("=== confirmAddTalent NEW TALENT BONUS CHECK ===");
+        console.log("Adding new talent:", talentData.name, "times taken:", talent.timesTaken);
+        if (typeof window.applyTalentCharacteristicBonus === 'function') {
+            // Apply bonus for each instance of the new talent
+            for (let i = 0; i < talent.timesTaken; i++) {
+                window.applyTalentCharacteristicBonus(talentData.name, true);
+            }
+        }
     }
     
     displayTalents();
