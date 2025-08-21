@@ -5322,8 +5322,8 @@
         };
         let movementBonuses = {};
         
-        // Talent characteristic bonuses mapping
-        const talentCharacteristicBonuses = {
+        // Talent characteristic bonuses mapping (global)
+        window.talentCharacteristicBonuses = {
             "Coolheaded": { characteristic: "wp", amount: 5 },
             "Lightning Reflexes": { characteristic: "agi", amount: 5 },
             "Marksman": { characteristic: "bs", amount: 5 },
@@ -5336,8 +5336,8 @@
             "Warrior Born": { characteristic: "ws", amount: 5 }
         };
         
-        // Talent movement bonuses mapping
-        const talentMovementBonuses = {
+        // Talent movement bonuses mapping (global)
+        window.talentMovementBonuses = {
             "Fleet Footed": 1
         };
         
@@ -13299,11 +13299,11 @@ function loadSymptomsData() {
         window.applyTalentCharacteristicBonus = function(talentName, isAdding) {
             // Debug logging
             console.log("applyTalentCharacteristicBonus called with:", talentName, "isAdding:", isAdding);
-            console.log("Available bonus talents:", Object.keys(talentCharacteristicBonuses));
+            console.log("Available bonus talents:", Object.keys(window.talentCharacteristicBonuses));
             
             // Check for characteristic bonuses
-            if (talentCharacteristicBonuses[talentName]) {
-                const bonus = talentCharacteristicBonuses[talentName];
+            if (window.talentCharacteristicBonuses[talentName]) {
+                const bonus = window.talentCharacteristicBonuses[talentName];
                 const charField = document.getElementById(`${bonus.characteristic}-initial`);
                 
                 if (charField) {
@@ -13327,8 +13327,8 @@ function loadSymptomsData() {
             }
             
             // Check for movement bonuses
-            if (talentMovementBonuses[talentName]) {
-                const bonus = talentMovementBonuses[talentName];
+            if (window.talentMovementBonuses[talentName]) {
+                const bonus = window.talentMovementBonuses[talentName];
                 
                 if (isAdding) {
                     movementBonuses[talentName] = bonus;
@@ -13396,14 +13396,14 @@ function loadSymptomsData() {
             
             // Recalculate from all current talents
             talents.forEach(talent => {
-                if (talentCharacteristicBonuses[talent.name]) {
-                    const bonus = talentCharacteristicBonuses[talent.name];
+                if (window.talentCharacteristicBonuses[talent.name]) {
+                    const bonus = window.talentCharacteristicBonuses[talent.name];
                     characteristicBonuses[bonus.characteristic] += bonus.amount;
                     window.updateCharacteristicBonusVisuals(bonus.characteristic, true);
                 }
                 
-                if (talentMovementBonuses[talent.name]) {
-                    movementBonuses[talent.name] = talentMovementBonuses[talent.name];
+                if (window.talentMovementBonuses[talent.name]) {
+                    movementBonuses[talent.name] = window.talentMovementBonuses[talent.name];
                 }
             });
             
@@ -14081,6 +14081,11 @@ function loadSymptomsData() {
 
             // Add to talents array
             talents.push(talentToAdd);
+            
+            // Apply characteristic bonuses if this talent provides them
+            if (typeof window.applyTalentCharacteristicBonus === 'function') {
+                window.applyTalentCharacteristicBonus(baseName, true);
+            }
             
             // Refresh the talents display
             displayTalents();
