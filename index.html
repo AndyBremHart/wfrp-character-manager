@@ -7367,6 +7367,15 @@ window.confirmAddTalent = function() {
         }
     }
     
+    console.log("DEBUG: Final talents array after addition:", talents.map(t => ({
+        name: t.name,
+        displayName: t.displayName,
+        specialization: t.specialization,
+        timesTaken: t.timesTaken,
+        max: t.max,
+        instanceId: t.instanceId
+    })));
+    
     displayTalents();
     closeAddTalentModal();
     
