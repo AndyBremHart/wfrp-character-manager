@@ -7180,7 +7180,10 @@ window.confirmAddTalent = function() {
     
     // Check talent limitations first
     if (window.isTalentLimited(talentData.name)) {
-        const currentCount = window.getTalentCurrentCount(talentData.name);
+        // For specialist talents, use specialization-specific counting
+        const currentCount = talentData.specialist && specialization 
+            ? window.getTalentCurrentCount(talentData.name, specialization)
+            : window.getTalentCurrentCount(talentData.name);
         const currentLimit = window.getTalentCurrentLimit(talentData.name);
         const maxAllowedToAdd = Math.max(0, currentLimit - currentCount);
         
@@ -7558,8 +7561,10 @@ window.getTalentCurrentCount = function(talentName, specialization = null) {
                  .reduce((total, talent) => total + (talent.timesTaken || 1), 0);
 }
 
-window.canAddTalent = function(talentName) {
-    const currentCount = window.getTalentCurrentCount(talentName);
+window.canAddTalent = function(talentName, specialization = null) {
+    const currentCount = specialization 
+        ? window.getTalentCurrentCount(talentName, specialization)
+        : window.getTalentCurrentCount(talentName);
     const currentLimit = window.getTalentCurrentLimit(talentName);
     
     return currentCount < currentLimit;
@@ -7716,14 +7721,17 @@ window.displayTalents = function() {
         const cost = window.getTalentCost(currentTimes - 1); // Cost for next advance
         
         
-        // Check talent limitations - specialist talents are treated as independent
-        const isLimited = !talent.isSpecialist && window.isTalentLimited(talent.name);
+        // Check talent limitations - all talents can be limited, but specialist talents use per-specialization limits
+        const isLimited = window.isTalentLimited(talent.name);
         let timesDisplay = "";
         let canTakeMore = talent.max === "No Limit" || parseInt(talent.max) > currentTimes;
         let limitColor = "";
         
         if (isLimited) {
-            const currentCount = window.getTalentCurrentCount(talent.name);
+            // For specialist talents, count each specialization independently
+            const currentCount = talent.isSpecialist && talent.specialization 
+                ? window.getTalentCurrentCount(talent.name, talent.specialization)
+                : window.getTalentCurrentCount(talent.name);
             const currentLimit = window.getTalentCurrentLimit(talent.name);
             
             // Debug for Savvy if it's somehow limited
