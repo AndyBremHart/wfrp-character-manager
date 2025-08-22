@@ -10558,13 +10558,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Helper function to find specialization from wizard data
             function findWizardSpecialization(baseTalentName) {
-                if (!window.setupWizardData?.talents) return null;
+                console.log(`DEBUG: findWizardSpecialization called for: ${baseTalentName}`);
+                
+                if (!window.setupWizardData?.talents) {
+                    console.log("DEBUG: No setupWizardData.talents found");
+                    return null;
+                }
+                
+                console.log("DEBUG: setupWizardData.talents:", JSON.stringify(window.setupWizardData.talents, null, 2));
                 
                 // Check fixed talents
                 if (window.setupWizardData.talents.fixed) {
                     for (const talent of window.setupWizardData.talents.fixed) {
                         const parsed = TalentInstanceManager.parseSpecializedTalentString(talent);
                         if (parsed && parsed.baseName === baseTalentName) {
+                            console.log(`DEBUG: Found specialization in fixed talents: ${parsed.specialization}`);
                             return parsed.specialization;
                         }
                     }
@@ -10572,29 +10580,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Check choice talents
                 if (window.setupWizardData.talents.choices) {
-                    for (const choice of window.setupWizardData.talents.choices) {
+                    console.log(`DEBUG: Checking ${window.setupWizardData.talents.choices.length} choice groups`);
+                    
+                    for (let i = 0; i < window.setupWizardData.talents.choices.length; i++) {
+                        const choice = window.setupWizardData.talents.choices[i];
+                        console.log(`DEBUG: Choice ${i}:`, JSON.stringify(choice, null, 2));
+                        
                         if (Array.isArray(choice)) {
+                            // Multiple selection array
                             for (const talentObj of choice) {
                                 if (typeof talentObj === 'object' && talentObj.talent) {
+                                    console.log(`DEBUG: Checking array item - talent: ${talentObj.talent}, customization: ${talentObj.customization}`);
+                                    
+                                    // Parse the talent string to get base name
                                     const parsed = TalentInstanceManager.parseSpecializedTalentString(talentObj.talent);
-                                    if (parsed && parsed.baseName === baseTalentName && talentObj.customization) {
-                                        return talentObj.customization;
-                                    } else if (talentObj.talent === baseTalentName && talentObj.customization) {
+                                    const talentBaseName = parsed ? parsed.baseName : talentObj.talent;
+                                    
+                                    if (talentBaseName === baseTalentName && talentObj.customization) {
+                                        console.log(`DEBUG: Found specialization in array choice: ${talentObj.customization}`);
                                         return talentObj.customization;
                                     }
                                 }
                             }
                         } else if (typeof choice === 'object' && choice.talent) {
+                            // Single choice object
+                            console.log(`DEBUG: Checking single choice - talent: ${choice.talent}, customization: ${choice.customization}`);
+                            
+                            // Parse the talent string to get base name
                             const parsed = TalentInstanceManager.parseSpecializedTalentString(choice.talent);
-                            if (parsed && parsed.baseName === baseTalentName && choice.customization) {
-                                return choice.customization;
-                            } else if (choice.talent === baseTalentName && choice.customization) {
+                            const talentBaseName = parsed ? parsed.baseName : choice.talent;
+                            
+                            if (talentBaseName === baseTalentName && choice.customization) {
+                                console.log(`DEBUG: Found specialization in single choice: ${choice.customization}`);
                                 return choice.customization;
                             }
                         }
                     }
                 }
                 
+                console.log(`DEBUG: No specialization found for ${baseTalentName}`);
                 return null;
             }
 
@@ -15789,15 +15813,23 @@ function loadSymptomsData() {
             
             // Add talent selection cards
             tier1.talents.forEach((talent, index) => {
-                // Parse talent to check for specialization
+                // Parse talent to check for specialization  
                 const parsedTalent = TalentInstanceManager.parseSpecializedTalentString(talent);
-                const isPreSpecialized = parsedTalent !== null;
-                const baseTalentName = isPreSpecialized ? parsedTalent.baseName : talent;
-                const presetSpecialization = isPreSpecialized ? parsedTalent.specialization : null;
+                const hasParentheses = parsedTalent !== null;
+                const baseTalentName = hasParentheses ? parsedTalent.baseName : talent;
+                const parenthesesContent = hasParentheses ? parsedTalent.specialization : null;
+                
+                // Check if this is a user-choice talent (contains "any" or similar)
+                const isUserChoice = parenthesesContent && (
+                    parenthesesContent.toLowerCase().includes('any one') ||
+                    parenthesesContent.toLowerCase().includes('any') ||
+                    parenthesesContent.toLowerCase().includes('choose one')
+                );
+                const isPreSpecialized = hasParentheses && !isUserChoice;
                 
                 // Check if this talent needs user-specified specialization
                 const srdTalent = srdTalents?.find(t => t.name === baseTalentName);
-                const needsSpecialization = !isPreSpecialized && srdTalent?.specialist;
+                const needsSpecialization = (isUserChoice || (!hasParentheses && srdTalent?.specialist));
                 
                 const isSelected = setupWizardData.careerAllocation.selectedTalent === talent;
                 const talentId = `career-talent-${index}`;
@@ -16304,6 +16336,10 @@ function loadSymptomsData() {
                         }
                     });
                 }
+                
+                // Debug: Log the wizard data structure
+                console.log("DEBUG: setupWizardData.talents structure:", JSON.stringify(setupWizardData.talents, null, 2));
+                console.log("DEBUG: allSelectedTalents:", allSelectedTalents);
                 
                 // Add talents to character sheet using proven addTalentDirectly function
                 allSelectedTalents.forEach(talentName => {
