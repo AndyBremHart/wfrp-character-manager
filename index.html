@@ -17036,7 +17036,7 @@ function loadSymptomsData() {
                                     allSelectedTalents.push(talentObj);
                                 }
                             });
-                        } else if (typeof choice === 'object' && choice.talent) {
+                        } else if (typeof choice === 'object' && choice && choice.talent) {
                             // Single selection - talent object
                             const talentName = choice.customization ? 
                                 `${choice.talent.replace(/\s*\(.+\)/, '')} (${choice.customization})` : 
