@@ -5368,7 +5368,6 @@
         // Apply or remove characteristic bonuses from talents
         window.applyTalentCharacteristicBonus = function(talentName, isAdding) {
             // Debug logging
-            console.log("=== applyTalentCharacteristicBonus DEBUG ===");
             console.log("Talent name:", talentName, "isAdding:", isAdding);
             console.log("Available bonus talents:", Object.keys(window.talentCharacteristicBonuses));
             console.log("Mapping check:", window.talentCharacteristicBonuses[talentName]);
@@ -7305,23 +7304,16 @@ window.confirmAddTalent = function() {
     }
     
     // Check if this exact talent already exists
-    console.log(`DEBUG: Checking for existing talent - name: "${talentData.name}", specialist: ${talentData.specialist}, specialization: "${specialization}"`);
-    console.log(`DEBUG: Current talents:`, talents.map(t => `${t.name}(${t.specialization || 'none'})`));
     
     const existingTalentIndex = talents.findIndex(t => {
         if (talentData.specialist) {
-            const match = t.name === talentData.name && t.specialization === specialization;
-            console.log(`DEBUG: Checking specialist talent ${t.name}(${t.specialization || 'none'}) vs ${talentData.name}(${specialization}) = ${match}`);
-            return match;
+            return t.name === talentData.name && t.specialization === specialization;
         } else {
-            const match = t.name === talentData.name && 
+            return t.name === talentData.name && 
                    ((!t.specialization && !specialization) || t.specialization === specialization);
-            console.log(`DEBUG: Checking regular talent ${t.name}(${t.specialization || 'none'}) vs ${talentData.name}(${specialization}) = ${match}`);
-            return match;
         }
     });
     
-    console.log(`DEBUG: Existing talent index: ${existingTalentIndex}`);
     
     if (existingTalentIndex !== -1) {
         // If it can be taken multiple times and we're adding more
@@ -7370,14 +7362,7 @@ window.confirmAddTalent = function() {
         }
     }
     
-    console.log("DEBUG: Final talents array after addition:", talents.map(t => ({
-        name: t.name,
-        displayName: t.displayName,
-        specialization: t.specialization,
-        timesTaken: t.timesTaken,
-        max: t.max,
-        instanceId: t.instanceId
-    })));
+    // Talent added successfully
     
     displayTalents();
     closeAddTalentModal();
@@ -7409,10 +7394,6 @@ function fixExistingTalentMaxValues() {
     let fixedCount = 0;
     console.log("Checking talent max values...");
     talents.forEach(talent => {
-        // Special logging for Savvy
-        if (talent.name === "Savvy" || talent.displayName === "Savvy") {
-            console.log("Found Savvy in talents array:", talent);
-        }
         
         // Find the correct talent data from SRD
         const srdTalent = srdTalents.find(t => t.name === talent.name);
@@ -7420,11 +7401,6 @@ function fixExistingTalentMaxValues() {
             // Convert max to string for consistency
             const correctMax = srdTalent.max !== undefined ? String(srdTalent.max) : "1";
             
-            // Special check for Savvy
-            if (talent.name === "Savvy") {
-                console.log(`Savvy SRD data:`, srdTalent);
-                console.log(`Savvy current max: "${talent.max}", correct max: "${correctMax}"`);
-            }
             
             // Check if the current max value is different from what it should be
             if (talent.max !== correctMax) {
@@ -7734,10 +7710,6 @@ window.displayTalents = function() {
                 : window.getTalentCurrentCount(talent.name);
             const currentLimit = window.getTalentCurrentLimit(talent.name);
             
-            // Debug for Savvy if it's somehow limited
-            if (talent.name === "Savvy") {
-                console.log("Savvy is being treated as LIMITED - currentCount:", currentCount, "currentLimit:", currentLimit);
-            }
             
             // Determine color based on limit status
             if (currentCount > currentLimit) {
@@ -10644,10 +10616,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Helper function to find specialization from wizard data
             function findWizardSpecialization(baseTalentName) {
-                console.log(`DEBUG: findWizardSpecialization called for: ${baseTalentName}`);
                 
                 if (!window.setupWizardData) {
-                    console.log("DEBUG: No setupWizardData found");
                     return null;
                 }
                 
@@ -10658,24 +10628,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     const careerBaseName = parsed ? parsed.baseName : careerTalent.replace(/\s*\(.*\)/, '');
                     
                     if (careerBaseName === baseTalentName) {
-                        console.log(`DEBUG: Found specialization in career talent: ${window.setupWizardData.careerAllocation.talentSpecialization}`);
                         return window.setupWizardData.careerAllocation.talentSpecialization;
                     }
                 }
                 
                 if (!window.setupWizardData?.talents) {
-                    console.log("DEBUG: No setupWizardData.talents found");
                     return null;
                 }
                 
-                console.log("DEBUG: setupWizardData.talents:", JSON.stringify(window.setupWizardData.talents, null, 2));
                 
                 // Check fixed talents
                 if (window.setupWizardData.talents.fixed) {
                     for (const talent of window.setupWizardData.talents.fixed) {
                         const parsed = TalentInstanceManager.parseSpecializedTalentString(talent);
                         if (parsed && parsed.baseName === baseTalentName) {
-                            console.log(`DEBUG: Found specialization in fixed talents: ${parsed.specialization}`);
                             return parsed.specialization;
                         }
                     }
@@ -10683,51 +10649,43 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Check choice talents
                 if (window.setupWizardData.talents.choices) {
-                    console.log(`DEBUG: Checking ${window.setupWizardData.talents.choices.length} choice groups`);
                     
                     for (let i = 0; i < window.setupWizardData.talents.choices.length; i++) {
                         const choice = window.setupWizardData.talents.choices[i];
-                        console.log(`DEBUG: Choice ${i}:`, JSON.stringify(choice, null, 2));
                         
                         if (Array.isArray(choice)) {
                             // Multiple selection array
                             for (const talentObj of choice) {
                                 if (typeof talentObj === 'object' && talentObj.talent) {
-                                    console.log(`DEBUG: Checking array item - talent: ${talentObj.talent}, customization: ${talentObj.customization}`);
                                     
                                     // Parse the talent string to get base name
                                     const parsed = TalentInstanceManager.parseSpecializedTalentString(talentObj.talent);
                                     const talentBaseName = parsed ? parsed.baseName : talentObj.talent;
                                     
                                     if (talentBaseName === baseTalentName && talentObj.customization) {
-                                        console.log(`DEBUG: Found specialization in array choice: ${talentObj.customization}`);
                                         return talentObj.customization;
                                     }
                                 }
                             }
                         } else if (typeof choice === 'object' && choice.talent) {
                             // Single choice object
-                            console.log(`DEBUG: Checking single choice - talent: ${choice.talent}, customization: ${choice.customization}`);
                             
                             // Parse the talent string to get base name
                             const parsed = TalentInstanceManager.parseSpecializedTalentString(choice.talent);
                             const talentBaseName = parsed ? parsed.baseName : choice.talent;
                             
                             if (talentBaseName === baseTalentName && choice.customization) {
-                                console.log(`DEBUG: Found specialization in single choice: ${choice.customization}`);
                                 return choice.customization;
                             }
                         }
                     }
                 }
                 
-                console.log(`DEBUG: No specialization found for ${baseTalentName}`);
                 return null;
             }
 
             // Helper function to directly add a talent to the character
             window.addTalentDirectly = function(talentName) {
-                console.log("DEBUG: addTalentDirectly (FIRST FUNCTION) called with:", talentName);
                 
                 // Parse talent name and customization
                 let baseName, customisation = '';
@@ -10740,15 +10698,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Handle specific customizations
                     if (customPart.toLowerCase().includes('any one') || customPart.toLowerCase().includes('choose one')) {
                         // For specialist talents, we need to check if user provided specialization during wizard
-                        console.log(`DEBUG: Found "(any one)" talent: ${baseName}`);
                         
                         // Check if this talent has specialization data from wizard
                         const wizardSpecialization = findWizardSpecialization(baseName);
                         if (wizardSpecialization) {
                             customisation = wizardSpecialization;
-                            console.log(`DEBUG: Using wizard specialization: ${customisation}`);
                         } else {
-                            console.log(`DEBUG: No wizard specialization found for ${baseName}`);
                             // For specialist talents without user input, we need to prompt
                             // But for now use defaults as fallback for backwards compatibility
                             if (baseName === 'Acute Sense') {
@@ -10760,7 +10715,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             } else {
                                 customisation = 'General';
                             }
-                            console.log(`DEBUG: Using default specialization: ${customisation}`);
                         }
                     } else {
                         customisation = customPart;
@@ -10796,12 +10750,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     talents.push(newTalent);
                     
                     // Apply characteristic bonuses if this talent provides them
-                    console.log("DEBUG: [Function 1 - No SRD] About to check for characteristic bonus for:", baseName);
                     if (typeof window.applyTalentCharacteristicBonus === 'function') {
-                        console.log("DEBUG: [Function 1 - No SRD] Calling applyTalentCharacteristicBonus for:", baseName);
                         window.applyTalentCharacteristicBonus(baseName, true);
                     } else {
-                        console.log("DEBUG: [Function 1 - No SRD] applyTalentCharacteristicBonus function not available");
                     }
                     
                     displayTalents();
@@ -10826,12 +10777,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                     
                     // Apply characteristic bonuses if this talent provides them
-                    console.log("DEBUG: [Function 1 - Not Found] About to check for characteristic bonus for:", baseName);
                     if (typeof window.applyTalentCharacteristicBonus === 'function') {
-                        console.log("DEBUG: [Function 1 - Not Found] Calling applyTalentCharacteristicBonus for:", baseName);
                         window.applyTalentCharacteristicBonus(baseName, true);
                     } else {
-                        console.log("DEBUG: [Function 1 - Not Found] applyTalentCharacteristicBonus function not available");
                     }
                     
                     displayTalents();
@@ -10856,13 +10804,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 if (existingTalent) {
-                    console.log(`DEBUG: Found existing talent: ${existingTalent.displayName}, timesTaken: ${existingTalent.timesTaken}`);
                     // If it's a multiple talent, increase the times taken
                     if (baseTalent.max && baseTalent.max !== "1") {
                         existingTalent.timesTaken = Math.min((existingTalent.timesTaken || 1) + 1, parseInt(baseTalent.max) || 1);
-                        console.log(`DEBUG: Increased timesTaken to: ${existingTalent.timesTaken}`);
                     } else {
-                        console.log(`DEBUG: Talent ${existingTalent.displayName} already exists and cannot be taken again (max: ${baseTalent.max})`);
                     }
                     displayTalents();
                     return;
@@ -10892,7 +10837,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 talents.push(newTalent);
 
                 // Apply characteristic bonuses if this talent provides them
-                console.log("=== addTalentDirectly MAIN PATH DEBUG ===");
                 console.log("About to check for characteristic bonus for talent:", baseName);
                 console.log("Talent mapping exists:", window.talentCharacteristicBonuses[baseName]);
                 if (typeof window.applyTalentCharacteristicBonus === 'function') {
@@ -15477,7 +15421,6 @@ function loadSymptomsData() {
         
         // Handle multiple talent choices (checkboxes)
         function updateSetupTalentMultipleSelection(choiceIndex, maxCount, talentIndex, checkbox) {
-            console.log(`DEBUG: updateSetupTalentMultipleSelection called - choiceIndex: ${choiceIndex}, talentIndex: ${talentIndex}, checked: ${checkbox.checked}, talent: ${checkbox.value}`);
             
             // Initialize the choice array if needed
             if (!setupWizardData.talents.choices[choiceIndex]) {
@@ -15486,8 +15429,6 @@ function loadSymptomsData() {
             
             const choiceArray = setupWizardData.talents.choices[choiceIndex];
             const customInput = document.getElementById(`setup-talent-${choiceIndex}-${talentIndex}-custom`);
-            console.log(`DEBUG: Looking for input with ID: setup-talent-${choiceIndex}-${talentIndex}-custom`);
-            console.log(`DEBUG: Custom input found:`, customInput ? 'YES' : 'NO');
             
             if (checkbox.checked) {
                 // Check if we've reached the limit
@@ -15500,9 +15441,7 @@ function loadSymptomsData() {
                 // Enable customization input if needed
                 if (customInput) {
                     customInput.disabled = false;
-                    console.log(`DEBUG: Enabled customization input for ${checkbox.value}`);
                 } else {
-                    console.log(`DEBUG: No customization input found for ${checkbox.value}`);
                 }
                 
                 // Add talent object with customization support
@@ -15514,14 +15453,12 @@ function loadSymptomsData() {
                         talent: checkbox.value,
                         customization: ''
                     });
-                    console.log(`DEBUG: Added talent object for ${checkbox.value}`);
                 }
             } else {
                 // Disable and clear customization input
                 if (customInput) {
                     customInput.disabled = true;
                     customInput.value = '';
-                    console.log(`DEBUG: Disabled and cleared customization input for ${checkbox.value}`);
                 }
                 
                 // Remove talent
@@ -15530,7 +15467,6 @@ function loadSymptomsData() {
                 );
                 if (index > -1) {
                     choiceArray.splice(index, 1);
-                    console.log(`DEBUG: Removed talent object for ${checkbox.value}`);
                 }
             }
             
@@ -15540,25 +15476,20 @@ function loadSymptomsData() {
                 remainingSpan.textContent = maxCount - choiceArray.length;
             }
             
-            console.log(`DEBUG: Updated choice array:`, JSON.stringify(choiceArray, null, 2));
         }
         
         // Update talent customization value
         function updateSetupTalentCustomizationValue(choiceIndex, originalTalentIndex, customization) {
-            console.log(`DEBUG: updateSetupTalentCustomizationValue called - choiceIndex: ${choiceIndex}, originalTalentIndex: ${originalTalentIndex}, customization: ${customization}`);
             
             if (!setupWizardData.talents.choices[choiceIndex]) {
-                console.log("DEBUG: No choice found at index", choiceIndex);
                 return;
             }
             
             const choice = setupWizardData.talents.choices[choiceIndex];
-            console.log("DEBUG: Choice structure:", JSON.stringify(choice, null, 2));
             
             // Get the talent name from the input field ID to find the right talent object
             const inputElement = document.getElementById(`setup-talent-${choiceIndex}-${originalTalentIndex}-custom`);
             if (!inputElement) {
-                console.log(`DEBUG: Could not find input element with ID: setup-talent-${choiceIndex}-${originalTalentIndex}-custom`);
                 return;
             }
             
@@ -15572,12 +15503,10 @@ function loadSymptomsData() {
                 const customInput = document.getElementById(`setup-talent-${choiceIndex}-${index}-custom`);
                 if (customInput === inputElement) {
                     talentName = input.value;
-                    console.log(`DEBUG: Found talent name from input scanning: ${talentName}`);
                 }
             });
             
             if (!talentName) {
-                console.log("DEBUG: Could not determine talent name for customization update");
                 return;
             }
             
@@ -15586,18 +15515,14 @@ function loadSymptomsData() {
                 const talentObj = choice.find(t => t && typeof t === 'object' && t.talent === talentName);
                 if (talentObj) {
                     talentObj.customization = customization;
-                    console.log(`DEBUG: Updated talent "${talentName}" with customization: ${customization}`);
                 } else {
-                    console.log(`DEBUG: Could not find talent object for "${talentName}" in choice array`);
                 }
             } else if (choice && typeof choice === 'object' && choice.talent === talentName) {
                 // Single choice
                 choice.customization = customization;
-                console.log(`DEBUG: Updated single choice "${talentName}" with customization: ${customization}`);
             }
             
             // Log updated structure
-            console.log("DEBUG: Updated choice structure:", JSON.stringify(choice, null, 2));
         }
         
         function initializeSetupClass() {
@@ -16506,19 +16431,15 @@ function loadSymptomsData() {
                 // Add chosen talents from talent choices
                 if (setupWizardData.talents.choices) {
                     setupWizardData.talents.choices.forEach((choice, choiceIndex) => {
-                        console.log(`DEBUG: Processing choice ${choiceIndex}:`, JSON.stringify(choice, null, 2));
                         if (Array.isArray(choice)) {
                             // Multiple selection - array of talent objects
                             choice.forEach((talentObj, talentIndex) => {
-                                console.log(`DEBUG: Processing talent object ${talentIndex}:`, JSON.stringify(talentObj, null, 2));
                                 if (typeof talentObj === 'object' && talentObj.talent) {
                                     const talentName = talentObj.customization ? 
                                         `${talentObj.talent.replace(/\s*\(.+\)/, '')} (${talentObj.customization})` : 
                                         talentObj.talent;
-                                    console.log(`DEBUG: Constructed talent name: "${talentName}" from talent: "${talentObj.talent}", customization: "${talentObj.customization}"`);
                                     allSelectedTalents.push(talentName);
                                 } else if (typeof talentObj === 'string') {
-                                    console.log(`DEBUG: Adding string talent: "${talentObj}"`);
                                     allSelectedTalents.push(talentObj);
                                 }
                             });
@@ -16535,13 +16456,9 @@ function loadSymptomsData() {
                 }
                 
                 // Debug: Log the wizard data structure
-                console.log("DEBUG: setupWizardData.talents structure:", JSON.stringify(setupWizardData.talents, null, 2));
-                console.log("DEBUG: allSelectedTalents:", allSelectedTalents);
                 
                 // Add talents to character sheet using proven addTalentDirectly function
                 allSelectedTalents.forEach(talentName => {
-                    console.log("DEBUG: About to call window.addTalentDirectly for:", talentName);
-                    console.log("DEBUG: Function type:", typeof window.addTalentDirectly);
                     if (typeof window.addTalentDirectly === 'function') {
                         window.addTalentDirectly(talentName);
                         console.log(`Added talent: ${talentName} using addTalentDirectly`);
@@ -16583,7 +16500,6 @@ function loadSymptomsData() {
                     if (setupWizardData.careerAllocation.talentSpecialization) {
                         // Replace "(any)" or "(any one)" with the user's specialization
                         talentName = talentName.replace(/\s*\(any\s*(?:one)?\)/i, ` (${setupWizardData.careerAllocation.talentSpecialization})`);
-                        console.log(`DEBUG: Career talent with specialization: "${talentName}" from "${setupWizardData.careerAllocation.selectedTalent}" + "${setupWizardData.careerAllocation.talentSpecialization}"`);
                     }
                     
                     if (typeof window.addTalentDirectly === 'function') {
