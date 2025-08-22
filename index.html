@@ -15479,8 +15479,8 @@ function loadSymptomsData() {
         }
         
         // Update talent customization value
-        function updateSetupTalentCustomizationValue(choiceIndex, talentIndex, customization) {
-            console.log(`DEBUG: updateSetupTalentCustomizationValue called - choiceIndex: ${choiceIndex}, talentIndex: ${talentIndex}, customization: ${customization}`);
+        function updateSetupTalentCustomizationValue(choiceIndex, originalTalentIndex, customization) {
+            console.log(`DEBUG: updateSetupTalentCustomizationValue called - choiceIndex: ${choiceIndex}, originalTalentIndex: ${originalTalentIndex}, customization: ${customization}`);
             
             if (!setupWizardData.talents.choices[choiceIndex]) {
                 console.log("DEBUG: No choice found at index", choiceIndex);
@@ -15490,18 +15490,45 @@ function loadSymptomsData() {
             const choice = setupWizardData.talents.choices[choiceIndex];
             console.log("DEBUG: Choice structure:", JSON.stringify(choice, null, 2));
             
-            if (Array.isArray(choice)) {
-                // Multiple choice - find the talent object at the specific talent index
-                if (talentIndex < choice.length && choice[talentIndex] && typeof choice[talentIndex] === 'object') {
-                    choice[talentIndex].customization = customization;
-                    console.log(`DEBUG: Updated talent at index ${talentIndex} with customization: ${customization}`);
-                } else {
-                    console.log(`DEBUG: Could not find talent object at index ${talentIndex} in choice array`);
+            // Get the talent name from the input field ID to find the right talent object
+            const inputElement = document.getElementById(`setup-talent-${choiceIndex}-${originalTalentIndex}-custom`);
+            if (!inputElement) {
+                console.log(`DEBUG: Could not find input element with ID: setup-talent-${choiceIndex}-${originalTalentIndex}-custom`);
+                return;
+            }
+            
+            // Find the talent name from the associated checkbox/radio
+            const associatedInput = document.querySelector(`input[onchange*="updateSetupTalentMultipleSelection(${choiceIndex}"][value*="(any one)"]`);
+            let talentName = null;
+            
+            // Alternative approach: scan through all checkboxes in this choice group
+            const choiceInputs = document.querySelectorAll(`input[name*="setup-talent-choice-${choiceIndex}"], input[onchange*="updateSetupTalentMultipleSelection(${choiceIndex}"]`);
+            choiceInputs.forEach((input, index) => {
+                const customInput = document.getElementById(`setup-talent-${choiceIndex}-${index}-custom`);
+                if (customInput === inputElement) {
+                    talentName = input.value;
+                    console.log(`DEBUG: Found talent name from input scanning: ${talentName}`);
                 }
-            } else if (choice && typeof choice === 'object') {
+            });
+            
+            if (!talentName) {
+                console.log("DEBUG: Could not determine talent name for customization update");
+                return;
+            }
+            
+            if (Array.isArray(choice)) {
+                // Multiple choice - find the talent object by talent name
+                const talentObj = choice.find(t => t && typeof t === 'object' && t.talent === talentName);
+                if (talentObj) {
+                    talentObj.customization = customization;
+                    console.log(`DEBUG: Updated talent "${talentName}" with customization: ${customization}`);
+                } else {
+                    console.log(`DEBUG: Could not find talent object for "${talentName}" in choice array`);
+                }
+            } else if (choice && typeof choice === 'object' && choice.talent === talentName) {
                 // Single choice
                 choice.customization = customization;
-                console.log(`DEBUG: Updated single choice with customization: ${customization}`);
+                console.log(`DEBUG: Updated single choice "${talentName}" with customization: ${customization}`);
             }
             
             // Log updated structure
