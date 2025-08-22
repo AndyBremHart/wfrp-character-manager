@@ -1509,6 +1509,30 @@
                             <input type="text" id="talent-customisation-input" placeholder="e.g., specific skill, weapon group, etc." style="width: 100%; padding: 5px;">
                         </div>
                         
+                        <!-- Specialist Talent Input Section -->
+                        <div id="specialist-input-section" style="display: none; margin-bottom: 15px; padding: 10px; background: #f5f2e8; border: 1px solid #8b7355; border-radius: 5px;">
+                            <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">
+                                <span id="specialist-label">Specialization</span> <span style="color: red;">*</span>
+                            </label>
+                            
+                            <!-- Dropdown for common options -->
+                            <select id="specialist-select" style="width: 100%; padding: 5px; margin-bottom: 8px; font-family: 'Georgia', serif;">
+                                <option value="">-- Select or enter custom --</option>
+                                <!-- Options populated dynamically -->
+                            </select>
+                            
+                            <!-- Text input for custom specialization -->
+                            <input type="text" 
+                                   id="specialist-custom-input" 
+                                   placeholder="Or enter custom specialization..."
+                                   style="width: 100%; padding: 5px; font-family: 'Georgia', serif;">
+                            
+                            <!-- Helper text -->
+                            <small id="specialist-help" style="color: #666; font-style: italic; display: block; margin-top: 5px;">
+                                Examples will appear here
+                            </small>
+                        </div>
+                        
                         <div id="talent-times-taken" style="margin-bottom: 15px;">
                             <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Number to Add:</label>
                             <input type="number" id="talent-times-input" value="1" min="1" max="10" style="width: 100px; padding: 5px;">
@@ -6818,12 +6842,105 @@
             closeAddSkillModal();
         }
 
+        // =============== SPECIALIST TALENT SYSTEM ===============
+        
+        // Talent Instance Manager Class
+        class TalentInstanceManager {
+            static generateInstanceId(talentName, specialization) {
+                const timestamp = Date.now();
+                const sanitized = specialization.toLowerCase().replace(/\s+/g, '_');
+                return `${talentName.toLowerCase().replace(/\s+/g, '_')}_${sanitized}_${timestamp}`;
+            }
+            
+            static createInstance(baseTalent, specialization = null) {
+                const instance = {
+                    name: baseTalent.name,
+                    displayName: specialization ? `${baseTalent.name} (${specialization})` : baseTalent.name,
+                    timesTaken: 0,
+                    max: baseTalent.max,
+                    category: baseTalent.category,
+                    prerequisite: baseTalent.prerequisite,
+                    tests: baseTalent.tests,
+                    notes: '',
+                    isSpecialist: baseTalent.specialist || false
+                };
+                
+                if (specialization) {
+                    instance.specialization = specialization;
+                    instance.instanceId = this.generateInstanceId(baseTalent.name, specialization);
+                }
+                
+                return instance;
+            }
+            
+            static findDuplicateSpecialization(talents, talentName, specialization) {
+                return talents.find(t => 
+                    t.name === talentName && 
+                    t.specialization && 
+                    t.specialization.toLowerCase() === specialization.toLowerCase()
+                );
+            }
+            
+            static parseSpecializedTalentString(talentStr) {
+                const match = talentStr.match(/^(.+?)\s*\((.+)\)$/);
+                if (match) {
+                    return {
+                        baseName: match[1].trim(),
+                        specialization: match[2].trim()
+                    };
+                }
+                return null;
+            }
+        }
+        
+        // Expose to window for global access
+        window.TalentInstanceManager = TalentInstanceManager;
+        
+        // Specialist Talent Validator
+        const SpecialistTalentValidator = {
+            validateSpecialization(talentName, specialization) {
+                if (!specialization || specialization.trim() === '') {
+                    return { valid: false, error: 'Specialization is required' };
+                }
+                
+                // Check length
+                if (specialization.length > 50) {
+                    return { valid: false, error: 'Specialization too long (max 50 characters)' };
+                }
+                
+                // Check for basic invalid characters (allow most for flexibility)
+                if (!/^[a-zA-Z0-9\s\-'(),]+$/.test(specialization)) {
+                    return { valid: false, error: 'Specialization contains invalid characters' };
+                }
+                
+                return { valid: true };
+            },
+            
+            checkDuplicate(talents, talentName, specialization) {
+                return talents.some(t => 
+                    t.name === talentName && 
+                    t.specialization && 
+                    t.specialization.toLowerCase() === specialization.toLowerCase()
+                );
+            }
+        };
+        
+        window.SpecialistTalentValidator = SpecialistTalentValidator;
+
         // Talent Management Functions
         window.addTalent = function() {
             populateTalentSelect();
             document.getElementById('add-talent-modal').style.display = 'block';
             document.getElementById('talent-search-modal').value = '';
             document.getElementById('talent-search-modal').focus();
+            
+            // Reset specialist input section
+            const specialistSection = document.getElementById('specialist-input-section');
+            if (specialistSection) {
+                specialistSection.style.display = 'none';
+                document.getElementById('specialist-select').value = '';
+                document.getElementById('specialist-custom-input').value = '';
+            }
         }
 
         window.populateTalentSelect = function() {
@@ -6906,20 +7023,70 @@ window.showTalentDetails = function() {
     const talent = JSON.parse(selectedOption.dataset.talent);
     const detailsDiv = document.getElementById('talent-details');
     const customisationDiv = document.getElementById('talent-customisation');
+    const specialistSection = document.getElementById('specialist-input-section');
     const timesDiv = document.getElementById('talent-times-taken');
     
     document.getElementById('detail-talent-name').textContent = talent.name;
     document.getElementById('detail-talent-max').textContent = talent.max;
     document.getElementById('detail-talent-tests').textContent = talent.tests || 'N/A';
-    document.getElementById('detail-talent-description').textContent = talent.description;
+    document.getElementById('detail-talent-description').textContent = talent.description || 'No description available';
     
     detailsDiv.style.display = 'block';
     
-    if (talent.customisable) {
-        customisationDiv.style.display = 'block';
+    // Handle specialist talents
+    if (talent.specialist) {
+        // Show specialist input section
+        if (specialistSection) {
+            specialistSection.style.display = 'block';
+            
+            // Update label and prompt
+            const label = document.getElementById('specialist-label');
+            if (label) {
+                label.textContent = talent.specialistType || 'Specialization';
+            }
+            
+            // Populate dropdown with examples
+            const selectElement = document.getElementById('specialist-select');
+            if (selectElement) {
+                selectElement.innerHTML = '<option value="">-- Select or enter custom --</option>';
+                if (talent.specialistExamples) {
+                    talent.specialistExamples.forEach(example => {
+                        const option = document.createElement('option');
+                        option.value = example;
+                        option.textContent = example;
+                        selectElement.appendChild(option);
+                    });
+                }
+            }
+            
+            // Update help text
+            const helpText = document.getElementById('specialist-help');
+            if (helpText && talent.specialistPrompt) {
+                helpText.textContent = talent.specialistPrompt;
+            }
+        }
+        
+        // Hide old customisation div if it exists
+        if (customisationDiv) {
+            customisationDiv.style.display = 'none';
+        }
+    } else if (talent.customisable) {
+        // Legacy customisable talent support
+        if (customisationDiv) {
+            customisationDiv.style.display = 'block';
+        }
+        if (specialistSection) {
+            specialistSection.style.display = 'none';
+        }
     } else {
-        customisationDiv.style.display = 'none';
-        document.getElementById('talent-customisation-input').value = '';
+        // Regular talent - hide both
+        if (customisationDiv) {
+            customisationDiv.style.display = 'none';
+            document.getElementById('talent-customisation-input').value = '';
+        }
+        if (specialistSection) {
+            specialistSection.style.display = 'none';
+        }
     }
     
     // Calculate max allowed to add based on limitations
@@ -6973,12 +7140,42 @@ window.confirmAddTalent = function() {
     }
     
     const talentData = JSON.parse(selectedOption.dataset.talent);
-    const customisation = document.getElementById('talent-customisation-input').value.trim();
+    let specialization = null;
     const timesTaken = parseInt(document.getElementById('talent-times-input').value) || 1;
     
-    if (talentData.customisable && !customisation) {
-        alert(`Please specify the type for ${talentData.name}`);
-        return;
+    // Handle specialist talents
+    if (talentData.specialist) {
+        // Get specialization from either dropdown or custom input
+        const selectValue = document.getElementById('specialist-select')?.value || '';
+        const customValue = document.getElementById('specialist-custom-input')?.value.trim() || '';
+        
+        specialization = customValue || selectValue;
+        
+        if (!specialization) {
+            alert(`Please specify a ${talentData.specialistType || 'specialization'} for ${talentData.name}`);
+            return;
+        }
+        
+        // Validate specialization
+        const validation = SpecialistTalentValidator.validateSpecialization(talentData.name, specialization);
+        if (!validation.valid) {
+            alert(validation.error);
+            return;
+        }
+        
+        // Check for duplicate specializations
+        if (TalentInstanceManager.findDuplicateSpecialization(talents, talentData.name, specialization)) {
+            alert(`You already have "${talentData.name} (${specialization})"`);
+            return;
+        }
+    } else if (talentData.customisable) {
+        // Legacy customisable talent support
+        const customisation = document.getElementById('talent-customisation-input').value.trim();
+        if (!customisation) {
+            alert(`Please specify the type for ${talentData.name}`);
+            return;
+        }
+        specialization = customisation;
     }
     
     // Check talent limitations first
@@ -7011,16 +7208,21 @@ window.confirmAddTalent = function() {
     
     // Check if XP cost should be overridden (free talent)
     const isFreeTalent = document.getElementById('talent-xp-override').checked;
-    const displayName = customisation ? `${talentData.name} (${customisation})` : talentData.name;
+    const displayName = specialization ? `${talentData.name} (${specialization})` : talentData.name;
     
     // Calculate XP cost for the talent(s) being added (unless it's free)
     let totalCost = 0;
     
     if (!isFreeTalent) {
-        // Check if this exact talent already exists
-        const existingIndex = talents.findIndex(t => 
-            t.name === talentData.name && t.customisation === customisation
-        );
+        // Check if this exact talent already exists (for specialist talents, check specialization match)
+        const existingIndex = talents.findIndex(t => {
+            if (talentData.specialist) {
+                return t.name === talentData.name && t.specialization === specialization;
+            } else {
+                return t.name === talentData.name && 
+                       ((!t.specialization && !specialization) || t.specialization === specialization);
+            }
+        });
         
         if (existingIndex !== -1) {
             // Adding to existing talent
@@ -7078,9 +7280,14 @@ window.confirmAddTalent = function() {
         }
         
         // Check limits even for free talents
-        const existingIndex = talents.findIndex(t => 
-            t.name === talentData.name && t.customisation === customisation
-        );
+        const existingIndex = talents.findIndex(t => {
+            if (talentData.specialist) {
+                return t.name === talentData.name && t.specialization === specialization;
+            } else {
+                return t.name === talentData.name && 
+                       ((!t.specialization && !specialization) || t.specialization === specialization);
+            }
+        });
         
         if (existingIndex !== -1) {
             const currentTimes = talents[existingIndex].timesTaken;
@@ -7094,32 +7301,25 @@ window.confirmAddTalent = function() {
         }
     }
     
-    // Create talent object
-    const talent = {
-        name: talentData.name,
-        displayName: customisation ? `${talentData.name} (${customisation})` : talentData.name,
-        max: talentData.max,
-        tests: talentData.tests || '',
-        description: talentData.description || '',
-        timesTaken: 1,  // Always start at 1, not the input value
-        customisation: customisation,
-        notes: ''
-    };
-    
     // Check if this exact talent already exists
-    const existingTalentIndex = talents.findIndex(t => 
-        t.name === talent.name && t.customisation === talent.customisation
-    );
+    const existingTalentIndex = talents.findIndex(t => {
+        if (talentData.specialist) {
+            return t.name === talentData.name && t.specialization === specialization;
+        } else {
+            return t.name === talentData.name && 
+                   ((!t.specialization && !specialization) || t.specialization === specialization);
+        }
+    });
     
     if (existingTalentIndex !== -1) {
         // If it can be taken multiple times and we're adding more
-        if (talentData.max !== "1") {
+        if (talentData.max !== "1" && talentData.max !== 1) {
             const maxAllowed = parseInt(talentData.max) || 10;
             const currentTimes = talents[existingTalentIndex].timesTaken;
             const newTotal = Math.min(currentTimes + timesTaken, maxAllowed);
             
             if (currentTimes >= maxAllowed) {
-                alert(`You already have the maximum number of ${talentData.name}`);
+                alert(`You already have the maximum number of ${displayName}`);
                 return;
             }
             
@@ -7140,18 +7340,19 @@ window.confirmAddTalent = function() {
             return;
         }
     } else {
-        // For new talents that can be taken multiple times
-        if (talentData.max !== "1" && timesTaken > 1) {
-            talent.timesTaken = timesTaken;
-        }
-        talents.push(talent);
+        // Create new talent instance
+        const talentInstance = TalentInstanceManager.createInstance(talentData, specialization);
+        talentInstance.timesTaken = timesTaken;
+        talentInstance.notes = '';
+        
+        talents.push(talentInstance);
         
         // Apply characteristic bonuses for new talent if it provides them
         console.log("=== confirmAddTalent NEW TALENT BONUS CHECK ===");
-        console.log("Adding new talent:", talentData.name, "times taken:", talent.timesTaken);
+        console.log("Adding new talent:", talentData.name, "times taken:", talentInstance.timesTaken);
         if (typeof window.applyTalentCharacteristicBonus === 'function') {
             // Apply bonus for each instance of the new talent
-            for (let i = 0; i < talent.timesTaken; i++) {
+            for (let i = 0; i < talentInstance.timesTaken; i++) {
                 window.applyTalentCharacteristicBonus(talentData.name, true);
             }
         }
@@ -7466,13 +7667,23 @@ window.displayTalents = function() {
     
     let displayedTalents = talents;
     if (searchText) {
-        displayedTalents = talents.filter(t => 
-            t.displayName.toLowerCase().includes(searchText) ||
-            t.description.toLowerCase().includes(searchText)
-        );
+        displayedTalents = talents.filter(t => {
+            const displayName = t.displayName || t.name;
+            const description = t.description || '';
+            const specialization = t.specialization || '';
+            return displayName.toLowerCase().includes(searchText) ||
+                   description.toLowerCase().includes(searchText) ||
+                   specialization.toLowerCase().includes(searchText);
+        });
     }
     
-    displayedTalents.sort((a, b) => a.displayName.localeCompare(b.displayName));
+    // Sort by base name, then by specialization for grouped display
+    displayedTalents.sort((a, b) => {
+        if (a.name === b.name) {
+            return (a.specialization || '').localeCompare(b.specialization || '');
+        }
+        return a.name.localeCompare(b.name);
+    });
     
     displayedTalents.forEach((talent) => {
         const row = document.createElement('tr');
@@ -7522,15 +7733,21 @@ window.displayTalents = function() {
             }
         }
         
-        // Check if talent has (Any) designation and needs customization
-        let talentDisplayName = talent.displayName;
-        if (talent.displayName.includes('(Any)') || talent.displayName.includes('(any)')) {
-            // If the talent already has a customisation stored, use it
+        // Display talent name with specialization
+        let talentDisplayName = talent.displayName || talent.name;
+        
+        // Add specialist indicator for specialist talents
+        if (talent.isSpecialist && talent.specialization) {
+            talentDisplayName += ' <span style="color: #8b7355; font-size: 10px;" title="Specialist Talent">●</span>';
+        }
+        
+        // Handle legacy (any) customisation - backwards compatibility
+        if (!talent.isSpecialist && talentDisplayName && (talentDisplayName.includes('(Any)') || talentDisplayName.includes('(any)'))) {
             if (talent.customisation) {
-                talentDisplayName = talent.displayName.replace(/\([Aa]ny\)/, `(${talent.customisation})`);
+                talentDisplayName = talentDisplayName.replace(/\([Aa]ny\)/, `(${talent.customisation})`);
             } else {
                 // Show input field for customisation
-                talentDisplayName = `${talent.displayName.replace(/\s*\([Aa]ny\)/, '')} <input type="text" 
+                talentDisplayName = `${talentDisplayName.replace(/\s*\([Aa]ny\)/, '')} <input type="text" 
                     value="${talent.customisation || ''}" 
                     placeholder="Enter type" 
                     style="width: 100px; font-size: 11px; padding: 2px; border: 1px solid #8b7355;"
@@ -14917,9 +15134,15 @@ function loadSymptomsData() {
                         const inputName = choice.count === 1 ? `setup-talent-choice-${choiceIndex}` : '';
                         const nameAttribute = inputType === 'radio' ? `name="${inputName}"` : '';
                         
-                        // Check if this is an (any one) talent that needs customization
-                        const needsCustomization = talent.includes('(any one)') || talent.includes('(choose one)');
-                        const baseTalentName = needsCustomization ? talent.replace(/\s*\(.+\)/, '') : talent;
+                        // Parse talent string to check for specialization
+                        const parsedTalent = TalentInstanceManager.parseSpecializedTalentString(talent);
+                        const isPreSpecialized = parsedTalent !== null;
+                        const baseTalentName = isPreSpecialized ? parsedTalent.baseName : talent;
+                        const presetSpecialization = isPreSpecialized ? parsedTalent.specialization : null;
+                        
+                        // Check if this talent needs user-specified specialization
+                        const srdTalent = srdTalents?.find(t => t.name === baseTalentName);
+                        const needsCustomization = !isPreSpecialized && srdTalent?.specialist;
                         const inputId = `setup-talent-${choiceIndex}-${talentIndex}-custom`;
                         
                         if (choice.count === 1) {
@@ -14931,11 +15154,11 @@ function loadSymptomsData() {
                                         <input type="radio" ${nameAttribute} value="${talent}" 
                                                onchange="updateSetupTalentChoiceSelection(${choiceIndex}, this)"
                                                style="margin-right: 8px;">
-                                        <span>${talent}</span>
+                                        <span>${talent}${needsCustomization ? ' *' : ''}</span>
                                     </label>
                                     ${needsCustomization ? `
                                         <div style="margin-left: 24px; margin-top: 4px;">
-                                            <input type="text" id="${inputId}" placeholder="Specify ${baseTalentName.toLowerCase()} type"
+                                            <input type="text" id="${inputId}" placeholder="Specify ${srdTalent?.specialistType?.toLowerCase() || baseTalentName.toLowerCase()} "
                                                    style="width: 200px; padding: 4px; font-size: 12px; border: 1px solid #8b7355; border-radius: 3px;"
                                                    onchange="updateSetupTalentCustomizationValue(${choiceIndex}, ${talentIndex}, this.value)"
                                                    disabled>
@@ -14952,11 +15175,11 @@ function loadSymptomsData() {
                                         <input type="checkbox" value="${talent}" 
                                                onchange="updateSetupTalentMultipleSelection(${choiceIndex}, ${choice.count}, ${talentIndex}, this)"
                                                style="margin-right: 8px;">
-                                        <span>${talent}</span>
+                                        <span>${talent}${needsCustomization ? ' *' : ''}</span>
                                     </label>
                                     ${needsCustomization ? `
                                         <div style="margin-left: 24px; margin-top: 4px;">
-                                            <input type="text" id="${inputId}" placeholder="Specify ${baseTalentName.toLowerCase()} type"
+                                            <input type="text" id="${inputId}" placeholder="Specify ${srdTalent?.specialistType?.toLowerCase() || baseTalentName.toLowerCase()} "
                                                    style="width: 200px; padding: 4px; font-size: 12px; border: 1px solid #8b7355; border-radius: 3px;"
                                                    onchange="updateSetupTalentCustomizationValue(${choiceIndex}, ${talentIndex}, this.value)"
                                                    disabled>
@@ -15502,18 +15725,40 @@ function loadSymptomsData() {
             `;
             
             // Add talent selection cards
-            tier1.talents.forEach(talent => {
+            tier1.talents.forEach((talent, index) => {
+                // Parse talent to check for specialization
+                const parsedTalent = TalentInstanceManager.parseSpecializedTalentString(talent);
+                const isPreSpecialized = parsedTalent !== null;
+                const baseTalentName = isPreSpecialized ? parsedTalent.baseName : talent;
+                const presetSpecialization = isPreSpecialized ? parsedTalent.specialization : null;
+                
+                // Check if this talent needs user-specified specialization
+                const srdTalent = srdTalents?.find(t => t.name === baseTalentName);
+                const needsSpecialization = !isPreSpecialized && srdTalent?.specialist;
+                
                 const isSelected = setupWizardData.careerAllocation.selectedTalent === talent;
+                const talentId = `career-talent-${index}`;
+                
                 allocationHTML += `
-                    <div class="talent-card ${isSelected ? 'selected' : ''}" onclick="updateSelectedTalent('${talent}')" 
+                    <div class="talent-card ${isSelected ? 'selected' : ''}" id="${talentId}" onclick="updateSelectedTalent('${talent}', ${index})" 
                          style="padding: 15px; background: ${isSelected ? '#e8f4fd' : 'white'}; border: 2px solid ${isSelected ? '#4a90e2' : '#d0c5a0'}; 
                                 border-radius: 8px; cursor: pointer; transition: all 0.3s ease; text-align: center;
                                 box-shadow: ${isSelected ? '0 4px 8px rgba(74, 144, 226, 0.3)' : '0 2px 4px rgba(0,0,0,0.1)'};"
                          onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)';"
                          onmouseout="this.style.transform='translateY(0px)'; this.style.boxShadow='${isSelected ? '0 4px 8px rgba(74, 144, 226, 0.3)' : '0 2px 4px rgba(0,0,0,0.1)'}';")>
                         <div style="font-weight: bold; color: ${isSelected ? '#2c5aa0' : '#3e2f1f'}; margin-bottom: 5px;">
-                            ${talent}
+                            ${talent}${needsSpecialization ? ' *' : ''}
                         </div>
+                        ${needsSpecialization && isSelected ? `
+                            <div style="margin: 8px 0;">
+                                <input type="text" id="career-talent-spec-${index}" 
+                                       placeholder="${srdTalent?.specialistPrompt || 'Specify...'}"
+                                       value="${setupWizardData.careerAllocation.talentSpecialization || ''}"
+                                       onchange="updateCareerTalentSpecialization(this.value)"
+                                       onclick="event.stopPropagation()"
+                                       style="width: 90%; padding: 4px; border: 1px solid #4a90e2; border-radius: 3px; font-size: 11px;">
+                            </div>
+                        ` : ''}
                         ${isSelected ? '<div style="color: #4a90e2; font-size: 12px;">✓ SELECTED</div>' : ''}
                     </div>
                 `;
@@ -15587,9 +15832,20 @@ function loadSymptomsData() {
             updateAdvancesDisplay();
         }
         
+        // Update career talent specialization
+        function updateCareerTalentSpecialization(value) {
+            setupWizardData.careerAllocation.talentSpecialization = value;
+        }
+        
         // Update selected talent
-        function updateSelectedTalent(talentName) {
+        function updateSelectedTalent(talentName, index) {
             setupWizardData.careerAllocation.selectedTalent = talentName;
+            setupWizardData.careerAllocation.selectedTalentIndex = index;
+            
+            // Clear specialization when switching talents
+            if (setupWizardData.careerAllocation.talentSpecialization) {
+                setupWizardData.careerAllocation.talentSpecialization = '';
+            }
             
             // Refresh the talent cards UI
             const career = careersData?.careers?.find(c => c.name === setupWizardData.career);
