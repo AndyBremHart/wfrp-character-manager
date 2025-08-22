@@ -15393,6 +15393,8 @@ function loadSymptomsData() {
         
         // Handle multiple talent choices (checkboxes)
         function updateSetupTalentMultipleSelection(choiceIndex, maxCount, talentIndex, checkbox) {
+            console.log(`DEBUG: updateSetupTalentMultipleSelection called - choiceIndex: ${choiceIndex}, talentIndex: ${talentIndex}, checked: ${checkbox.checked}, talent: ${checkbox.value}`);
+            
             // Initialize the choice array if needed
             if (!setupWizardData.talents.choices[choiceIndex]) {
                 setupWizardData.talents.choices[choiceIndex] = [];
@@ -15400,6 +15402,8 @@ function loadSymptomsData() {
             
             const choiceArray = setupWizardData.talents.choices[choiceIndex];
             const customInput = document.getElementById(`setup-talent-${choiceIndex}-${talentIndex}-custom`);
+            console.log(`DEBUG: Looking for input with ID: setup-talent-${choiceIndex}-${talentIndex}-custom`);
+            console.log(`DEBUG: Custom input found:`, customInput ? 'YES' : 'NO');
             
             if (checkbox.checked) {
                 // Check if we've reached the limit
@@ -15412,6 +15416,9 @@ function loadSymptomsData() {
                 // Enable customization input if needed
                 if (customInput) {
                     customInput.disabled = false;
+                    console.log(`DEBUG: Enabled customization input for ${checkbox.value}`);
+                } else {
+                    console.log(`DEBUG: No customization input found for ${checkbox.value}`);
                 }
                 
                 // Add talent object with customization support
@@ -15423,12 +15430,14 @@ function loadSymptomsData() {
                         talent: checkbox.value,
                         customization: ''
                     });
+                    console.log(`DEBUG: Added talent object for ${checkbox.value}`);
                 }
             } else {
                 // Disable and clear customization input
                 if (customInput) {
                     customInput.disabled = true;
                     customInput.value = '';
+                    console.log(`DEBUG: Disabled and cleared customization input for ${checkbox.value}`);
                 }
                 
                 // Remove talent
@@ -15437,6 +15446,7 @@ function loadSymptomsData() {
                 );
                 if (index > -1) {
                     choiceArray.splice(index, 1);
+                    console.log(`DEBUG: Removed talent object for ${checkbox.value}`);
                 }
             }
             
@@ -15445,6 +15455,8 @@ function loadSymptomsData() {
             if (remainingSpan) {
                 remainingSpan.textContent = maxCount - choiceArray.length;
             }
+            
+            console.log(`DEBUG: Updated choice array:`, JSON.stringify(choiceArray, null, 2));
         }
         
         // Update talent customization value
