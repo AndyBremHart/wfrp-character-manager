@@ -11450,7 +11450,7 @@ document.addEventListener('DOMContentLoaded', function() {
             saveCareerSelection();
         }
         
-        // Update characteristic advancement limits based on career tier
+        // Update characteristic advancement limits based on career tier (indicators disabled)
         function updateCharacteristicLimits() {
             if (!currentCareer || !currentCareer.characteristicAdvances) {
                 console.log('No career selected, clearing all restrictions');
@@ -11469,7 +11469,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const charName = row.getAttribute('data-characteristic');
                 const advanceData = currentCareer.characteristicAdvances[charName] || [];
                 
-                // Remove existing indicators
+                // Remove any existing indicators
                 const existingIndicator = row.querySelector('.advance-limit-indicator');
                 if (existingIndicator) {
                     existingIndicator.remove();
@@ -11480,87 +11480,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Check if this characteristic can be advanced at the current tier
                 const availableAtCurrentTier = advanceData.includes(currentTier);
-                const futureAdvances = advanceData.filter(tier => tier > currentTier);
                 
                 if (availableAtCurrentTier) {
-                    // Characteristic is available at current tier - use tier-specific color
-                    row.classList.add(`career-tier-${currentTier}`);
-                    
-                    const indicator = document.createElement('div');
-                    indicator.className = 'advance-limit-indicator';
-                    indicator.innerHTML = `<strong>Available</strong> at tier ${currentTier}`;
-                    
-                    if (futureAdvances.length > 0) {
-                        indicator.innerHTML += `<br><span style="color: #888; font-size: 10px;">Also at higher tiers</span>`;
-                    }
-                    
-                    indicator.style.cssText = `
-                        position: absolute;
-                        right: 5px;
-                        top: 50%;
-                        transform: translateY(-50%);
-                        font-size: 10px;
-                        text-align: right;
-                        line-height: 1.2;
-                        pointer-events: none;
-                        z-index: 1;
-                    `;
-                    
-                    row.style.position = 'relative';
-                    row.appendChild(indicator);
-                    
-                    // Enable advance button
+                    // Enable advance button only - no indicators
                     const advanceButton = row.querySelector('button[onclick*="advanceCharacteristic"]');
                     if (advanceButton) {
                         advanceButton.disabled = false;
                         advanceButton.style.opacity = '1';
                         advanceButton.style.cursor = 'pointer';
                     }
-                    
-                } else if (advanceData.length > 0) {
-                    // Characteristic is available at future tiers only
-                    row.classList.add('career-future');
-                    
-                    const indicator = document.createElement('div');
-                    indicator.className = 'advance-limit-indicator';
-                    const nextAvailableTier = Math.min(...advanceData);
-                    indicator.innerHTML = `<span style="color: #888;">Normal cost at tier ${nextAvailableTier}+</span>`;
-                    
-                    indicator.style.cssText = `
-                        position: absolute;
-                        right: 5px;
-                        top: 50%;
-                        transform: translateY(-50%);
-                        font-size: 10px;
-                        text-align: right;
-                        line-height: 1.2;
-                        pointer-events: none;
-                        z-index: 1;
-                    `;
-                    
-                    row.style.position = 'relative';
-                    row.appendChild(indicator);
-                } else {
-                    // Characteristic is never available for this career - shows as double cost
-                    const indicator = document.createElement('div');
-                    indicator.className = 'advance-limit-indicator';
-                    indicator.innerHTML = `<span style="color: #888;">Double cost (out of career)</span>`;
-                    
-                    indicator.style.cssText = `
-                        position: absolute;
-                        right: 5px;
-                        top: 50%;
-                        transform: translateY(-50%);
-                        font-size: 10px;
-                        text-align: right;
-                        line-height: 1.2;
-                        pointer-events: none;
-                        z-index: 1;
-                    `;
-                    
-                    row.style.position = 'relative';
-                    row.appendChild(indicator);
                 }
+                // Note: All indicator creation has been disabled
             });
             
             // Update cost displays to reflect career/out-of-career costs
@@ -16948,6 +16878,9 @@ function loadSymptomsData() {
         // Finish setup wizard
         function finishSetup() {
             // Apply all the collected data
+            // First clear any floating UI elements
+            document.querySelectorAll('.advance-limit-indicator').forEach(indicator => indicator.remove());
+            
             document.getElementById('character-name').focus(); // Focus on name for user to enter
             document.getElementById('species-display').textContent = setupWizardData.species;
             document.getElementById('class-display').textContent = setupWizardData.class;
