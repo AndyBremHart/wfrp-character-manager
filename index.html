@@ -7736,12 +7736,22 @@ window.displayTalents = function() {
         // Display talent name with specialization
         let talentDisplayName = talent.displayName || talent.name;
         
-        // Add specialist indicator for specialist talents
+        // Handle specialist talents with editable specializations
         if (talent.isSpecialist && talent.specialization) {
+            // Show base name with editable specialization input
+            const baseName = talent.name;
+            talentDisplayName = `${baseName} (<input type="text" 
+                value="${talent.specialization}" 
+                placeholder="Enter specialization" 
+                style="width: 80px; font-size: 11px; padding: 2px; border: 1px solid #8b7355; background: #f9f9f9;"
+                onchange="window.updateTalentSpecialization(${talents.indexOf(talent)}, this.value)"
+                title="Click to edit specialization">) <span style="color: #8b7355; font-size: 10px;" title="Specialist Talent">●</span>`;
+        } else if (talent.isSpecialist) {
+            // Specialist talent without specialization - show with indicator
             talentDisplayName += ' <span style="color: #8b7355; font-size: 10px;" title="Specialist Talent">●</span>';
         }
         
-        // Handle legacy (any) customisation - backwards compatibility
+        // Handle legacy (any) customisation - backwards compatibility  
         if (!talent.isSpecialist && talentDisplayName && (talentDisplayName.includes('(Any)') || talentDisplayName.includes('(any)'))) {
             if (talent.customisation) {
                 talentDisplayName = talentDisplayName.replace(/\([Aa]ny\)/, `(${talent.customisation})`);
@@ -7798,6 +7808,50 @@ window.updateTalentCustomisation = function(index, customisation) {
             talents[index].displayName = talents[index].name.replace(/\([Aa]ny.*?\)/, `(${customisation})`);
         }
         displayTalents(); // Refresh display to show the updated name
+    }
+}
+
+window.updateTalentSpecialization = function(index, specialization) {
+    if (talents[index] && talents[index].isSpecialist) {
+        const talent = talents[index];
+        const oldSpecialization = talent.specialization;
+        
+        // Validate specialization is not empty
+        if (!specialization || specialization.trim() === '') {
+            alert('Specialization cannot be empty for specialist talents.');
+            // Refresh display to reset the input field
+            displayTalents();
+            return;
+        }
+        
+        // Check for duplicate specializations of the same base talent
+        const baseName = talent.name;
+        const duplicateExists = talents.some((t, i) => 
+            i !== index && 
+            t.name === baseName && 
+            t.specialization === specialization.trim()
+        );
+        
+        if (duplicateExists) {
+            alert(`You already have ${baseName} (${specialization.trim()}). Each specialization must be unique.`);
+            // Refresh display to reset the input field
+            displayTalents();
+            return;
+        }
+        
+        // Update the specialization and related properties
+        talent.specialization = specialization.trim();
+        talent.displayName = `${baseName} (${specialization.trim()})`;
+        
+        // Update instance ID if it exists
+        if (talent.instanceId) {
+            talent.instanceId = TalentInstanceManager.generateInstanceId(baseName, specialization.trim());
+        }
+        
+        console.log(`Updated talent specialization: ${baseName} from "${oldSpecialization}" to "${specialization.trim()}"`);
+        
+        // Refresh display to show the updated name
+        displayTalents();
     }
 }
 
@@ -14320,6 +14374,7 @@ function loadSymptomsData() {
         let setupCurrentStep = 0;
         const setupSteps = ['species-selection', 'characteristics', 'skills', 'talents', 'class', 'trappings', 'career', 'career-allocation', 'xp-allocation'];
         let setupWizardData = {};
+        window.setupWizardData = setupWizardData; // Make globally accessible
         let selectedSpeciesForSetup = '';
         
         // Start Character Setup Wizard
@@ -14329,6 +14384,7 @@ function loadSymptomsData() {
             document.getElementById('setup-steps').style.display = 'none';
             setupCurrentStep = 0;
             setupWizardData = {};
+            window.setupWizardData = setupWizardData; // Update global reference
         }
         
         // Close Setup Wizard
@@ -14485,6 +14541,7 @@ function loadSymptomsData() {
                     career: '',
                     trappings: []
                 };
+                window.setupWizardData = setupWizardData; // Update global reference
                 
                 // Show species info
                 speciesInfo.style.display = 'block';
@@ -15392,19 +15449,32 @@ function loadSymptomsData() {
         
         // Update talent customization value
         function updateSetupTalentCustomizationValue(choiceIndex, talentIndex, customization) {
-            if (!setupWizardData.talents.choices[choiceIndex]) return;
+            console.log(`DEBUG: updateSetupTalentCustomizationValue called - choiceIndex: ${choiceIndex}, talentIndex: ${talentIndex}, customization: ${customization}`);
+            
+            if (!setupWizardData.talents.choices[choiceIndex]) {
+                console.log("DEBUG: No choice found at index", choiceIndex);
+                return;
+            }
             
             const choice = setupWizardData.talents.choices[choiceIndex];
+            console.log("DEBUG: Choice structure:", JSON.stringify(choice, null, 2));
+            
             if (Array.isArray(choice)) {
-                // Multiple choice - find the talent object
-                const talentObj = choice.find(t => t && typeof t === 'object');
-                if (talentObj) {
-                    talentObj.customization = customization;
+                // Multiple choice - find the talent object at the specific talent index
+                if (talentIndex < choice.length && choice[talentIndex] && typeof choice[talentIndex] === 'object') {
+                    choice[talentIndex].customization = customization;
+                    console.log(`DEBUG: Updated talent at index ${talentIndex} with customization: ${customization}`);
+                } else {
+                    console.log(`DEBUG: Could not find talent object at index ${talentIndex} in choice array`);
                 }
             } else if (choice && typeof choice === 'object') {
                 // Single choice
                 choice.customization = customization;
+                console.log(`DEBUG: Updated single choice with customization: ${customization}`);
             }
+            
+            // Log updated structure
+            console.log("DEBUG: Updated choice structure:", JSON.stringify(choice, null, 2));
         }
         
         function initializeSetupClass() {
@@ -16694,6 +16764,7 @@ function loadSymptomsData() {
             
             // Clear wizard data
             setupWizardData = {};
+            window.setupWizardData = setupWizardData; // Update global reference
         }
 
         // =============== CLASS TRAPPINGS WIZARD FUNCTIONS (DISABLED) ===============
