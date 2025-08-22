@@ -5480,6 +5480,18 @@
         let srdDiseases = [];
         let srdSymptoms = [];
 
+        // Class descriptions for character creation
+        const classDescriptions = {
+            "Academic": "Educated scholars and professionals who leverage their rare literacy and knowledge to earn their living, often serving in important institutional roles despite starting with humble origins.",
+            "Burgher": "Respectable urban citizens who form the backbone of town and city life, ranging from skilled craftsmen to law enforcement, generally enjoying middle-class stability.",
+            "Courtier": "Those who serve power or wield it themselves, enjoying elevated social status and access to influential positions regardless of their birth circumstances.",
+            "Peasant": "Rural folk who work the land and live in small communities, maintaining local traditions and connections to nature despite their humble station.",
+            "Ranger": "Wandering professionals who make their fortune on the open road, traveling between settlements and living by their wits and skills.",
+            "Riverfolk": "Water-based workers who navigate the extensive river networks, making their living through trade, transport, and sometimes less savory maritime activities.",
+            "Rogue": "Urban outcasts and criminals who operate outside the law, using cunning and illegal means to survive in the shadows of civilization.",
+            "Warrior": "Professional fighters from all walks of life who rely on martial prowess, whether serving noble causes or seeking personal glory through combat."
+        };
+        
         // Class trappings data for class trappings wizard
         const classTrappings = {
             "Academic": {
@@ -5520,6 +5532,7 @@
         // Species data for character creation wizard
         const speciesData = {
             "Human": {
+                description: "Humans are the most adaptable and ambitious of the species. They excel in all walks of life and can be found in every corner of the Old World, from merchants and scholars to soldiers and rogues.",
                 characteristics: {
                     "WS": { base: 20, min: 22, max: 40 },
                     "BS": { base: 20, min: 22, max: 40 },
@@ -5574,6 +5587,7 @@
                 ]
             },
             "Dwarf": {
+                description: "Dwarfs are a proud and ancient people, renowned for their craftsmanship, their stubborn nature, and their hatred of Greenskins. They are natural warriors and artisans, with a strong sense of honor and tradition.",
                 characteristics: {
                     "WS": { base: 30, min: 32, max: 50 },
                     "BS": { base: 20, min: 22, max: 40 },
@@ -5652,7 +5666,50 @@
                     }
                 ]
             },
+            "Halfling": {
+                description: "Halflings are a small but hardy people, known for their love of comfort, good food, and peaceful lives. Despite their size, they possess remarkable courage and resilience when pressed into adventure.",
+                characteristics: {
+                    "WS": { base: 20, min: 22, max: 40 },
+                    "BS": { base: 30, min: 32, max: 50 },
+                    "S": { base: 10, min: 12, max: 30 },
+                    "T": { base: 20, min: 22, max: 40 },
+                    "I": { base: 20, min: 22, max: 40 },
+                    "Agi": { base: 20, min: 22, max: 40 },
+                    "Dex": { base: 30, min: 32, max: 50 },
+                    "Int": { base: 20, min: 22, max: 40 },
+                    "WP": { base: 30, min: 32, max: 50 },
+                    "Fel": { base: 30, min: 32, max: 50 }
+                },
+                skills: [
+                    "Charm", "Consume Alcohol", "Cool", "Dodge", "Gamble", "Gossip", 
+                    "Haggle", "Language (Halfling)", "Lore (Reikland)", "Perception", 
+                    "Sleight of Hand", "Stealth (Rural)"
+                ],
+                baseFate: 0,
+                baseResilience: 2,
+                extraPoints: 3,
+                movement: 3,
+                woundsFormula: "(2 × TB) + WPB",
+                fixedTalents: ["Acute Sense (Taste)", "Night Vision", "Resistance (Chaos)", "Small"],
+                talentChoices: [
+                    {
+                        description: "Choose two talents:",
+                        options: [
+                            "Acute Sense (any one)", "Ambidextrous", "Animal Affinity", "Artistic", 
+                            "Attractive", "Coolheaded", "Craftsman (any one)", "Flee!", "Hardy", 
+                            "Lightning Reflexes", "Linguistics", "Luck", "Marksman", "Mimic", 
+                            "Night Vision", "Nimble Fingered", "Noble Blood", "Orientation", 
+                            "Perfect Pitch", "Pure Soul", "Read/Write", "Resistance (any one)", 
+                            "Savvy", "Sharp", "Sixth Sense", "Strong Legs", "Sturdy", "Suave", 
+                            "Super Numerate", "Very Resilient", "Very Strong", "Warrior Born"
+                        ],
+                        multiple: true,
+                        count: 2
+                    }
+                ]
+            },
             "High Elf": {
+                description: "High Elves are an ancient and sophisticated people with natural magical abilities and exceptional longevity. They are graceful warriors and masterful wizards, though they can seem aloof and arrogant to other races.",
                 characteristics: {
                     "WS": { base: 30, min: 32, max: 50 },
                     "BS": { base: 30, min: 32, max: 50 },
@@ -5691,6 +5748,7 @@
                 ]
             },
             "Wood Elf": {
+                description: "Wood Elves are fierce guardians of the ancient forests, living in harmony with nature. They are exceptional archers and scouts, preferring the wilderness to civilization, and are deeply suspicious of outsiders.",
                 characteristics: {
                     "WS": { base: 30, min: 32, max: 50 },
                     "BS": { base: 30, min: 32, max: 50 },
@@ -14410,9 +14468,16 @@ function loadSymptomsData() {
             document.getElementById('character-setup-modal').style.display = 'block';
             document.getElementById('setup-warning').style.display = 'block';
             document.getElementById('setup-steps').style.display = 'none';
+            
+            // Reset wizard to step 0
             setupCurrentStep = 0;
+            
+            // Initialize fresh wizard data
             setupWizardData = {};
-            window.setupWizardData = setupWizardData; // Update global reference
+            window.setupWizardData = setupWizardData;
+            
+            // Clear any wizard inputs from previous sessions
+            clearAllWizardInputs();
         }
         
         // Close Setup Wizard
@@ -14425,14 +14490,84 @@ function loadSymptomsData() {
             // Clear all character data
             clearAllCharacterData();
             
+            // Reset wizard data completely
+            setupWizardData = {};
+            window.setupWizardData = setupWizardData;
+            
+            // Reset wizard state
+            setupCurrentStep = 0;
+            
+            // Clear all wizard form inputs
+            clearAllWizardInputs();
+            
             // Hide warning, show wizard steps
             document.getElementById('setup-warning').style.display = 'none';
             document.getElementById('setup-steps').style.display = 'block';
             
             // Start with first step
-            setupCurrentStep = 0;
             initializeSetupStep(0);
             updateSetupWizardDisplay();
+        }
+        
+        // Clear all wizard form inputs
+        function clearAllWizardInputs() {
+            // Clear species selection
+            const speciesInputs = document.querySelectorAll('#setup-wizard-step-0 input[type="radio"]');
+            speciesInputs.forEach(input => input.checked = false);
+            
+            // Clear characteristic inputs
+            const charInputs = document.querySelectorAll('#setup-wizard-step-1 input[type="number"]');
+            charInputs.forEach(input => input.value = '');
+            
+            // Clear fate and resilience inputs  
+            const fateInput = document.querySelector('#setup-wizard-step-2 input[name="fate-points"]');
+            const resilienceInput = document.querySelector('#setup-wizard-step-2 input[name="resilience-points"]');
+            if (fateInput) fateInput.value = '';
+            if (resilienceInput) resilienceInput.value = '';
+            
+            // Clear movement inputs
+            const movementInput = document.querySelector('#setup-wizard-step-3 input[name="movement"]');
+            if (movementInput) movementInput.value = '';
+            
+            // Clear talent selections and custom inputs
+            const talentCheckboxes = document.querySelectorAll('#setup-wizard-step-4 input[type="checkbox"]');
+            const talentRadios = document.querySelectorAll('#setup-wizard-step-4 input[type="radio"]');
+            const talentCustomInputs = document.querySelectorAll('#setup-wizard-step-4 input[type="text"]');
+            
+            talentCheckboxes.forEach(input => input.checked = false);
+            talentRadios.forEach(input => input.checked = false);
+            talentCustomInputs.forEach(input => input.value = '');
+            
+            // Clear skills
+            const skillInputs = document.querySelectorAll('#setup-wizard-step-5 input');
+            skillInputs.forEach(input => {
+                if (input.type === 'checkbox') input.checked = false;
+                if (input.type === 'text') input.value = '';
+                if (input.type === 'number') input.value = '';
+            });
+            
+            // Clear trappings
+            const trappingInputs = document.querySelectorAll('#setup-wizard-step-6 input');
+            trappingInputs.forEach(input => {
+                if (input.type === 'checkbox') input.checked = false;
+                if (input.type === 'number') input.value = '';
+            });
+            
+            // Clear career selection
+            const careerSelect = document.querySelector('#setup-wizard-step-7 select');
+            if (careerSelect) careerSelect.value = '';
+            
+            // Clear career talents
+            const careerTalentInputs = document.querySelectorAll('#setup-wizard-step-8 input');
+            careerTalentInputs.forEach(input => {
+                if (input.type === 'checkbox') input.checked = false;
+                if (input.type === 'radio') input.checked = false;
+                if (input.type === 'text') input.value = '';
+            });
+            
+            // Clear finalization inputs
+            const finalizationInputs = document.querySelectorAll('#setup-wizard-step-9 input, #setup-wizard-step-9 textarea');
+            finalizationInputs.forEach(input => input.value = '');
         }
         
         // Clear all character data
@@ -14470,7 +14605,50 @@ function loadSymptomsData() {
             document.getElementById('xp-spent').value = '';
             window.updateXPDisplay();
             
-            console.log('Character data cleared for setup wizard');
+            // Clear talents array and display
+            window.talents = [];
+            if (typeof displayTalents === 'function') {
+                displayTalents();
+            }
+            
+            // Clear skills array and display
+            window.skills = [];
+            if (typeof displaySkills === 'function') {
+                displaySkills();
+            }
+            
+            // Clear trappings array and display
+            window.trappings = [];
+            if (typeof displayTrappings === 'function') {
+                displayTrappings();
+            }
+            
+            // Clear spells array and display
+            window.spells = [];
+            if (typeof displaySpells === 'function') {
+                displaySpells();
+            }
+            
+            // Clear additional character fields
+            const additionalFields = [
+                'fate-current', 'fate-max', 
+                'resilience-current', 'resilience-max',
+                'movement', 'walk', 'run',
+                'wounds-current', 'wounds-max',
+                'hardy-bonus', 'sin-points', 'corruption-points'
+            ];
+            
+            additionalFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) field.value = '';
+            });
+            
+            // Clear any XP log
+            if (window.xpLog) {
+                window.xpLog = [];
+            }
+            
+            console.log('All character data cleared for setup wizard');
         }
         
         // Show specific setup step
@@ -15037,7 +15215,7 @@ function loadSymptomsData() {
                     </div>
                     <p style="margin-bottom: 20px; color: #666;">Select exactly 3 skills from your species list to receive +5 advances each.</p>
                     
-                    <div id="setup-species-skills-list-1" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div id="setup-species-skills-list-1" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
                         <!-- Skills cards will be populated dynamically -->
                     </div>
                 </div>
@@ -15054,7 +15232,7 @@ function loadSymptomsData() {
                         ${step3Complete ? 'Select 3 additional skills from the remaining skills to receive +3 advances each.' : 'Complete the first section before selecting additional skills.'}
                     </p>
                     
-                    <div id="setup-species-skills-list-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div id="setup-species-skills-list-2" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
                         <!-- Skills cards will be populated dynamically -->
                     </div>
                 </div>
@@ -15082,15 +15260,16 @@ function loadSymptomsData() {
                 const skillCard = document.createElement('div');
                 skillCard.className = `skill-card ${isSelected ? 'selected' : ''}`;
                 skillCard.style.cssText = `
-                    padding: 15px;
+                    padding: 10px;
                     background: ${isSelected ? '#e8f4fd' : 'white'};
                     border: 2px solid ${isSelected ? '#4a90e2' : '#d0c5a0'};
-                    border-radius: 8px;
+                    border-radius: 6px;
                     cursor: ${canSelect ? 'pointer' : 'not-allowed'};
                     transition: all 0.3s ease;
                     text-align: center;
                     opacity: ${canSelect ? '1' : '0.5'};
-                    box-shadow: ${isSelected ? '0 4px 8px rgba(74, 144, 226, 0.3)' : '0 2px 4px rgba(0,0,0,0.1)'};
+                    box-shadow: ${isSelected ? '0 3px 6px rgba(74, 144, 226, 0.3)' : '0 2px 3px rgba(0,0,0,0.1)'};
+                    font-size: 14px;
                 `;
                 
                 if (canSelect) {
@@ -15098,12 +15277,12 @@ function loadSymptomsData() {
                     skillCard.onmouseover = () => {
                         if (!isSelected) {
                             skillCard.style.transform = 'translateY(-2px)';
-                            skillCard.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+                            skillCard.style.boxShadow = '0 3px 8px rgba(0,0,0,0.15)';
                         }
                     };
                     skillCard.onmouseout = () => {
                         skillCard.style.transform = 'translateY(0px)';
-                        skillCard.style.boxShadow = isSelected ? '0 4px 8px rgba(74, 144, 226, 0.3)' : '0 2px 4px rgba(0,0,0,0.1)';
+                        skillCard.style.boxShadow = isSelected ? '0 3px 6px rgba(74, 144, 226, 0.3)' : '0 2px 3px rgba(0,0,0,0.1)';
                     };
                 }
                 
@@ -15267,11 +15446,13 @@ function loadSymptomsData() {
             if (speciesInfo.fixedTalents) {
                 setupWizardData.talents.fixed = [...speciesInfo.fixedTalents];
                 talentsHTML += `
-                    <div style="background: #f5f2e8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    <div style="background: #f5f2e8; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
                         <h4 style="color: #3e2f1f; margin-bottom: 10px;">Fixed Species Talents (Automatic)</h4>
-                        <div id="setup-fixed-talents-list">
+                        <div id="setup-fixed-talents-list" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
                             ${setupWizardData.talents.fixed.map(talent => 
-                                `<span style="display: inline-block; background: #d4e6f1; padding: 5px 10px; margin: 2px; border-radius: 3px;">${talent}</span>`
+                                `<div style="padding: 10px; background: #d4e6f1; border: 2px solid #4a90e2; border-radius: 6px; text-align: center; font-size: 14px;">
+                                    <span style="font-weight: bold;">✓</span> ${talent}
+                                </div>`
                             ).join('')}
                         </div>
                     </div>
@@ -15280,104 +15461,235 @@ function loadSymptomsData() {
 
             // Handle talent choices
             if (speciesInfo.talentChoices) {
-                talentsHTML += `
-                    <h4 style="color: #3e2f1f; margin-bottom: 10px;">Talent Choices</h4>
-                    <p style="margin-bottom: 15px; color: #666;">Make your talent selections below:</p>
-                    <div id="setup-talent-choices">
-                `;
-                
                 speciesInfo.talentChoices.forEach((choice, choiceIndex) => {
+                    // Initialize choice data
+                    if (!setupWizardData.talents.choices[choiceIndex]) {
+                        setupWizardData.talents.choices[choiceIndex] = choice.count === 1 ? null : [];
+                    }
+                    
+                    const isComplete = choice.count === 1 
+                        ? setupWizardData.talents.choices[choiceIndex] !== null
+                        : setupWizardData.talents.choices[choiceIndex].length === choice.count;
+                    
                     talentsHTML += `
-                        <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #d0c5a0; border-radius: 5px; background: #f9f7f1;">
-                            <h5 style="color: #3e2f1f; margin: 0 0 10px 0;">Choose ${choice.count} from:</h5>
-                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                        <div style="background: #f9f7f1; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <h4 style="color: #3e2f1f; margin: 0;">
+                                    ${choice.description || `Choose ${choice.count} talent${choice.count > 1 ? 's' : ''}`}
+                                </h4>
+                                <div style="font-size: 14px; color: #666;">
+                                    <span id="setup-talent-selected-${choiceIndex}" style="color: ${isComplete ? '#2e7d32' : '#666'}; font-weight: bold;">
+                                        ${choice.count === 1 
+                                            ? (setupWizardData.talents.choices[choiceIndex] ? '1' : '0')
+                                            : setupWizardData.talents.choices[choiceIndex].length}
+                                    </span> / ${choice.count}
+                                    ${isComplete ? '<span style="color: #2e7d32; margin-left: 10px;">✓ Complete</span>' : ''}
+                                </div>
+                            </div>
+                            <div id="setup-talent-cards-${choiceIndex}" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
                     `;
                     
                     choice.options.forEach((talent, talentIndex) => {
-                        const inputType = choice.count === 1 ? 'radio' : 'checkbox';
-                        const inputName = choice.count === 1 ? `setup-talent-choice-${choiceIndex}` : '';
-                        const nameAttribute = inputType === 'radio' ? `name="${inputName}"` : '';
-                        
-                        // Parse talent string to check for specialization
-                        const parsedTalent = TalentInstanceManager.parseSpecializedTalentString(talent);
-                        const hasParentheses = parsedTalent !== null;
-                        const baseTalentName = hasParentheses ? parsedTalent.baseName : talent;
-                        const parenthesesContent = hasParentheses ? parsedTalent.specialization : null;
-                        
-                        // Check if this is a user-choice talent (contains "any one" or similar)
-                        const isUserChoice = parenthesesContent && (
-                            parenthesesContent.toLowerCase().includes('any one') ||
-                            parenthesesContent.toLowerCase().includes('any') ||
-                            parenthesesContent.toLowerCase().includes('choose one')
-                        );
-                        const isPreSpecialized = hasParentheses && !isUserChoice;
-                        
-                        // Check if this talent needs user-specified specialization
-                        const srdTalent = srdTalents?.find(t => t.name === baseTalentName);
-                        const needsCustomization = (isUserChoice || (!hasParentheses && srdTalent?.specialist));
-                        const inputId = `setup-talent-${choiceIndex}-${talentIndex}-custom`;
-                        
-                        if (choice.count === 1) {
-                            // Radio button layout (single choice)
-                            talentsHTML += `
-                                <div style="margin-bottom: 8px;">
-                                    <label style="display: flex; align-items: center; cursor: pointer; padding: 8px; border-radius: 4px;" 
-                                           onmouseover="this.style.background='#f0f7ff'" onmouseout="this.style.background='transparent'">
-                                        <input type="radio" ${nameAttribute} value="${talent}" 
-                                               onchange="updateSetupTalentChoiceSelection(${choiceIndex}, this)"
-                                               style="margin-right: 8px;">
-                                        <span>${talent}${needsCustomization ? ' *' : ''}</span>
-                                    </label>
-                                    ${needsCustomization ? `
-                                        <div style="margin-left: 24px; margin-top: 4px;">
-                                            <input type="text" id="${inputId}" placeholder="Specify ${srdTalent?.specialistType?.toLowerCase() || baseTalentName.toLowerCase()} "
-                                                   style="width: 200px; padding: 4px; font-size: 12px; border: 1px solid #8b7355; border-radius: 3px;"
-                                                   onchange="updateSetupTalentCustomizationValue(${choiceIndex}, ${talentIndex}, this.value)"
-                                                   disabled>
-                                        </div>
-                                    ` : ''}
-                                </div>
-                            `;
-                        } else {
-                            // Checkbox layout (multiple choice)
-                            talentsHTML += `
-                                <div style="margin-bottom: 8px;">
-                                    <label style="display: flex; align-items: center; cursor: pointer; padding: 8px; border-radius: 4px;" 
-                                           onmouseover="this.style.background='#f0f7ff'" onmouseout="this.style.background='transparent'">
-                                        <input type="checkbox" value="${talent}" 
-                                               onchange="updateSetupTalentMultipleSelection(${choiceIndex}, ${choice.count}, ${talentIndex}, this)"
-                                               style="margin-right: 8px;">
-                                        <span>${talent}${needsCustomization ? ' *' : ''}</span>
-                                    </label>
-                                    ${needsCustomization ? `
-                                        <div style="margin-left: 24px; margin-top: 4px;">
-                                            <input type="text" id="${inputId}" placeholder="Specify ${srdTalent?.specialistType?.toLowerCase() || baseTalentName.toLowerCase()} "
-                                                   style="width: 200px; padding: 4px; font-size: 12px; border: 1px solid #8b7355; border-radius: 3px;"
-                                                   onchange="updateSetupTalentCustomizationValue(${choiceIndex}, ${talentIndex}, this.value)"
-                                                   disabled>
-                                        </div>
-                                    ` : ''}
-                                </div>
-                            `;
-                        }
+                        talentsHTML += `<!-- Talent card will be added dynamically -->`;
                     });
                     
                     talentsHTML += `
                             </div>
-                            <p style="margin: 10px 0 0 0; font-size: 12px; color: #666;">
-                                Remaining: <span id="setup-talent-remaining-${choiceIndex}">${choice.count}</span>
-                            </p>
                         </div>
                     `;
                 });
-                
-                talentsHTML += `</div>`;
             }
             
             talentsContent.innerHTML = talentsHTML;
+            
+            // Now populate the talent cards
+            if (speciesInfo.talentChoices) {
+                speciesInfo.talentChoices.forEach((choice, choiceIndex) => {
+                    populateTalentCards(choice, choiceIndex);
+                });
+            }
+        }
+        
+        // New function to populate talent cards with proper selection logic
+        window.populateTalentCards = function(choice, choiceIndex) {
+            const container = document.getElementById(`setup-talent-cards-${choiceIndex}`);
+            if (!container) return;
+            
+            container.innerHTML = '';
+            const currentSelection = setupWizardData.talents.choices[choiceIndex];
+            const isSingleChoice = choice.count === 1;
+            
+            choice.options.forEach((talent, talentIndex) => {
+                // Parse talent for specialization
+                const parsedTalent = TalentInstanceManager.parseSpecializedTalentString(talent);
+                const hasParentheses = parsedTalent !== null;
+                const baseTalentName = hasParentheses ? parsedTalent.baseName : talent;
+                const parenthesesContent = hasParentheses ? parsedTalent.specialization : null;
+                
+                // Check if needs customization
+                const isUserChoice = parenthesesContent && (
+                    parenthesesContent.toLowerCase().includes('any one') ||
+                    parenthesesContent.toLowerCase().includes('any') ||
+                    parenthesesContent.toLowerCase().includes('choose one')
+                );
+                
+                const srdTalent = srdTalents?.find(t => t.name === baseTalentName);
+                const needsCustomization = (isUserChoice || (!hasParentheses && srdTalent?.specialist));
+                
+                // Determine if this talent is selected
+                let isSelected = false;
+                let canSelect = true;
+                
+                if (isSingleChoice) {
+                    isSelected = currentSelection?.talent === talent;
+                    // For single choice, other options become unselectable when one is selected
+                    canSelect = !currentSelection || currentSelection.talent === talent;
+                } else {
+                    isSelected = currentSelection?.some(item => 
+                        typeof item === 'string' ? item === talent : item.talent === talent
+                    );
+                    canSelect = isSelected || currentSelection.length < choice.count;
+                }
+                
+                // Create talent card
+                const talentCard = document.createElement('div');
+                talentCard.style.cssText = `
+                    padding: 10px;
+                    background: ${isSelected ? '#e8f4fd' : 'white'};
+                    border: 2px solid ${isSelected ? '#4a90e2' : '#d0c5a0'};
+                    border-radius: 6px;
+                    cursor: ${canSelect ? 'pointer' : 'not-allowed'};
+                    transition: all 0.3s ease;
+                    text-align: center;
+                    opacity: ${canSelect ? '1' : '0.5'};
+                    box-shadow: ${isSelected ? '0 3px 6px rgba(74, 144, 226, 0.3)' : '0 2px 3px rgba(0,0,0,0.1)'};
+                    font-size: 14px;
+                    position: relative;
+                `;
+                
+                // Add content
+                let cardHTML = `
+                    <div style="font-weight: ${isSelected ? 'bold' : 'normal'};">
+                        ${isSelected ? '<span style="color: #4a90e2;">✓</span> ' : ''}
+                        ${talent}${needsCustomization ? ' *' : ''}
+                    </div>
+                `;
+                
+                // Add customization input if needed and selected
+                if (needsCustomization && isSelected) {
+                    const customValue = isSingleChoice 
+                        ? currentSelection?.customization || ''
+                        : currentSelection?.find(item => item.talent === talent)?.customization || '';
+                    
+                    cardHTML += `
+                        <input type="text" 
+                               id="setup-talent-${choiceIndex}-${talentIndex}-custom"
+                               placeholder="Specify..."
+                               value="${customValue}"
+                               style="width: 90%; margin-top: 8px; padding: 4px; font-size: 12px; border: 1px solid #8b7355; border-radius: 3px;"
+                               onclick="event.stopPropagation()"
+                               onchange="updateTalentCardCustomization(${choiceIndex}, '${talent}', this.value)"
+                        />
+                    `;
+                }
+                
+                talentCard.innerHTML = cardHTML;
+                
+                // Add click handler if selectable
+                if (canSelect) {
+                    talentCard.onclick = () => toggleTalentCardSelection(choiceIndex, talent, choice.count);
+                    
+                    // Add hover effects
+                    talentCard.onmouseover = () => {
+                        if (!isSelected) {
+                            talentCard.style.transform = 'translateY(-2px)';
+                            talentCard.style.boxShadow = '0 3px 8px rgba(0,0,0,0.15)';
+                        }
+                    };
+                    talentCard.onmouseout = () => {
+                        talentCard.style.transform = 'translateY(0px)';
+                        talentCard.style.boxShadow = isSelected ? '0 3px 6px rgba(74, 144, 226, 0.3)' : '0 2px 3px rgba(0,0,0,0.1)';
+                    };
+                }
+                
+                container.appendChild(talentCard);
+            });
         }
 
-        // Handle single talent choice (radio button)
+        // New function to handle talent card selection
+        window.toggleTalentCardSelection = function(choiceIndex, talent, maxCount) {
+            const isSingleChoice = maxCount === 1;
+            
+            if (isSingleChoice) {
+                // For single choice, selecting a new talent replaces the old one
+                const currentSelection = setupWizardData.talents.choices[choiceIndex];
+                if (currentSelection?.talent === talent) {
+                    // Deselect if clicking the same talent
+                    setupWizardData.talents.choices[choiceIndex] = null;
+                } else {
+                    // Select new talent
+                    setupWizardData.talents.choices[choiceIndex] = { talent: talent };
+                }
+            } else {
+                // For multiple choice
+                if (!setupWizardData.talents.choices[choiceIndex]) {
+                    setupWizardData.talents.choices[choiceIndex] = [];
+                }
+                
+                const currentSelection = setupWizardData.talents.choices[choiceIndex];
+                const existingIndex = currentSelection.findIndex(item => 
+                    typeof item === 'string' ? item === talent : item.talent === talent
+                );
+                
+                if (existingIndex >= 0) {
+                    // Remove if already selected
+                    currentSelection.splice(existingIndex, 1);
+                } else if (currentSelection.length < maxCount) {
+                    // Add if under limit
+                    currentSelection.push({ talent: talent });
+                }
+            }
+            
+            // Refresh the display
+            const speciesInfo = speciesData[setupWizardData.species];
+            populateTalentCards(speciesInfo.talentChoices[choiceIndex], choiceIndex);
+            
+            // Update counter
+            const counter = document.getElementById(`setup-talent-selected-${choiceIndex}`);
+            if (counter) {
+                const count = isSingleChoice 
+                    ? (setupWizardData.talents.choices[choiceIndex] ? 1 : 0)
+                    : setupWizardData.talents.choices[choiceIndex].length;
+                counter.textContent = count;
+                counter.style.color = count === maxCount ? '#2e7d32' : '#666';
+                
+                // Update complete indicator
+                const completeSpan = counter.parentElement.querySelector('span[style*="2e7d32"]');
+                if (count === maxCount && !completeSpan) {
+                    counter.parentElement.innerHTML += '<span style="color: #2e7d32; margin-left: 10px;">✓ Complete</span>';
+                } else if (count !== maxCount && completeSpan) {
+                    completeSpan.remove();
+                }
+            }
+        }
+        
+        // New function to handle talent customization
+        window.updateTalentCardCustomization = function(choiceIndex, talent, customization) {
+            const isSingleChoice = setupWizardData.talents.choices[choiceIndex]?.talent !== undefined;
+            
+            if (isSingleChoice) {
+                if (setupWizardData.talents.choices[choiceIndex]) {
+                    setupWizardData.talents.choices[choiceIndex].customization = customization;
+                }
+            } else {
+                const item = setupWizardData.talents.choices[choiceIndex]?.find(i => i.talent === talent);
+                if (item) {
+                    item.customization = customization;
+                }
+            }
+        }
+        
+        // Handle single talent choice (radio button) - keeping for backward compatibility
         function updateSetupTalentChoiceSelection(choiceIndex, radio) {
             if (radio.checked) {
                 // Initialize the choice object
@@ -15526,28 +15838,74 @@ function loadSymptomsData() {
         }
         
         function initializeSetupClass() {
-            // Show class selection
+            // Show class selection with cards
             const content = document.getElementById('setup-class-content');
+            const classes = ["Academic", "Burgher", "Courtier", "Peasant", "Ranger", "Riverfolk", "Rogue", "Warrior"];
+            const currentSelection = setupWizardData.class || null;
+            
             content.innerHTML = `
-                <div style="margin: 20px 0;">
-                    <select id="setup-class-select" onchange="handleSetupClassSelection()" style="padding: 10px; font-size: 14px; width: 100%; border: 1px solid #8b7355;">
-                        <option value="">Select Class</option>
-                        <option value="Academic">Academic</option>
-                        <option value="Burgher">Burgher</option>
-                        <option value="Courtier">Courtier</option>
-                        <option value="Peasant">Peasant</option>
-                        <option value="Ranger">Ranger</option>
-                        <option value="Riverfolk">Riverfolk</option>
-                        <option value="Rogue">Rogue</option>
-                        <option value="Warrior">Warrior</option>
-                    </select>
+                <div style="background: #f9f7f1; padding: 20px; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <p style="margin: 0; color: #666;">Select your character's social class to determine starting equipment and career options.</p>
+                        <div style="font-size: 14px; color: #666;">
+                            <span id="setup-class-selected" style="color: ${currentSelection ? '#2e7d32' : '#666'}; font-weight: bold;">
+                                ${currentSelection ? '1' : '0'}
+                            </span> / 1
+                            ${currentSelection ? '<span style="color: #2e7d32; margin-left: 10px;">✓ Complete</span>' : ''}
+                        </div>
+                    </div>
+                    <div id="setup-class-cards" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                        ${classes.map(className => {
+                            const isSelected = currentSelection === className;
+                            const description = classDescriptions[className];
+                            return `
+                                <div class="class-card" 
+                                     data-class="${className}"
+                                     onclick="selectSetupClass('${className}')"
+                                     style="
+                                        padding: 15px;
+                                        background: ${isSelected ? '#e8f4fd' : 'white'};
+                                        border: 2px solid ${isSelected ? '#4a90e2' : '#d0c5a0'};
+                                        border-radius: 8px;
+                                        cursor: pointer;
+                                        transition: all 0.3s ease;
+                                        box-shadow: ${isSelected ? '0 3px 6px rgba(74, 144, 226, 0.3)' : '0 2px 3px rgba(0,0,0,0.1)'};
+                                     "
+                                     onmouseover="if(!this.classList.contains('selected')) { this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)'; }"
+                                     onmouseout="this.style.transform='translateY(0px)'; this.style.boxShadow='${isSelected ? '0 3px 6px rgba(74, 144, 226, 0.3)' : '0 2px 3px rgba(0,0,0,0.1)'}';">
+                                    <h4 style="color: #3e2f1f; margin: 0 0 8px 0;">
+                                        ${isSelected ? '<span style="color: #4a90e2;">✓</span> ' : ''}${className}
+                                    </h4>
+                                    <p style="margin: 0; font-size: 13px; color: #666; line-height: 1.4;">
+                                        ${description}
+                                    </p>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
                 </div>
             `;
         }
         
+        // New function to handle class selection with cards
+        window.selectSetupClass = function(className) {
+            // Toggle selection - clicking same class deselects it
+            if (setupWizardData.class === className) {
+                setupWizardData.class = null;
+            } else {
+                setupWizardData.class = className;
+            }
+            
+            // Refresh the display
+            initializeSetupClass();
+        }
+        
+        // Keep old function for backward compatibility
         function handleSetupClassSelection() {
-            const classValue = document.getElementById('setup-class-select').value;
-            setupWizardData.class = classValue;
+            const classValue = document.getElementById('setup-class-select')?.value;
+            if (classValue !== undefined) {
+                setupWizardData.class = classValue;
+            }
         }
         
         function initializeSetupTrappings() {
@@ -15768,20 +16126,100 @@ function loadSymptomsData() {
             }
             
             content.innerHTML = `
-                <p style="margin-bottom: 15px; color: #666;">Select your starting career from the ${classValue} class. This will be set to Tier 1.</p>
-                <div style="margin: 20px 0;">
-                    <select id="setup-career-select" onchange="handleSetupCareerSelection()" style="padding: 10px; font-size: 14px; width: 100%; border: 1px solid #8b7355;">
-                        <option value="">Select Career</option>
-                        ${careerOptions}
-                    </select>
+                <div style="background: #f9f7f1; padding: 20px; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <p style="margin: 0; color: #666;">Select your starting career from the ${classValue} class. This will be set to Tier 1.</p>
+                        <div style="font-size: 14px; color: #666;">
+                            <span id="setup-career-selected" style="color: ${setupWizardData.career ? '#2e7d32' : '#666'}; font-weight: bold;">
+                                ${setupWizardData.career ? '1' : '0'}
+                            </span> / 1
+                            ${setupWizardData.career ? '<span style="color: #2e7d32; margin-left: 10px;">✓ Complete</span>' : ''}
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <select id="setup-career-select" onchange="handleSetupCareerSelection()" style="padding: 10px; font-size: 14px; width: 100%; border: 1px solid #8b7355;">
+                            <option value="">Select Career</option>
+                            ${careerOptions}
+                        </select>
+                    </div>
+                    
+                    <div id="setup-career-description" style="margin-top: 20px; display: none;">
+                        <!-- Career description will appear here -->
+                    </div>
+                    
+                    <p style="color: #666; font-size: 12px; margin: 15px 0 0 0;">Your character will start at Tier 1 with access to tier 1 characteristic advances.</p>
                 </div>
-                <p style="color: #666; font-size: 12px;">Your character will start at Tier 1 with access to tier 1 characteristic advances.</p>
             `;
+            
+            // Set the selected career value if one exists
+            if (setupWizardData.career) {
+                const selectElement = document.getElementById('setup-career-select');
+                if (selectElement) {
+                    selectElement.value = setupWizardData.career;
+                    // Trigger the change to show the description
+                    handleSetupCareerSelection();
+                }
+            }
         }
         
         function handleSetupCareerSelection() {
             const career = document.getElementById('setup-career-select').value;
             setupWizardData.career = career;
+            
+            // Update progress indicator
+            const selectedCounter = document.getElementById('setup-career-selected');
+            const descriptionDiv = document.getElementById('setup-career-description');
+            
+            if (career && descriptionDiv) {
+                // Find the career data to get the description
+                const careerData = careersData?.careers?.find(c => c.name === career);
+                
+                if (careerData && careerData.description) {
+                    // Show the description
+                    descriptionDiv.innerHTML = `
+                        <div style="background: #e8f4fd; padding: 15px; border-radius: 6px; border-left: 4px solid #4a90e2;">
+                            <h4 style="color: #3e2f1f; margin: 0 0 8px 0; font-size: 16px;">
+                                <span style="color: #4a90e2;">📋</span> ${career}
+                            </h4>
+                            <p style="margin: 0; color: #333; line-height: 1.4; font-style: italic;">
+                                "${careerData.description}"
+                            </p>
+                        </div>
+                    `;
+                    descriptionDiv.style.display = 'block';
+                } else {
+                    descriptionDiv.style.display = 'none';
+                }
+                
+                // Update counter
+                if (selectedCounter) {
+                    selectedCounter.textContent = '1';
+                    selectedCounter.style.color = '#2e7d32';
+                    
+                    // Add complete indicator if not already present
+                    const parentDiv = selectedCounter.parentElement;
+                    if (!parentDiv.querySelector('span[style*="2e7d32"]')) {
+                        parentDiv.innerHTML += '<span style="color: #2e7d32; margin-left: 10px;">✓ Complete</span>';
+                    }
+                }
+            } else {
+                // No career selected - hide description and reset counter
+                if (descriptionDiv) {
+                    descriptionDiv.style.display = 'none';
+                }
+                
+                if (selectedCounter) {
+                    selectedCounter.textContent = '0';
+                    selectedCounter.style.color = '#666';
+                    
+                    // Remove complete indicator
+                    const completeSpan = selectedCounter.parentElement.querySelector('span[style*="2e7d32"]');
+                    if (completeSpan) {
+                        completeSpan.remove();
+                    }
+                }
+            }
         }
         
         // =============== CAREER SKILLS & TALENTS ALLOCATION ===============
@@ -15850,10 +16288,10 @@ function loadSymptomsData() {
                 standing: statusStanding
             };
             
-            // Initialize skill allocations to 0
+            // Initialize skill allocations - career skills start with +10 automatically
             tier1.skills.forEach(skill => {
                 if (!setupWizardData.careerAllocation.skills[skill]) {
-                    setupWizardData.careerAllocation.skills[skill] = 0;
+                    setupWizardData.careerAllocation.skills[skill] = 10; // Career skills get +10 automatically
                 }
             });
             
@@ -15861,7 +16299,7 @@ function loadSymptomsData() {
             let allocationHTML = `
                 <div style="background: #f5f2e8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
                     <h4 style="color: #3e2f1f; margin: 0 0 10px 0;">${careerName} - ${tier1.name}</h4>
-                    <p style="margin: 0; color: #666; font-size: 14px;">Allocate 40 Advances across your career skills (maximum 10 per skill).</p>
+                    <p style="margin: 0; color: #666; font-size: 14px;">Your career skills start with +10 advances each. You can allocate 40 additional advances across them (maximum 20 total per skill).</p>
                 </div>
                 
                 <div style="background: #fff8dc; padding: 15px; border: 2px solid #d4a574; border-radius: 5px; margin-bottom: 20px;">
@@ -15905,14 +16343,14 @@ function loadSymptomsData() {
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <button type="button" onclick="adjustSkillAdvances('${skill}', -1)" 
                                     style="width: 30px; height: 30px; border: 1px solid #8b7355; background: white; cursor: pointer;">-</button>
-                            <input type="number" id="setup-skill-${index}" min="0" max="10" value="${currentAllocation}" 
+                            <input type="number" id="setup-skill-${index}" min="10" max="20" value="${currentAllocation}" 
                                    style="width: 60px; padding: 5px; text-align: center; border: 1px solid #8b7355;" 
                                    onchange="updateSkillAdvances('${skill}', this.value)">
                             <button type="button" onclick="adjustSkillAdvances('${skill}', 1)" 
                                     style="width: 30px; height: 30px; border: 1px solid #8b7355; background: white; cursor: pointer;">+</button>
                             <button type="button" onclick="adjustSkillAdvances('${skill}', 5)" 
                                     style="width: 35px; height: 30px; border: 1px solid #8b7355; background: #f0f7ff; cursor: pointer; font-weight: bold;">+5</button>
-                            <span style="font-size: 12px; color: #666;">(max 10)</span>
+                            <span style="font-size: 12px; color: #666;">(max 20)</span>
                         </div>
                     </div>
                 `;
@@ -15988,39 +16426,44 @@ function loadSymptomsData() {
         
         // Update skill advances allocation
         function updateSkillAdvances(skillName, value) {
-            const numValue = parseInt(value) || 0;
-            const currentValue = setupWizardData.careerAllocation.skills[skillName] || 0;
-            const totalUsed = Object.values(setupWizardData.careerAllocation.skills || {}).reduce((sum, val) => sum + val, 0);
-            const currentAvailable = 40 - (totalUsed - currentValue); // Available including this skill's current allocation
+            const numValue = parseInt(value) || 10;
+            const currentValue = setupWizardData.careerAllocation.skills[skillName] || 10;
             
-            // Clamp the value based on constraints
-            let clampedValue = Math.max(0, Math.min(10, numValue));
+            // Calculate additional advances above the base 10
+            const currentAdditional = currentValue - 10;
+            const newAdditional = numValue - 10;
+            
+            const totalUsedAdditional = Object.values(setupWizardData.careerAllocation.skills || {}).reduce((sum, val) => sum + (val - 10), 0);
+            const currentAvailable = 40 - (totalUsedAdditional - currentAdditional); // Available including this skill's current allocation
+            
+            // Clamp the additional value based on constraints  
+            let clampedAdditional = Math.max(0, Math.min(10, newAdditional));
             
             // Ensure we don't exceed available points
-            if (clampedValue > currentAvailable) {
-                clampedValue = currentAvailable;
+            if (clampedAdditional > currentAvailable) {
+                clampedAdditional = currentAvailable;
             }
             
-            setupWizardData.careerAllocation.skills[skillName] = clampedValue;
+            setupWizardData.careerAllocation.skills[skillName] = 10 + clampedAdditional;
             updateAdvancesDisplay();
         }
         
         // Adjust skill advances with +/- buttons
         function adjustSkillAdvances(skillName, delta) {
-            const currentValue = setupWizardData.careerAllocation.skills[skillName] || 0;
-            const totalUsed = Object.values(setupWizardData.careerAllocation.skills || {}).reduce((sum, val) => sum + val, 0);
-            const remaining = 40 - totalUsed;
+            const currentValue = setupWizardData.careerAllocation.skills[skillName] || 10;
+            const totalUsedAdditional = Object.values(setupWizardData.careerAllocation.skills || {}).reduce((sum, val) => sum + (val - 10), 0);
+            const remaining = 40 - totalUsedAdditional;
             
             // Calculate new value with constraints
             let newValue = currentValue + delta;
             
-            // Prevent going below 0
-            if (newValue < 0) {
-                newValue = 0;
-            }
-            // Prevent going above 10 per skill
-            if (newValue > 10) {
+            // Prevent going below 10 (base career skill level)
+            if (newValue < 10) {
                 newValue = 10;
+            }
+            // Prevent going above 20 per skill (10 base + 10 additional max)
+            if (newValue > 20) {
+                newValue = 20;
             }
             // Prevent using more than remaining points (only when increasing)
             if (delta > 0 && remaining <= 0 && newValue > currentValue) {
@@ -16066,9 +16509,10 @@ function loadSymptomsData() {
         
         // Update the advances display
         function updateAdvancesDisplay() {
-            const totalUsed = Object.values(setupWizardData.careerAllocation.skills || {}).reduce((sum, val) => sum + val, 0);
-            const remaining = 40 - totalUsed;
-            setupWizardData.careerAllocation.totalAdvancesAllocated = totalUsed;
+            // Only count additional advances above the base 10
+            const totalAdditionalUsed = Object.values(setupWizardData.careerAllocation.skills || {}).reduce((sum, val) => sum + (val - 10), 0);
+            const remaining = 40 - totalAdditionalUsed;
+            setupWizardData.careerAllocation.totalAdvancesAllocated = totalAdditionalUsed;
             
             const remainingSpan = document.getElementById('setup-advances-remaining');
             if (remainingSpan) {
