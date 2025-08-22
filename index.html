@@ -2623,9 +2623,17 @@
                     </div>
                 </div>
 
-                <!-- Step 9: XP Allocation -->
+                <!-- Step 9: Career Status & Trappings -->
                 <div id="setup-wizard-step-9" class="wizard-content" style="display: none;">
-                    <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 9: Experience Points</h3>
+                    <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 9: Career Status & Trappings</h3>
+                    <div id="setup-status-trappings-content">
+                        <!-- Status and trappings content will be populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Step 10: XP Allocation -->
+                <div id="setup-wizard-step-10" class="wizard-content" style="display: none;">
+                    <h3 style="color: #3e2f1f; margin-bottom: 15px;">Step 10: Experience Points</h3>
                     <div id="setup-xp-content">
                         <!-- XP allocation content will be populated dynamically -->
                     </div>
@@ -14566,7 +14574,7 @@ function loadSymptomsData() {
             });
             
             // Clear finalization inputs
-            const finalizationInputs = document.querySelectorAll('#setup-wizard-step-9 input, #setup-wizard-step-9 textarea');
+            const finalizationInputs = document.querySelectorAll('#setup-wizard-step-10 input, #setup-wizard-step-10 textarea');
             finalizationInputs.forEach(input => input.value = '');
         }
         
@@ -14703,7 +14711,7 @@ function loadSymptomsData() {
         // Navigation functions
         function nextSetupStep() {
             if (validateCurrentSetupStep()) {
-                if (setupCurrentStep < 9) {
+                if (setupCurrentStep < 10) {
                     setupCurrentStep++;
                     initializeSetupStep(setupCurrentStep);
                     updateSetupWizardDisplay();
@@ -14801,7 +14809,10 @@ function loadSymptomsData() {
                 case 8: // Career Skills & Talents Allocation
                     initializeSetupCareerAllocation();
                     break;
-                case 9: // XP Allocation
+                case 9: // Career Status & Trappings
+                    initializeSetupStatusTrappings();
+                    break;
+                case 10: // XP Allocation
                     initializeSetupXPAllocation();
                     break;
             }
@@ -14828,7 +14839,9 @@ function loadSymptomsData() {
                     return validateSetupCareerStep();
                 case 8: // Career Skills & Talents Allocation
                     return validateSetupCareerAllocationStep();
-                case 9: // XP Allocation
+                case 9: // Career Status & Trappings
+                    return true; // Status and trappings are automatic
+                case 10: // XP Allocation
                     return validateSetupXPAllocationStep();
                 default:
                     return true;
@@ -16271,25 +16284,6 @@ function loadSymptomsData() {
                     <p style="margin: 0; color: #666; font-size: 14px;">Allocate 40 Advances across your career skills (maximum 10 per skill).</p>
                 </div>
                 
-                <div style="background: #fff8dc; padding: 15px; border: 2px solid #d4a574; border-radius: 5px; margin-bottom: 20px;">
-                    <h4 style="color: #8b4513; margin: 0 0 10px 0; display: flex; align-items: center; gap: 10px;">
-                        <span>📊 Career Status</span>
-                    </h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-items: center;">
-                        <div>
-                            <label style="display: block; margin-bottom: 5px; color: #8b4513; font-weight: bold;">Status Tier:</label>
-                            <span style="display: block; padding: 8px; background: white; border: 1px solid #d4a574; border-radius: 3px; font-weight: bold; color: #3e2f1f;">${statusTier}</span>
-                        </div>
-                        <div>
-                            <label style="display: block; margin-bottom: 5px; color: #8b4513; font-weight: bold;">Standing:</label>
-                            <span style="display: block; padding: 8px; background: white; border: 1px solid #d4a574; border-radius: 3px; font-weight: bold; color: #3e2f1f;">${statusStanding}</span>
-                        </div>
-                    </div>
-                    <p style="margin: 10px 0 0 0; font-size: 12px; color: #8b4513; font-style: italic;">
-                        This status will be applied to your character sheet and can be modified manually during gameplay.
-                    </p>
-                </div>
-                
                 <div style="background: #f0f7ff; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <h4 style="color: #3e2f1f; margin: 0;">Career Skills (${tier1.skills.length} skills)</h4>
@@ -16505,6 +16499,116 @@ function loadSymptomsData() {
             }
             
             return true;
+        }
+
+        // =============== CAREER STATUS & TRAPPINGS STEP ===============
+        
+        // Initialize career status and trappings step
+        function initializeSetupStatusTrappings() {
+            const statusTrappingsContent = document.getElementById('setup-status-trappings-content');
+            const careerName = setupWizardData.career;
+            
+            if (!careerName) {
+                statusTrappingsContent.innerHTML = `
+                    <div style="background: #ffe6e6; padding: 15px; border: 2px solid #cc0000; border-radius: 5px;">
+                        <p style="color: #cc0000; margin: 0;">Please select a career in the previous steps first.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Find the career in the JSON data
+            const career = careersData?.careers?.find(c => c.name === careerName);
+            if (!career) {
+                statusTrappingsContent.innerHTML = `
+                    <div style="background: #ffe6e6; padding: 15px; border: 2px solid #cc0000; border-radius: 5px;">
+                        <p style="color: #cc0000; margin: 0;">Career "${careerName}" not found in data.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Get tier 1 data
+            const tier1 = career.tiers?.find(t => t.tier === 1);
+            if (!tier1) {
+                statusTrappingsContent.innerHTML = `
+                    <div style="background: #ffe6e6; padding: 15px; border: 2px solid #cc0000; border-radius: 5px;">
+                        <p style="color: #cc0000; margin: 0;">Tier 1 data not found for career "${careerName}".</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Determine career status tier and standing from JSON data
+            let statusTier = 'Brass';
+            let statusStanding = '1';
+            
+            if (tier1.status) {
+                // Parse status string like "brass-3", "silver-2", etc.
+                const statusMatch = tier1.status.match(/^(brass|silver|gold)-?(\d+)?$/i);
+                if (statusMatch) {
+                    statusTier = statusMatch[1].charAt(0).toUpperCase() + statusMatch[1].slice(1);
+                    statusStanding = statusMatch[2] || '1';
+                }
+            }
+            
+            // Store career status information
+            setupWizardData.careerStatus = {
+                tier: statusTier,
+                standing: statusStanding
+            };
+            
+            // Build the status and trappings interface
+            let statusTrappingsHTML = `
+                <div style="background: #fff8dc; padding: 20px; border: 2px solid #d4a574; border-radius: 8px; margin-bottom: 20px;">
+                    <h4 style="color: #8b4513; margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px;">
+                        <span>📊 Career Status</span>
+                    </h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-items: center;">
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; color: #8b4513; font-weight: bold;">Status Tier:</label>
+                            <span style="display: block; padding: 12px; background: white; border: 2px solid #d4a574; border-radius: 6px; font-weight: bold; color: #3e2f1f; text-align: center;">${statusTier}</span>
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; color: #8b4513; font-weight: bold;">Standing:</label>
+                            <span style="display: block; padding: 12px; background: white; border: 2px solid #d4a574; border-radius: 6px; font-weight: bold; color: #3e2f1f; text-align: center;">${statusStanding}</span>
+                        </div>
+                    </div>
+                    <p style="margin: 15px 0 0 0; font-size: 12px; color: #8b4513; font-style: italic;">
+                        This status will be applied to your character sheet and represents your standing in ${careerName} society.
+                    </p>
+                </div>
+                
+                <div style="background: #f0f7ff; padding: 20px; border-radius: 8px;">
+                    <h4 style="color: #3e2f1f; margin: 0 0 15px 0;">Career Trappings</h4>
+                    <p style="margin: 0 0 15px 0; color: #666;">These trappings will be added to your character sheet:</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+            `;
+            
+            // Add career trappings
+            if (tier1.trappings && tier1.trappings.length > 0) {
+                tier1.trappings.forEach(trapping => {
+                    statusTrappingsHTML += `
+                        <div style="padding: 10px; background: white; border: 2px solid #4a90e2; border-radius: 6px; text-align: center; font-size: 14px;">
+                            <span style="font-weight: bold; color: #4a90e2;">📦</span> ${trapping}
+                        </div>
+                    `;
+                });
+            } else {
+                statusTrappingsHTML += `
+                    <div style="grid-column: 1 / -1; padding: 15px; background: #f5f5f5; border: 2px dashed #ccc; border-radius: 6px; text-align: center; color: #666;">
+                        No specific trappings listed for this career
+                    </div>
+                `;
+            }
+            
+            statusTrappingsHTML += `
+                    </div>
+                </div>
+            `;
+            
+            statusTrappingsContent.innerHTML = statusTrappingsHTML;
         }
 
         // =============== XP ALLOCATION STEP ===============
