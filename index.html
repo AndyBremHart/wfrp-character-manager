@@ -15462,27 +15462,28 @@ function loadSymptomsData() {
             // Handle talent choices
             if (speciesInfo.talentChoices) {
                 speciesInfo.talentChoices.forEach((choice, choiceIndex) => {
-                    // Initialize choice data
+                    // Initialize choice data - default count to 1 if missing
+                    const choiceCount = choice.count || 1;
                     if (!setupWizardData.talents.choices[choiceIndex]) {
-                        setupWizardData.talents.choices[choiceIndex] = choice.count === 1 ? null : [];
+                        setupWizardData.talents.choices[choiceIndex] = choiceCount === 1 ? null : [];
                     }
                     
-                    const isComplete = choice.count === 1 
+                    const isComplete = choiceCount === 1 
                         ? setupWizardData.talents.choices[choiceIndex] !== null
-                        : setupWizardData.talents.choices[choiceIndex].length === choice.count;
+                        : setupWizardData.talents.choices[choiceIndex].length === choiceCount;
                     
                     talentsHTML += `
                         <div style="background: #f9f7f1; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                                 <h4 style="color: #3e2f1f; margin: 0;">
-                                    ${choice.description || `Choose ${choice.count} talent${choice.count > 1 ? 's' : ''}`}
+                                    ${choice.description || `Choose ${choiceCount} talent${choiceCount > 1 ? 's' : ''}`}
                                 </h4>
                                 <div style="font-size: 14px; color: #666;">
                                     <span id="setup-talent-selected-${choiceIndex}" style="color: ${isComplete ? '#2e7d32' : '#666'}; font-weight: bold;">
-                                        ${choice.count === 1 
+                                        ${choiceCount === 1 
                                             ? (setupWizardData.talents.choices[choiceIndex] ? '1' : '0')
                                             : setupWizardData.talents.choices[choiceIndex].length}
-                                    </span> / ${choice.count}
+                                    </span> / ${choiceCount}
                                     ${isComplete ? '<span style="color: #2e7d32; margin-left: 10px;">✓ Complete</span>' : ''}
                                 </div>
                             </div>
@@ -15517,7 +15518,8 @@ function loadSymptomsData() {
             
             container.innerHTML = '';
             const currentSelection = setupWizardData.talents.choices[choiceIndex];
-            const isSingleChoice = choice.count === 1;
+            const choiceCount = choice.count || 1;
+            const isSingleChoice = choiceCount === 1;
             
             choice.options.forEach((talent, talentIndex) => {
                 // Parse talent for specialization
@@ -15548,7 +15550,7 @@ function loadSymptomsData() {
                     isSelected = currentSelection?.some(item => 
                         typeof item === 'string' ? item === talent : item.talent === talent
                     );
-                    canSelect = isSelected || currentSelection.length < choice.count;
+                    canSelect = isSelected || currentSelection.length < choiceCount;
                 }
                 
                 // Create talent card
@@ -15597,7 +15599,7 @@ function loadSymptomsData() {
                 
                 // Add click handler if selectable
                 if (canSelect) {
-                    talentCard.onclick = () => toggleTalentCardSelection(choiceIndex, talent, choice.count);
+                    talentCard.onclick = () => toggleTalentCardSelection(choiceIndex, talent, choiceCount);
                     
                     // Add hover effects
                     talentCard.onmouseover = () => {
@@ -16096,11 +16098,10 @@ function loadSymptomsData() {
             // Show career selection based on class
             const content = document.getElementById('setup-career-content');
             const classValue = setupWizardData.class;
-            let careerOptions = '';
             
-            // Build career options based on selected class
-            if (classValue && careersData && careersData.careers) {
-                const filteredCareers = careersData.careers.filter(career => {
+            // Get filtered careers for card display
+            const filteredCareers = classValue && careersData && careersData.careers ? 
+                careersData.careers.filter(career => {
                     const careerClass = career.class.toLowerCase();
                     const selectedClass = classValue.toLowerCase();
                     
@@ -16118,13 +16119,8 @@ function loadSymptomsData() {
                     
                     const mappedClass = classMapping[selectedClass] || selectedClass;
                     return careerClass === mappedClass;
-                });
-                
-                filteredCareers.forEach(career => {
-                    careerOptions += `<option value="${career.name}">${career.name}</option>`;
-                });
-            }
-            
+                }) : [];
+
             content.innerHTML = `
                 <div style="background: #f9f7f1; padding: 20px; border-radius: 8px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -16137,88 +16133,61 @@ function loadSymptomsData() {
                         </div>
                     </div>
                     
-                    <div style="margin: 20px 0;">
-                        <select id="setup-career-select" onchange="handleSetupCareerSelection()" style="padding: 10px; font-size: 14px; width: 100%; border: 1px solid #8b7355;">
-                            <option value="">Select Career</option>
-                            ${careerOptions}
-                        </select>
-                    </div>
-                    
-                    <div id="setup-career-description" style="margin-top: 20px; display: none;">
-                        <!-- Career description will appear here -->
+                    <div id="setup-career-cards" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0;">
+                        ${filteredCareers.map(career => {
+                            const isSelected = setupWizardData.career === career.name;
+                            const description = career.description || 'No description available';
+                            return `
+                                <div class="career-card" 
+                                     data-career="${career.name}"
+                                     onclick="selectSetupCareer('${career.name}')"
+                                     style="
+                                        padding: 15px;
+                                        background: ${isSelected ? '#e8f4fd' : 'white'};
+                                        border: 2px solid ${isSelected ? '#4a90e2' : '#d0c5a0'};
+                                        border-radius: 8px;
+                                        cursor: pointer;
+                                        transition: all 0.3s ease;
+                                        box-shadow: ${isSelected ? '0 3px 6px rgba(74, 144, 226, 0.3)' : '0 2px 3px rgba(0,0,0,0.1)'};
+                                     "
+                                     onmouseover="if(!this.classList.contains('selected')) { this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)'; }"
+                                     onmouseout="this.style.transform='translateY(0px)'; this.style.boxShadow='${isSelected ? '0 3px 6px rgba(74, 144, 226, 0.3)' : '0 2px 3px rgba(0,0,0,0.1)'}';">
+                                    <h4 style="color: #3e2f1f; margin: 0 0 8px 0;">
+                                        ${isSelected ? '<span style="color: #4a90e2;">✓</span> ' : ''}${career.name}
+                                    </h4>
+                                    <p style="margin: 0; font-size: 13px; color: #666; line-height: 1.4; font-style: italic;">
+                                        "${description}"
+                                    </p>
+                                </div>
+                            `;
+                        }).join('')}
                     </div>
                     
                     <p style="color: #666; font-size: 12px; margin: 15px 0 0 0;">Your character will start at Tier 1 with access to tier 1 characteristic advances.</p>
                 </div>
             `;
             
-            // Set the selected career value if one exists
-            if (setupWizardData.career) {
-                const selectElement = document.getElementById('setup-career-select');
-                if (selectElement) {
-                    selectElement.value = setupWizardData.career;
-                    // Trigger the change to show the description
-                    handleSetupCareerSelection();
-                }
-            }
+            // No need to set selected values as they are built into the cards
         }
         
-        function handleSetupCareerSelection() {
-            const career = document.getElementById('setup-career-select').value;
-            setupWizardData.career = career;
-            
-            // Update progress indicator
-            const selectedCounter = document.getElementById('setup-career-selected');
-            const descriptionDiv = document.getElementById('setup-career-description');
-            
-            if (career && descriptionDiv) {
-                // Find the career data to get the description
-                const careerData = careersData?.careers?.find(c => c.name === career);
-                
-                if (careerData && careerData.description) {
-                    // Show the description
-                    descriptionDiv.innerHTML = `
-                        <div style="background: #e8f4fd; padding: 15px; border-radius: 6px; border-left: 4px solid #4a90e2;">
-                            <h4 style="color: #3e2f1f; margin: 0 0 8px 0; font-size: 16px;">
-                                <span style="color: #4a90e2;">📋</span> ${career}
-                            </h4>
-                            <p style="margin: 0; color: #333; line-height: 1.4; font-style: italic;">
-                                "${careerData.description}"
-                            </p>
-                        </div>
-                    `;
-                    descriptionDiv.style.display = 'block';
-                } else {
-                    descriptionDiv.style.display = 'none';
-                }
-                
-                // Update counter
-                if (selectedCounter) {
-                    selectedCounter.textContent = '1';
-                    selectedCounter.style.color = '#2e7d32';
-                    
-                    // Add complete indicator if not already present
-                    const parentDiv = selectedCounter.parentElement;
-                    if (!parentDiv.querySelector('span[style*="2e7d32"]')) {
-                        parentDiv.innerHTML += '<span style="color: #2e7d32; margin-left: 10px;">✓ Complete</span>';
-                    }
-                }
+        // New function to handle career card selection
+        window.selectSetupCareer = function(careerName) {
+            // Toggle selection - clicking same career deselects it
+            if (setupWizardData.career === careerName) {
+                setupWizardData.career = null;
             } else {
-                // No career selected - hide description and reset counter
-                if (descriptionDiv) {
-                    descriptionDiv.style.display = 'none';
-                }
-                
-                if (selectedCounter) {
-                    selectedCounter.textContent = '0';
-                    selectedCounter.style.color = '#666';
-                    
-                    // Remove complete indicator
-                    const completeSpan = selectedCounter.parentElement.querySelector('span[style*="2e7d32"]');
-                    if (completeSpan) {
-                        completeSpan.remove();
-                    }
-                }
+                setupWizardData.career = careerName;
+            }
+            
+            // Refresh the display
+            initializeSetupCareer();
+        }
+        
+        // Keep old function for backward compatibility
+        function handleSetupCareerSelection() {
+            const career = document.getElementById('setup-career-select')?.value;
+            if (career !== undefined) {
+                setupWizardData.career = career;
             }
         }
         
@@ -16288,10 +16257,10 @@ function loadSymptomsData() {
                 standing: statusStanding
             };
             
-            // Initialize skill allocations - career skills start with +10 automatically
+            // Initialize skill allocations to 0
             tier1.skills.forEach(skill => {
                 if (!setupWizardData.careerAllocation.skills[skill]) {
-                    setupWizardData.careerAllocation.skills[skill] = 10; // Career skills get +10 automatically
+                    setupWizardData.careerAllocation.skills[skill] = 0;
                 }
             });
             
@@ -16299,7 +16268,7 @@ function loadSymptomsData() {
             let allocationHTML = `
                 <div style="background: #f5f2e8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
                     <h4 style="color: #3e2f1f; margin: 0 0 10px 0;">${careerName} - ${tier1.name}</h4>
-                    <p style="margin: 0; color: #666; font-size: 14px;">Your career skills start with +10 advances each. You can allocate 40 additional advances across them (maximum 20 total per skill).</p>
+                    <p style="margin: 0; color: #666; font-size: 14px;">Allocate 40 Advances across your career skills (maximum 10 per skill).</p>
                 </div>
                 
                 <div style="background: #fff8dc; padding: 15px; border: 2px solid #d4a574; border-radius: 5px; margin-bottom: 20px;">
@@ -16343,14 +16312,16 @@ function loadSymptomsData() {
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <button type="button" onclick="adjustSkillAdvances('${skill}', -1)" 
                                     style="width: 30px; height: 30px; border: 1px solid #8b7355; background: white; cursor: pointer;">-</button>
-                            <input type="number" id="setup-skill-${index}" min="10" max="20" value="${currentAllocation}" 
+                            <input type="number" id="setup-skill-${index}" min="0" max="10" value="${currentAllocation}" 
                                    style="width: 60px; padding: 5px; text-align: center; border: 1px solid #8b7355;" 
                                    onchange="updateSkillAdvances('${skill}', this.value)">
                             <button type="button" onclick="adjustSkillAdvances('${skill}', 1)" 
                                     style="width: 30px; height: 30px; border: 1px solid #8b7355; background: white; cursor: pointer;">+</button>
                             <button type="button" onclick="adjustSkillAdvances('${skill}', 5)" 
                                     style="width: 35px; height: 30px; border: 1px solid #8b7355; background: #f0f7ff; cursor: pointer; font-weight: bold;">+5</button>
-                            <span style="font-size: 12px; color: #666;">(max 20)</span>
+                            <button type="button" onclick="adjustSkillAdvances('${skill}', 10)" 
+                                    style="width: 40px; height: 30px; border: 1px solid #8b7355; background: #e8f4fd; cursor: pointer; font-weight: bold;">+10</button>
+                            <span style="font-size: 12px; color: #666;">(max 10)</span>
                         </div>
                     </div>
                 `;
@@ -16426,44 +16397,39 @@ function loadSymptomsData() {
         
         // Update skill advances allocation
         function updateSkillAdvances(skillName, value) {
-            const numValue = parseInt(value) || 10;
-            const currentValue = setupWizardData.careerAllocation.skills[skillName] || 10;
+            const numValue = parseInt(value) || 0;
+            const currentValue = setupWizardData.careerAllocation.skills[skillName] || 0;
+            const totalUsed = Object.values(setupWizardData.careerAllocation.skills || {}).reduce((sum, val) => sum + val, 0);
+            const currentAvailable = 40 - (totalUsed - currentValue); // Available including this skill's current allocation
             
-            // Calculate additional advances above the base 10
-            const currentAdditional = currentValue - 10;
-            const newAdditional = numValue - 10;
-            
-            const totalUsedAdditional = Object.values(setupWizardData.careerAllocation.skills || {}).reduce((sum, val) => sum + (val - 10), 0);
-            const currentAvailable = 40 - (totalUsedAdditional - currentAdditional); // Available including this skill's current allocation
-            
-            // Clamp the additional value based on constraints  
-            let clampedAdditional = Math.max(0, Math.min(10, newAdditional));
+            // Clamp the value based on constraints
+            let clampedValue = Math.max(0, Math.min(10, numValue));
             
             // Ensure we don't exceed available points
-            if (clampedAdditional > currentAvailable) {
-                clampedAdditional = currentAvailable;
+            if (clampedValue > currentAvailable) {
+                clampedValue = currentAvailable;
             }
             
-            setupWizardData.careerAllocation.skills[skillName] = 10 + clampedAdditional;
+            setupWizardData.careerAllocation.skills[skillName] = clampedValue;
             updateAdvancesDisplay();
         }
         
         // Adjust skill advances with +/- buttons
         function adjustSkillAdvances(skillName, delta) {
-            const currentValue = setupWizardData.careerAllocation.skills[skillName] || 10;
-            const totalUsedAdditional = Object.values(setupWizardData.careerAllocation.skills || {}).reduce((sum, val) => sum + (val - 10), 0);
-            const remaining = 40 - totalUsedAdditional;
+            const currentValue = setupWizardData.careerAllocation.skills[skillName] || 0;
+            const totalUsed = Object.values(setupWizardData.careerAllocation.skills || {}).reduce((sum, val) => sum + val, 0);
+            const remaining = 40 - totalUsed;
             
             // Calculate new value with constraints
             let newValue = currentValue + delta;
             
-            // Prevent going below 10 (base career skill level)
-            if (newValue < 10) {
-                newValue = 10;
+            // Prevent going below 0
+            if (newValue < 0) {
+                newValue = 0;
             }
-            // Prevent going above 20 per skill (10 base + 10 additional max)
-            if (newValue > 20) {
-                newValue = 20;
+            // Prevent going above 10 per skill
+            if (newValue > 10) {
+                newValue = 10;
             }
             // Prevent using more than remaining points (only when increasing)
             if (delta > 0 && remaining <= 0 && newValue > currentValue) {
@@ -16509,10 +16475,9 @@ function loadSymptomsData() {
         
         // Update the advances display
         function updateAdvancesDisplay() {
-            // Only count additional advances above the base 10
-            const totalAdditionalUsed = Object.values(setupWizardData.careerAllocation.skills || {}).reduce((sum, val) => sum + (val - 10), 0);
-            const remaining = 40 - totalAdditionalUsed;
-            setupWizardData.careerAllocation.totalAdvancesAllocated = totalAdditionalUsed;
+            const totalUsed = Object.values(setupWizardData.careerAllocation.skills || {}).reduce((sum, val) => sum + val, 0);
+            const remaining = 40 - totalUsed;
+            setupWizardData.careerAllocation.totalAdvancesAllocated = totalUsed;
             
             const remainingSpan = document.getElementById('setup-advances-remaining');
             if (remainingSpan) {
