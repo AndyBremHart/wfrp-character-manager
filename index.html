@@ -16612,18 +16612,8 @@ function loadSymptomsData() {
                     </div>
                     
                     <p style="margin: 15px 0 0 0; font-size: 12px; color: #666; font-style: italic;">
-                        These items will be automatically added to your character sheet in the appropriate sections.
+                        These items will be automatically added to your character sheet when character creation is complete.
                     </p>
-                    
-                    <div style="margin-top: 20px; text-align: center;">
-                        <button class="control-btn" onclick="addCareerTrappingsToCharacterSheet()" 
-                                style="padding: 12px 24px; font-size: 14px; background: #4a90e2; color: white; border: none; border-radius: 5px;">
-                            📦 Add All to Character Sheet
-                        </button>
-                        <p style="margin: 10px 0 0 0; font-size: 12px; color: #666; font-style: italic;">
-                            This will add all career trappings to the appropriate sections of your character sheet.
-                        </p>
-                    </div>
                 </div>
             `;
             
@@ -17289,6 +17279,116 @@ function loadSymptomsData() {
                 console.log('Equipment applied:', { weaponItems, armorItems, generalEquipment });
             }
             
+            // Apply career trappings
+            if (setupWizardData.career && careersData) {
+                const career = careersData.careers.find(c => c.name === setupWizardData.career);
+                if (career && career.tiers && career.tiers[0] && career.tiers[0].trappings) {
+                    const careerTrappings = career.tiers[0].trappings;
+                    
+                    // Separate career equipment by type
+                    const careerWeapons = [];
+                    const careerArmour = [];
+                    const careerConsumables = [];
+                    const careerGeneralEquipment = [];
+                    
+                    careerTrappings.forEach(item => {
+                        const itemLower = item.toLowerCase();
+                        
+                        // Check if it's a weapon
+                        if (isWeaponItem(itemLower)) {
+                            careerWeapons.push(item);
+                        }
+                        // Check if it's armor/armour
+                        else if (isArmourItem(itemLower)) {
+                            careerArmour.push(item);
+                        }
+                        // Check if it's consumable/ammunition
+                        else if (isConsumableItem(itemLower)) {
+                            careerConsumables.push(item);
+                        }
+                        // Default to general equipment
+                        else {
+                            careerGeneralEquipment.push(item);
+                        }
+                    });
+                    
+                    // Add career weapons
+                    if (careerWeapons.length > 0) {
+                        careerWeapons.forEach(weaponName => {
+                            weapons.push({
+                                name: weaponName,
+                                group: 'Basic',
+                                encumbrance: 1,
+                                range: '-',
+                                damage: '+SB',
+                                qualities: [],
+                                flaws: [],
+                                notes: 'From career',
+                                equipped: false
+                            });
+                        });
+                        if (typeof window.displayWeapons === 'function') {
+                            window.displayWeapons();
+                        }
+                    }
+                    
+                    // Add career armour
+                    if (careerArmour.length > 0) {
+                        careerArmour.forEach(armourName => {
+                            armour.push({
+                                name: armourName,
+                                locations: ['Body'],
+                                encumbrance: 1,
+                                ap: 1,
+                                qualities: [],
+                                flaws: [],
+                                notes: 'From career',
+                                worn: false
+                            });
+                        });
+                        if (typeof window.displayArmour === 'function') {
+                            window.displayArmour();
+                        }
+                    }
+                    
+                    // Add career consumables
+                    if (careerConsumables.length > 0) {
+                        careerConsumables.forEach(consumableName => {
+                            consumables.push({
+                                name: consumableName,
+                                current: 0,
+                                maximum: 0,
+                                traits: '',
+                                notes: 'From career'
+                            });
+                        });
+                        if (typeof window.displayConsumables === 'function') {
+                            window.displayConsumables();
+                        }
+                    }
+                    
+                    // Add career general equipment to trappings
+                    if (careerGeneralEquipment.length > 0) {
+                        careerGeneralEquipment.forEach(itemName => {
+                            trappings.push({
+                                name: itemName,
+                                quantity: 1,
+                                encumbrance: 0.5,
+                                location: 'Backpack',
+                                notes: 'From career'
+                            });
+                        });
+                        if (typeof window.displayTrappings === 'function') {
+                            window.displayTrappings();
+                        }
+                    }
+                    
+                    console.log('Career equipment applied:', { 
+                        careerWeapons, careerArmour, careerConsumables, careerGeneralEquipment 
+                    });
+                }
+            }
+            
             // Set career and tier
             if (setupWizardData.career) {
                 document.getElementById('career-select').value = setupWizardData.career;
@@ -17885,7 +17985,7 @@ function loadSymptomsData() {
                     availability: weaponData.availability || ''
                 });
                 
-                displayWeapons();
+                window.displayWeapons();
             } else {
                 // Add as basic weapon entry
                 weapons.push({
@@ -17901,7 +18001,7 @@ function loadSymptomsData() {
                     availability: ''
                 });
                 
-                displayWeapons();
+                window.displayWeapons();
             }
         }
 
@@ -17913,7 +18013,7 @@ function loadSymptomsData() {
                 notes: ''
             });
             
-            displayTrappings();
+            window.displayTrappings();
         }
 
         function closeClassWizard() {
