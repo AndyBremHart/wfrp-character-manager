@@ -10725,7 +10725,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.warn(`srdTalents not loaded yet. Adding talent with basic structure.`);
                     // Add with minimal structure if SRD data isn't available
                     const displayName = customisation ? `${baseName} (${customisation})` : baseName;
-                    talents.push({
+                    const newTalent = {
                         name: baseName,
                         displayName: displayName,
                         max: "1",
@@ -10733,8 +10733,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         description: '',
                         timesTaken: 1,
                         customisation: customisation,
-                        notes: ''
-                    });
+                        notes: '',
+                        // Set isSpecialist for known specialist talents even without SRD data
+                        isSpecialist: ['Acute Sense', 'Craftsman', 'Resistance', 'Etiquette', 'Arcane Magic', 'Bless', 'Chaos Magic', 'Fearless', 'Hatred', 'Invoke', 'Master Tradesman', 'Savant', 'Strider'].includes(baseName)
+                    };
+                    
+                    // For specialist talents, also set specialization property
+                    if (newTalent.isSpecialist && customisation) {
+                        newTalent.specialization = customisation;
+                        newTalent.instanceId = TalentInstanceManager.generateInstanceId(baseName, customisation);
+                    }
+                    
+                    talents.push(newTalent);
                     
                     // Apply characteristic bonuses if this talent provides them
                     console.log("DEBUG: [Function 1 - No SRD] About to check for characteristic bonus for:", baseName);
@@ -10796,7 +10806,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Add talent to talents array with complete structure
                 // Ensure max is converted to string for consistency
                 const talentMax = baseTalent.max !== undefined ? String(baseTalent.max) : "1";
-                talents.push({
+                const newTalent = {
                     name: baseName,
                     displayName: displayName,
                     max: talentMax,
@@ -10804,8 +10814,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     description: baseTalent.description || '',
                     timesTaken: 1,
                     customisation: customisation,
-                    notes: ''
-                });
+                    notes: '',
+                    isSpecialist: baseTalent.specialist || false
+                };
+                
+                // For specialist talents, also set specialization property
+                if (newTalent.isSpecialist && customisation) {
+                    newTalent.specialization = customisation;
+                    newTalent.instanceId = TalentInstanceManager.generateInstanceId(baseName, customisation);
+                }
+                
+                talents.push(newTalent);
 
                 // Apply characteristic bonuses if this talent provides them
                 console.log("=== addTalentDirectly MAIN PATH DEBUG ===");
@@ -16394,16 +16413,20 @@ function loadSymptomsData() {
                 
                 // Add chosen talents from talent choices
                 if (setupWizardData.talents.choices) {
-                    setupWizardData.talents.choices.forEach(choice => {
+                    setupWizardData.talents.choices.forEach((choice, choiceIndex) => {
+                        console.log(`DEBUG: Processing choice ${choiceIndex}:`, JSON.stringify(choice, null, 2));
                         if (Array.isArray(choice)) {
                             // Multiple selection - array of talent objects
-                            choice.forEach(talentObj => {
+                            choice.forEach((talentObj, talentIndex) => {
+                                console.log(`DEBUG: Processing talent object ${talentIndex}:`, JSON.stringify(talentObj, null, 2));
                                 if (typeof talentObj === 'object' && talentObj.talent) {
                                     const talentName = talentObj.customization ? 
                                         `${talentObj.talent.replace(/\s*\(.+\)/, '')} (${talentObj.customization})` : 
                                         talentObj.talent;
+                                    console.log(`DEBUG: Constructed talent name: "${talentName}" from talent: "${talentObj.talent}", customization: "${talentObj.customization}"`);
                                     allSelectedTalents.push(talentName);
                                 } else if (typeof talentObj === 'string') {
+                                    console.log(`DEBUG: Adding string talent: "${talentObj}"`);
                                     allSelectedTalents.push(talentObj);
                                 }
                             });
