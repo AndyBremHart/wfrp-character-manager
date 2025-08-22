@@ -10614,6 +10614,23 @@ document.addEventListener('DOMContentLoaded', function() {
             function findWizardSpecialization(baseTalentName) {
                 console.log(`DEBUG: findWizardSpecialization called for: ${baseTalentName}`);
                 
+                if (!window.setupWizardData) {
+                    console.log("DEBUG: No setupWizardData found");
+                    return null;
+                }
+                
+                // Check career talent specialization first
+                if (window.setupWizardData.careerAllocation?.selectedTalent && window.setupWizardData.careerAllocation?.talentSpecialization) {
+                    const careerTalent = window.setupWizardData.careerAllocation.selectedTalent;
+                    const parsed = TalentInstanceManager.parseSpecializedTalentString(careerTalent);
+                    const careerBaseName = parsed ? parsed.baseName : careerTalent.replace(/\s*\(.*\)/, '');
+                    
+                    if (careerBaseName === baseTalentName) {
+                        console.log(`DEBUG: Found specialization in career talent: ${window.setupWizardData.careerAllocation.talentSpecialization}`);
+                        return window.setupWizardData.careerAllocation.talentSpecialization;
+                    }
+                }
+                
                 if (!window.setupWizardData?.talents) {
                     console.log("DEBUG: No setupWizardData.talents found");
                     return null;
@@ -16512,7 +16529,15 @@ function loadSymptomsData() {
                 
                 // Apply selected career talent
                 if (setupWizardData.careerAllocation.selectedTalent) {
-                    const talentName = setupWizardData.careerAllocation.selectedTalent;
+                    let talentName = setupWizardData.careerAllocation.selectedTalent;
+                    
+                    // Check if this talent has a user-specified specialization
+                    if (setupWizardData.careerAllocation.talentSpecialization) {
+                        // Replace "(any)" or "(any one)" with the user's specialization
+                        talentName = talentName.replace(/\s*\(any\s*(?:one)?\)/i, ` (${setupWizardData.careerAllocation.talentSpecialization})`);
+                        console.log(`DEBUG: Career talent with specialization: "${talentName}" from "${setupWizardData.careerAllocation.selectedTalent}" + "${setupWizardData.careerAllocation.talentSpecialization}"`);
+                    }
+                    
                     if (typeof window.addTalentDirectly === 'function') {
                         window.addTalentDirectly(talentName);
                         console.log(`Added career talent: ${talentName} using addTalentDirectly`);
