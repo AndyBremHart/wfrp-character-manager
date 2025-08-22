@@ -10809,12 +10809,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Create display name
                 const displayName = customisation ? `${baseName} (${customisation})` : baseName;
                 
-                // Check if talent already exists (by name and customisation)
-                const existingTalent = talents.find(t => t.name === baseName && (t.customisation || '') === customisation);
+                // Check if talent already exists - handle specialist talents properly
+                const existingTalent = talents.find(t => {
+                    if (baseTalent.specialist && customisation) {
+                        // For specialist talents, check both name and specialization
+                        return t.name === baseName && t.specialization === customisation;
+                    } else if (customisation) {
+                        // For legacy talents with customisation, check both name and customisation
+                        return t.name === baseName && (t.customisation || '') === customisation;
+                    } else {
+                        // For regular talents, check name only and ensure no specialization/customisation
+                        return t.name === baseName && !t.specialization && !t.customisation;
+                    }
+                });
+                
                 if (existingTalent) {
+                    console.log(`DEBUG: Found existing talent: ${existingTalent.displayName}, timesTaken: ${existingTalent.timesTaken}`);
                     // If it's a multiple talent, increase the times taken
                     if (baseTalent.max && baseTalent.max !== "1") {
                         existingTalent.timesTaken = Math.min((existingTalent.timesTaken || 1) + 1, parseInt(baseTalent.max) || 1);
+                        console.log(`DEBUG: Increased timesTaken to: ${existingTalent.timesTaken}`);
+                    } else {
+                        console.log(`DEBUG: Talent ${existingTalent.displayName} already exists and cannot be taken again (max: ${baseTalent.max})`);
                     }
                     displayTalents();
                     return;
