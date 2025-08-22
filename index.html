@@ -16580,29 +16580,40 @@ function loadSymptomsData() {
                     </p>
                 </div>
                 
-                <div style="background: #f0f7ff; padding: 20px; border-radius: 8px;">
-                    <h4 style="color: #3e2f1f; margin: 0 0 15px 0;">Career Trappings</h4>
-                    <p style="margin: 0 0 15px 0; color: #666;">These trappings will be added to your character sheet:</p>
+                <div style="background: #f5f2e8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    <h4 style="color: #3e2f1f; margin: 0 0 15px 0;">Career Trappings: ${careerName}</h4>
+                    <p style="margin-bottom: 15px; color: #666;">Your character receives the following starting equipment:</p>
                     
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                    <div style="margin-bottom: 20px;">
+                        <h5 style="color: #3e2f1f; margin: 0 0 10px 0;">Fixed Equipment:</h5>
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 5px;">
             `;
             
             // Add career trappings
             if (tier1.trappings && tier1.trappings.length > 0) {
                 tier1.trappings.forEach(trapping => {
                     statusTrappingsHTML += `
-                        <div style="padding: 10px; background: white; border: 2px solid #4a90e2; border-radius: 6px; text-align: center; font-size: 14px;">
-                            <span style="font-weight: bold; color: #4a90e2;">📦</span> ${trapping}
+                        <div style="display: flex; align-items: center; padding: 5px; background: white; border: 1px solid #d0c5a0; border-radius: 3px;">
+                            <input type="checkbox" checked disabled style="margin-right: 10px;">
+                            <span>${trapping}</span>
                         </div>
                     `;
                 });
             } else {
                 statusTrappingsHTML += `
-                    <div style="grid-column: 1 / -1; padding: 15px; background: #f5f5f5; border: 2px dashed #ccc; border-radius: 6px; text-align: center; color: #666;">
+                    <div style="padding: 15px; background: #f5f5f5; border: 2px dashed #ccc; border-radius: 6px; text-align: center; color: #666;">
                         No specific trappings listed for this career
                     </div>
                 `;
             }
+            
+            statusTrappingsHTML += `
+                        </div>
+                    </div>
+                    
+                    <p style="margin: 15px 0 0 0; font-size: 12px; color: #666; font-style: italic;">
+                        These items will be automatically added to your character sheet in the appropriate sections.
+                    </p>
             
             statusTrappingsHTML += `
                     </div>
