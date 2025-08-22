@@ -7302,14 +7302,23 @@ window.confirmAddTalent = function() {
     }
     
     // Check if this exact talent already exists
+    console.log(`DEBUG: Checking for existing talent - name: "${talentData.name}", specialist: ${talentData.specialist}, specialization: "${specialization}"`);
+    console.log(`DEBUG: Current talents:`, talents.map(t => `${t.name}(${t.specialization || 'none'})`));
+    
     const existingTalentIndex = talents.findIndex(t => {
         if (talentData.specialist) {
-            return t.name === talentData.name && t.specialization === specialization;
+            const match = t.name === talentData.name && t.specialization === specialization;
+            console.log(`DEBUG: Checking specialist talent ${t.name}(${t.specialization || 'none'}) vs ${talentData.name}(${specialization}) = ${match}`);
+            return match;
         } else {
-            return t.name === talentData.name && 
+            const match = t.name === talentData.name && 
                    ((!t.specialization && !specialization) || t.specialization === specialization);
+            console.log(`DEBUG: Checking regular talent ${t.name}(${t.specialization || 'none'}) vs ${talentData.name}(${specialization}) = ${match}`);
+            return match;
         }
     });
+    
+    console.log(`DEBUG: Existing talent index: ${existingTalentIndex}`);
     
     if (existingTalentIndex !== -1) {
         // If it can be taken multiple times and we're adding more
