@@ -16614,9 +16614,6 @@ function loadSymptomsData() {
                     <p style="margin: 15px 0 0 0; font-size: 12px; color: #666; font-style: italic;">
                         These items will be automatically added to your character sheet in the appropriate sections.
                     </p>
-            
-            statusTrappingsHTML += `
-                    </div>
                     
                     <div style="margin-top: 20px; text-align: center;">
                         <button class="control-btn" onclick="addCareerTrappingsToCharacterSheet()" 
@@ -16755,7 +16752,7 @@ function loadSymptomsData() {
                 });
             }
             
-            displayArmour();
+            window.displayArmour();
         }
 
         // Add consumable directly to character sheet
@@ -16768,7 +16765,7 @@ function loadSymptomsData() {
                 notes: ''
             });
             
-            displayConsumables();
+            window.displayConsumables();
         }
 
         // =============== XP ALLOCATION STEP ===============
