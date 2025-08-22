@@ -11478,16 +11478,52 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Clear existing highlighting
                 row.classList.remove('career-available', 'career-future', 'career-tier-1', 'career-tier-2', 'career-tier-3', 'career-tier-4');
                 
+                // Get the advance cell (5th td element)
+                const advanceCell = row.querySelector('td:nth-child(5)');
+                
+                // Clear any previous tier styling from the advance cell
+                if (advanceCell) {
+                    advanceCell.style.backgroundColor = '';
+                }
+                
                 // Check if this characteristic can be advanced at the current tier
                 const availableAtCurrentTier = advanceData.includes(currentTier);
                 
-                if (availableAtCurrentTier) {
-                    // Enable advance button only - no indicators
+                if (availableAtCurrentTier && advanceCell) {
+                    // Apply tier-based coloring to the advance cell
+                    const tierColors = {
+                        1: '#c8f7c5', // Light green for T1
+                        2: '#d2a86b', // Bronze for T2
+                        3: '#c4c4c4', // Silver for T3
+                        4: '#ffd700'  // Gold for T4
+                    };
+                    
+                    const tierColor = tierColors[currentTier] || '';
+                    if (tierColor) {
+                        advanceCell.style.backgroundColor = tierColor;
+                    }
+                    
+                    // Enable advance button
                     const advanceButton = row.querySelector('button[onclick*="advanceCharacteristic"]');
                     if (advanceButton) {
                         advanceButton.disabled = false;
                         advanceButton.style.opacity = '1';
                         advanceButton.style.cursor = 'pointer';
+                    }
+                } else if (advanceData.length > 0 && advanceCell) {
+                    // Characteristic is available at future tiers - show the lowest tier color with reduced opacity
+                    const nextAvailableTier = Math.min(...advanceData);
+                    const tierColors = {
+                        1: '#c8f7c5', // Light green for T1
+                        2: '#d2a86b', // Bronze for T2
+                        3: '#c4c4c4', // Silver for T3
+                        4: '#ffd700'  // Gold for T4
+                    };
+                    
+                    const tierColor = tierColors[nextAvailableTier] || '';
+                    if (tierColor) {
+                        advanceCell.style.backgroundColor = tierColor;
+                        advanceCell.style.opacity = '0.3'; // Reduced opacity for future tiers
                     }
                 }
                 // Note: All indicator creation has been disabled
@@ -11505,6 +11541,12 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.advance-disabled').forEach(cell => cell.classList.remove('advance-disabled'));
             document.querySelectorAll('.career-available, .career-future, .career-tier-1, .career-tier-2, .career-tier-3, .career-tier-4').forEach(row => {
                 row.classList.remove('career-available', 'career-future', 'career-tier-1', 'career-tier-2', 'career-tier-3', 'career-tier-4');
+            });
+            
+            // Clear tier coloring from advance cells
+            document.querySelectorAll('tr[data-characteristic] td:nth-child(5)').forEach(advanceCell => {
+                advanceCell.style.backgroundColor = '';
+                advanceCell.style.opacity = '';
             });
             
             // Re-enable all advance buttons
@@ -17454,7 +17496,7 @@ function loadSymptomsData() {
                                     allTalents.push(talentObj);
                                 }
                             });
-                        } else if (typeof choice === 'object' && choice.talent) {
+                        } else if (typeof choice === 'object' && choice && choice.talent) {
                             const talentName = choice.customization ? 
                                 `${choice.talent.replace(/\s*\(.+\)/, '')} (${choice.customization})` : 
                                 choice.talent;
