@@ -2534,6 +2534,7 @@
                     <div class="wizard-step" id="setup-step-indicator-7">7</div>
                     <div class="wizard-step" id="setup-step-indicator-8">8</div>
                     <div class="wizard-step" id="setup-step-indicator-9">9</div>
+                    <div class="wizard-step" id="setup-step-indicator-10">10</div>
                 </div>
                 
                 <!-- Step 0: Species Selection -->
@@ -16605,10 +16606,158 @@ function loadSymptomsData() {
             
             statusTrappingsHTML += `
                     </div>
+                    
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button class="control-btn" onclick="addCareerTrappingsToCharacterSheet()" 
+                                style="padding: 12px 24px; font-size: 14px; background: #4a90e2; color: white; border: none; border-radius: 5px;">
+                            📦 Add All to Character Sheet
+                        </button>
+                        <p style="margin: 10px 0 0 0; font-size: 12px; color: #666; font-style: italic;">
+                            This will add all career trappings to the appropriate sections of your character sheet.
+                        </p>
+                    </div>
                 </div>
             `;
             
             statusTrappingsContent.innerHTML = statusTrappingsHTML;
+        }
+
+        // Add career trappings to character sheet
+        function addCareerTrappingsToCharacterSheet() {
+            if (!setupWizardData.career || !careersData) {
+                alert('Career data not found');
+                return;
+            }
+            
+            const career = careersData.careers.find(c => c.name === setupWizardData.career);
+            if (!career || !career.tiers || !career.tiers[0] || !career.tiers[0].trappings) {
+                alert('No trappings found for this career');
+                return;
+            }
+            
+            const trappingsList = career.tiers[0].trappings;
+            let addedItems = { weapons: 0, armour: 0, trappings: 0, consumables: 0 };
+            
+            trappingsList.forEach(item => {
+                const itemLower = item.toLowerCase();
+                
+                // Check if it's a weapon
+                if (isWeaponItem(itemLower)) {
+                    addWeaponDirectly(item);
+                    addedItems.weapons++;
+                }
+                // Check if it's armor/armour
+                else if (isArmourItem(itemLower)) {
+                    addArmourDirectly(item);
+                    addedItems.armour++;
+                }
+                // Check if it's consumable/ammunition
+                else if (isConsumableItem(itemLower)) {
+                    addConsumableDirectly(item);
+                    addedItems.consumables++;
+                }
+                // Default to trappings
+                else {
+                    addTrappingDirectly(item);
+                    addedItems.trappings++;
+                }
+            });
+            
+            // Show summary of what was added
+            let message = `Added ${trappingsList.length} career trappings to your character sheet:\n\n`;
+            if (addedItems.weapons > 0) message += `• ${addedItems.weapons} weapon(s)\n`;
+            if (addedItems.armour > 0) message += `• ${addedItems.armour} armour piece(s)\n`;
+            if (addedItems.consumables > 0) message += `• ${addedItems.consumables} consumable(s)\n`;
+            if (addedItems.trappings > 0) message += `• ${addedItems.trappings} trapping(s)\n`;
+            
+            alert(message);
+        }
+
+        // Helper function to determine if an item is a weapon
+        function isWeaponItem(itemName) {
+            const weaponKeywords = [
+                'sword', 'dagger', 'knife', 'blade', 'axe', 'mace', 'hammer', 'club', 'staff',
+                'bow', 'crossbow', 'sling', 'pistol', 'musket', 'blunderbuss',
+                'spear', 'halberd', 'pike', 'lance', 'whip', 'flail',
+                'hand weapon', 'weapon'
+            ];
+            
+            return weaponKeywords.some(keyword => itemName.includes(keyword));
+        }
+
+        // Helper function to determine if an item is armour
+        function isArmourItem(itemName) {
+            const armourKeywords = [
+                'armour', 'armor', 'mail', 'plate', 'leather', 'helmet', 'shield',
+                'byrnie', 'hauberk', 'coif', 'gauntlet', 'boot', 'greaves'
+            ];
+            
+            return armourKeywords.some(keyword => itemName.includes(keyword));
+        }
+
+        // Helper function to determine if an item is a consumable
+        function isConsumableItem(itemName) {
+            const consumableKeywords = [
+                'arrow', 'bolt', 'bullet', 'shot', 'ammunition', 'ammo',
+                'potion', 'draught', 'elixir', 'pill', 'powder', 'dose',
+                'bandage', 'splint', 'salve'
+            ];
+            
+            return consumableKeywords.some(keyword => itemName.includes(keyword));
+        }
+
+        // Add armour directly to character sheet
+        function addArmourDirectly(armourName) {
+            // Try to find armour in srdArmour data
+            let armourData = srdArmour.find(a => 
+                a.name.toLowerCase() === armourName.toLowerCase() ||
+                armourName.toLowerCase().includes(a.name.toLowerCase())
+            );
+            
+            if (armourData) {
+                // Add armour with full stats
+                armour.push({
+                    name: armourData.name,
+                    category: armourData.category || '',
+                    enc: armourData.enc || 0,
+                    locations: armourData.locations || '',
+                    head: armourData.head || 0,
+                    arms: armourData.arms || 0,
+                    body: armourData.body || 0,
+                    legs: armourData.legs || 0,
+                    traits: armourData.traits || '',
+                    worn: false
+                });
+            } else {
+                // Add as basic armour entry
+                armour.push({
+                    name: armourName,
+                    category: '',
+                    enc: 0,
+                    locations: '',
+                    head: 0,
+                    arms: 0,
+                    body: 0,
+                    legs: 0,
+                    traits: '',
+                    worn: false
+                });
+            }
+            
+            displayArmour();
+        }
+
+        // Add consumable directly to character sheet
+        function addConsumableDirectly(consumableName) {
+            consumables.push({
+                name: consumableName,
+                current: 0,
+                maximum: 0,
+                traits: '',
+                notes: ''
+            });
+            
+            displayConsumables();
         }
 
         // =============== XP ALLOCATION STEP ===============
