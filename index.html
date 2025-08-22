@@ -14669,7 +14669,7 @@ function loadSymptomsData() {
         // Update the wizard display - following species wizard pattern
         function updateSetupWizardDisplay() {
             // Hide all step contents
-            for (let i = 0; i <= 8; i++) {
+            for (let i = 0; i <= 10; i++) {
                 const stepElement = document.getElementById(`setup-wizard-step-${i}`);
                 if (stepElement) {
                     stepElement.style.display = 'none';
@@ -14683,7 +14683,7 @@ function loadSymptomsData() {
             }
             
             // Update step indicators
-            for (let i = 0; i <= 8; i++) {
+            for (let i = 0; i <= 10; i++) {
                 const indicator = document.getElementById(`setup-step-indicator-${i}`);
                 if (indicator) {
                     indicator.classList.remove('active', 'completed');
@@ -14704,7 +14704,7 @@ function loadSymptomsData() {
             }
             
             if (nextBtn) {
-                nextBtn.textContent = setupCurrentStep === 9 ? 'Finish Character' : 'Next →';
+                nextBtn.textContent = setupCurrentStep === 10 ? 'Finish Character' : 'Next →';
             }
         }
         
