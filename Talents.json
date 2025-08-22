@@ -11,7 +11,12 @@
     "max": "Initiative Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "specialist": true,
+    "specialistType": "Sense",
+    "specialistPrompt": "Choose a sense",
+    "specialistExamples": ["Sight", "Hearing", "Smell", "Touch", "Taste"],
+    "requiresSpecialization": true
   },
   {
     "name": "Aethyric Attunement",
@@ -46,7 +51,12 @@
     "max": 1,
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "specialist": true,
+    "specialistType": "Lore",
+    "specialistPrompt": "Choose an arcane lore",
+    "specialistExamples": ["Fire", "Metal", "Life", "Light", "Heavens", "Shadow", "Death", "Beasts"],
+    "requiresSpecialization": true
   },
   {
     "name": "Argumentative",
@@ -109,7 +119,12 @@
     "max": 1,
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "specialist": true,
+    "specialistType": "Divine Lore",
+    "specialistPrompt": "Choose a divine lore",
+    "specialistExamples": ["Ranald", "Sigmar", "Ulric", "Manann", "Morr", "Myrmidia", "Shallya", "Verena", "Taal", "Rhya"],
+    "requiresSpecialization": true
   },
   {
     "name": "Bookish",
@@ -172,7 +187,12 @@
     "max": "Number of Spells available in chosen Chaos Magic Lore",
     "category": "Chaos",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "specialist": true,
+    "specialistType": "Chaos Lore",
+    "specialistPrompt": "Choose a chaos lore",
+    "specialistExamples": ["Nurgle", "Tzeentch", "Khorne", "Slaanesh", "Chaos Undivided"],
+    "requiresSpecialization": true
   },
   {
     "name": "Combat Aware",
@@ -235,7 +255,12 @@
     "max": "Dexterity Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "specialist": true,
+    "specialistType": "Trade",
+    "specialistPrompt": "Choose a trade",
+    "specialistExamples": ["Apothecary", "Armourer", "Artist", "Baker", "Blacksmith", "Bowyer", "Brewer", "Calligrapher", "Carpenter", "Cartographer", "Cook", "Cooper", "Embalmer", "Farrier", "Gem Cutter", "Goldsmith", "Gunsmith", "Herbalist", "Leatherworker", "Mason", "Printer", "Shipwright", "Tailor", "Weaponsmith"],
+    "requiresSpecialization": true
   },
   {
     "name": "Criminal",
@@ -347,7 +372,12 @@
     "max": "Fellowship Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "specialist": true,
+    "specialistType": "Social Group",
+    "specialistPrompt": "Choose a social group",
+    "specialistExamples": ["Nobles", "Guilders", "Servants", "Soldiers", "Scholars", "Criminals", "Cultists"],
+    "requiresSpecialization": true
   },
   {
     "name": "Fast Hands",
@@ -368,7 +398,12 @@
     "max": "Willpower Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "specialist": true,
+    "specialistType": "Enemy",
+    "specialistPrompt": "Choose an enemy type",
+    "specialistExamples": ["Orcs", "Undead", "Chaos", "Beastmen", "Vampires", "Daemons", "Trolls", "Witches"],
+    "requiresSpecialization": true
   },
   {
     "name": "Feint",
@@ -459,7 +494,12 @@
     "max": "Willpower Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "specialist": true,
+    "specialistType": "Group",
+    "specialistPrompt": "Choose a hated group",
+    "specialistExamples": ["Greenskins", "Beastmen", "Chaos Cultists", "Mutants", "Sigmarites", "Witches", "Undead", "Nobility"],
+    "requiresSpecialization": true
   },
   {
     "name": "Holy Hatred",
@@ -522,7 +562,12 @@
     "max": 1,
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "specialist": true,
+    "specialistType": "Divine Lore",
+    "specialistPrompt": "Choose a divine lore",
+    "specialistExamples": ["Sigmar", "Ulric", "Manann", "Morr", "Myrmidia", "Ranald", "Shallya", "Verena", "Taal", "Rhya"],
+    "requiresSpecialization": true
   },
   {
     "name": "Iron Jaw",
@@ -627,7 +672,12 @@
     "max": "Dexterity Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "specialist": true,
+    "specialistType": "Trade",
+    "specialistPrompt": "Choose a trade",
+    "specialistExamples": ["Apothecary", "Armourer", "Artist", "Baker", "Blacksmith", "Bowyer", "Brewer", "Calligrapher", "Carpenter", "Cartographer", "Cook", "Cooper", "Embalmer", "Farrier", "Gem Cutter", "Goldsmith", "Gunsmith", "Herbalist", "Leatherworker", "Mason", "Printer", "Shipwright", "Tailor", "Weaponsmith"],
+    "requiresSpecialization": true
   },
   {
     "name": "Menacing",
@@ -774,7 +824,12 @@
     "max": "Toughness Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "specialist": true,
+    "specialistType": "Threat",
+    "specialistPrompt": "Choose a threat",
+    "specialistExamples": ["Chaos", "Disease", "Poison", "Magic", "Mutation", "Cold", "Heat"],
+    "requiresSpecialization": true
   },
   {
     "name": "Resolute",
@@ -830,7 +885,12 @@
     "max": "Intelligence Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "specialist": true,
+    "specialistType": "Lore",
+    "specialistPrompt": "Choose a lore",
+    "specialistExamples": ["History", "Astronomy", "Engineering", "Geography", "Law", "Magick", "Metallurgy", "Science", "Theology"],
+    "requiresSpecialization": true
   },
   {
     "name": "Savvy",
@@ -977,7 +1037,12 @@
     "max": "Agility Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "specialist": true,
+    "specialistType": "Terrain",
+    "specialistPrompt": "Choose a terrain",
+    "specialistExamples": ["Wasteland", "Forest", "Mountains", "Swamp", "Desert", "Tundra", "Coast", "Underground"],
+    "requiresSpecialization": true
   },
   {
     "name": "Strike Mighty Blow",

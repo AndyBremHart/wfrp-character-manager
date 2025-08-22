@@ -10556,6 +10556,48 @@ document.addEventListener('DOMContentLoaded', function() {
                 displaySkills();
             };
 
+            // Helper function to find specialization from wizard data
+            function findWizardSpecialization(baseTalentName) {
+                if (!window.setupWizardData?.talents) return null;
+                
+                // Check fixed talents
+                if (window.setupWizardData.talents.fixed) {
+                    for (const talent of window.setupWizardData.talents.fixed) {
+                        const parsed = TalentInstanceManager.parseSpecializedTalentString(talent);
+                        if (parsed && parsed.baseName === baseTalentName) {
+                            return parsed.specialization;
+                        }
+                    }
+                }
+                
+                // Check choice talents
+                if (window.setupWizardData.talents.choices) {
+                    for (const choice of window.setupWizardData.talents.choices) {
+                        if (Array.isArray(choice)) {
+                            for (const talentObj of choice) {
+                                if (typeof talentObj === 'object' && talentObj.talent) {
+                                    const parsed = TalentInstanceManager.parseSpecializedTalentString(talentObj.talent);
+                                    if (parsed && parsed.baseName === baseTalentName && talentObj.customization) {
+                                        return talentObj.customization;
+                                    } else if (talentObj.talent === baseTalentName && talentObj.customization) {
+                                        return talentObj.customization;
+                                    }
+                                }
+                            }
+                        } else if (typeof choice === 'object' && choice.talent) {
+                            const parsed = TalentInstanceManager.parseSpecializedTalentString(choice.talent);
+                            if (parsed && parsed.baseName === baseTalentName && choice.customization) {
+                                return choice.customization;
+                            } else if (choice.talent === baseTalentName && choice.customization) {
+                                return choice.customization;
+                            }
+                        }
+                    }
+                }
+                
+                return null;
+            }
+
             // Helper function to directly add a talent to the character
             window.addTalentDirectly = function(talentName) {
                 console.log("DEBUG: addTalentDirectly (FIRST FUNCTION) called with:", talentName);
@@ -10570,15 +10612,28 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Handle specific customizations
                     if (customPart.toLowerCase().includes('any one') || customPart.toLowerCase().includes('choose one')) {
-                        // For "any one" talents, use a default or prompt for specification
-                        if (baseName === 'Acute Sense') {
-                            customisation = 'Sight'; // Default to sight for character creation
-                        } else if (baseName === 'Craftsman') {
-                            customisation = 'Metalworking'; // Default craft
-                        } else if (baseName === 'Resistance') {
-                            customisation = 'Disease'; // Default resistance
+                        // For specialist talents, we need to check if user provided specialization during wizard
+                        console.log(`DEBUG: Found "(any one)" talent: ${baseName}`);
+                        
+                        // Check if this talent has specialization data from wizard
+                        const wizardSpecialization = findWizardSpecialization(baseName);
+                        if (wizardSpecialization) {
+                            customisation = wizardSpecialization;
+                            console.log(`DEBUG: Using wizard specialization: ${customisation}`);
                         } else {
-                            customisation = customPart; // Use as-is if not recognized
+                            console.log(`DEBUG: No wizard specialization found for ${baseName}`);
+                            // For specialist talents without user input, we need to prompt
+                            // But for now use defaults as fallback for backwards compatibility
+                            if (baseName === 'Acute Sense') {
+                                customisation = 'Sight';
+                            } else if (baseName === 'Craftsman') {
+                                customisation = 'Metalworking';
+                            } else if (baseName === 'Resistance') {
+                                customisation = 'Disease';
+                            } else {
+                                customisation = 'General';
+                            }
+                            console.log(`DEBUG: Using default specialization: ${customisation}`);
                         }
                     } else {
                         customisation = customPart;
@@ -15136,13 +15191,21 @@ function loadSymptomsData() {
                         
                         // Parse talent string to check for specialization
                         const parsedTalent = TalentInstanceManager.parseSpecializedTalentString(talent);
-                        const isPreSpecialized = parsedTalent !== null;
-                        const baseTalentName = isPreSpecialized ? parsedTalent.baseName : talent;
-                        const presetSpecialization = isPreSpecialized ? parsedTalent.specialization : null;
+                        const hasParentheses = parsedTalent !== null;
+                        const baseTalentName = hasParentheses ? parsedTalent.baseName : talent;
+                        const parenthesesContent = hasParentheses ? parsedTalent.specialization : null;
+                        
+                        // Check if this is a user-choice talent (contains "any one" or similar)
+                        const isUserChoice = parenthesesContent && (
+                            parenthesesContent.toLowerCase().includes('any one') ||
+                            parenthesesContent.toLowerCase().includes('any') ||
+                            parenthesesContent.toLowerCase().includes('choose one')
+                        );
+                        const isPreSpecialized = hasParentheses && !isUserChoice;
                         
                         // Check if this talent needs user-specified specialization
                         const srdTalent = srdTalents?.find(t => t.name === baseTalentName);
-                        const needsCustomization = !isPreSpecialized && srdTalent?.specialist;
+                        const needsCustomization = (isUserChoice || (!hasParentheses && srdTalent?.specialist));
                         const inputId = `setup-talent-${choiceIndex}-${talentIndex}-custom`;
                         
                         if (choice.count === 1) {
@@ -15847,37 +15910,8 @@ function loadSymptomsData() {
                 setupWizardData.careerAllocation.talentSpecialization = '';
             }
             
-            // Refresh the talent cards UI
-            const career = careersData?.careers?.find(c => c.name === setupWizardData.career);
-            const tier1 = career?.tiers?.find(t => t.tier === 1);
-            if (tier1) {
-                tier1.talents.forEach(talent => {
-                    const card = document.querySelector(`[onclick="updateSelectedTalent('${talent}')"]`);
-                    if (card) {
-                        const isSelected = talent === talentName;
-                        card.style.background = isSelected ? '#e8f4fd' : 'white';
-                        card.style.border = `2px solid ${isSelected ? '#4a90e2' : '#d0c5a0'}`;
-                        card.style.boxShadow = isSelected ? '0 4px 8px rgba(74, 144, 226, 0.3)' : '0 2px 4px rgba(0,0,0,0.1)';
-                        
-                        const titleDiv = card.querySelector('div');
-                        if (titleDiv) {
-                            titleDiv.style.color = isSelected ? '#2c5aa0' : '#3e2f1f';
-                        }
-                        
-                        // Update selected indicator
-                        const existingIndicator = card.querySelector('div:last-child');
-                        if (isSelected) {
-                            if (!existingIndicator || !existingIndicator.textContent.includes('SELECTED')) {
-                                card.innerHTML += '<div style="color: #4a90e2; font-size: 12px;">✓ SELECTED</div>';
-                            }
-                        } else {
-                            if (existingIndicator && existingIndicator.textContent.includes('SELECTED')) {
-                                existingIndicator.remove();
-                            }
-                        }
-                    }
-                });
-            }
+            // Refresh the talent cards UI by re-initializing the step
+            initializeSetupCareerAllocation();
         }
         
         // Update the advances display
