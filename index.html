@@ -11487,10 +11487,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 // Check if this characteristic can be advanced at the current tier
-                const availableAtCurrentTier = advanceData.includes(currentTier);
-                
-                if (availableAtCurrentTier && advanceCell) {
-                    // Apply tier-based coloring to the advance cell
+                // Apply tier-based coloring to the advance cell based on current career tier
+                // Color should stay consistent regardless of whether the characteristic is available at this tier
+                if (advanceCell) {
                     const tierColors = {
                         1: '#c8f7c5', // Light green for T1
                         2: '#d2a86b', // Bronze for T2
@@ -11501,30 +11500,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     const tierColor = tierColors[currentTier] || '';
                     if (tierColor) {
                         advanceCell.style.backgroundColor = tierColor;
+                        advanceCell.style.opacity = '1'; // Full opacity always
                     }
-                    
-                    // Enable advance button
-                    const advanceButton = row.querySelector('button[onclick*="advanceCharacteristic"]');
-                    if (advanceButton) {
-                        advanceButton.disabled = false;
-                        advanceButton.style.opacity = '1';
-                        advanceButton.style.cursor = 'pointer';
-                    }
-                } else if (advanceData.length > 0 && advanceCell) {
-                    // Characteristic is available at future tiers - show the lowest tier color with reduced opacity
-                    const nextAvailableTier = Math.min(...advanceData);
-                    const tierColors = {
-                        1: '#c8f7c5', // Light green for T1
-                        2: '#d2a86b', // Bronze for T2
-                        3: '#c4c4c4', // Silver for T3
-                        4: '#ffd700'  // Gold for T4
-                    };
-                    
-                    const tierColor = tierColors[nextAvailableTier] || '';
-                    if (tierColor) {
-                        advanceCell.style.backgroundColor = tierColor;
-                        advanceCell.style.opacity = '0.3'; // Reduced opacity for future tiers
-                    }
+                }
+                
+                // Always enable advance button - never disable based on career tier
+                const advanceButton = row.querySelector('button[onclick*="advanceCharacteristic"]');
+                if (advanceButton) {
+                    advanceButton.disabled = false;
+                    advanceButton.style.opacity = '1';
+                    advanceButton.style.cursor = 'pointer';
                 }
                 // Note: All indicator creation has been disabled
             });
