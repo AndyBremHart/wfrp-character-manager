@@ -14335,11 +14335,24 @@ function loadSymptomsData() {
                     return;
                 }
                 
+                // Find the new career data
+                const newCareer = careersData?.careers?.find(c => c.name === newCareerName);
+                if (!newCareer) {
+                    alert('Career data not found. Please try again.');
+                    return;
+                }
+                
                 // Update career display
                 document.getElementById('career-display').textContent = newCareerName;
                 
                 // Reset to tier 1 when changing careers
                 currentTier = 1;
+                
+                // Update the career dropdown to match
+                document.getElementById('career-select').value = newCareerName;
+                
+                // Set the new career as current and show reference
+                showCareerReference(newCareer);
                 
                 // Update tier display
                 updateTierDisplay();
