@@ -6330,7 +6330,6 @@
                     
                     // Check if this characteristic is available in current career tier
                     let finalCost = baseCost;
-                    let costText = `${baseCost} XP`;
                     
                     if (currentCareer && currentCareer.characteristicAdvances) {
                         const careerAdvances = currentCareer.characteristicAdvances[char] || [];
@@ -6338,13 +6337,12 @@
                         
                         if (!isInCareer) {
                             finalCost = baseCost * 2;
-                            costText = `${finalCost} XP (2x)`;
                         }
                     }
                     
                     const costDisplay = document.getElementById(`${char}-cost-display`);
                     if (costDisplay) {
-                        costDisplay.textContent = `(${costText})`;
+                        costDisplay.textContent = `(${finalCost} XP)`;
                         const button = costDisplay.parentElement.querySelector('button');
                         if (button) {
                             // Always enable the button - XP check happens when clicked
@@ -11486,9 +11484,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     advanceCell.style.backgroundColor = '';
                 }
                 
-                // Check if this characteristic can be advanced at the current tier
-                // Apply tier-based coloring to the advance cell based on current career tier
-                // Color should stay consistent regardless of whether the characteristic is available at this tier
+                // Apply tier-based coloring based on which tier(s) this characteristic is available in
+                // Use the lowest tier if available in multiple tiers
                 if (advanceCell) {
                     const tierColors = {
                         1: '#c8f7c5', // Light green for T1
@@ -11497,11 +11494,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         4: '#ffd700'  // Gold for T4
                     };
                     
-                    const tierColor = tierColors[currentTier] || '';
-                    if (tierColor) {
-                        advanceCell.style.backgroundColor = tierColor;
-                        advanceCell.style.opacity = '1'; // Full opacity always
+                    // Find the lowest tier this characteristic is available in
+                    let lowestTier = null;
+                    if (advanceData && advanceData.length > 0) {
+                        lowestTier = Math.min(...advanceData);
                     }
+                    
+                    // Apply the color based on the lowest tier, or white if not available in any tier
+                    if (lowestTier && tierColors[lowestTier]) {
+                        advanceCell.style.backgroundColor = tierColors[lowestTier];
+                    } else {
+                        advanceCell.style.backgroundColor = 'white';
+                    }
+                    advanceCell.style.opacity = '1'; // Full opacity always
                 }
                 
                 // Always enable advance button - never disable based on career tier
