@@ -6795,9 +6795,9 @@
                     <td>${skill.characteristic}</td>
                     <td>${skill.type}</td>
                     <td style="text-align: center; font-weight: bold;">${tierDisplay}</td>
-                    <td style="background-color: ${tierColor || 'transparent'};"><input type="number" value="${skillData.advances}" min="0" readonly style="width: 50px; background: transparent; text-align: center;"></td>
+                    <td><input type="number" value="${skillData.advances}" min="0" readonly style="width: 50px; background: #f5f5f5; text-align: center;"></td>
                     <td class="skill-total" id="skill-total-${cleanKey}">${calculateSkillTotal(skill, skill.key)}</td>
-                    <td style="text-align: center;">
+                    <td style="text-align: center; background-color: ${tierColor || 'transparent'};">
                         <button onclick="window.advanceSkill('${skill.key}')" style="padding: 5px 8px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">+</button>
                         <span id="${cleanKey}-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(${cost} XP)</span>
                     </td>
@@ -11209,6 +11209,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Apply characteristic advancement limits
             updateCharacteristicLimits();
             
+            // Refresh skills display to update tier colors and costs for new career
+            if (typeof window.displaySkills === 'function') {
+                window.displaySkills();
+            }
+            
             // Show the career info and content sections
             careerInfo.style.display = 'block';
             careerContent.style.display = 'block';
@@ -14472,6 +14477,16 @@ function loadSymptomsData() {
                     }
                 }
                 
+                // Refresh skills display to update tier colors and costs
+                if (typeof window.displaySkills === 'function') {
+                    window.displaySkills();
+                }
+                
+                // Update all advance costs to reflect new tier
+                if (typeof window.updateAdvanceCosts === 'function') {
+                    window.updateAdvanceCosts();
+                }
+                
                 // Log the tier advancement
                 if (typeof logXPEntry === 'function') {
                     logXPEntry(
@@ -17528,6 +17543,11 @@ function loadSymptomsData() {
             
             // Close wizard
             closeSetupWizard();
+            
+            // Refresh skill display to apply tier formatting
+            if (typeof window.displaySkills === 'function') {
+                window.displaySkills();
+            }
             
             // Show success message with summary
             let summaryMessage = 'Character setup complete!\n\n';
