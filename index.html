@@ -1894,13 +1894,14 @@
                     <table class="skills-table" id="trappings-table">
                         <thead>
                             <tr>
-                                <th style="width: 30%;">Item</th>
-                                <th style="width: 10%;">Quantity</th>
-                                <th style="width: 10%;">Enc (each)</th>
-                                <th style="width: 10%;">Total Enc</th>
+                                <th style="width: 25%;">Item</th>
+                                <th style="width: 8%;">Quantity</th>
+                                <th style="width: 8%;">Enc (each)</th>
+                                <th style="width: 8%;">Total Enc</th>
+                                <th style="width: 8%;">Carried</th>
                                 <th style="width: 15%;">Location</th>
-                                <th style="width: 23%;">Notes</th>
-                                <th style="width: 2%;">Del</th>
+                                <th style="width: 20%;">Notes</th>
+                                <th style="width: 8%;">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="trappings-tbody">
@@ -12559,9 +12560,10 @@ function loadSymptomsData() {
             const item = {
                 name: name,
                 quantity: quantity,
-                encumbrance: encumbrance,
+                encumbrance: encumbrance || 0, // Default to 0 instead of 0.5
                 location: location,
-                notes: notes
+                notes: notes,
+                carried: true // Default to carried
             };
             
             trappings.push(item);
@@ -12574,6 +12576,11 @@ function loadSymptomsData() {
             tbody.innerHTML = '';
             
             trappings.forEach((item, index) => {
+                // Ensure item has carried property (for backwards compatibility)
+                if (item.carried === undefined) {
+                    item.carried = true; // Default existing items to carried
+                }
+                
                 const totalEnc = (item.quantity * item.encumbrance).toFixed(1);
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -12581,6 +12588,7 @@ function loadSymptomsData() {
                     <td><input type="number" value="${item.quantity}" min="0" onchange="window.updateTrappingQuantity(${index}, this.value)" style="width: 60px;"></td>
                     <td>${item.encumbrance}</td>
                     <td style="font-weight: bold;">${totalEnc}</td>
+                    <td><input type="checkbox" ${item.carried ? 'checked' : ''} onchange="window.toggleTrappingCarried(${index})" title="Carried/Worn"></td>
                     <td>${item.location}</td>
                     <td><input type="text" value="${item.notes}" onchange="window.updateTrappingNotes(${index}, this.value)" style="width: 100%; border: none; font-size: 11px;"></td>
                     <td>
@@ -12595,6 +12603,11 @@ function loadSymptomsData() {
         window.updateTrappingQuantity = function(index, value) {
             trappings[index].quantity = parseInt(value) || 0;
             displayTrappings();
+            updateEncumbrance();
+        }
+
+        window.toggleTrappingCarried = function(index) {
+            trappings[index].carried = !trappings[index].carried;
             updateEncumbrance();
         }
 
@@ -13066,9 +13079,11 @@ function loadSymptomsData() {
                 }
             });
             
-            // Add trapping encumbrance
+            // Add trapping encumbrance (only for carried items)
             trappings.forEach(item => {
-                trappingsEnc += (item.quantity * item.encumbrance) || 0;
+                if (item.carried !== false) { // Default to carried if property doesn't exist
+                    trappingsEnc += (item.quantity * item.encumbrance) || 0;
+                }
             });
             
             // Add money weight (1 Enc per 200 coins)
@@ -17329,9 +17344,10 @@ function loadSymptomsData() {
                         trappings.push({
                             name: itemName,
                             quantity: 1,
-                            encumbrance: 0.5,
+                            encumbrance: 0, // Default to 0 encumbrance
                             location: 'Backpack',
-                            notes: 'From character creation'
+                            notes: 'From character creation',
+                            carried: false // Default to not carried
                         });
                     });
                     if (typeof displayTrappings === 'function') {
@@ -17436,9 +17452,10 @@ function loadSymptomsData() {
                             trappings.push({
                                 name: itemName,
                                 quantity: 1,
-                                encumbrance: 0.5,
+                                encumbrance: 0, // Default to 0 encumbrance
                                 location: 'Backpack',
-                                notes: 'From career'
+                                notes: 'From career',
+                                carried: false // Default to not carried
                             });
                         });
                         if (typeof window.displayTrappings === 'function') {
