@@ -6357,7 +6357,17 @@
             Object.keys(characterSkills).forEach(skillKey => {
                 const skillData = characterSkills[skillKey];
                 const cleanKey = skillKey.replace(/\s+/g, '-').replace(/[()]/g, '').toLowerCase();
-                const cost = window.getSkillCost(skillData.advances || 0);
+                
+                // Find the base skill name for tier checking
+                let skillBaseName = skillKey;
+                const allSkills = [...(typeof getDefaultSkills === 'function' ? getDefaultSkills() : []), ...(typeof addedSkills !== 'undefined' ? addedSkills : [])];
+                const skillInfo = allSkills.find(s => s.key === skillKey || s.name === skillKey);
+                if (skillInfo) {
+                    skillBaseName = skillInfo.name;
+                }
+                
+                // Calculate cost with tier multiplier
+                const cost = window.calculateSkillXPCost(skillData.advances || 0, skillBaseName, currentCareer, currentTier);
                 const costDisplay = document.getElementById(`${cleanKey}-cost-display`);
                 if (costDisplay) {
                     costDisplay.textContent = `(${cost} XP)`;
@@ -6472,18 +6482,21 @@
             // No hard limit on advances - skills can have more than 5 advances from character creation
             // and can continue to be advanced during play
             
-            const cost = window.getSkillCost(currentAdvances);
-            const total = parseInt(xpTotal.value) || 0;
-            const spent = parseInt(xpSpent.value) || 0;
-            const current = total - spent;
-            
-            // Find skill display name
+            // Find skill display name and base name
             let skillDisplayName = skillKey;
+            let skillBaseName = skillKey;
             const allSkills = [...getDefaultSkills(), ...addedSkills];
             const skillInfo = allSkills.find(s => s.key === skillKey || s.name === skillKey);
             if (skillInfo) {
                 skillDisplayName = skillInfo.displayName || skillInfo.name;
+                skillBaseName = skillInfo.name;
             }
+            
+            // Calculate cost with tier multiplier
+            const cost = window.calculateSkillXPCost(currentAdvances, skillBaseName, currentCareer, currentTier);
+            const total = parseInt(xpTotal.value) || 0;
+            const spent = parseInt(xpSpent.value) || 0;
+            const current = total - spent;
             
             if (!window.canAffordAdvance(cost)) {
                 alert(`Insufficient XP! Need ${cost} XP to advance ${skillDisplayName}, only have ${current} available.`);
@@ -6666,6 +6679,41 @@
         
         // XP display will be initialized in DOMContentLoaded
 
+        // Skill tier helper functions
+        window.getSkillTierForCareer = function(skillName, career) {
+            if (!career || !career.tiers) return null;
+            
+            const tiers = [];
+            career.tiers.forEach(tier => {
+                if (tier.skills && tier.skills.includes(skillName)) {
+                    tiers.push(tier.tier);
+                }
+            });
+            
+            return tiers.length > 0 ? tiers : null;
+        }
+        
+        window.getSkillLowestTier = function(skillName, career) {
+            const tiers = window.getSkillTierForCareer(skillName, career);
+            if (!tiers || tiers.length === 0) return null;
+            return Math.min(...tiers);
+        }
+        
+        window.calculateSkillXPCost = function(baseAdvances, skillName, currentCareer, currentTier) {
+            const baseCost = window.getSkillCost(baseAdvances);
+            
+            if (!currentCareer || !currentTier) return baseCost;
+            
+            const skillTiers = window.getSkillTierForCareer(skillName, currentCareer);
+            
+            // If skill is not in career at all, or not available at current tier, double the cost
+            if (!skillTiers || !skillTiers.includes(currentTier)) {
+                return baseCost * 2;
+            }
+            
+            return baseCost;
+        }
+
         // Skills functionality
         window.displaySkills = function() {
             const tbody = document.getElementById('skills-tbody');
@@ -6718,14 +6766,36 @@
                 
                 const row = document.createElement('tr');
                 const cleanKey = skill.key.replace(/\s+/g, '-').replace(/[()]/g, '').toLowerCase();
-                const cost = window.getSkillCost(skillData.advances);
+                
+                // Determine tier information for the skill
+                let tierDisplay = '';
+                let tierColor = '';
+                const lowestTier = window.getSkillLowestTier(skill.name, currentCareer);
+                
+                if (lowestTier) {
+                    // Convert tier number to Roman numeral
+                    const romanNumerals = ['', 'I', 'II', 'III', 'IV'];
+                    tierDisplay = romanNumerals[lowestTier] || '';
+                    
+                    // Set tier color
+                    const tierColors = {
+                        1: '#c8f7c5', // Light green for T1
+                        2: '#d2a86b', // Bronze for T2
+                        3: '#c4c4c4', // Silver for T3
+                        4: '#ffd700'  // Gold for T4
+                    };
+                    tierColor = tierColors[lowestTier] || '';
+                }
+                
+                // Calculate XP cost with tier multiplier
+                const cost = window.calculateSkillXPCost(skillData.advances, skill.name, currentCareer, currentTier);
                 
                 row.innerHTML = `
                     <td class="skill-name-cell">${skill.displayName}</td>
                     <td>${skill.characteristic}</td>
                     <td>${skill.type}</td>
-                    <td><input type="checkbox" ${skillData.career ? 'checked' : ''} onchange="updateSkillData('${skill.key}', 'career', this.checked)"></td>
-                    <td><input type="number" value="${skillData.advances}" min="0" readonly style="width: 50px; background: #f5f5f5;"></td>
+                    <td style="text-align: center; font-weight: bold;">${tierDisplay}</td>
+                    <td style="background-color: ${tierColor || 'transparent'};"><input type="number" value="${skillData.advances}" min="0" readonly style="width: 50px; background: transparent; text-align: center;"></td>
                     <td class="skill-total" id="skill-total-${cleanKey}">${calculateSkillTotal(skill, skill.key)}</td>
                     <td style="text-align: center;">
                         <button onclick="window.advanceSkill('${skill.key}')" style="padding: 5px 8px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">+</button>
