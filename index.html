@@ -1470,8 +1470,9 @@
                             <th style="width: 18%;">Talent</th>
                             <th style="width: 10%;">Times Taken</th>
                             <th style="width: 12%;">Advance</th>
-                            <th style="width: 35%;">Description</th>
-                            <th style="width: 22%;">Notes</th>
+                            <th style="width: 8%;">Career</th>
+                            <th style="width: 32%;">Description</th>
+                            <th style="width: 17%;">Notes</th>
                             <th style="width: 3%;">Del</th>
                         </tr>
                     </thead>
@@ -6703,6 +6704,33 @@
             return Math.min(...tiers);
         }
         
+        // Talent tier helper functions
+        window.getTalentTierForCareer = function(talentName, career) {
+            if (!career || !career.tiers) return null;
+            
+            const tiers = [];
+            career.tiers.forEach(tier => {
+                if (tier.talents && tier.talents.some(talent => {
+                    // Check for exact match or partial match for specialized talents
+                    const normalizedCareerTalent = talent.toLowerCase().trim();
+                    const normalizedTalentName = talentName.toLowerCase().trim();
+                    return normalizedTalentName === normalizedCareerTalent || 
+                           normalizedTalentName.startsWith(normalizedCareerTalent + ' (') ||
+                           normalizedCareerTalent.startsWith(normalizedTalentName + ' (');
+                })) {
+                    tiers.push(tier.tier);
+                }
+            });
+            
+            return tiers.length > 0 ? tiers : null;
+        }
+        
+        window.getTalentLowestTier = function(talentName, career) {
+            const tiers = window.getTalentTierForCareer(talentName, career);
+            if (!tiers || tiers.length === 0) return null;
+            return Math.min(...tiers);
+        }
+        
         window.calculateSkillXPCost = function(baseAdvances, skillName, currentCareer, currentTier) {
             const baseCost = window.getSkillCost(baseAdvances);
             
@@ -7938,8 +7966,18 @@ window.displayTalents = function() {
             }
         }
         
+        // Determine career tier for this talent
+        let careerDisplay = '—';
+        if (currentCareer) {
+            const talentTiers = window.getTalentTierForCareer(talent.displayName || talent.name, currentCareer);
+            if (talentTiers && talentTiers.length > 0) {
+                const lowestTier = Math.min(...talentTiers);
+                careerDisplay = `T${lowestTier}`;
+            }
+        }
+        
         row.innerHTML = `
-            <td class="skill-name-cell">${talentDisplayName}</td>
+            <td class="skill-name-cell talent-name">${talentDisplayName}</td>
             <td style="text-align: center;">${timesDisplay}</td>
             <td style="text-align: center;">
                 ${canTakeMore ? 
@@ -7948,6 +7986,7 @@ window.displayTalents = function() {
                     : '<span style="color: #999;">Max</span>'
                 }
             </td>
+            <td style="text-align: center; font-size: 11px; color: #666;">${careerDisplay}</td>
             <td style="font-size: 11px; padding: 5px;">${talent.description}</td>
             <td style="padding: 3px;">
                 <textarea 
@@ -11699,36 +11738,39 @@ document.addEventListener('DOMContentLoaded', function() {
         function highlightCareerTalents() {
             // Clear existing highlights
             document.querySelectorAll('.career-talent').forEach(el => el.classList.remove('career-talent'));
+            document.querySelectorAll('.career-tier-1, .career-tier-2, .career-tier-3, .career-tier-4').forEach(el => {
+                el.classList.remove('career-tier-1', 'career-tier-2', 'career-tier-3', 'career-tier-4');
+            });
             
             if (!currentCareer || !currentCareer.tiers) return;
-            
-            // Get all talents for current and previous tiers
-            const availableTalents = new Set();
-            currentCareer.tiers
-                .filter(tier => tier.tier <= currentTier)
-                .forEach(tier => {
-                    tier.talents.forEach(talent => {
-                        const normalizedTalent = talent.toLowerCase().trim();
-                        availableTalents.add(normalizedTalent);
-                    });
-                });
             
             // Highlight matching talents in the talents table
             const talentRows = document.querySelectorAll('#talents-tbody tr');
             talentRows.forEach(row => {
                 const talentNameCell = row.querySelector('.talent-name');
                 if (talentNameCell) {
-                    const talentName = talentNameCell.textContent.toLowerCase().trim();
+                    let talentName = talentNameCell.textContent.toLowerCase().trim();
                     
-                    // Check for exact match or partial match for specialized talents
-                    for (const careerTalent of availableTalents) {
-                        if (talentName === careerTalent || 
-                            talentName.startsWith(careerTalent + ' (') ||
-                            careerTalent.startsWith(talentName + ' (')) {
-                            row.classList.add('career-talent');
-                            break;
+                    // Clean up the talent name - remove input elements and special characters for matching
+                    talentName = talentName.replace(/<[^>]*>/g, '').replace(/●/g, '').trim();
+                    
+                    // Check each tier for this talent
+                    currentCareer.tiers.forEach(tier => {
+                        if (tier.talents) {
+                            tier.talents.forEach(careerTalent => {
+                                const normalizedCareerTalent = careerTalent.toLowerCase().trim();
+                                
+                                // Check for exact match or partial match for specialized talents
+                                if (talentName === normalizedCareerTalent || 
+                                    talentName.startsWith(normalizedCareerTalent + ' (') ||
+                                    normalizedCareerTalent.startsWith(talentName + ' (')) {
+                                    
+                                    row.classList.add('career-talent');
+                                    row.classList.add(`career-tier-${tier.tier}`);
+                                }
+                            });
                         }
-                    }
+                    });
                 }
             });
         }
@@ -11737,6 +11779,9 @@ document.addEventListener('DOMContentLoaded', function() {
         function clearCareerHighlights() {
             document.querySelectorAll('.career-skill').forEach(el => el.classList.remove('career-skill'));
             document.querySelectorAll('.career-talent').forEach(el => el.classList.remove('career-talent'));
+            document.querySelectorAll('.career-tier-1, .career-tier-2, .career-tier-3, .career-tier-4').forEach(el => {
+                el.classList.remove('career-tier-1', 'career-tier-2', 'career-tier-3', 'career-tier-4');
+            });
         }
         
         // Save career selection to localStorage
