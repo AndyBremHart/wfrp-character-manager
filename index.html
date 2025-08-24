@@ -11526,6 +11526,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Always show roman numerals in the tier display
                 tierDisplay.textContent = `Tier ${romanNumerals[numericTier]}`;
                 
+                // Apply tier-based background color
+                const tierColors = {
+                    1: '#e8f5e8', // Soft green for Tier I
+                    2: '#f5e8e0', // Soft bronze for Tier II
+                    3: '#f0f0f5', // Soft silver for Tier III
+                    4: '#fdf5e6'  // Soft gold for Tier IV
+                };
+                tierDisplay.style.backgroundColor = tierColors[numericTier] || '#f8f6f0';
+                
                 // Update tier name display
                 if (tierNameDisplay) {
                     if (currentCareer && currentCareer.tiers) {
@@ -16600,12 +16609,34 @@ function loadSymptomsData() {
             // Clamp the value based on constraints
             let clampedValue = Math.max(0, Math.min(10, numValue));
             
+            // Check if value exceeds 10 per skill limit
+            if (numValue > 10) {
+                alert('Maximum 10 advances per skill.');
+                clampedValue = 10;
+            }
+            
             // Ensure we don't exceed available points
             if (clampedValue > currentAvailable) {
+                const remaining = 40 - totalUsed + currentValue;
+                alert(`Not enough advances remaining. You have ${remaining} advance${remaining === 1 ? '' : 's'} available.`);
                 clampedValue = currentAvailable;
             }
             
             setupWizardData.careerAllocation.skills[skillName] = clampedValue;
+            
+            // Update the input field to show the clamped value
+            const career = careersData?.careers?.find(c => c.name === setupWizardData.career);
+            const tier1 = career?.tiers?.find(t => t.tier === 1);
+            if (tier1) {
+                const skillIndex = tier1.skills.indexOf(skillName);
+                if (skillIndex >= 0) {
+                    const inputElement = document.getElementById(`setup-skill-${skillIndex}`);
+                    if (inputElement) {
+                        inputElement.value = clampedValue;
+                    }
+                }
+            }
+            
             updateAdvancesDisplay();
         }
         
@@ -16625,10 +16656,20 @@ function loadSymptomsData() {
             // Prevent going above 10 per skill
             if (newValue > 10) {
                 newValue = 10;
+                // Show error if trying to exceed max
+                if (currentValue < 10 && delta > 0) {
+                    alert('Maximum 10 advances per skill.');
+                }
             }
-            // Prevent using more than remaining points (only when increasing)
-            if (delta > 0 && remaining <= 0 && newValue > currentValue) {
-                newValue = currentValue; // Don't allow increase if no points remaining
+            // Check if the change would exceed available advances
+            const actualDelta = newValue - currentValue;
+            if (actualDelta > 0 && actualDelta > remaining) {
+                // Show error message
+                alert(`Not enough advances remaining. You have ${remaining} advance${remaining === 1 ? '' : 's'} left, but tried to add ${actualDelta}.`);
+                newValue = currentValue + remaining; // Only add what's available
+                if (newValue > 10) {
+                    newValue = 10; // Still respect the per-skill maximum
+                }
             }
             
             setupWizardData.careerAllocation.skills[skillName] = newValue;
