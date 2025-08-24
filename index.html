@@ -6811,10 +6811,10 @@
                     
                     // Set tier color
                     const tierColors = {
-                        1: '#c8f7c5', // Light green for T1
-                        2: '#d2a86b', // Bronze for T2
-                        3: '#c4c4c4', // Silver for T3
-                        4: '#ffd700'  // Gold for T4
+                        1: '#e8f5e8', // Soft green for Tier I (matches talent style)
+                        2: '#f5e8e0', // Soft bronze for Tier II (matches talent style)
+                        3: '#f0f0f5', // Soft silver for Tier III (matches talent style)
+                        4: '#fdf5e6'  // Soft gold for Tier IV (matches talent style)
                     };
                     tierColor = tierColors[lowestTier] || '';
                 }
@@ -7968,18 +7968,29 @@ window.displayTalents = function() {
         
         // Determine career tier for this talent
         let careerDisplay = '—';
+        let tierColor = '';
         if (currentCareer) {
             const talentTiers = window.getTalentTierForCareer(talent.displayName || talent.name, currentCareer);
             if (talentTiers && talentTiers.length > 0) {
                 const lowestTier = Math.min(...talentTiers);
-                careerDisplay = `T${lowestTier}`;
+                const romanNumerals = ['', 'I', 'II', 'III', 'IV'];
+                careerDisplay = romanNumerals[lowestTier] || '';
+                
+                // Set tier color for advance cell
+                const tierColors = {
+                    1: '#e8f5e8', // Soft green for Tier I (matches talent style)
+                    2: '#f5e8e0', // Soft bronze for Tier II (matches talent style)
+                    3: '#f0f0f5', // Soft silver for Tier III (matches talent style)
+                    4: '#fdf5e6'  // Soft gold for Tier IV (matches talent style)
+                };
+                tierColor = tierColors[lowestTier] || '';
             }
         }
         
         row.innerHTML = `
             <td class="skill-name-cell talent-name">${talentDisplayName}</td>
             <td style="text-align: center;">${timesDisplay}</td>
-            <td style="text-align: center;">
+            <td style="text-align: center; background-color: ${tierColor || 'transparent'};">
                 ${canTakeMore ? 
                     `<button onclick="window.advanceTalent(${talents.indexOf(talent)})" style="padding: 5px 8px; font-size: 11px; background: #3e2f1f; color: #faf8f3; border: 1px solid #2a1f14; cursor: pointer;">+</button>
                      <span id="${cleanTalentKey}-cost-display" style="font-size: 10px; color: #666; margin-left: 5px;">(${cost} XP)</span>` 
@@ -11334,7 +11345,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div style="font-size: 12px; color: #666;">
                             ${charData.tier1 || 0} / ${charData.tier2 || 0} / ${charData.tier3 || 0} / ${charData.tier4 || 0}
                         </div>
-                        <div style="font-size: 11px; color: #888; margin-top: 3px;">T1 / T2 / T3 / T4</div>
+                        <div style="font-size: 11px; color: #888; margin-top: 3px;">I / II / III / IV</div>
                     `;
                     container.appendChild(charDiv);
                 });
@@ -11636,10 +11647,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Use the lowest tier if available in multiple tiers
                 if (advanceCell) {
                     const tierColors = {
-                        1: '#c8f7c5', // Light green for T1
-                        2: '#d2a86b', // Bronze for T2
-                        3: '#c4c4c4', // Silver for T3
-                        4: '#ffd700'  // Gold for T4
+                        1: '#e8f5e8', // Soft green for Tier I (matches talent style)
+                        2: '#f5e8e0', // Soft bronze for Tier II (matches talent style)
+                        3: '#f0f0f5', // Soft silver for Tier III (matches talent style)
+                        4: '#fdf5e6'  // Soft gold for Tier IV (matches talent style)
                     };
                     
                     // Find the lowest tier this characteristic is available in
