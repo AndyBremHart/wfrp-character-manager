@@ -5924,9 +5924,11 @@
                 // Update display styling and tooltips
                 if (totalPenalty > 0) {
                     current.style.color = 'red';
+                    current.style.fontWeight = 'bold';
                     current.title = `Base: ${init + adv}, ${penalties.join(', ')}`;
-                } else if (char !== 'agi') { // Don't clear agi styling if it was set by encumbrance
+                } else {
                     current.style.color = '';
+                    current.style.fontWeight = 'normal';
                     current.title = '';
                 }
                 
@@ -12171,6 +12173,7 @@ function loadSymptomsData() {
 
         window.toggleWeaponEquipped = function(index) {
             weapons[index].equipped = !weapons[index].equipped;
+            updateEncumbrance();
         }
 
         window.removeWeapon = function(index) {
