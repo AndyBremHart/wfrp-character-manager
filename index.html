@@ -7096,7 +7096,7 @@
             }
         }
 
-        window.populateTalentSelect = function() {
+        window.populateTalentSelect = function(filterText = '') {
             const select = document.getElementById('talent-select');
             if (!select) {
                 console.error('talent-select element not found');
@@ -7105,39 +7105,10 @@
             select.innerHTML = '';
             
             const sortedTalents = [...srdTalents].sort((a, b) => a.name.localeCompare(b.name));
-            
-            sortedTalents.forEach(talent => {
-                const option = document.createElement('option');
-                option.value = talent.name;
-                option.textContent = `${talent.name} (Max: ${talent.max})`;
-                option.dataset.talent = JSON.stringify(talent);
-                select.appendChild(option);
-            });
-        }
-
-        window.filterTalentOptions = function() {
-            const searchInput = document.getElementById('talent-search-modal');
-            const select = document.getElementById('talent-select');
-            const countDisplay = document.getElementById('talent-search-count');
-            
-            if (!searchInput || !select) {
-                console.error('Elements not found:', { searchInput, select });
-                return;
-            }
-            
-            const searchText = searchInput.value.toLowerCase().trim();
-            const options = select.options;
-            const totalCount = options.length;
-            
-            if (totalCount === 0) {
-                if (countDisplay) {
-                    countDisplay.textContent = 'No talents loaded';
-                }
-                return;
-            }
+            const searchText = filterText.toLowerCase().trim();
             
             let matchCount = 0;
-            let firstMatch = null;
+            let totalCount = sortedTalents.length;
             
             // Helper function to highlight matching text
             const highlightMatch = (text, searchStr) => {
@@ -7146,45 +7117,33 @@
                 return text.replace(regex, '[$1]');
             };
             
-            for (let i = 0; i < options.length; i++) {
-                try {
-                    const talent = JSON.parse(options[i].dataset.talent);
-                    const matches = searchText === '' || 
-                                   (talent.name && talent.name.toLowerCase().includes(searchText)) ||
-                                   (talent.description && talent.description.toLowerCase().includes(searchText)) ||
-                                   (talent.tests && talent.tests.toLowerCase().includes(searchText));
+            sortedTalents.forEach(talent => {
+                // Check if talent matches search criteria
+                const matches = searchText === '' || 
+                               (talent.name && talent.name.toLowerCase().includes(searchText)) ||
+                               (talent.description && talent.description.toLowerCase().includes(searchText)) ||
+                               (talent.tests && talent.tests.toLowerCase().includes(searchText));
+                
+                if (matches) {
+                    const option = document.createElement('option');
+                    option.value = talent.name;
                     
-                    if (matches) {
-                        options[i].style.display = '';
-                        matchCount++;
-                        
-                        // Highlight the search term in the option text if there's a match in the name
-                        if (searchText && talent.name && talent.name.toLowerCase().includes(searchText)) {
-                            // Store original text if not already stored
-                            if (!options[i].dataset.originalText) {
-                                options[i].dataset.originalText = options[i].textContent;
-                            }
-                            // Add brackets around matching text for visibility
-                            const highlightedName = highlightMatch(talent.name, searchText);
-                            options[i].textContent = `${highlightedName} (Max: ${talent.max})`;
-                        } else if (options[i].dataset.originalText) {
-                            // Restore original text if no longer matching by name
-                            options[i].textContent = options[i].dataset.originalText;
-                        }
-                        
-                        if (!firstMatch) {
-                            firstMatch = options[i];
-                        }
+                    // Highlight search term if it matches the name
+                    if (searchText && talent.name && talent.name.toLowerCase().includes(searchText)) {
+                        const highlightedName = highlightMatch(talent.name, searchText);
+                        option.textContent = `${highlightedName} (Max: ${talent.max})`;
                     } else {
-                        options[i].style.display = 'none';
+                        option.textContent = `${talent.name} (Max: ${talent.max})`;
                     }
-                } catch (e) {
-                    console.error('Error parsing talent data for option', i, ':', e);
-                    options[i].style.display = 'none';
+                    
+                    option.dataset.talent = JSON.stringify(talent);
+                    select.appendChild(option);
+                    matchCount++;
                 }
-            }
+            });
             
             // Update count display
+            const countDisplay = document.getElementById('talent-search-count');
             if (countDisplay) {
                 if (searchText) {
                     countDisplay.textContent = `Showing ${matchCount} of ${totalCount} talents`;
@@ -7200,13 +7159,27 @@
                 }
             }
             
-            // Select first match if any
-            if (firstMatch && matchCount > 0) {
-                firstMatch.selected = true;
+            // Select first option if any exist
+            if (select.options.length > 0) {
+                select.options[0].selected = true;
                 window.showTalentDetails();
             }
             
-            console.log('Matches found:', matchCount);
+            return matchCount;
+        }
+
+        window.filterTalentOptions = function() {
+            const searchInput = document.getElementById('talent-search-modal');
+            
+            if (!searchInput) {
+                console.error('Search input not found');
+                return;
+            }
+            
+            const searchText = searchInput.value;
+            
+            // Re-populate the select with filtered results
+            window.populateTalentSelect(searchText);
         }
 
 window.showTalentDetails = function() {
