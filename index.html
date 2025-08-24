@@ -893,6 +893,15 @@
             background: #fdf5e6 !important;
             border-left: 4px solid #d4af37 !important;
         }
+        
+        /* Species-Career Compatibility Highlighting */
+        .career-allowed {
+            background-color: #e8f5e8 !important; /* Soft green for allowed careers */
+        }
+        
+        .career-restricted {
+            background-color: #fff3cd !important; /* Amber/yellow tint for restricted careers */
+        }
 
         .career-future {
             background: #f5f5e8 !important;
@@ -16360,13 +16369,28 @@ function loadSymptomsData() {
                         ${filteredCareers.map(career => {
                             const isSelected = setupWizardData.career === career.name;
                             const description = career.description || 'No description available';
+                            
+                            // Check if this career is allowed for the selected species
+                            // Map species names to match careers.json format
+                            const speciesMapping = {
+                                'human': 'human',
+                                'dwarf': 'dwarf',
+                                'halfling': 'halfling',
+                                'high elf': 'high-elf',
+                                'wood elf': 'wood-elf'
+                            };
+                            const selectedSpecies = setupWizardData.species ? 
+                                speciesMapping[setupWizardData.species.toLowerCase()] || setupWizardData.species.toLowerCase() : '';
+                            const isAllowed = career.species && career.species.includes(selectedSpecies);
+                            const highlightColor = isAllowed ? '#e8f5e8' : '#fff3cd'; // Green for allowed, amber for restricted
+                            
                             return `
-                                <div class="career-card" 
+                                <div class="career-card ${isAllowed ? 'career-allowed' : 'career-restricted'}" 
                                      data-career="${career.name}"
                                      onclick="selectSetupCareer('${career.name}')"
                                      style="
                                         padding: 15px;
-                                        background: ${isSelected ? '#e8f4fd' : 'white'};
+                                        background: ${isSelected ? '#e8f4fd' : highlightColor};
                                         border: 2px solid ${isSelected ? '#4a90e2' : '#d0c5a0'};
                                         border-radius: 8px;
                                         cursor: pointer;
