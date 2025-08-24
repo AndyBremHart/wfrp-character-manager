@@ -7066,8 +7066,13 @@
 
         // Talent Management Functions
         window.addTalent = function() {
-            populateTalentSelect();
             document.getElementById('add-talent-modal').style.display = 'block';
+            
+            // Now populate the select after modal is displayed
+            if (typeof window.populateTalentSelect === 'function') {
+                window.populateTalentSelect();
+            }
+            
             document.getElementById('talent-search-modal').value = '';
             document.getElementById('talent-search-modal').focus();
             
@@ -7075,13 +7080,19 @@
             const specialistSection = document.getElementById('specialist-input-section');
             if (specialistSection) {
                 specialistSection.style.display = 'none';
-                document.getElementById('specialist-select').value = '';
-                document.getElementById('specialist-custom-input').value = '';
+                const specialistSelect = document.getElementById('specialist-select');
+                const specialistCustomInput = document.getElementById('specialist-custom-input');
+                if (specialistSelect) specialistSelect.value = '';
+                if (specialistCustomInput) specialistCustomInput.value = '';
             }
         }
 
         window.populateTalentSelect = function() {
             const select = document.getElementById('talent-select');
+            if (!select) {
+                console.error('talent-select element not found');
+                return;
+            }
             select.innerHTML = '';
             
             const sortedTalents = [...srdTalents].sort((a, b) => a.name.localeCompare(b.name));
