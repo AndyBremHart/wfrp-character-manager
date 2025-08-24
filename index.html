@@ -1486,7 +1486,8 @@
                         
                         <div style="margin-bottom: 15px;">
                             <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Search Talents:</label>
-                            <input type="text" id="talent-search-modal" placeholder="Type to search..." style="width: 100%; padding: 5px;" oninput="window.filterTalentOptions()">
+                            <input type="text" id="talent-search-modal" placeholder="Type to search by name, description, or tests..." style="width: 100%; padding: 5px;" oninput="window.filterTalentOptions()">
+                            <small id="talent-search-count" style="color: #666; font-style: italic; margin-top: 5px; display: block;"></small>
                         </div>
                         
                         <div style="margin-bottom: 10px;">
@@ -7076,6 +7077,14 @@
             document.getElementById('talent-search-modal').value = '';
             document.getElementById('talent-search-modal').focus();
             
+            // Initialize the count display
+            const countDisplay = document.getElementById('talent-search-count');
+            const select = document.getElementById('talent-select');
+            if (countDisplay && select) {
+                countDisplay.textContent = `Showing all ${select.options.length} talents`;
+                countDisplay.style.color = '#666';
+            }
+            
             // Reset specialist input section
             const specialistSection = document.getElementById('specialist-input-section');
             if (specialistSection) {
@@ -7107,29 +7116,35 @@
         }
 
         window.filterTalentOptions = function() {
-            console.log('filterTalentOptions called!');
-            
             const searchInput = document.getElementById('talent-search-modal');
             const select = document.getElementById('talent-select');
+            const countDisplay = document.getElementById('talent-search-count');
             
             if (!searchInput || !select) {
                 console.error('Elements not found:', { searchInput, select });
                 return;
             }
             
-            const searchText = searchInput.value.toLowerCase();
+            const searchText = searchInput.value.toLowerCase().trim();
             const options = select.options;
+            const totalCount = options.length;
             
-            console.log('Searching for:', searchText);
-            console.log('Total options:', options.length);
-            
-            if (options.length === 0) {
-                console.log('No options available - talent data may not be loaded');
+            if (totalCount === 0) {
+                if (countDisplay) {
+                    countDisplay.textContent = 'No talents loaded';
+                }
                 return;
             }
             
             let matchCount = 0;
             let firstMatch = null;
+            
+            // Helper function to highlight matching text
+            const highlightMatch = (text, searchStr) => {
+                if (!searchStr) return text;
+                const regex = new RegExp(`(${searchStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                return text.replace(regex, '[$1]');
+            };
             
             for (let i = 0; i < options.length; i++) {
                 try {
@@ -7139,17 +7154,49 @@
                                    (talent.description && talent.description.toLowerCase().includes(searchText)) ||
                                    (talent.tests && talent.tests.toLowerCase().includes(searchText));
                     
-                    options[i].style.display = matches ? '' : 'none';
-                    
                     if (matches) {
+                        options[i].style.display = '';
                         matchCount++;
+                        
+                        // Highlight the search term in the option text if there's a match in the name
+                        if (searchText && talent.name && talent.name.toLowerCase().includes(searchText)) {
+                            // Store original text if not already stored
+                            if (!options[i].dataset.originalText) {
+                                options[i].dataset.originalText = options[i].textContent;
+                            }
+                            // Add brackets around matching text for visibility
+                            const highlightedName = highlightMatch(talent.name, searchText);
+                            options[i].textContent = `${highlightedName} (Max: ${talent.max})`;
+                        } else if (options[i].dataset.originalText) {
+                            // Restore original text if no longer matching by name
+                            options[i].textContent = options[i].dataset.originalText;
+                        }
+                        
                         if (!firstMatch) {
                             firstMatch = options[i];
                         }
+                    } else {
+                        options[i].style.display = 'none';
                     }
                 } catch (e) {
                     console.error('Error parsing talent data for option', i, ':', e);
                     options[i].style.display = 'none';
+                }
+            }
+            
+            // Update count display
+            if (countDisplay) {
+                if (searchText) {
+                    countDisplay.textContent = `Showing ${matchCount} of ${totalCount} talents`;
+                    if (matchCount === 0) {
+                        countDisplay.style.color = '#d44';
+                        countDisplay.textContent += ' - No matches found';
+                    } else {
+                        countDisplay.style.color = '#666';
+                    }
+                } else {
+                    countDisplay.textContent = `Showing all ${totalCount} talents`;
+                    countDisplay.style.color = '#666';
                 }
             }
             
