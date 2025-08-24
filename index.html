@@ -13103,8 +13103,21 @@ function loadSymptomsData() {
             const tb = Math.floor(toughness / 10);
             const maxEnc = sb + tb;
             
-            // Update display
-            document.getElementById('current-enc').value = totalEnc.toFixed(1);
+            // Update display with detailed tooltip
+            const currentEncField = document.getElementById('current-enc');
+            currentEncField.value = totalEnc.toFixed(1);
+            
+            // Create detailed breakdown for tooltip
+            let encBreakdown = [];
+            if (weaponsEnc > 0) encBreakdown.push(`Weapons: ${weaponsEnc.toFixed(1)}`);
+            if (armourEnc > 0) encBreakdown.push(`Armour: ${armourEnc.toFixed(1)}`);
+            if (trappingsEnc > 0) encBreakdown.push(`Trappings: ${trappingsEnc.toFixed(1)}`);
+            if (moneyEnc > 0) encBreakdown.push(`Money (${totalCoins} coins): ${moneyEnc}`);
+            
+            currentEncField.title = encBreakdown.length > 0 ? 
+                `Encumbrance Breakdown:\n${encBreakdown.join('\n')}` : 
+                'No encumbrance';
+            
             document.getElementById('max-enc').value = maxEnc;
             
             // Update breakdown display
@@ -13170,6 +13183,8 @@ function loadSymptomsData() {
             
             statusField.value = statusText;
             statusField.style.color = statusColor;
+            statusField.style.fontWeight = totalEnc > maxEnc ? 'bold' : 'normal';
+            statusField.title = penaltiesText; // Add tooltip to status field
             penaltiesField.textContent = penaltiesText;
             penaltiesField.style.color = penaltiesColor;
             
@@ -13187,14 +13202,17 @@ function loadSymptomsData() {
             if (movementPenalty > 0 && movementPenalty < 999) {
                 movementField.value = newMovement;
                 movementField.style.color = 'red';
+                movementField.style.fontWeight = 'bold';
                 movementField.title = `Base Movement: ${baseMovement}, Encumbrance Penalty: -${movementPenalty}`;
             } else if (movementPenalty === 999) {
                 movementField.value = 0;
                 movementField.style.color = 'darkred';
+                movementField.style.fontWeight = 'bold';
                 movementField.title = 'Too encumbered to move!';
             } else {
                 movementField.value = baseMovement;
                 movementField.style.color = '';
+                movementField.style.fontWeight = 'normal';
                 movementField.title = '';
             }
             
@@ -13203,6 +13221,23 @@ function loadSymptomsData() {
             const runField = document.getElementById('run');
             walkField.value = newMovement * 2;
             runField.value = newMovement * 4;
+            
+            // Apply or remove styling for walk and run fields based on encumbrance
+            if (movementPenalty > 0) {
+                walkField.style.color = movementPenalty === 999 ? 'darkred' : 'red';
+                runField.style.color = movementPenalty === 999 ? 'darkred' : 'red';
+                walkField.style.fontWeight = 'bold';
+                runField.style.fontWeight = 'bold';
+                walkField.title = movementPenalty === 999 ? 'Too encumbered to move!' : `Reduced by encumbrance (Base Walk: ${baseMovement * 2})`;
+                runField.title = movementPenalty === 999 ? 'Too encumbered to move!' : `Reduced by encumbrance (Base Run: ${baseMovement * 4})`;
+            } else {
+                walkField.style.color = '';
+                runField.style.color = '';
+                walkField.style.fontWeight = 'normal';
+                runField.style.fontWeight = 'normal';
+                walkField.title = '';
+                runField.title = '';
+            }
             
             // Store penalties for reference (could be displayed elsewhere)
             document.getElementById('enc-status').setAttribute('data-agility-penalty', agilityPenalty);
