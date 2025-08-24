@@ -4,7 +4,8 @@
     "max": "Ballistic Skill Bonus",
     "category": "combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are an exceptional shot and know where to shoot an enemy in order to inflict maximum damage. You deal your Accurate Shot level in extra Damage with all ranged weapons."
   },
   {
     "name": "Acute Sense",
@@ -15,36 +16,47 @@
     "specialist": true,
     "specialistType": "Sense",
     "specialistPrompt": "Choose a sense",
-    "specialistExamples": ["Sight", "Hearing", "Smell", "Touch", "Taste"],
-    "requiresSpecialization": true
+    "specialistExamples": [
+      "Sight",
+      "Hearing",
+      "Smell",
+      "Touch",
+      "Taste"
+    ],
+    "requiresSpecialization": true,
+    "description": "One of your primary five senses is highly developed, allowing you to spot what others miss."
   },
   {
     "name": "Aethyric Attunement",
     "max": "Initiative Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "Your experience, talent or training lets you more safely manipulate the Winds of Magic. You do not suffer a Miscast if you roll a double on a successful Channel Test."
   },
   {
     "name": "Alley Cat",
     "max": "Initiative Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are at home in shadowy backstreets and urban environments. When using Stealth (Urban), you may reverse the dice of any failed Test if this will score a Success."
   },
   {
     "name": "Ambidextrous",
     "max": 2,
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You can use your off-hand far better than most folk, either by training or innate talent."
   },
   {
     "name": "Animal Affinity",
     "max": "Willpower Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "Wild animals feel comfortable in your presence, and often follow your lead."
   },
   {
     "name": "Arcane Magic",
@@ -55,64 +67,82 @@
     "specialist": true,
     "specialistType": "Lore",
     "specialistPrompt": "Choose an arcane lore",
-    "specialistExamples": ["Fire", "Metal", "Life", "Light", "Heavens", "Shadow", "Death", "Beasts"],
-    "requiresSpecialization": true
+    "specialistExamples": [
+      "Fire",
+      "Metal",
+      "Life",
+      "Light",
+      "Heavens",
+      "Shadow",
+      "Death",
+      "Beasts"
+    ],
+    "requiresSpecialization": true,
+    "description": "You either study one of the 8 Arcane Lores of Magic — Beasts, Death, Fire, Heavens, Metal, Shadow, Light, or Life — or practice a lesser known Lore, such as Hedgecraft or Necromancy."
   },
   {
     "name": "Argumentative",
     "max": "Fellowship Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are used to arguing your points and winning debates through force of personality."
   },
   {
     "name": "Artistic",
     "max": "Dexterity Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have a natural talent for art, able to produce precise sketches with nothing but time and appropriate media."
   },
   {
     "name": "Attractive",
     "max": "Fellowship Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "Whether it's your piercing eyes, your strong frame, or maybe the way you flash your perfect teeth, you know how to make the best use of what the gods gave you."
   },
   {
     "name": "Battle Rage",
     "max": "Willpower Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are better able to control your Frenzy in combat, channelling your rage more effectively. You can end your Frenzy with a successful Cool Test at the end of the round."
   },
   {
     "name": "Beat Blade",
     "max": "Weapon Skill Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are trained to make sharp controlled blows to your opponent's weapon, creating an opening for an attack or simply impeding an incoming attack."
   },
   {
     "name": "Beneath Notice",
     "max": "Fellowship Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "The high and mighty pay no attention to your presence, knowing you are well beneath their notice."
   },
   {
     "name": "Berserk Charge",
     "max": "Strength Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You hurl yourself at your enemies with reckless abandon, using the force of your charge to add weight to your strikes."
   },
   {
     "name": "Blather",
     "max": "Fellowship Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "Called 'opening your mouth and letting your belly rumble' in [[Nordland]], or simply 'bullshitting' in [[Ostland]], blathering involves talking rapidly and incessantly about inconsequential or..."
   },
   {
     "name": "Bless",
@@ -123,64 +153,84 @@
     "specialist": true,
     "specialistType": "Divine Lore",
     "specialistPrompt": "Choose a divine lore",
-    "specialistExamples": ["Ranald", "Sigmar", "Ulric", "Manann", "Morr", "Myrmidia", "Shallya", "Verena", "Taal", "Rhya"],
-    "requiresSpecialization": true
+    "specialistExamples": [
+      "Ranald",
+      "Sigmar",
+      "Ulric",
+      "Manann",
+      "Morr",
+      "Myrmidia",
+      "Shallya",
+      "Verena",
+      "Taal",
+      "Rhya"
+    ],
+    "requiresSpecialization": true,
+    "description": "You are watched over by one of the Gods and can empower simple prayers."
   },
   {
     "name": "Bookish",
     "max": "Intelligence Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are as at home in a library as a seaman at sea or a farmer a-farming. When using Research, you may reverse the dice of any failed Test if this will score a success."
   },
   {
     "name": "Break and Enter",
     "max": "Strength Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are an expert at quickly breaking down doors and forcing entry."
   },
   {
     "name": "Briber",
     "max": "Fellowship Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are an exceedingly skilled briber, knowing exactly how much to offer and when."
   },
   {
     "name": "Cardsharp",
     "max": "Intelligence Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are used to playing, and winning, at cards, although your methods may involve a little cheating."
   },
   {
     "name": "Careful Strike",
     "max": "Initiative Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are skilled at hitting your enemy exactly where you want to, either at range or in melee."
   },
   {
     "name": "Carouser",
     "max": "Toughness Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are a seasoned drinker and know how to party hard. You may reverse the dice of any failed Consume Alcohol Test if this will score a Success."
   },
   {
     "name": "Cat-tongued",
     "max": "Fellowship Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "Like Ranald the Trickster God, you blend truth and lies as if there were no difference."
   },
   {
     "name": "Catfall",
     "max": "Agility Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are nimble and balanced like a cat, and are able to fall much greater distances unharmed than others might."
   },
   {
     "name": "Chaos Magic",
@@ -191,64 +241,79 @@
     "specialist": true,
     "specialistType": "Chaos Lore",
     "specialistPrompt": "Choose a chaos lore",
-    "specialistExamples": ["Nurgle", "Tzeentch", "Khorne", "Slaanesh", "Chaos Undivided"],
-    "requiresSpecialization": true
+    "specialistExamples": [
+      "Nurgle",
+      "Tzeentch",
+      "Khorne",
+      "Slaanesh",
+      "Chaos Undivided"
+    ],
+    "requiresSpecialization": true,
+    "description": "By accident or design you have lost a portion of your soul to one of the Dark Gods, and can now practice the foul magics of Chaos."
   },
   {
     "name": "Combat Aware",
     "max": "Initiative Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are used to scanning the battlefield to make snap decisions informed by the shifting tides of war."
   },
   {
     "name": "Combat Master",
     "max": "Agility Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "Your accumulated years of combat experience allow you to keep lesser fighters at bay."
   },
   {
     "name": "Combat Reflexes",
     "max": "Initiative Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You react like a flash of lightning in combat situations. Add 10 to your Initiative for each level in this Talent when determining Combat Initiative."
   },
   {
     "name": "Commanding Presence",
     "max": "Fellowship Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "Your presence fills others with hushed awe and admiration."
   },
   {
     "name": "Concoct",
     "max": "Intelligence Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are skilled at making potions, philtres, and draughts on the go."
   },
   {
     "name": "Contortionist",
     "max": "Agility Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You can bend and manipulate your body in a myriad of seemingly unnatural ways."
   },
   {
     "name": "Coolheaded",
     "max": 1,
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You gain a permanent +5 bonus to your starting Willpower Characteristic."
   },
   {
     "name": "Crack the Whip",
     "max": "Dexterity Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You know how to get the most out of your animals when speed is essential. When an animal you control is Fleeing or Running, it gains +1 Movement if you are using a whip."
   },
   {
     "name": "Craftsman",
@@ -259,113 +324,154 @@
     "specialist": true,
     "specialistType": "Trade",
     "specialistPrompt": "Choose a trade",
-    "specialistExamples": ["Apothecary", "Armourer", "Artist", "Baker", "Blacksmith", "Bowyer", "Brewer", "Calligrapher", "Carpenter", "Cartographer", "Cook", "Cooper", "Embalmer", "Farrier", "Gem Cutter", "Goldsmith", "Gunsmith", "Herbalist", "Leatherworker", "Mason", "Printer", "Shipwright", "Tailor", "Weaponsmith"],
-    "requiresSpecialization": true
+    "specialistExamples": [
+      "Apothecary",
+      "Armourer",
+      "Artist",
+      "Baker",
+      "Blacksmith",
+      "Bowyer",
+      "Brewer",
+      "Calligrapher",
+      "Carpenter",
+      "Cartographer",
+      "Cook",
+      "Cooper",
+      "Embalmer",
+      "Farrier",
+      "Gem Cutter",
+      "Goldsmith",
+      "Gunsmith",
+      "Herbalist",
+      "Leatherworker",
+      "Mason",
+      "Printer",
+      "Shipwright",
+      "Tailor",
+      "Weaponsmith"
+    ],
+    "requiresSpecialization": true,
+    "description": "You have true creative talent in a specific trade or craft."
   },
   {
     "name": "Criminal",
     "max": "None",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are an active criminal making money from illegal sources, and you're not always quiet about it."
   },
   {
     "name": "Deadeye Shot",
     "max": 1,
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You always hit an opponent right between the eyes… or wherever else you intended to hit."
   },
   {
     "name": "Dealmaker",
     "max": "Fellowship Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are a skilled businessman who knows how to close a deal."
   },
   {
     "name": "Detect Artefact",
     "max": "Initiative Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are able to sense when magic lies within an artefact."
   },
   {
     "name": "Diceman",
     "max": "Intelligence Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are a dicing master, and all claims you cheat are clearly wrong."
   },
   {
     "name": "Dirty Fighting",
     "max": "Weapon Skill Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have been taught all the dirty tricks of unarmed combat."
   },
   {
     "name": "Disarm",
     "max": "Initiative Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are able to disarm an opponent with a careful flick of the wrist or a well-aimed blow to the hand."
   },
   {
     "name": "Disciple of Change",
     "max": 1,
     "category": "chaos",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "When you gain a mutation, roll twice and choose one of the two results."
   },
   {
     "name": "Distract",
     "max": "Agility Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are trained in simple movements to distract or startle your opponent, drawing eyes from your true intent."
   },
   {
     "name": "Doomed",
     "max": 1,
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "At the age of 10, a Priest of [[The Cult of Morr|Morr]] called a Doomsayer took you aside to foretell your death in an incense-laden, coming-of-age ritual called the Dooming."
   },
   {
     "name": "Double Life",
     "max": 1,
     "category": "social",
     "prerequisite": "Secret Identity",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "So adept are you at maintaining your [[4. SRD/Talents/Secret Identity|Secret Identity]], that you are able to live two completely separate lives. When you purchase this Talent, you may enter into..."
   },
   {
     "name": "Drilled",
     "max": 1,
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have been drilled extensively in formation fighting. When in close combat with one or more allies within 5 yards, all parties gain +1 SL to melee tests."
   },
   {
     "name": "Dual Wielder",
     "max": "Agility Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "When armed with two weapons, you may attack with both for your Action."
   },
   {
     "name": "Embezzle",
     "max": "Intelligence Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are skilled at skimming money from your employers without being detected."
   },
   {
     "name": "Enclosed Fighter",
     "max": "Agility Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have learned to make the most benefit out of fighting in enclosed spaces."
   },
   {
     "name": "Etiquette",
@@ -376,22 +482,33 @@
     "specialist": true,
     "specialistType": "Social Group",
     "specialistPrompt": "Choose a social group",
-    "specialistExamples": ["Nobles", "Guilders", "Servants", "Soldiers", "Scholars", "Criminals", "Cultists"],
-    "requiresSpecialization": true
+    "specialistExamples": [
+      "Nobles",
+      "Guilders",
+      "Servants",
+      "Soldiers",
+      "Scholars",
+      "Criminals",
+      "Cultists"
+    ],
+    "requiresSpecialization": true,
+    "description": "You can blend in socially with the chosen group so long as you are dressed and acting appropriately."
   },
   {
     "name": "Fast Hands",
     "max": "Dexterity Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You can move your hands with surprising dexterity. Bystanders get no passive Perception Tests to spot your use of the Sleight of Hand Skill, instead they only get to Oppose your Sleight of Hand..."
   },
   {
     "name": "Fast Shot",
     "max": "Agility Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "If you have a loaded ranged weapon, you can fire it outside the normal Initiative Order before any other combatant reacts in the following Round."
   },
   {
     "name": "Fearless",
@@ -402,92 +519,114 @@
     "specialist": true,
     "specialistType": "Enemy",
     "specialistPrompt": "Choose an enemy type",
-    "specialistExamples": ["Orcs", "Undead", "Chaos", "Beastmen", "Vampires", "Daemons", "Trolls", "Witches"],
-    "requiresSpecialization": true
+    "specialistExamples": [
+      "Orcs",
+      "Undead",
+      "Chaos",
+      "Beastmen",
+      "Vampires",
+      "Daemons",
+      "Trolls",
+      "Witches"
+    ],
+    "requiresSpecialization": true,
+    "description": "You are either brave enough or crazy enough that fear of certain enemies has become a distant memory."
   },
   {
     "name": "Feint",
     "max": "Weapon Skill Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have trained how to make false attacks in close combat to fool your opponent."
   },
   {
     "name": "Field Dressing",
     "max": "Intelligence Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are used to treating wounds quickly under pressure."
   },
   {
     "name": "Fisherman",
     "max": "Initiative Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are a very capable fisherman and know all the best ways to land fish."
   },
   {
     "name": "Flagellant",
     "max": "Toughness Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have dedicated your pain to the service of your God."
   },
   {
     "name": "Flee!",
     "max": "Agility Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "When your life is on the line you are capable of impressive bursts of speed. Your Movement Attribute counts as 1 higher when Fleeing."
   },
   {
     "name": "Fleet Footed",
     "max": 1,
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You gain +1 to your Movement Attribute. This is a permanent increase to your Movement characteristic."
   },
   {
     "name": "Frenzy",
     "max": 1,
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You can Frenzy as described in the Psychology rules. You can enter a state of Frenzy, gaining significant combat bonuses but losing some control over your actions."
   },
   {
     "name": "Frightening",
     "max": "Strength Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "Anyone sane thinks twice before approaching you. If you wish, you have a Fear Rating of 1. Add +1 to this number per extra time you have this Talent."
   },
   {
     "name": "Furious Assault",
     "max": "Agility Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "Your blows follow one another in quick succession, raining down on your opponents with the fury of Ulric."
   },
   {
     "name": "Gregarious",
     "max": "Fellowship Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You just like talking to other folk and it seems they like talking to you. You may reverse any failed Gossip Test if this allows the Test to succeed."
   },
   {
     "name": "Gunner",
     "max": "Dexterity Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You can reload blackpowder weapons with practiced ease. Add SL equal to your level in Gunner to any Extended Test to reload a Blackpowder weapon."
   },
   {
     "name": "Hardy",
     "max": "Toughness Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You gain a permanent addition to your Wounds, equal to your Toughness Bonus. If your Toughness Bonus should increase, then the number of Wounds Hardy provides also increases."
   },
   {
     "name": "Hatred",
@@ -498,64 +637,82 @@
     "specialist": true,
     "specialistType": "Group",
     "specialistPrompt": "Choose a hated group",
-    "specialistExamples": ["Greenskins", "Beastmen", "Chaos Cultists", "Mutants", "Sigmarites", "Witches", "Undead", "Nobility"],
-    "requiresSpecialization": true
+    "specialistExamples": [
+      "Greenskins",
+      "Beastmen",
+      "Chaos Cultists",
+      "Mutants",
+      "Sigmarites",
+      "Witches",
+      "Undead",
+      "Nobility"
+    ],
+    "requiresSpecialization": true,
+    "description": "You are consumed with hatred for something in the Old World, as described in the Psychology rules."
   },
   {
     "name": "Holy Hatred",
     "max": "Fellowship Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "Your prayers drip with the hatred you feel for your blasphemous enemies. You deal +1 Damage with Miracles for each level in this Talent."
   },
   {
     "name": "Holy Visions",
     "max": "Initiative Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You clearly see the great works of the Gods all around you."
   },
   {
     "name": "Hunter's Eye",
     "max": "Initiative Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are a skilled hunter and know all the best techniques to find game."
   },
   {
     "name": "Impassioned Zeal",
     "max": "Fellowship Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "When you talk about your cause, case, or religion, your words fill with passion and fervent zeal."
   },
   {
     "name": "Implacable",
     "max": "Toughness Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "It takes a lot to finish you off. You can ignore the Wound loss from a Bleeding Condition. Each level in this Talent lets you ignore the Wound loss from an extra Bleeding Condition."
   },
   {
     "name": "In-fighter",
     "max": "Dexterity Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are skilled at drawing in close to an opponent. You suffer no penalties for fighting against an opponent with a longer weapon than you. Further, if you use the optional rules for In-fighting,..."
   },
   {
     "name": "Inspiring",
     "max": "Fellowship Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "Your rousing words and pleas can turn the tide of a battle."
   },
   {
     "name": "Instinctive Diction",
     "max": "Initiative Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You instinctively understand the language of Magick, and are capable of articulating the most complex phrases rapidly without error."
   },
   {
     "name": "Invoke",
@@ -566,106 +723,132 @@
     "specialist": true,
     "specialistType": "Divine Lore",
     "specialistPrompt": "Choose a divine lore",
-    "specialistExamples": ["Sigmar", "Ulric", "Manann", "Morr", "Myrmidia", "Ranald", "Shallya", "Verena", "Taal", "Rhya"],
-    "requiresSpecialization": true
+    "specialistExamples": [
+      "Sigmar",
+      "Ulric",
+      "Manann",
+      "Morr",
+      "Myrmidia",
+      "Ranald",
+      "Shallya",
+      "Verena",
+      "Taal",
+      "Rhya"
+    ],
+    "requiresSpecialization": true,
+    "description": "You are blessed by one of the Gods and can empower one of your Cult's Miracles."
   },
   {
     "name": "Iron Jaw",
     "max": "Toughness Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are made of sturdy stuff and can weather even the strongest blows."
   },
   {
     "name": "Iron Will",
     "max": "Willpower Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have an indomitable will of iron, and will never willingly bow down before another."
   },
   {
     "name": "Jump Up",
     "max": 1,
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are hard to keep down. You may perform a Challenging (+0) Athletics Test to immediately regain your feet whenever you gain a Prone Condition. This Athletics Test is often modified by the..."
   },
   {
     "name": "Kingpin",
     "max": 1,
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have earned an air of respectability despite your nefarious ways. You may ignore the Status loss of the [[4. SRD/Talents/Criminal|Criminal]] Talent."
   },
   {
     "name": "Lightning Reflexes",
     "max": 1,
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You gain a permanent +5 bonus to your starting Agility Characteristic."
   },
   {
     "name": "Linguistics",
     "max": "Intelligence Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have a natural affinity for languages. Given a month's exposure to any Language, you count the associated Language Skill as a Basic Skill with a successful Intelligence Test (which can be..."
   },
   {
     "name": "Lip Reading",
     "max": "Initiative Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You can tell what people are saying by simply watching their lips; you do not need to hear what they are saying."
   },
   {
     "name": "Luck",
     "max": "Fellowship Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "They say when you were born, Ranald smiled. Your maximum Fortune Points now equal your current Fate points plus the number of times you've taken Luck."
   },
   {
     "name": "Magic Resistance",
     "max": "Toughness Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are resistant to magic. The SL of any spell affecting you is reduced by 2 per point you have in this Talent. The SL of a spell is only modified by the highest Magic Resistance Talent within..."
   },
   {
     "name": "Magical Sense",
     "max": "Initiative Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are able to sense the Winds of Magic in others. You may attempt an Average (+20) Intuition Test whenever you encounter a spellcaster. If you pass, you sense the target is a witch. Further, if..."
   },
   {
     "name": "Magnum Opus",
     "max": "None",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are an undisputed master in your field, able to create work of such incredible complexity others can but sit back and marvel at your genius."
   },
   {
     "name": "Marksman",
     "max": 1,
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You gain a permanent +5 bonus to your starting Ballistic Skill. This does not count towards your Advances. This bonus applies to starting characteristics only and cannot be taken multiple times."
   },
   {
     "name": "Master of Disguise",
     "max": "Fellowship Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are an expert at taking on the appearance and mannerisms of others."
   },
   {
     "name": "Master Orator",
     "max": "Fellowship Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are skilled at firing up crowds. You gain a SL bonus equal to your levels of Master Orator to any Charm Test when Public Speaking before a crowd."
   },
   {
     "name": "Master Tradesman",
@@ -676,148 +859,194 @@
     "specialist": true,
     "specialistType": "Trade",
     "specialistPrompt": "Choose a trade",
-    "specialistExamples": ["Apothecary", "Armourer", "Artist", "Baker", "Blacksmith", "Bowyer", "Brewer", "Calligrapher", "Carpenter", "Cartographer", "Cook", "Cooper", "Embalmer", "Farrier", "Gem Cutter", "Goldsmith", "Gunsmith", "Herbalist", "Leatherworker", "Mason", "Printer", "Shipwright", "Tailor", "Weaponsmith"],
-    "requiresSpecialization": true
+    "specialistExamples": [
+      "Apothecary",
+      "Armourer",
+      "Artist",
+      "Baker",
+      "Blacksmith",
+      "Bowyer",
+      "Brewer",
+      "Calligrapher",
+      "Carpenter",
+      "Cartographer",
+      "Cook",
+      "Cooper",
+      "Embalmer",
+      "Farrier",
+      "Gem Cutter",
+      "Goldsmith",
+      "Gunsmith",
+      "Herbalist",
+      "Leatherworker",
+      "Mason",
+      "Printer",
+      "Shipwright",
+      "Tailor",
+      "Weaponsmith"
+    ],
+    "requiresSpecialization": true,
+    "description": "You are exceptionally skilled at your specified Trade skill."
   },
   {
     "name": "Menacing",
     "max": "Strength Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have an imposing presence. When using the Intimidate Skill, gain a SL bonus equal to your levels of Menacing."
   },
   {
     "name": "Mimic",
     "max": "Initiative Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have a good ear for accents and dialects, and can reproduce them accurately."
   },
   {
     "name": "Night Vision",
     "max": "Initiative Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You can see very well in natural darkness. Assuming you have at least a faint source of light (such as starlight, moonlight, or bioluminescence) you can see clearly for 20 yards per level of Night..."
   },
   {
     "name": "Nimble Fingered",
     "max": 1,
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You gain a permanent +5 bonus to your starting Dexterity. This does not count towards your Advances. This bonus applies to starting characteristics only and cannot be taken multiple times."
   },
   {
     "name": "Noble Blood",
     "max": 1,
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are either born into the nobility, or otherwise elevated to it by in-game events."
   },
   {
     "name": "Nose for Trouble",
     "max": "Initiative Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are used to getting into, and preferably out of, trouble."
   },
   {
     "name": "Numismatics",
     "max": "Initiative Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are well versed with the different coinage of the Old World, and are adept at determining their value."
   },
   {
     "name": "Old Salt",
     "max": "Agility Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are an experienced seaman, and are very used to sea life."
   },
   {
     "name": "Orientation",
     "max": "Initiative Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have an instinctual feel for direction. You automatically know which direction is north with a glimpse at the stars, trees, or whatever other signs you are familiar with."
   },
   {
     "name": "Panhandle",
     "max": "Fellowship Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are a skilled beggar, able to get even the most jaded individual to contribute to your cause. You can perform a Charm Test every half hour when Begging, not every hour."
   },
   {
     "name": "Perfect Pitch",
     "max": "Initiative Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have perfect pitch, able to replicate notes perfectly and identify them without even making a Test."
   },
   {
     "name": "Petty Magic",
     "max": 1,
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have the spark to cast magic within you and have mastered techniques to control it at a basic level."
   },
   {
     "name": "Pharmacist",
     "max": "Intelligence Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are highly skilled at pharmacy, better able than most to make pills, ointments, unguents, oils, creams, and more."
   },
   {
     "name": "Pilot",
     "max": "Initiative Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are skilled at leading vessels through dangerous waters."
   },
   {
     "name": "Public Speaker",
     "max": "Fellowship Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are a skilled orator and know how to work large groups of people."
   },
   {
     "name": "Pure Soul",
     "max": "Willpower Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "Your soul is pure, quite resistant to the depredations of Chaos. You may gain extra Corruption points equal to your level of Pure Soul before having to Test to see if you become corrupt."
   },
   {
     "name": "Rapid Reload",
     "max": "Dexterity Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You can reload ranged weapons with practiced ease. You add SL equal to your level in Rapid Reload to any Test to reload a ranged weapon."
   },
   {
     "name": "Reaction Strike",
     "max": "Initiative Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "Your fast reactions have allowed you to fell many opponents before they have even swung their blades."
   },
   {
     "name": "Read Write",
     "max": 1,
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are one of the rare literate individuals in the Old World. You are assumed to be able to read and write (if appropriate) all of the Languages you can speak."
   },
   {
     "name": "Relentless",
     "max": "Agility Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "When you have your mind set on a target, there is nothing anyone can do to stop you reaching them."
   },
   {
     "name": "Resistance",
@@ -828,57 +1057,73 @@
     "specialist": true,
     "specialistType": "Threat",
     "specialistPrompt": "Choose a threat",
-    "specialistExamples": ["Chaos", "Disease", "Poison", "Magic", "Mutation", "Cold", "Heat"],
-    "requiresSpecialization": true
+    "specialistExamples": [
+      "Chaos",
+      "Disease",
+      "Poison",
+      "Magic",
+      "Mutation",
+      "Cold",
+      "Heat"
+    ],
+    "requiresSpecialization": true,
+    "description": "Your strong constitution allows you to more readily survive a specific threat."
   },
   {
     "name": "Resolute",
     "max": "Strength Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You launch into attacks with grim determination. Add your level of Resolute to your Strength Bonus when you Charge."
   },
   {
     "name": "Reversal",
     "max": "Weapon Skill Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are used to desperate combats, able to turn even the direst circumstances to your Advantage."
   },
   {
     "name": "Riposte",
     "max": "Agility Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "Conforming to 'the best defence is offence', you respond to an incoming attack with a lightning-fast counterstrike of your own."
   },
   {
     "name": "River Guide",
     "max": "Initiative Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You know all the tricks for navigating dangerous rivers."
   },
   {
     "name": "Robust",
     "max": "Toughness Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are as tough as old boots and just soak up damage."
   },
   {
     "name": "Roughrider",
     "max": "Agility Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are at home in the saddle in even the most difficult of circumstances, and know how to get the best out of your mount during conflict."
   },
   {
     "name": "Rover",
     "max": "Agility Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are at home roaming the wild places. When using Stealth in a rural environment, bystanders do not get passive Perception Tests to detect you; they can only spot you if they are specifically on..."
   },
   {
     "name": "Savant",
@@ -889,148 +1134,179 @@
     "specialist": true,
     "specialistType": "Lore",
     "specialistPrompt": "Choose a lore",
-    "specialistExamples": ["History", "Astronomy", "Engineering", "Geography", "Law", "Magick", "Metallurgy", "Science", "Theology"],
-    "requiresSpecialization": true
+    "specialistExamples": [
+      "History",
+      "Astronomy",
+      "Engineering",
+      "Geography",
+      "Law",
+      "Magick",
+      "Metallurgy",
+      "Science",
+      "Theology"
+    ],
+    "requiresSpecialization": true,
+    "description": "You are exceptionally learned, and have a significant degree of specialised knowledge in a single field of study."
   },
   {
     "name": "Savvy",
     "max": 1,
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You gain a permanent +5 bonus to your starting Intelligence Characteristic."
   },
   {
     "name": "Scale Sheer Surface",
     "max": "Strength Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are an exceptional climber. You can attempt to climb even seemingly impossible surfaces such as sheer fortifications, ice shelves, plastered walls, and similar, and you ignore any penalties to..."
   },
   {
     "name": "Schemer",
     "max": "Intelligence Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are a master of politics and see conspiracy around every corner."
   },
   {
     "name": "Sea Legs",
     "max": "Toughness Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are used to the rolling motion of the oceans, and are very unlikely to get sea sick, even in the worst storms."
   },
   {
     "name": "Seasoned Traveller",
     "max": "Intelligence Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are an inquisitive soul who has travelled far and wide, learning all manner of local information."
   },
   {
     "name": "Second Sight",
     "max": "Initiative Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You can perceive the shifting Winds of Magic that course from the Chaos Gates at the poles of the world."
   },
   {
     "name": "Secret Identity",
     "max": "Intelligence Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You maintain a secret identity that allows you to appear richer, or perhaps poorer, than you actually are."
   },
   {
     "name": "Shadow",
     "max": "Agility Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are skilled at following people without being spotted."
   },
   {
     "name": "Sharp",
     "max": 1,
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You gain a permanent +5 bonus to your starting Initiative Characteristic."
   },
   {
     "name": "Sharpshooter",
     "max": 1,
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You can make aimed shots of exceptional accuracy. You ignore any negative Difficulty modifiers to Ranged Tests due to the size of your target."
   },
   {
     "name": "Shieldsman",
     "max": "Strength Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are skilled at using your shield to manoeuvre others in combat so you can take advantage of a desperate situation."
   },
   {
     "name": "Sixth Sense",
     "max": "Initiative Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You get a strange feeling when you are threatened, and can react accordingly."
   },
   {
     "name": "Slayer",
     "max": 1,
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "When determining Damage use your opponent's Toughness Bonus as your Strength Bonus if it is higher."
   },
   {
     "name": "Small",
     "max": 1,
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are much shorter than most folk in the Old World. The full rules for different Sizes are found in Chapter 12: Bestiary. This talent typically represents Halflings and other small-sized creatures."
   },
   {
     "name": "Sniper",
     "max": 4,
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "Distance is of no import to your shooting skills, and you are just as adept at picking off far away targets as those nearby."
   },
   {
     "name": "Speedreader",
     "max": "Intelligence Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You read books at a voracious pace. You may reverse a failed Research Test if this will grant success. If the speed at which you read is important during combat, a successful Language Test lets..."
   },
   {
     "name": "Sprinter",
     "max": "Strength Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are a swift runner. Your Movement Attribute counts as 1 higher when Running."
   },
   {
     "name": "Step Aside",
     "max": "Agility Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are skilled at being where enemy weapons are not."
   },
   {
     "name": "Stone Soup",
     "max": "Toughness Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are used to getting by with less, and know how to survive lean times."
   },
   {
     "name": "Stout-hearted",
     "max": "Willpower Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "No matter how bad things get, you always seem to come back for more. You may attempt a Cool Test to remove a Broken Condition at the end of each of your Turns as well as at the end of the Round."
   },
   {
     "name": "Strider",
@@ -1041,224 +1317,265 @@
     "specialist": true,
     "specialistType": "Terrain",
     "specialistPrompt": "Choose a terrain",
-    "specialistExamples": ["Wasteland", "Forest", "Mountains", "Swamp", "Desert", "Tundra", "Coast", "Underground"],
-    "requiresSpecialization": true
+    "specialistExamples": [
+      "Wasteland",
+      "Forest",
+      "Mountains",
+      "Swamp",
+      "Desert",
+      "Tundra",
+      "Coast",
+      "Underground"
+    ],
+    "requiresSpecialization": true,
+    "description": "You are experienced in traversing difficult ground. You ignore all movement penalties when crossing over or through a specified terrain. Typical specialities include: Coastal, Deserts, Marshes,..."
   },
   {
     "name": "Strike Mighty Blow",
     "max": "Strength Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You know how to hit hard! You deal your level of Strike Mighty Blow in extra Damage with melee weapons."
   },
   {
     "name": "Strike to Injure",
     "max": "Initiative Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are an expert at striking your enemies most vulnerable areas. You inflict your level of Strike to Injure in additional Wounds when you cause a Critical Wound."
   },
   {
     "name": "Strike to Stun",
     "max": "Weapon Skill Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You know where to hit an opponent to bring him down fast."
   },
   {
     "name": "Strong Back",
     "max": "Strength Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have a strong back that is used to hard work. You may add your levels in Strong Back to your SL in any Opposed Strength Tests, and can carry additional Encumbrance points of trappings equal to..."
   },
   {
     "name": "Strong Legs",
     "max": "Strength Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have strong legs able to carry you great distances when you jump. Add your Strong Legs level to your SL in any Athletics Tests involving Leaping."
   },
   {
     "name": "Strong Swimmer",
     "max": "Strength Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are an especially strong swimmer and used to holding your breath for a long time underwater."
   },
   {
     "name": "Strong-minded",
     "max": "Willpower Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are the epitome of determination and resolve. Add your level in Strong Minded to your maximum Resolve pool."
   },
   {
     "name": "Sturdy",
     "max": "Strength Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have a brawny physique, or are very used to carrying things. Increase the number of Encumbrance Points you can carry by your Sturdy level x 2."
   },
   {
     "name": "Suave",
     "max": 1,
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You gain a permanent +5 bonus to your starting Fellowship Characteristic."
   },
   {
     "name": "Suffused with Magic",
     "max": 1,
     "category": "magical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "All spells cast within Willpower Bonus yards of you gain +1 SL to cast. This Bonus may only be claimed once per casting, no matter how many Characters with this Talent are in the vicinity."
   },
   {
     "name": "Super Numerate",
     "max": "Intelligence Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have a gift for calculation and can work out the solution to most mathematical problems with ease. You may use a simple calculator to represent what your PC is capable of mentally computing."
   },
   {
     "name": "Supportive",
     "max": "Fellowship Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You know what to say and when to make the most impact upon your superiors."
   },
   {
     "name": "Sure Shot",
     "max": "Initiative Bonus",
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You know how to find the weak spots in a target's armour. When you hit a target with a Ranged weapon, you may ignore Armour Points equal to your Sure Shot level."
   },
   {
     "name": "Surgery",
     "max": "Intelligence Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are a surgeon, able to open and close the flesh in order to heal others."
   },
   {
     "name": "Tenacious",
     "max": "Toughness Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You never give up, no matter how impossible your travails appear."
   },
   {
     "name": "Tinker",
     "max": "Dexterity Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are somewhat of a Johann-of-all-trades, able to repair almost anything. You count all non-magical Trade Skills as Basic when repairing broken items."
   },
   {
     "name": "Tower of Memories",
     "max": "Intelligence Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "A recollection technique first instigated by the Cult of Verena, reputedly from Elven practices taught by the Loremasters of Hoeth, Tower of Memories allows you to perfectly recall a sequence of..."
   },
   {
     "name": "Trapper",
     "max": "Initiative Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are skilled at spotting and using traps. You may take a Perception Test to spot traps automatically without having to tell the GM of your intention; the GM may prefer to make some of these..."
   },
   {
     "name": "Trick Riding",
     "max": "Agility Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are capable of amazing feats of agility on horseback."
   },
   {
     "name": "Tunnel Rat",
     "max": "Agility Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are at home in tunnels, sewers, and other underground environments."
   },
   {
     "name": "Tzeentch's Blessing",
     "max": 1,
     "category": "chaos",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "Tzeentch, the Chaos God of Magic, has gifted you with a worming parasite within your mind."
   },
   {
     "name": "Unshakable",
     "max": "Willpower Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are a jaded veteran who has survived more than one hail of shots from Blackpowder weapons."
   },
   {
     "name": "Very Resilient",
     "max": 1,
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You gain a permanent +5 bonus to your starting Toughness Characteristic."
   },
   {
     "name": "Very Strong",
     "max": 1,
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You gain a permanent +5 bonus to your starting Strength Characteristic."
   },
   {
     "name": "War Leader",
     "max": "Fellowship Bonus",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "Your stern gaze and inspiring words motivate your soldiers to fight on to the end."
   },
   {
     "name": "War Wizard",
     "max": 1,
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are trained to cast magic while in the thick of combat."
   },
   {
     "name": "Warrior Born",
     "max": 1,
     "category": "Combat",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You gain a permanent +5 bonus to your starting Weapon Skill Characteristic. This doesn't count as Advances. This bonus applies to starting characteristics only and cannot be taken multiple times."
   },
   {
     "name": "Waterman",
     "max": "Agility Bonus",
     "category": "Physical",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are an experienced freshwater sailor and are well-versed with river vessels."
   },
   {
     "name": "Wealthy",
     "max": "None",
     "category": "Social",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are fabulously wealthy, and are rarely ever short of coin. When Earning (including Income Endeavours) you secure +1 GC per time you have this Talent."
   },
   {
     "name": "Well-prepared",
     "max": "Initiative Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You are used to anticipating the needs of others, and yourself."
   },
   {
     "name": "Witch!",
     "max": "Willpower Bonus",
     "category": "Mental",
     "prerequisite": "none",
-    "tests": "Various"
+    "tests": "Various",
+    "description": "You have learned magic through trial and error. Add Language (Magick) to any Career you enter; if it is already in your Career, you may purchase the Skill for 5 XP fewer per Advance. Further, you..."
   }
 ]
