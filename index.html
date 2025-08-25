@@ -16535,9 +16535,25 @@ function loadSymptomsData() {
             // Add skill allocation inputs
             tier1.skills.forEach((skill, index) => {
                 const currentAllocation = setupWizardData.careerAllocation.skills[skill] || 0;
+                
+                // Check if this skill needs specialization
+                const hasSpecialization = skill.toLowerCase().includes('(any');
+                const skillBase = hasSpecialization ? skill.substring(0, skill.toLowerCase().indexOf('(any')).trim() : skill;
+                const specializationId = `career-skill-spec-${index}`;
+                
                 allocationHTML += `
                     <div style="padding: 10px; background: white; border: 1px solid #d0c5a0; border-radius: 5px;">
                         <label style="display: block; font-weight: bold; margin-bottom: 5px;">${skill}</label>
+                        ${hasSpecialization && currentAllocation > 0 ? `
+                            <div style="margin-bottom: 8px;">
+                                <input type="text" 
+                                       id="${specializationId}"
+                                       placeholder="Enter specialization..." 
+                                       value="${setupWizardData.careerAllocation.skillSpecializations?.[skill] || ''}"
+                                       onchange="updateCareerSkillSpecialization('${skill}', this.value)"
+                                       style="width: 100%; padding: 5px; border: 1px solid #4a90e2; border-radius: 3px; font-size: 12px; background: #f0f7ff;">
+                            </div>
+                        ` : ''}
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <button type="button" onclick="adjustSkillAdvances('${skill}', -1)" 
                                     style="width: 30px; height: 30px; border: 1px solid #8b7355; background: white; cursor: pointer;">-</button>
@@ -16659,6 +16675,14 @@ function loadSymptomsData() {
                     if (inputElement) {
                         inputElement.value = clampedValue;
                     }
+                    
+                    // Show/hide specialization input for "(any)" skills
+                    if (skillName.toLowerCase().includes('(any')) {
+                        const specializationInput = document.getElementById(`career-skill-spec-${skillIndex}`);
+                        if (specializationInput && specializationInput.parentElement) {
+                            specializationInput.parentElement.style.display = clampedValue > 0 ? 'block' : 'none';
+                        }
+                    }
                 }
             }
             
@@ -16709,6 +16733,14 @@ function loadSymptomsData() {
                     if (inputElement) {
                         inputElement.value = newValue;
                     }
+                    
+                    // Show/hide specialization input for "(any)" skills
+                    if (skillName.toLowerCase().includes('(any')) {
+                        const specializationInput = document.getElementById(`career-skill-spec-${skillIndex}`);
+                        if (specializationInput && specializationInput.parentElement) {
+                            specializationInput.parentElement.style.display = newValue > 0 ? 'block' : 'none';
+                        }
+                    }
                 }
             }
             
@@ -16718,6 +16750,29 @@ function loadSymptomsData() {
         // Update career talent specialization
         function updateCareerTalentSpecialization(value) {
             setupWizardData.careerAllocation.talentSpecialization = value;
+        }
+        
+        // Update career skill specialization
+        function updateCareerSkillSpecialization(skill, specialization) {
+            if (!setupWizardData.careerAllocation.skillSpecializations) {
+                setupWizardData.careerAllocation.skillSpecializations = {};
+            }
+            setupWizardData.careerAllocation.skillSpecializations[skill] = specialization;
+            
+            // Also trigger update to show/hide the specialization input
+            const career = careersData?.careers?.find(c => c.name === setupWizardData.career);
+            const tier1 = career?.tiers?.find(t => t.tier === 1);
+            if (tier1) {
+                const skillIndex = tier1.skills.indexOf(skill);
+                if (skillIndex >= 0) {
+                    const currentAllocation = setupWizardData.careerAllocation.skills[skill] || 0;
+                    const specializationInput = document.getElementById(`career-skill-spec-${skillIndex}`);
+                    if (specializationInput) {
+                        // Show input if skill has advances, hide if not
+                        specializationInput.parentElement.style.display = currentAllocation > 0 ? 'block' : 'none';
+                    }
+                }
+            }
         }
         
         // Update selected talent
@@ -17406,9 +17461,19 @@ function loadSymptomsData() {
                     Object.keys(setupWizardData.careerAllocation.skills).forEach(skillName => {
                         const advances = setupWizardData.careerAllocation.skills[skillName];
                         if (advances > 0) {
+                            // Check if this skill needs specialization
+                            let finalSkillName = skillName;
+                            if (skillName.toLowerCase().includes('(any')) {
+                                const specialization = setupWizardData.careerAllocation.skillSpecializations?.[skillName];
+                                if (specialization) {
+                                    // Replace (any) with the specialization
+                                    finalSkillName = skillName.replace(/\(any.*?\)/i, `(${specialization})`);
+                                }
+                            }
+                            
                             if (typeof window.addSkillDirectly === 'function') {
-                                window.addSkillDirectly(skillName, advances);
-                                console.log(`Added ${advances} career advances to ${skillName} using addSkillDirectly`);
+                                window.addSkillDirectly(finalSkillName, advances);
+                                console.log(`Added ${advances} career advances to ${finalSkillName} using addSkillDirectly`);
                             } else {
                                 console.error('addSkillDirectly function not available for career skills');
                             }
