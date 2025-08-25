@@ -6845,7 +6845,7 @@
                 const hasSpecialization = skill.specialisation !== undefined;
                 
                 if (hasSpecialization && skill.canDelete) {
-                    // Manually added specialist skill with editable specialization
+                    // Manually added or generated specialist skill with editable specialization
                     skillDisplayName = `${skill.name} (<input type="text" 
                         value="${skill.specialisation || ''}" 
                         placeholder="Enter specialization" 
@@ -10934,7 +10934,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     displayName: displayName,
                     characteristic: baseSkill.characteristic,
                     type: baseSkill.type,
-                    specialisation: specialization
+                    specialisation: specialization,
+                    canDelete: true  // Mark as deletable/editable
                 });
 
                 // Initialize skill data with advances
