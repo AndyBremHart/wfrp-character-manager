@@ -6839,14 +6839,28 @@
                 
                 // Handle skill display name with editable specialization for specialist skills
                 let skillDisplayName = skill.displayName;
-                if (skill.specialisation !== undefined && skill.canDelete) {
-                    // This is a specialist skill with editable specialization
-                    const skillIndex = allDisplaySkills.indexOf(skill);
+                
+                // Check if this skill has "(Any)" or "(any)" in the name - these are specialist skills
+                const hasAnyPattern = skill.displayName && (skill.displayName.includes('(Any)') || skill.displayName.includes('(any)'));
+                const hasSpecialization = skill.specialisation !== undefined;
+                
+                if (hasSpecialization && skill.canDelete) {
+                    // Manually added specialist skill with editable specialization
                     skillDisplayName = `${skill.name} (<input type="text" 
                         value="${skill.specialisation || ''}" 
                         placeholder="Enter specialization" 
                         style="width: 80px; font-size: 11px; padding: 2px; border: 1px solid #8b7355; background: #f9f9f9;"
                         onchange="window.updateSkillSpecialization('${skill.key}', this.value)"
+                        title="Click to edit specialization">)`;
+                } else if (hasAnyPattern) {
+                    // Default skill with "(Any)" pattern - make it editable
+                    const baseName = skill.displayName.replace(/\s*\([Aa]ny\)/, '');
+                    const currentSpec = characterSkills[skill.key]?.specialization || '';
+                    skillDisplayName = `${baseName} (<input type="text" 
+                        value="${currentSpec}" 
+                        placeholder="Enter specialization" 
+                        style="width: 80px; font-size: 11px; padding: 2px; border: 1px solid #8b7355; background: #f9f9f9;"
+                        onchange="window.updateDefaultSkillSpecialization('${skill.key}', this.value)"
                         title="Click to edit specialization">)`;
                 }
                 
@@ -10539,6 +10553,21 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log(`Updated skill specialization: ${skill.name} to "${newSpecialization.trim()}"`);
             
             // Refresh display
+            displaySkills();
+        }
+        
+        window.updateDefaultSkillSpecialization = function(skillKey, specialization) {
+            // Initialize characterSkills entry if it doesn't exist
+            if (!characterSkills[skillKey]) {
+                characterSkills[skillKey] = { career: false, advances: 0, notes: '' };
+            }
+            
+            // Store the specialization in the character skills data
+            characterSkills[skillKey].specialization = specialization.trim();
+            
+            console.log(`Updated default skill specialization: ${skillKey} to "${specialization.trim()}"`);
+            
+            // Refresh display to show the updated specialization
             displaySkills();
         }
 
