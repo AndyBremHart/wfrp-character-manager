@@ -6908,11 +6908,11 @@
                         hasSpecializationField,
                         hasAnyPattern,
                         characterSkillsSpec: characterSkills[skill.key]?.specialization,
-                        conditionResult: hasAnyPattern || (hasSpecializationField && skill.canDelete)
+                        conditionResult: hasAnyPattern
                     });
                 }
                 
-                if (hasAnyPattern || (hasSpecializationField && skill.canDelete) || (skill.displayName && skill.displayName.toLowerCase().includes('trade'))) {
+                if (hasAnyPattern) {
                     // This is a specialist skill that should have an editable input
                     const baseName = skill.displayName.replace(/\s*\([Aa]ny\)\s*/, '').replace(/\s*\([^)]+\)\s*$/, '');
                     
