@@ -8041,7 +8041,16 @@ window.displayTalents = function() {
         // Check talent limitations - all talents can be limited, but specialist talents use per-specialization limits
         const isLimited = window.isTalentLimited(talent.name);
         let timesDisplay = "";
-        let canTakeMore = talent.max === "No Limit" || parseInt(talent.max) > currentTimes;
+        
+        // Determine if more can be taken based on talent max (not characteristic limits)
+        let canTakeMore = true;
+        if (talent.max === "No Limit") {
+            canTakeMore = true;
+        } else {
+            const maxAllowed = parseInt(talent.max) || 999;
+            canTakeMore = currentTimes < maxAllowed;
+        }
+        
         let limitColor = "";
         
         if (isLimited) {
