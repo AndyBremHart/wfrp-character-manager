@@ -6930,10 +6930,10 @@
                         'window.updateDefaultSkillSpecialization';
                     
                     skillDisplayName = `${baseName} (<input type="text" 
-                        value="${currentSpec}" 
+                        value="${currentSpec.replace(/"/g, '&quot;')}" 
                         placeholder="Enter specialization" 
                         style="width: 80px; font-size: 11px; padding: 2px; border: 1px solid #8b7355; background: #f9f9f9;"
-                        onchange="${updateFunction}('${skill.key}', this.value)"
+                        onchange="${updateFunction}('${skill.key.replace(/'/g, "\\'")}', this.value)"
                         title="Click to edit specialization">)`;
                     
                     // Debug logging for Trade skills inside condition
@@ -6945,6 +6945,11 @@
                             skillDisplayName
                         });
                     }
+                }
+                
+                // Debug the final HTML for Trade skills
+                if (skill.displayName && skill.displayName.toLowerCase().includes('trade')) {
+                    console.log(`DEBUG Final skillDisplayName HTML:`, skillDisplayName);
                 }
                 
                 row.innerHTML = `
