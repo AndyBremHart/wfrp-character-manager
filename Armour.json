@@ -7,6 +7,12 @@
       "Arms"
     ],
     "encumbrance": 3,
+    "qualities": [
+      "Impenetrable"
+    ],
+    "flaws": [
+      "Weakpoints"
+    ],
     "cost": "8GC"
   },
   {
@@ -17,6 +23,10 @@
       "Body"
     ],
     "encumbrance": 2,
+    "qualities": [],
+    "flaws": [
+      "Weakpoints"
+    ],
     "cost": "P18D"
   },
   {
@@ -27,6 +37,12 @@
       "Body"
     ],
     "encumbrance": 3,
+    "qualities": [
+      "Impenetrable"
+    ],
+    "flaws": [
+      "Weakpoints"
+    ],
     "cost": "10GC"
   },
   {
@@ -37,6 +53,12 @@
       "Head"
     ],
     "encumbrance": 2,
+    "qualities": [
+      "Impenetrable"
+    ],
+    "flaws": [
+      "Weakpoints"
+    ],
     "cost": "3GC"
   },
   {
@@ -48,6 +70,8 @@
       "Body"
     ],
     "encumbrance": 1,
+    "qualities": [],
+    "flaws": [],
     "cost": "P12D"
   },
   {
@@ -58,6 +82,8 @@
       "Body"
     ],
     "encumbrance": 1,
+    "qualities": [],
+    "flaws": [],
     "cost": "P10D"
   },
   {
@@ -68,6 +94,8 @@
       "Legs"
     ],
     "encumbrance": 1,
+    "qualities": [],
+    "flaws": [],
     "cost": "P14D"
   },
   {
@@ -78,6 +106,10 @@
       "Head"
     ],
     "encumbrance": 1,
+    "qualities": [],
+    "flaws": [
+      "Partial"
+    ],
     "cost": "P8D"
   },
   {
@@ -88,6 +120,10 @@
       "Legs"
     ],
     "encumbrance": 3,
+    "qualities": [
+      "Flexible"
+    ],
+    "flaws": [],
     "cost": "2GC"
   },
   {
@@ -99,6 +135,10 @@
       "Body"
     ],
     "encumbrance": 3,
+    "qualities": [
+      "Flexible"
+    ],
+    "flaws": [],
     "cost": "3GC"
   },
   {
@@ -109,6 +149,12 @@
       "Head"
     ],
     "encumbrance": 2,
+    "qualities": [
+      "Flexible"
+    ],
+    "flaws": [
+      "Partial"
+    ],
     "cost": "1GC"
   },
   {
@@ -119,6 +165,10 @@
       "Body"
     ],
     "encumbrance": 2,
+    "qualities": [
+      "Flexible"
+    ],
+    "flaws": [],
     "cost": "2GC"
   },
   {
@@ -129,6 +179,10 @@
       "Head"
     ],
     "encumbrance": 1,
+    "qualities": [],
+    "flaws": [
+      "Partial"
+    ],
     "cost": "2GC"
   },
   {
@@ -139,6 +193,12 @@
       "Legs"
     ],
     "encumbrance": 3,
+    "qualities": [
+      "Impenetrable"
+    ],
+    "flaws": [
+      "Weakpoints"
+    ],
     "cost": "10GC"
   }
 ]
