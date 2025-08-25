@@ -15770,6 +15770,12 @@ function loadSymptomsData() {
                 const skillBase = hasSpecialization ? skill.substring(0, skill.indexOf('(')) : skill;
                 const skillId = `skill-spec-${section}-${skill.replace(/[^a-zA-Z0-9]/g, '')}`;
                 
+                // Debug logging for specialist skills
+                if (hasSpecialization && isSelected) {
+                    const savedValue = setupWizardData.skillSpecializations?.[skill] || '';
+                    console.log(`DEBUG: Rebuilding ${skill}, saved value: "${savedValue}"`);
+                }
+                
                 skillCard.innerHTML = `
                     <div style="font-weight: bold; color: ${isSelected ? '#2c5aa0' : '#3e2f1f'}; margin-bottom: 5px;">
                         ${skillBase}${hasSpecialization ? ' (any)' : ''}
@@ -15781,7 +15787,7 @@ function loadSymptomsData() {
                         <div style="margin: 8px 0;">
                             <input type="text" id="${skillId}" placeholder="Specify..." 
                                    value="${setupWizardData.skillSpecializations?.[skill] || ''}"
-                                   oninput="updateSkillSpecialization('${skill}', this.value)"
+                                   oninput="updateSkillSpecializationFromEvent('${skill}', this)"
                                    onclick="event.stopPropagation()"
                                    style="width: 80%; padding: 4px; border: 1px solid #4a90e2; border-radius: 3px; font-size: 11px;">
                         </div>
@@ -15799,6 +15805,22 @@ function loadSymptomsData() {
                 setupWizardData.skillSpecializations = {};
             }
             setupWizardData.skillSpecializations[skill] = specialization;
+            console.log(`DEBUG: Saved specialization for ${skill}: "${specialization}"`);
+            console.log(`DEBUG: Full skillSpecializations:`, setupWizardData.skillSpecializations);
+        }
+        
+        // Update skill specialization from input element
+        function updateSkillSpecializationFromEvent(skill, element) {
+            const specialization = element.value;
+            console.log(`DEBUG: updateSkillSpecializationFromEvent called for ${skill} with value: "${specialization}"`);
+            
+            // Save directly to ensure it works
+            if (!setupWizardData.skillSpecializations) {
+                setupWizardData.skillSpecializations = {};
+            }
+            setupWizardData.skillSpecializations[skill] = specialization;
+            console.log(`DEBUG: Direct save - setupWizardData.skillSpecializations[${skill}] = "${specialization}"`);
+            console.log(`DEBUG: Current skillSpecializations object:`, setupWizardData.skillSpecializations);
         }
 
         // Toggle skill selection
