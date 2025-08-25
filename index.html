@@ -6842,19 +6842,8 @@
                 
                 // Check if this skill has "(Any)" or "(any)" in the name - these are specialist skills
                 const hasAnyPattern = skill.displayName && (skill.displayName.includes('(Any)') || skill.displayName.includes('(any)'));
-                const hasSpecialization = skill.specialisation !== undefined;
+                const hasSpecialization = skill.specialisation !== undefined && skill.specialisation !== '';
                 
-                // Debug logging for Trade skills
-                if (skill.displayName && skill.displayName.toLowerCase().includes('trade')) {
-                    console.log(`DEBUG Trade skill:`, {
-                        displayName: skill.displayName,
-                        name: skill.name,
-                        specialisation: skill.specialisation,
-                        canDelete: skill.canDelete,
-                        hasSpecialization,
-                        hasAnyPattern
-                    });
-                }
                 
                 if (hasSpecialization && skill.canDelete) {
                     // Manually added or generated specialist skill with editable specialization
@@ -10905,6 +10894,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     baseName = skillName;
                 }
 
+                // Debug logging for Trade skills
+                if (baseName.toLowerCase() === 'trade') {
+                    console.log(`DEBUG addSkillDirectly Trade:`, {
+                        skillName,
+                        baseName,
+                        specialization,
+                        advances
+                    });
+                }
+
                 // Find the base skill in allSkills
                 const baseSkill = allSkills.find(s => s.name === baseName);
                 if (!baseSkill) {
@@ -10930,8 +10929,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 // Check if this exact skill already exists in addedSkills
-                if (addedSkills.find(s => s.key === skillKey)) {
-                    // If it exists, just add advances
+                const existingSkill = addedSkills.find(s => s.key === skillKey);
+                if (existingSkill) {
+                    // If it exists, just add advances and ensure specialization is set
+                    if (specialization && existingSkill.specialisation !== specialization) {
+                        existingSkill.specialisation = specialization;
+                    }
                     if (characterSkills[skillKey]) {
                         characterSkills[skillKey].advances += advances;
                     }
@@ -10946,9 +10949,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     displayName: displayName,
                     characteristic: baseSkill.characteristic,
                     type: baseSkill.type,
-                    specialisation: specialization,
+                    specialisation: specialization || '', // Ensure it's set as empty string if no specialization
                     canDelete: true  // Mark as deletable/editable
                 });
+                
+                // Debug logging for Trade skills after creation
+                if (baseName.toLowerCase() === 'trade') {
+                    console.log(`DEBUG Trade skill added to addedSkills:`, addedSkills[addedSkills.length - 1]);
+                }
 
                 // Initialize skill data with advances
                 characterSkills[skillKey] = { career: false, advances: advances, notes: '' };
