@@ -6411,8 +6411,14 @@
                     costDisplay.textContent = `(${cost} XP)`;
                     const button = costDisplay.parentElement.querySelector('button');
                     if (button) {
-                        const maxAllowed = talent.max === "No Limit" ? 999 : parseInt(talent.max);
-                        const canTakeMore = currentTimes < maxAllowed;
+                        // Determine if more can be taken based on talent max (same logic as display)
+                        let canTakeMore = true;
+                        if (talent.max === "No Limit") {
+                            canTakeMore = true;
+                        } else {
+                            const maxAllowed = parseInt(talent.max) || 999;
+                            canTakeMore = currentTimes < maxAllowed;
+                        }
                         
                         if (canTakeMore) {
                             // Always enable the button if talent can be taken more - XP check happens when clicked
