@@ -1458,6 +1458,12 @@
                             <label style="display: block; margin-bottom: 5px; color: #3e2f1f;">Specialisation:</label>
                             <input type="text" id="specialisation-input" placeholder="e.g. Fighting, Battle, Bow..." style="width: 100%; padding: 5px;">
                         </div>
+                        <div style="margin-bottom: 15px; padding: 10px; background: #f0e6d2; border: 1px solid #8b7355; border-radius: 3px;">
+                            <label style="display: flex; align-items: center; color: #3e2f1f; font-size: 14px; cursor: pointer;">
+                                <input type="checkbox" id="skill-free-add" style="margin-right: 8px;">
+                                <strong>Add for Free</strong> <span style="margin-left: 8px; font-size: 12px; color: #666;">(0 advances, no XP cost)</span>
+                            </label>
+                        </div>
                         <div style="text-align: center;">
                             <button class="control-btn" onclick="window.confirmAddSkill()" style="margin-right: 10px; padding: 8px 16px;">Add Skill</button>
                             <button class="control-btn" onclick="window.closeAddSkillModal()" style="padding: 8px 16px;">Cancel</button>
@@ -6831,8 +6837,21 @@
                 // Calculate XP cost with tier multiplier
                 const cost = window.calculateSkillXPCost(skillData.advances, skill.name, currentCareer, currentTier);
                 
+                // Handle skill display name with editable specialization for specialist skills
+                let skillDisplayName = skill.displayName;
+                if (skill.specialisation !== undefined && skill.canDelete) {
+                    // This is a specialist skill with editable specialization
+                    const skillIndex = allDisplaySkills.indexOf(skill);
+                    skillDisplayName = `${skill.name} (<input type="text" 
+                        value="${skill.specialisation || ''}" 
+                        placeholder="Enter specialization" 
+                        style="width: 80px; font-size: 11px; padding: 2px; border: 1px solid #8b7355; background: #f9f9f9;"
+                        onchange="window.updateSkillSpecialization('${skill.key}', this.value)"
+                        title="Click to edit specialization">)`;
+                }
+                
                 row.innerHTML = `
-                    <td class="skill-name-cell">${skill.displayName}</td>
+                    <td class="skill-name-cell">${skillDisplayName}</td>
                     <td>${skill.characteristic}</td>
                     <td>${skill.type}</td>
                     <td style="text-align: center; font-weight: bold;">${tierDisplay}</td>
@@ -6966,6 +6985,7 @@
         window.confirmAddSkill = function() {
             const skillName = document.getElementById('skill-select').value;
             const specialisation = document.getElementById('specialisation-input').value.trim();
+            const isFreeAdd = document.getElementById('skill-free-add').checked;
             
             if (!skillName) {
                 alert('Please select a skill');
@@ -7010,8 +7030,19 @@
                 specialisation: specialisation
             });
             
-            // Initialize skill data
+            // Initialize skill data - with 0 advances if free add
             characterSkills[skillKey] = { career: false, advances: 0, notes: '' };
+            
+            // If not free add, ask for initial advances
+            if (!isFreeAdd) {
+                const initialAdvances = prompt('How many initial advances for this skill? (Enter 0 for none)', '0');
+                if (initialAdvances !== null) {
+                    const advances = parseInt(initialAdvances) || 0;
+                    if (advances > 0) {
+                        characterSkills[skillKey].advances = advances;
+                    }
+                }
+            }
             
             displaySkills();
             closeAddSkillModal();
@@ -10470,12 +10501,53 @@ document.addEventListener('DOMContentLoaded', function() {
                 displaySkills();
             }
         }
+        
+        window.updateSkillSpecialization = function(oldKey, newSpecialization) {
+            // Find the skill in addedSkills
+            const skill = addedSkills.find(s => s.key === oldKey);
+            if (!skill) return;
+            
+            // Validate specialization is not empty
+            if (!newSpecialization || newSpecialization.trim() === '') {
+                alert('Specialization cannot be empty for specialist skills.');
+                displaySkills(); // Refresh to reset the input
+                return;
+            }
+            
+            // Create new key and display name
+            const newKey = `${skill.name} (${newSpecialization.trim()})`;
+            const newDisplayName = `${skill.name} (${newSpecialization.trim()})`;
+            
+            // Check if this new skill key already exists
+            if (newKey !== oldKey && addedSkills.find(s => s.key === newKey)) {
+                alert(`Skill "${newDisplayName}" already exists.`);
+                displaySkills(); // Refresh to reset the input
+                return;
+            }
+            
+            // Update the skill
+            skill.specialisation = newSpecialization.trim();
+            skill.key = newKey;
+            skill.displayName = newDisplayName;
+            
+            // Update characterSkills if key changed
+            if (newKey !== oldKey) {
+                characterSkills[newKey] = characterSkills[oldKey] || { career: false, advances: 0, notes: '' };
+                delete characterSkills[oldKey];
+            }
+            
+            console.log(`Updated skill specialization: ${skill.name} to "${newSpecialization.trim()}"`);
+            
+            // Refresh display
+            displaySkills();
+        }
 
         window.closeAddSkillModal = function() {
             document.getElementById('add-skill-modal').style.display = 'none';
             document.getElementById('skill-select').value = '';
             document.getElementById('specialisation-input').value = '';
             document.getElementById('specialisation-field').style.display = 'none';
+            document.getElementById('skill-free-add').checked = false;
         }
 
         // Filter functionality
