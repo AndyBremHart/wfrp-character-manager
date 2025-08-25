@@ -5,7 +5,7 @@
     "category": "combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are an exceptional shot and know where to shoot an enemy in order to inflict maximum damage. You deal your Accurate Shot level in extra Damage with all ranged weapons."
+    "description": "You are an exceptional shot and know where to shoot an enemy in order to inflict maximum damage. You deal +1 damage per level of  Accurate Shot with all ranged weapons."
   },
   {
     "name": "Acute Sense",
@@ -24,7 +24,7 @@
       "Taste"
     ],
     "requiresSpecialization": true,
-    "description": "One of your primary five senses is highly developed, allowing you to spot what others miss."
+    "description": "One of your primary five senses is highly developed. You may make Perception check to detect normally imperceptible details with the related senses."
   },
   {
     "name": "Aethyric Attunement",
@@ -48,7 +48,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You can use your off-hand far better than most folk, either by training or innate talent."
+    "description": "You can use your off-hand far better than most folk. You only suffer -10 penalty to test relying solely on your second hard. If you take this talent with, you suffer no penalty."
   },
   {
     "name": "Animal Affinity",
@@ -56,7 +56,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "Wild animals feel comfortable in your presence, and often follow your lead."
+    "description": "Wild animals feel comfortable in your presence. All creatures with Bestial Trait, not trained to be belligerent with calm in your presence, unless there is an external factor."
   },
   {
     "name": "Arcane Magic",
@@ -78,7 +78,7 @@
       "Beasts"
     ],
     "requiresSpecialization": true,
-    "description": "You either study one of the 8 Arcane Lores of Magic — Beasts, Death, Fire, Heavens, Metal, Shadow, Light, or Life — or practice a lesser known Lore, such as Hedgecraft or Necromancy."
+    "description": "You either study one of the 8 Arcane Lores of Magic or practice a lesser known Lore, such as Hedgecraft or Necromancy. You may memorise spells from your lore with an associated XP cost."
   },
   {
     "name": "Argumentative",
@@ -86,7 +86,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are used to arguing your points and winning debates through force of personality."
+    "description": "You are used to arguing your points and winning debates. On a successful Charm Test to debate an opponent you may use either the tens or units die to determine SL."
   },
   {
     "name": "Artistic",
@@ -94,7 +94,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You have a natural talent for art, able to produce precise sketches with nothing but time and appropriate media."
+    "description": "You have a natural talent for art. Add Art (Any) to any career you enter. If already a career skill, advanced cost 5XP less."
   },
   {
     "name": "Attractive",
@@ -102,7 +102,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "Whether it's your piercing eyes, your strong frame, or maybe the way you flash your perfect teeth, you know how to make the best use of what the gods gave you."
+    "description": "Whether it's your piercing eyes, or your strong frame, you know how to make the best use of what the gods gave you. On a successful Charm Test on those attracted to you, you may use either the tens or units die to determine SL."
   },
   {
     "name": "Battle Rage",
@@ -118,7 +118,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are trained to make sharp controlled blows to your opponent's weapon, creating an opening for an attack or simply impeding an incoming attack."
+    "description": "You are trained to make sharp controlled blows to your opponent's weapon, creating an opening for an attack. As an action you may Beat Blade, make an unopposed Melee Test; on success reduce opposing Advantage pool by 1, and further -1 if you score 6 SL."
   },
   {
     "name": "Beneath Notice",
@@ -126,7 +126,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "The high and mighty pay no attention to your presence, knowing you are well beneath their notice."
+    "description": "The high and mighty pay no attention to your presence, knowing you are well beneath their notice. Higher Status Tier will normally ignore you. No advantage gain for higher status tier striking or wounding you in combat."
   },
   {
     "name": "Berserk Charge",
@@ -134,7 +134,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You hurl yourself at your enemies with reckless abandon, using the force of your charge to add weight to your strikes."
+    "description": "You hurl yourself at your enemies with reckless abandon, using the force of your charge to your advantage. When charging +1 Damage per level of Talent to all melee attack when charging."
   },
   {
     "name": "Blather",
@@ -142,7 +142,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "Called 'opening your mouth and letting your belly rumble' in [[Nordland]], or simply 'bullshitting' in [[Ostland]], blathering involves talking rapidly and incessantly about inconsequential or..."
+    "description": "Blathering involves talking rapidly and incessantly about inconsequential. You use Charm skill to blather, opposed Charm/Intelligence Text. Success gives opponents Stunned Condition for each level in blather."
   },
   {
     "name": "Bless",
@@ -166,7 +166,7 @@
       "Rhya"
     ],
     "requiresSpecialization": true,
-    "description": "You are watched over by one of the Gods and can empower simple prayers."
+    "description": "You are watched over by one of the Gods and can empower simple prayers. You may use the Blessings of your deity."
   },
   {
     "name": "Bookish",
@@ -182,7 +182,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are an expert at quickly breaking down doors and forcing entry."
+    "description": "You are an expert at quickly breaking down doors and forcing entry. You may add +1 Damage for each level of this Talent against inanimate objects such as windows, chests, doors etc"
   },
   {
     "name": "Briber",
@@ -190,7 +190,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are an exceedingly skilled briber, knowing exactly how much to offer and when."
+    "description": "You are an exceedingly skilled briber, knowing exactly how much to offer and when. Gm should reduce base cost of any required bribe by 10% per level of Talents, to  min of 10%."
   },
   {
     "name": "Cardsharp",
@@ -198,7 +198,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are used to playing, and winning, at cards, although your methods may involve a little cheating."
+    "description": "You are used to playing, and winning, at cards, although your methods may involve a little cheating. On a successful Gamble or Sleight of Hand check you may use either the tens or units die to determine SL."
   },
   {
     "name": "Careful Strike",
@@ -206,7 +206,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are skilled at hitting your enemy exactly where you want to, either at range or in melee."
+    "description": "You are skilled at hitting your enemy exactly where you want to, either at range or in melee. You may modify hit location result by +/- 10 for each level of talent."
   },
   {
     "name": "Carouser",
@@ -222,7 +222,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "Like Ranald the Trickster God, you blend truth and lies as if there were no difference."
+    "description": "When using Charm to Lie, listeners do not oppose your Charm with their Intuition to detect if there is something fishy with what you say."
   },
   {
     "name": "Catfall",
@@ -230,7 +230,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are nimble and balanced like a cat, and are able to fall much greater distances unharmed than others might."
+    "description": "You are nimble and balanced like a cat. When you fall make Athletics Test, on success, reduce distance fallen by 1 yard; +1 extra yard per SL scored for purpose of of calculating damage"
   },
   {
     "name": "Chaos Magic",
@@ -249,7 +249,7 @@
       "Chaos Undivided"
     ],
     "requiresSpecialization": true,
-    "description": "By accident or design you have lost a portion of your soul to one of the Dark Gods, and can now practice the foul magics of Chaos."
+    "description": "By accident or design you have lost a portion of your soul to one of the Dark Gods, and can now practice the foul magics of Chaos. You immediately gain access to a single spell from your chosen lore, and gain a Corruption Point"
   },
   {
     "name": "Combat Aware",
@@ -257,7 +257,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are used to scanning the battlefield to make snap decisions informed by the shifting tides of war."
+    "description": "You are used to scanning the battlefield to make snap decisions informed by the shifting tides of war. You may make Challenging (+0) Perception Text to ignore Surprise."
   },
   {
     "name": "Combat Master",
@@ -265,7 +265,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "Your accumulated years of combat experience allow you to keep lesser fighters at bay."
+    "description": "Your accumulated years of combat experience allow you to keep lesser fighters at bay. For each level of Talent you count as one more person for purposes of determining if out-numbered."
   },
   {
     "name": "Combat Reflexes",
@@ -281,7 +281,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "Your presence fills others with hushed awe and admiration."
+    "description": "Your presence fills others with hushed awe and admiration. Lower Status may not resist your Leadership Tests with their Willpower."
   },
   {
     "name": "Concoct",
@@ -289,7 +289,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are skilled at making potions, philtres, and draughts on the go."
+    "description": "You are skilled at making potions, philtres, and draughts on the go. You may take one free Crafting Endeavour to use Lore (Apothecary) without a workshop."
   },
   {
     "name": "Contortionist",
@@ -297,7 +297,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You can bend and manipulate your body in a myriad of seemingly unnatural ways."
+    "description": "You can bend and manipulate your body in a myriad of seemingly unnatural ways. This allows you to squeeze through unlikely gaps."
   },
   {
     "name": "Coolheaded",
@@ -351,7 +351,7 @@
       "Weaponsmith"
     ],
     "requiresSpecialization": true,
-    "description": "You have true creative talent in a specific trade or craft."
+    "description": "You have true creative talent in a specific trade or craft. Add associated Trade Skill to Any Career you enter. If already a career skill, advanced cost 5XP less."
   },
   {
     "name": "Criminal",
@@ -367,7 +367,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You always hit an opponent right between the eyes… or wherever else you intended to hit."
+    "description": "You always hit an opponent right between the eyes… or wherever else you intended to hit. Instead of reversing dice to determine Hit Location, you may pick one when you hit with ranged weapon."
   },
   {
     "name": "Dealmaker",
@@ -375,7 +375,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are a skilled businessman who knows how to close a deal."
+    "description": "You are a skilled businessman who knows how to close a deal.When using Haggle Skill, reduce or increase price of products by extra 10%."
   },
   {
     "name": "Detect Artefact",
@@ -383,7 +383,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are able to sense when magic lies within an artefact."
+    "description": "You are able to sense when magic lies within an artefact. You may make an Intuition Test, if successful you sense if item is magical with each SL revealing a detail."
   },
   {
     "name": "Diceman",
@@ -391,7 +391,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are a dicing master, and all claims you cheat are clearly wrong."
+    "description": "You are a dicing master, and all claims you cheat are clearly wrong. When you successfully use Gambling or Slieght of Hand when playing dice, you may use either tens or units to determine SL."
   },
   {
     "name": "Dirty Fighting",
@@ -399,7 +399,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You have been taught all the dirty tricks of unarmed combat."
+    "description": "You have been taught all the dirty tricks of unarmed combat. You may cause +1 Damage for each level of Talent, with successful Melee (Brawling) hit."
   },
   {
     "name": "Disarm",
@@ -407,7 +407,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are able to disarm an opponent with a careful flick of the wrist or a well-aimed blow to the hand."
+    "description": "You are able to disarm an opponent with a careful flick of the wrist or a well-aimed blow to the hand. As an action make opposed Melee/Melee test if you win your opponent loses hold of weapon."
   },
   {
     "name": "Disciple of Change",
@@ -423,7 +423,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are trained in simple movements to distract or startle your opponent, drawing eyes from your true intent."
+    "description": "You are trained in simple movements to distract your opponent. You may use your Move to perform a Distraction, make opposed Athletics/Cool Test. If you win opponent can generate no advantage for their Pool until end of next round."
   },
   {
     "name": "Doomed",
@@ -439,7 +439,7 @@
     "category": "social",
     "prerequisite": "Secret Identity",
     "tests": "Various",
-    "description": "So adept are you at maintaining your [[4. SRD/Talents/Secret Identity|Secret Identity]], that you are able to live two completely separate lives. When you purchase this Talent, you may enter into..."
+    "description": "So adept are you at maintaining your Secret Identity, that you are able to live two completely separate lives."
   },
   {
     "name": "Drilled",
@@ -447,7 +447,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You have been drilled extensively in formation fighting. When in close combat with one or more allies within 5 yards, all parties gain +1 SL to melee tests."
+    "description": "You have been trained to fight shoulder-to-shoulder with other soldiers. You count as two combatants when determining loosing advantage."
   },
   {
     "name": "Dual Wielder",
@@ -455,7 +455,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "When armed with two weapons, you may attack with both for your Action."
+    "description": "When armed with two weapons, you may attack with both for your Action. If you hit with first attack, keep dice and determine if it hit with second hand (-20 penalty). 2nd attack opposed with new roll."
   },
   {
     "name": "Embezzle",
@@ -463,7 +463,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are skilled at skimming money from your employers without being detected."
+    "description": "You are skilled at skimming money from your employers without being detected. When Earning, you may attempt Opposed Intelligence Test with your employer. If you win you skim 2d10BP/1d10SS/1GC + 1 SL without being detected."
   },
   {
     "name": "Enclosed Fighter",
@@ -471,7 +471,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You have learned to make the most benefit out of fighting in enclosed spaces."
+    "description": "You have learned to make the most benefit out of fighting in enclosed spaces.You ignore penalties to melee caused by confined space, and can use dodge skill even if it would normally be disallowed."
   },
   {
     "name": "Etiquette",
@@ -500,7 +500,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You can move your hands with surprising dexterity. Bystanders get no passive Perception Tests to spot your use of the Sleight of Hand Skill, instead they only get to Oppose your Sleight of Hand..."
+    "description": "You can move your hands with surprising dexterity. Bystanders get no passive Perception Tests to spot  Sleight of Hand Skill, instead only get to oppose your Sleight of Hand if they actively suspect you. Melee (Brawling) to simply touch opponent gain bonus +10 x level of talent"
   },
   {
     "name": "Fast Shot",
@@ -508,7 +508,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "If you have a loaded ranged weapon, you can fire it outside the normal Initiative Order before any other combatant reacts in the following Round."
+    "description": "If you have a loaded ranged weapon, you can fire it outside the normal Initiative Order before any other combatant reacts in the following Round. Using Fast shout counts as using your Action and Move for the turn."
   },
   {
     "name": "Fearless",
@@ -530,7 +530,7 @@
       "Witches"
     ],
     "requiresSpecialization": true,
-    "description": "You are either brave enough or crazy enough that fear of certain enemies has become a distant memory."
+    "description": "You are either brave enough or crazy enough that fear of certain enemies has become a distant memory. With Average (+20%) Cool Test you may ignore intimate, Fear, Terror effect from specified enemy."
   },
   {
     "name": "Feint",
@@ -538,7 +538,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You have trained how to make false attacks in close combat to fool your opponent."
+    "description": "You have trained how to make false attacks in close combat to fool your opponent. You may make Feint action, opposed Melee (fencing)/Melee test. If you win, and attack same opponent, you may add SL of your feint to your attack roll."
   },
   {
     "name": "Field Dressing",
@@ -546,7 +546,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are used to treating wounds quickly under pressure."
+    "description": "You are used to treating wounds quickly under pressure. If fail Heal Test when using bandages, you may reverse results if score will be success, if you do so you may not score more than +1 SL."
   },
   {
     "name": "Fisherman",
@@ -554,7 +554,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are a very capable fisherman and know all the best ways to land fish."
+    "description": "You are a very capable fisherman and know all the best ways to land fish. Automatically assumed to be able to fish to feed yourself and number of others equal to level in Fisherman. Requires 1 hour, with line and bate."
   },
   {
     "name": "Flagellant",
@@ -562,7 +562,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You have dedicated your pain to the service of your God."
+    "description": "You have dedicated your pain to the service of your God. Each day you must spend 1/2 hour praying, and maintain wounds equal to level of talent. Until next sleep you have Frenzy Talent, and don't need to test to enter it."
   },
   {
     "name": "Flee!",
@@ -602,7 +602,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "Your blows follow one another in quick succession, raining down on your opponents with the fury of Ulric."
+    "description": "Your blows follow one another in quick succession, raining down on your opponents with the fury of Ulric. Once per round if you hit opponent in close combat you may spend Advantage or your Move to male extra attack."
   },
   {
     "name": "Gregarious",
@@ -618,7 +618,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You can reload blackpowder weapons with practiced ease. Add SL equal to your level in Gunner to any Extended Test to reload a Blackpowder weapon."
+    "description": "You can reload blackpowder weapons with practiced ease. Add SL equal to your level in Gunner to any Extended Test to reload a Blackpowder weapon. Reloading a weapon also counts as the Assess action, you gain extra +1 Advantage making this Assess Action."
   },
   {
     "name": "Hardy",
@@ -664,7 +664,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You clearly see the great works of the Gods all around you."
+    "description": "You clearly see the great works of the Gods all around you. You automatically know when you enter Holy Ground, and make take Intuition Test to receive visions regarding significant events ."
   },
   {
     "name": "Hunter's Eye",
@@ -672,7 +672,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are a skilled hunter and know all the best techniques to find game."
+    "description": "You are a skilled hunter and know all the best techniques to find game. You automatically able to hunt down enough game to feed self and number of other equal to the level of this talent, as long as you have time and correct equipment."
   },
   {
     "name": "Impassioned Zeal",
@@ -680,7 +680,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "When you talk about your cause, case, or religion, your words fill with passion and fervent zeal."
+    "description": "When you talk about your cause, case, or religion, your words fill with passion and fervent zeal. You may double Fellowship for purpose of deterring number people influenced by your Public Speaking."
   },
   {
     "name": "Implacable",
@@ -696,7 +696,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are skilled at drawing in close to an opponent. You suffer no penalties for fighting against an opponent with a longer weapon than you. Further, if you use the optional rules for In-fighting,..."
+    "description": "You are skilled at drawing in close to an opponent. You suffer no penalties for fighting against an opponent with a longer weapon than you. Further, if you use the optional rules for In-fighting you gain +10 bonus to hit opponent."
   },
   {
     "name": "Inspiring",
@@ -704,7 +704,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "Your rousing words and pleas can turn the tide of a battle."
+    "description": "Your rousing words and pleas can turn the tide of a battle. You can influence people when using Leadership Skill when at war (see page 139)."
   },
   {
     "name": "Instinctive Diction",
@@ -712,7 +712,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You instinctively understand the language of Magick, and are capable of articulating the most complex phrases rapidly without error."
+    "description": "You instinctively understand the language of Magick, and are capable of articulating the most complex phrases rapidly without error. You do not suffer Miscast if you roll double on successful Language (Magic) Test."
   },
   {
     "name": "Invoke",
@@ -736,7 +736,7 @@
       "Rhya"
     ],
     "requiresSpecialization": true,
-    "description": "You are blessed by one of the Gods and can empower one of your Cult's Miracles."
+    "description": "You are blessed by one of the Gods and can empower one of your Cult's Miracles. You again a miracle and may purchase another 2 for 100XP each. If you know 3, your next miracle costs 300XP."
   },
   {
     "name": "Iron Jaw",
@@ -744,7 +744,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are made of sturdy stuff and can weather even the strongest blows."
+    "description": "You are made of sturdy stuff and can weather even the strongest blows. Whenever you gain stunned Condition, you make immediate Challenging (+0) Endurance test, to not take one level of stunned, with each SL removing extra cStunned Condition."
   },
   {
     "name": "Iron Will",
@@ -752,7 +752,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You have an indomitable will of iron, and will never willingly bow down before another."
+    "description": "You have an indomitable will of iron, and will never willingly bow down before another. Use of Intimidation skills does not cause fear in you, and will not stop you speaking out against intimidating party."
   },
   {
     "name": "Jump Up",
@@ -760,7 +760,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are hard to keep down. You may perform a Challenging (+0) Athletics Test to immediately regain your feet whenever you gain a Prone Condition. This Athletics Test is often modified by the..."
+    "description": "You are hard to keep down. You may perform a Challenging (+0) Athletics Test to immediately regain your feet whenever you gain a Prone Condition. This Athletics Test is often modified by Strength whines below, for every +10 strength is over your Toughness, there is -10 penalty."
   },
   {
     "name": "Kingpin",
@@ -768,7 +768,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You have earned an air of respectability despite your nefarious ways. You may ignore the Status loss of the [[4. SRD/Talents/Criminal|Criminal]] Talent."
+    "description": "You have earned an air of respectability despite your nefarious ways. You may ignore the Status loss of the Criminal Talent."
   },
   {
     "name": "Lightning Reflexes",
@@ -784,7 +784,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You have a natural affinity for languages. Given a month's exposure to any Language, you count the associated Language Skill as a Basic Skill with a successful Intelligence Test (which can be..."
+    "description": "You have a natural affinity for languages. Given a month's exposure to any Language, you count the associated Language Skill as a Basic Skill with a successful Intelligence Test."
   },
   {
     "name": "Lip Reading",
@@ -792,7 +792,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You can tell what people are saying by simply watching their lips; you do not need to hear what they are saying."
+    "description": "You can tell what people are saying by simply watching their lips; you do not need to hear what they are saying. If you have unobscured view of face, you can make Perception Test to understand what they are saying."
   },
   {
     "name": "Luck",
@@ -808,7 +808,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are resistant to magic. The SL of any spell affecting you is reduced by 2 per point you have in this Talent. The SL of a spell is only modified by the highest Magic Resistance Talent within..."
+    "description": "You are resistant to magic. The SL of any spell affecting you is reduced by 2 per point you have in this Talent. The SL of a spell is only modified by the highest Magic Resistance Talent within area. You may never learn Arcane Magic, Bless, Invoke, Perry Magic or Witch! Talents."
   },
   {
     "name": "Magical Sense",
@@ -816,7 +816,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are able to sense the Winds of Magic in others. You may attempt an Average (+20) Intuition Test whenever you encounter a spellcaster. If you pass, you sense the target is a witch. Further, if..."
+    "description": "You are able to sense the Winds of Magic in others. You may attempt an Average (+20) Intuition Test whenever you encounter a spellcaster. If you pass, you sense the target is a witch, 6+ SL determine targets Channelling Specialisation."
   },
   {
     "name": "Magnum Opus",
@@ -840,7 +840,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are an expert at taking on the appearance and mannerisms of others."
+    "description": "You are an expert at taking on the appearance and mannerisms of others. With nothing but posture changes, face twists and appropriate clothing you no long look like yourself without using a Disguise Kit."
   },
   {
     "name": "Master Orator",
@@ -886,7 +886,7 @@
       "Weaponsmith"
     ],
     "requiresSpecialization": true,
-    "description": "You are exceptionally skilled at your specified Trade skill."
+    "description": "You are exceptionally skilled at your specified Trade skill. You reduce the required SL of any extended tests by the level of this Talent."
   },
   {
     "name": "Menacing",
@@ -902,7 +902,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You have a good ear for accents and dialects, and can reproduce them accurately."
+    "description": "You have a good ear for accents and dialects, and can reproduce them accurately.You may replicate any accent you are exposed to for at least a day with an Initiative test. Once passed you may always mimic the accent."
   },
   {
     "name": "Night Vision",
@@ -910,7 +910,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You can see very well in natural darkness. Assuming you have at least a faint source of light (such as starlight, moonlight, or bioluminescence) you can see clearly for 20 yards per level of Night..."
+    "description": "You can see very well in natural darkness. Assuming you have at least a faint source of light (such as starlight, moonlight, or bioluminescence) you can see clearly for 20 yards per level of Night Vision."
   },
   {
     "name": "Nimble Fingered",
@@ -926,7 +926,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are either born into the nobility, or otherwise elevated to it by in-game events."
+    "description": "You are either born into the nobility, or otherwise elevated to it by in-game events. Assuming you are dressed appropriately you are always considered higher Status with others with the same status unless they have Noble Blood Talent."
   },
   {
     "name": "Nose for Trouble",
@@ -934,7 +934,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are used to getting into, and preferably out of, trouble."
+    "description": "You are used to getting into, and preferably out of, trouble. You may make an Intuition Text to spot those seeking to cause trouble or harm."
   },
   {
     "name": "Numismatics",
@@ -942,7 +942,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are well versed with the different coinage of the Old World, and are adept at determining their value."
+    "description": "You are well versed with the different coinage of the Old World, and are adept at determining their value. You can judge true value of a coin without requiring test. You can identify forged coins by a Simple Evaluation Test."
   },
   {
     "name": "Old Salt",
@@ -950,7 +950,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are an experienced seaman, and are very used to sea life."
+    "description": "You are an experienced seaman, and are very used to sea life. You ignore all negative modifiers to tests at sea from poor weather, rolling ships etc. You count as two seamen toward minimum crew to pilot a sea going vessel."
   },
   {
     "name": "Orientation",
@@ -974,7 +974,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You have perfect pitch, able to replicate notes perfectly and identify them without even making a Test."
+    "description": "You have perfect pitch, able to replicate notes perfectly and identify them without even making a Test. Add Entertain (Sing) to any career you enter; if it's already in career, advances cost 5 less XP."
   },
   {
     "name": "Petty Magic",
@@ -982,7 +982,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You have the spark to cast magic within you and have mastered techniques to control it at a basic level."
+    "description": "You have the spark to cast magic within you and have mastered techniques to control it at a basic level. When you take this you permanently memorise number of Petter Magic Spells equal to your Willpower Bonus, you may learn extra spells at additional cost."
   },
   {
     "name": "Pharmacist",
@@ -990,7 +990,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are highly skilled at pharmacy, better able than most to make pills, ointments, unguents, oils, creams, and more."
+    "description": "You are highly skilled at pharmacy, better able than most to make pills, ointments, unguents, oils, creams, and more. You may reverse any failed Trade (Apothecary) test if this allows the test to succeed."
   },
   {
     "name": "Pilot",
@@ -998,7 +998,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are skilled at leading vessels through dangerous waters."
+    "description": "You are skilled at leading vessels through dangerous waters. If you fail a Test to pass dangerous waters you may reverse result if it will score a success; however you may only have +1 SL."
   },
   {
     "name": "Public Speaker",
@@ -1006,7 +1006,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are a skilled orator and know how to work large groups of people."
+    "description": "You are a skilled orator and know how to work large groups of people. You may influence greater number of people with your Charm skills when Public Speaking (page 142)."
   },
   {
     "name": "Pure Soul",
@@ -1022,7 +1022,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You can reload ranged weapons with practiced ease. You add SL equal to your level in Rapid Reload to any Test to reload a ranged weapon."
+    "description": "You can reload ranged weapons with practiced ease. You add SL equal to your level in Rapid Reload to any Test to reload a ranged weapon. Reloading a ranged weapon counts as Assess Action You gain extra +1 advantage when making this Assess test."
   },
   {
     "name": "Reaction Strike",
@@ -1030,7 +1030,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "Your fast reactions have allowed you to fell many opponents before they have even swung their blades."
+    "description": "Your fast reactions have allowed you to fell many opponents before they have even swung their blades. When Charged, may make Challenging (+0) Initiative Test to immediately Free attack."
   },
   {
     "name": "Read Write",
@@ -1046,7 +1046,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "When you have your mind set on a target, there is nothing anyone can do to stop you reaching them."
+    "description": "When you have your mind set on a target, there is nothing anyone can do to stop you reaching them.  The Advantage cost of the Flee from Harm action is reduced by 1."
   },
   {
     "name": "Resistance",
@@ -1067,7 +1067,7 @@
       "Heat"
     ],
     "requiresSpecialization": true,
-    "description": "Your strong constitution allows you to more readily survive a specific threat."
+    "description": "Your strong constitution allows you to more readily survive a specific threat. You may automatically pass first test to resist specified threat. If SL is important, use your Toughness Bonus as SL for the Test."
   },
   {
     "name": "Resolute",
@@ -1083,7 +1083,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are used to desperate combats, able to turn even the direst circumstances to your Advantage."
+    "description": "You are used to desperate combats, able to turn even the direst circumstances to your Advantage. If you win Opposed Melee test, instead of gaining +1 advantage, you may take 1 advantage from opposing pool and add it to your own. If you do this you do not cause any Damage, even if it is your turn."
   },
   {
     "name": "Riposte",
@@ -1091,7 +1091,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "Conforming to 'the best defence is offence', you respond to an incoming attack with a lightning-fast counterstrike of your own."
+    "description": "Conforming to 'the best defence is offence', you respond to an incoming attack with a lightning-fast counterstrike of your own. If weapon has Fast quality, you may cause Damager when attacked. You can Riposte number of attacked per round equal to level of talent."
   },
   {
     "name": "River Guide",
@@ -1099,7 +1099,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You know all the tricks for navigating dangerous rivers."
+    "description": "You know all the tricks for navigating dangerous rivers. You don't Test for passing through dangerous stretches of water until difficulty for doing os is -10. If you have appropriate Lore (Local) skill you never Test for navigating dangerous water."
   },
   {
     "name": "Robust",
@@ -1107,7 +1107,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are as tough as old boots and just soak up damage."
+    "description": "You are as tough as old boots and just soak up damage. You reduce all incoming damage by +1 for each level of the Talent."
   },
   {
     "name": "Roughrider",
@@ -1115,7 +1115,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are at home in the saddle in even the most difficult of circumstances, and know how to get the best out of your mount during conflict."
+    "description": "You are at home in the saddle in even the most difficult of circumstances, and know how to get the best out of your mount during conflict. Assuming you have Ride skill, you direct mount to make Action, not just move, without Ride test."
   },
   {
     "name": "Rover",
@@ -1123,7 +1123,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are at home roaming the wild places. When using Stealth in a rural environment, bystanders do not get passive Perception Tests to detect you; they can only spot you if they are specifically on..."
+    "description": "You are at home roaming the wild places. When using Stealth in a rural environment, bystanders do not get passive Perception Tests to detect you; they can only spot you if they are specifically on look- out."
   },
   {
     "name": "Savant",
@@ -1146,7 +1146,7 @@
       "Theology"
     ],
     "requiresSpecialization": true,
-    "description": "You are exceptionally learned, and have a significant degree of specialised knowledge in a single field of study."
+    "description": "You are exceptionally learned, and have a significant degree of specialised knowledge in a single field of study. You know number of pieces of correct information equal to level of this talent without having to Test Lore Skill."
   },
   {
     "name": "Savvy",
@@ -1162,7 +1162,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are an exceptional climber. You can attempt to climb even seemingly impossible surfaces such as sheer fortifications, ice shelves, plastered walls, and similar, and you ignore any penalties to..."
+    "description": "You are an exceptional climber. You can attempt to climb even seemingly impossible surfaces such as sheer fortifications, ice shelves, plastered walls, and similar, and you ignore any penalties to Climb test derived from difficulty of surface climes."
   },
   {
     "name": "Schemer",
@@ -1170,7 +1170,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are a master of politics and see conspiracy around every corner."
+    "description": "You are a master of politics and see conspiracy around every corner. Once per session you may ask GM one question regarding a political situation other than web of social connections. GM will make secret Intelligence Test and proceed you with observations."
   },
   {
     "name": "Sea Legs",
@@ -1178,7 +1178,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are used to the rolling motion of the oceans, and are very unlikely to get sea sick, even in the worst storms."
+    "description": "You are used to the rolling motion of the oceans, and are very unlikely to get sea sick, even in the worst storms. Under normal conditions at sea you never become sea sick. At other times, you may ignore penalties for test."
   },
   {
     "name": "Seasoned Traveller",
@@ -1186,7 +1186,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are an inquisitive soul who has travelled far and wide, learning all manner of local information."
+    "description": "You are an inquisitive soul who has travelled far and wide, learning all manner of local information. Add Lore (Local) to any career you enter, if it's already in the career you may purchase the skill both times with different Speciality, for 5PX fewer per advance."
   },
   {
     "name": "Second Sight",
@@ -1194,7 +1194,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You can perceive the shifting Winds of Magic that course from the Chaos Gates at the poles of the world."
+    "description": "You can perceive the shifting Winds of Magic that course from the Chaos Gates at the poles of the world. You now have the Sight."
   },
   {
     "name": "Secret Identity",
@@ -1202,7 +1202,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You maintain a secret identity that allows you to appear richer, or perhaps poorer, than you actually are."
+    "description": "You maintain a secret identity that allows you to appear richer, or perhaps poorer, than you actually are. (Page 144)"
   },
   {
     "name": "Shadow",
@@ -1210,7 +1210,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are skilled at following people without being spotted."
+    "description": "You are skilled at following people without being spotted. You maybe use the Shadowing rules (page 130) without a combined test. You test against your perception or Stealth whichever is higher."
   },
   {
     "name": "Sharp",
@@ -1234,7 +1234,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are skilled at using your shield to manoeuvre others in combat so you can take advantage of a desperate situation."
+    "description": "You are skilled at using your shield to manoeuvre others in combat so you can take advantage of a desperate situation. When using a shield to defend, once per turn, you may spend 2 advantage to either cause Damage when attacked or push your opponents 2 yards directly back."
   },
   {
     "name": "Sixth Sense",
@@ -1242,7 +1242,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You get a strange feeling when you are threatened, and can react accordingly."
+    "description": "You get a strange feeling when you are threatened, and can react accordingly. Gm will warn you if you are walking into danger. You may ignore surprise if you pass an Intuition Test."
   },
   {
     "name": "Slayer",
@@ -1250,7 +1250,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "When determining Damage use your opponent's Toughness Bonus as your Strength Bonus if it is higher."
+    "description": "When determining Damage use your opponent's Toughness Bonus as your Strength Bonus if it is higher. If opponent larger than you, and you score a critical, multiply all melee Damage by difference in size."
   },
   {
     "name": "Small",
@@ -1266,7 +1266,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "Distance is of no import to your shooting skills, and you are just as adept at picking off far away targets as those nearby."
+    "description": "Distance is of no import to your shooting skills, and you are just as adept at picking off far away targets as those nearby. You suffer no penalties for shooting at Long range, and half penalties for Extreme range."
   },
   {
     "name": "Speedreader",
@@ -1274,7 +1274,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You read books at a voracious pace. You may reverse a failed Research Test if this will grant success. If the speed at which you read is important during combat, a successful Language Test lets..."
+    "description": "You read books at a voracious pace. You may reverse a failed Research Test if will grant success. If the speed at which you read is important in combat, a successful Language Test lets you read and fully comprehend number of pages per round equal to you SL + level of this Talent."
   },
   {
     "name": "Sprinter",
@@ -1290,7 +1290,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are skilled at being where enemy weapons are not."
+    "description": "You are skilled at being where enemy weapons are not. If you use Dodge to defend again incoming attack and win, you may move 2 yards as you dive away. None of your opponents will gain a Free Attack."
   },
   {
     "name": "Stone Soup",
@@ -1298,7 +1298,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are used to getting by with less, and know how to survive lean times."
+    "description": "You are used to getting by with less, and know how to survive lean times. You can subsist on half amount of food, and only test for Starvation every 3 days, not 2."
   },
   {
     "name": "Stout-hearted",
@@ -1328,7 +1328,7 @@
       "Underground"
     ],
     "requiresSpecialization": true,
-    "description": "You are experienced in traversing difficult ground. You ignore all movement penalties when crossing over or through a specified terrain. Typical specialities include: Coastal, Deserts, Marshes,..."
+    "description": "You are experienced in traversing difficult ground. You ignore all movement penalties when crossing over or through a specified terrain."
   },
   {
     "name": "Strike Mighty Blow",
@@ -1344,7 +1344,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are an expert at striking your enemies most vulnerable areas. You inflict your level of Strike to Injure in additional Wounds when you cause a Critical Wound."
+    "description": "You are an expert at striking your enemies most vulnerable areas. When rolling on a crucial Damage Table, make two rolls and choose which result you prefer."
   },
   {
     "name": "Strike to Stun",
@@ -1352,7 +1352,7 @@
     "category": "Combat",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You know where to hit an opponent to bring him down fast."
+    "description": "You know where to hit an opponent to bring him down fast. You ignore penalty to strike Head hit location, when using melee weapon with Pummel Quality. You count all improvised weapons as having the Pummel Quality."
   },
   {
     "name": "Strong Back",
@@ -1360,7 +1360,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You have a strong back that is used to hard work. You may add your levels in Strong Back to your SL in any Opposed Strength Tests, and can carry additional Encumbrance points of trappings equal to..."
+    "description": "You have a strong back that is used to hard work. You may add your levels in Strong Back to your SL in any Opposed Strength Tests, and can carry additional Encumbrance points of trappings equal to your level of Strong Back"
   },
   {
     "name": "Strong Legs",
@@ -1376,7 +1376,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are an especially strong swimmer and used to holding your breath for a long time underwater."
+    "description": "You are an especially strong swimmer and used to holding your breath for a long time underwater. nGain bonus equal to level in this talent to Toughness Bonus when holding breath."
   },
   {
     "name": "Strong-minded",
@@ -1424,7 +1424,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You know what to say and when to make the most impact upon your superiors."
+    "description": "You know what to say and when to make the most impact upon your superiors. When you successfully use a Social Skill to influence those of a higher Status, you can choose to use the tens or units rolled as the SL."
   },
   {
     "name": "Sure Shot",
@@ -1440,7 +1440,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are a surgeon, able to open and close the flesh in order to heal others."
+    "description": "You are a surgeon, able to open and close the flesh in order to heal others. You can treat a Critical Wound marked as needing surgery. (Page 146)"
   },
   {
     "name": "Tenacious",
@@ -1448,7 +1448,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You never give up, no matter how impossible your travails appear."
+    "description": "You never give up, no matter how impossible your travails appear. You can double length of time successful Endurance Tests allow you to endure hardship."
   },
   {
     "name": "Tinker",
@@ -1464,7 +1464,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "A recollection technique first instigated by the Cult of Verena, reputedly from Elven practices taught by the Loremasters of Hoeth, Tower of Memories allows you to perfectly recall a sequence of..."
+    "description": "A recollection technique first instigated by the Cult of Verena, reputedly from Elven practices taught by the Loremasters of Hoeth, Tower of Memories allows you to perfectly recall a sequence of facts."
   },
   {
     "name": "Trapper",
@@ -1472,7 +1472,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are skilled at spotting and using traps. You may take a Perception Test to spot traps automatically without having to tell the GM of your intention; the GM may prefer to make some of these..."
+    "description": "You are skilled at spotting and using traps. You may take a Perception Test to spot traps automatically without having to tell the GM of your intention; the GM may prefer to make some of these test on your behalf in private."
   },
   {
     "name": "Trick Riding",
@@ -1480,7 +1480,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are capable of amazing feats of agility on horseback."
+    "description": "You are capable of amazing feats of agility on horseback. You can use any of your Performer Skills and unmodified dodge skill when on horseback. When mounted you can make move at start of Round instead of on your turn."
   },
   {
     "name": "Tunnel Rat",
@@ -1488,7 +1488,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are at home in tunnels, sewers, and other underground environments."
+    "description": "You are at home in tunnels, sewers, and other underground environments.When using steal in an underground environment, no passive Perception tests to detect you."
   },
   {
     "name": "Tzeentch's Blessing",
@@ -1504,7 +1504,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are a jaded veteran who has survived more than one hail of shots from Blackpowder weapons."
+    "description": "You are a jaded veteran who has survived more than one hail of shots from Blackpowder weapons. You need only take a Cool test to resist a Broken Condition if you are successfully wounded by a Blackpower weapon."
   },
   {
     "name": "Very Resilient",
@@ -1528,7 +1528,7 @@
     "category": "Social",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "Your stern gaze and inspiring words motivate your soldiers to fight on to the end."
+    "description": "Your stern gaze and inspiring words motivate your soldiers to fight on to the end. All subordinates able to see you may add your level in this talent to their SL in one Willpower test per round, this bonus does not stack."
   },
   {
     "name": "War Wizard",
@@ -1536,7 +1536,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are trained to cast magic while in the thick of combat."
+    "description": "You are trained to cast magic while in the thick of combat. Om your turn you may cast one Spell with a Casting Number of 5 or less for free without using your Action. However if you do this, you may not cast another spell this turn."
   },
   {
     "name": "Warrior Born",
@@ -1552,7 +1552,7 @@
     "category": "Physical",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are an experienced freshwater sailor and are well-versed with river vessels."
+    "description": "You are an experienced freshwater sailor and are well-versed with river vessels. You can ignore all negative to your Test when onboard a barged derived rom rolling waters etc. Further you count as two boatmen towards the minimum number of crew to pilot a river vessel."
   },
   {
     "name": "Wealthy",
@@ -1568,7 +1568,7 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You are used to anticipating the needs of others, and yourself."
+    "description": "You are used to anticipating the needs of others, and yourself. Number of times per session equal to the levels of this talent, you may pull the required trapping from your backpack provided it has Endurance , and could feasibly be bought recently. You must deduct cost for the item."
   },
   {
     "name": "Witch!",
@@ -1576,6 +1576,6 @@
     "category": "Mental",
     "prerequisite": "none",
     "tests": "Various",
-    "description": "You have learned magic through trial and error. Add Language (Magick) to any Career you enter; if it is already in your Career, you may purchase the Skill for 5 XP fewer per Advance. Further, you..."
+    "description": "You have learned magic through trial and error. Add Language (Magick) to any Career you enter; if it is already in your Career, you may purchase the Skill for 5 XP fewer per Advance.You may immediately spend 1 Resilience point to cast any spell as if it was one of your Arcane Lore spells, you may memorise that spell for 0 XP. You may do this number of times equal to your level in this talent."
   }
 ]
