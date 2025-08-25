@@ -10890,6 +10890,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (match) {
                     baseName = match[1].trim();
                     specialization = match[2].trim();
+                    // Don't treat "any" as a real specialization
+                    if (specialization.toLowerCase() === 'any') {
+                        specialization = '';
+                    }
                 } else {
                     baseName = skillName;
                 }
@@ -10955,7 +10959,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Debug logging for Trade skills after creation
                 if (baseName.toLowerCase() === 'trade') {
-                    console.log(`DEBUG Trade skill added to addedSkills:`, addedSkills[addedSkills.length - 1]);
+                    const addedSkill = addedSkills[addedSkills.length - 1];
+                    console.log(`DEBUG Trade skill added to addedSkills:`, {
+                        key: addedSkill.key,
+                        name: addedSkill.name,
+                        displayName: addedSkill.displayName,
+                        specialisation: addedSkill.specialisation,
+                        canDelete: addedSkill.canDelete
+                    });
                 }
 
                 // Initialize skill data with advances
