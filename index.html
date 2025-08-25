@@ -6907,11 +6907,12 @@
                         canDelete: skill.canDelete,
                         hasSpecializationField,
                         hasAnyPattern,
-                        characterSkillsSpec: characterSkills[skill.key]?.specialization
+                        characterSkillsSpec: characterSkills[skill.key]?.specialization,
+                        conditionResult: hasAnyPattern || (hasSpecializationField && skill.canDelete)
                     });
                 }
                 
-                if (hasAnyPattern || (hasSpecializationField && skill.canDelete)) {
+                if (hasAnyPattern || (hasSpecializationField && skill.canDelete) || (skill.displayName && skill.displayName.toLowerCase().includes('trade'))) {
                     // This is a specialist skill that should have an editable input
                     const baseName = skill.displayName.replace(/\s*\([Aa]ny\)\s*/, '').replace(/\s*\([^)]+\)\s*$/, '');
                     
@@ -6934,6 +6935,16 @@
                         style="width: 80px; font-size: 11px; padding: 2px; border: 1px solid #8b7355; background: #f9f9f9;"
                         onchange="${updateFunction}('${skill.key}', this.value)"
                         title="Click to edit specialization">)`;
+                    
+                    // Debug logging for Trade skills inside condition
+                    if (skill.displayName && skill.displayName.toLowerCase().includes('trade')) {
+                        console.log(`DEBUG Trade skill input created:`, {
+                            baseName,
+                            currentSpec,
+                            updateFunction,
+                            skillDisplayName
+                        });
+                    }
                 }
                 
                 row.innerHTML = `
