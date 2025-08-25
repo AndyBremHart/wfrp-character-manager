@@ -6805,6 +6805,59 @@
                 });
             }
             
+            // Consolidate duplicate specialist skills with same specialization
+            const consolidatedSkills = [];
+            const skillMap = new Map();
+            
+            allDisplaySkills.forEach(skill => {
+                // Check if this is a specialist skill that should be consolidated
+                if (skill.specialisation !== undefined && skill.name && skill.canDelete) {
+                    const baseName = skill.name;
+                    const specialization = skill.specialisation.trim().toLowerCase();
+                    
+                    // Create key for consolidation: baseName + specialization
+                    const consolidationKey = `${baseName}|${specialization}`;
+                    
+                    if (skillMap.has(consolidationKey)) {
+                        // Consolidate with existing skill
+                        const existingSkill = skillMap.get(consolidationKey);
+                        const existingData = characterSkills[existingSkill.key] || { advances: 0, career: false, notes: '' };
+                        const currentData = characterSkills[skill.key] || { advances: 0, career: false, notes: '' };
+                        
+                        // Combine advances
+                        const combinedAdvances = existingData.advances + currentData.advances;
+                        
+                        // Update the skill data for the consolidated skill
+                        characterSkills[existingSkill.key] = {
+                            ...existingData,
+                            advances: combinedAdvances,
+                            career: existingData.career || currentData.career,
+                            notes: [existingData.notes, currentData.notes].filter(n => n).join('; ')
+                        };
+                        
+                        // Remove the duplicate skill data
+                        delete characterSkills[skill.key];
+                        
+                        // Remove duplicate from addedSkills array
+                        const skillIndex = addedSkills.findIndex(s => s.key === skill.key);
+                        if (skillIndex !== -1) {
+                            addedSkills.splice(skillIndex, 1);
+                        }
+                        
+                        console.log(`Consolidated ${skill.key} into ${existingSkill.key} - total advances: ${combinedAdvances}`);
+                    } else {
+                        // First occurrence of this skill+specialization combination
+                        skillMap.set(consolidationKey, skill);
+                        consolidatedSkills.push(skill);
+                    }
+                } else {
+                    // Non-specialist skill or skill without specialization - always keep
+                    consolidatedSkills.push(skill);
+                }
+            });
+            
+            allDisplaySkills = consolidatedSkills;
+            
             // Sort alphabetically
             allDisplaySkills.sort((a, b) => a.displayName.localeCompare(b.displayName));
             
@@ -6843,7 +6896,7 @@
                 
                 // Check if this skill has "(Any)" or "(any)" in the name - these are specialist skills
                 const hasAnyPattern = skill.displayName && (skill.displayName.includes('(Any)') || skill.displayName.includes('(any)'));
-                const hasSpecialization = skill.specialisation !== undefined && skill.specialisation !== '';
+                const hasSpecializationField = skill.specialisation !== undefined;
                 
                 // Debug logging for Trade skills in display
                 if (skill.displayName && skill.displayName.toLowerCase().includes('trade')) {
@@ -6852,13 +6905,13 @@
                         name: skill.name,
                         specialisation: skill.specialisation,
                         canDelete: skill.canDelete,
-                        hasSpecialization,
+                        hasSpecializationField,
                         hasAnyPattern,
                         characterSkillsSpec: characterSkills[skill.key]?.specialization
                     });
                 }
                 
-                if (hasAnyPattern || (hasSpecialization && skill.canDelete)) {
+                if (hasAnyPattern || (hasSpecializationField && skill.canDelete)) {
                     // This is a specialist skill that should have an editable input
                     const baseName = skill.displayName.replace(/\s*\([Aa]ny\)\s*/, '').replace(/\s*\([^)]+\)\s*$/, '');
                     
@@ -10547,29 +10600,56 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
+            const trimmedSpecialization = newSpecialization.trim();
+            
             // Create new key and display name
-            const newKey = `${skill.name} (${newSpecialization.trim()})`;
-            const newDisplayName = `${skill.name} (${newSpecialization.trim()})`;
+            const newKey = `${skill.name} (${trimmedSpecialization})`;
+            const newDisplayName = `${skill.name} (${trimmedSpecialization})`;
             
-            // Check if this new skill key already exists
-            if (newKey !== oldKey && addedSkills.find(s => s.key === newKey)) {
-                alert(`Skill "${newDisplayName}" already exists.`);
-                displaySkills(); // Refresh to reset the input
-                return;
-            }
+            // Check if this new skill+specialization combination already exists
+            const existingSkill = addedSkills.find(s => 
+                s.key !== oldKey && 
+                s.name === skill.name && 
+                s.specialisation && 
+                s.specialisation.trim().toLowerCase() === trimmedSpecialization.toLowerCase()
+            );
             
-            // Update the skill
-            skill.specialisation = newSpecialization.trim();
-            skill.key = newKey;
-            skill.displayName = newDisplayName;
-            
-            // Update characterSkills if key changed
-            if (newKey !== oldKey) {
-                characterSkills[newKey] = characterSkills[oldKey] || { career: false, advances: 0, notes: '' };
+            if (existingSkill) {
+                // Consolidate with existing skill
+                const oldData = characterSkills[oldKey] || { career: false, advances: 0, notes: '' };
+                const existingData = characterSkills[existingSkill.key] || { career: false, advances: 0, notes: '' };
+                
+                // Combine advances and merge data
+                characterSkills[existingSkill.key] = {
+                    ...existingData,
+                    advances: existingData.advances + oldData.advances,
+                    career: existingData.career || oldData.career,
+                    notes: [existingData.notes, oldData.notes].filter(n => n).join('; ')
+                };
+                
+                // Remove old skill
+                const skillIndex = addedSkills.findIndex(s => s.key === oldKey);
+                if (skillIndex !== -1) {
+                    addedSkills.splice(skillIndex, 1);
+                }
                 delete characterSkills[oldKey];
+                
+                console.log(`Consolidated ${oldKey} into existing ${existingSkill.key} - total advances: ${characterSkills[existingSkill.key].advances}`);
+                alert(`Skills consolidated! "${newDisplayName}" now has ${characterSkills[existingSkill.key].advances} total advances.`);
+            } else {
+                // Update the skill normally
+                skill.specialisation = trimmedSpecialization;
+                skill.key = newKey;
+                skill.displayName = newDisplayName;
+                
+                // Update characterSkills if key changed
+                if (newKey !== oldKey) {
+                    characterSkills[newKey] = characterSkills[oldKey] || { career: false, advances: 0, notes: '' };
+                    delete characterSkills[oldKey];
+                }
+                
+                console.log(`Updated skill specialization: ${skill.name} to "${trimmedSpecialization}"`);
             }
-            
-            console.log(`Updated skill specialization: ${skill.name} to "${newSpecialization.trim()}"`);
             
             // Refresh display
             displaySkills();
