@@ -8052,16 +8052,17 @@ window.displayTalents = function() {
             const currentLimit = window.getTalentCurrentLimit(talent.name);
             
             
-            // Determine color based on limit status
+            // Determine color based on limit status but don't disable advancement
+            // Users can still advance beyond limits (warning will be shown when they try)
             if (currentCount > currentLimit) {
                 limitColor = "color: #c41e3a; font-weight: bold;"; // Red - over limit
-                canTakeMore = false; // Can't take more when over limit
+                // canTakeMore remains based on talent max, not characteristic limit
             } else if (currentCount >= currentLimit) {
                 limitColor = "color: #ff8c00; font-weight: bold;"; // Orange - at limit
-                canTakeMore = false; // Can't take more when at limit
+                // canTakeMore remains based on talent max, not characteristic limit
             } else {
                 limitColor = "color: #0a7c0a;"; // Green - can take more
-                canTakeMore = true; // Can take more when under limit
+                // canTakeMore remains based on talent max, not characteristic limit
             }
             
             // For limited talents, show Times Taken as currentCount/currentLimit
