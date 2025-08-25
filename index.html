@@ -15781,7 +15781,7 @@ function loadSymptomsData() {
                         <div style="margin: 8px 0;">
                             <input type="text" id="${skillId}" placeholder="Specify..." 
                                    value="${setupWizardData.skillSpecializations?.[skill] || ''}"
-                                   onchange="updateSkillSpecialization('${skill}', this.value)"
+                                   oninput="updateSkillSpecialization('${skill}', this.value)"
                                    onclick="event.stopPropagation()"
                                    style="width: 80%; padding: 4px; border: 1px solid #4a90e2; border-radius: 3px; font-size: 11px;">
                         </div>
